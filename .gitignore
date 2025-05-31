@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+.swc/
+
+# Build output
+dist/
+build/
+out/
+
+# Video grande (se NON usi Git LFS per questo specifico file)
+# Se il tuo video si chiama hero-video-verdure-rotanti.mp4 e decidi di NON tracciarlo con LFS
+# e hai già una versione ottimizzata che vuoi usare, potresti voler
+# ignorare temporaneamente il video originale grande se è ancora nel progetto
+# public/videos/nome_video_originale_grande.mp4 
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Environment variables
+.env
+.env*.local
+
+# IDE / Editor specific
+.vscode/
+.idea/
+*.DS_Store
+.swc/

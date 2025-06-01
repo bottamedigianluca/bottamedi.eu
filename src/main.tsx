@@ -5,8 +5,7 @@ import { MotionConfig } from 'framer-motion'
 import './index.css'
 
 // Lazy load the main App component
-const App = React.lazy(() => import('./App'))
-
+const App = React.lazy(() => import('./app'))
 // Performance optimized loading component
 const LoadingFallback = () => (
   <div className="fixed inset-0 bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">

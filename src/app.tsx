@@ -2,6 +2,7 @@ import React, { Suspense, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+import { haptic, triggerHapticOnScroll, triggerHapticOnSectionChange } from './utils/haptics'
 
 // 🍎 HAPTIC IMPORTS
 import { haptic, triggerHapticOnScroll, triggerHapticOnSectionChange } from './utils/haptics'

@@ -1,1 +1,19 @@
+# Disabilita Git LFS per tutti i file media
+*.webp !filter !diff !merge
+*.mp4 !filter !diff !merge
+*.png !filter !diff !merge
+*.jpg !filter !diff !merge
+*.jpeg !filter !diff !merge
+*.gif !filter !diff !merge
+*.svg !filter !diff !merge
+*.ico !filter !diff !merge
 
+# File di testo normale
+*.txt text
+*.md text
+*.json text
+*.js text
+*.ts text
+*.tsx text
+*.css text
+*.html text

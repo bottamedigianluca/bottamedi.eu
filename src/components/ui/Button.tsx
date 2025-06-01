@@ -122,6 +122,30 @@ const Button: React.FC<ButtonProps> = ({
         whileHover="hover"
         whileTap="tap"
         variants={motionVariants}
+        {...props}
+      >
+        <ButtonContent />
+        
+        {/* Ripple effect overlay */}
+        <motion.div
+          className="absolute inset-0 bg-white/20 rounded-2xl opacity-0 pointer-events-none"
+          whileHover={{ opacity: variant === 'ghost' ? 0 : 0.1 }}
+          transition={{ duration: 0.2 }}
+        />
+      </motion.a>
+    )
+  }
+
+  // Render as button
+  return (
+    <motion.button
+      type={type}
+      onClick={onClick}
+      disabled={disabled || loading}
+      className={buttonClass}
+      whileHover="hover"
+      whileTap="tap"
+      variants={motionVariants}
       {...props}
     >
       <ButtonContent />
@@ -136,21 +160,4 @@ const Button: React.FC<ButtonProps> = ({
   )
 }
 
-export default Buttonants}
-        {...props}
-      >
-        <ButtonContent />
-      </motion.a>
-    )
-  }
-
-  // Render as button
-  return (
-    <motion.button
-      type={type}
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={buttonClass}
-      whileHover="hover"
-      whileTap="tap"
-      variants={motionVari
+export default Button

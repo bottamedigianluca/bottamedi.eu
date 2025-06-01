@@ -1,3 +1,71 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:008e751f77b85995afdb2e06ef20ee21a3370ce72185c91160c00f7ff8d2b2e6
-size 1833
+{
+  "name": "Bottamedi Frutta e Verdura - Mezzolombardo Trentino",
+  "short_name": "Bottamedi",
+  "description": "Frutta e verdura fresca dal 1974. Banchetto dettaglio e ingrosso HORECA a Mezzolombardo, Trentino Alto Adige.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#22c55e",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "it",
+  "categories": ["food", "business", "shopping"],
+  "icons": [
+    {
+      "src": "/favicon.webp",
+      "sizes": "any",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo-bottamedi.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo-bottamedi.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/banchetto.webp",
+      "sizes": "1280x720",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "Il nostro banchetto di frutta e verdura fresca"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Chiama Banchetto",
+      "short_name": "Chiama",
+      "description": "Chiama direttamente il banchetto",
+      "url": "tel:+393515776198",
+      "icons": [{ "src": "/favicon.webp", "sizes": "any", "type": "image/webp" }]
+    },
+    {
+      "name": "Dove Siamo",
+      "short_name": "Mappa",
+      "description": "Visualizza la nostra posizione",
+      "url": "https://maps.app.goo.gl/TFV4cgnEvcFjBHfD6",
+      "icons": [{ "src": "/favicon.webp", "sizes": "any", "type": "image/webp" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "dir": "ltr",
+  "iarc_rating_id": "",
+  "share_target": {
+    "action": "/contact",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}

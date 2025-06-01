@@ -262,7 +262,7 @@ export const SectionParticles: React.FC<{
   )
 }
 
-export default Particles particles
+export default Particles particles;
   }
 
   // Get velocity based on direction

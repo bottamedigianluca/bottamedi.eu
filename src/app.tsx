@@ -25,14 +25,14 @@ const SectionLoader = () => (
   </div>
 )
 
-// 🍎 GLOBAL HAPTIC INTEGRATION COMPONENT
+// 🍎 GLOBAL HAPTIC INTEGRATION COMPONENT AGGIORNATO
 const GlobalHapticIntegration: React.FC = () => {
   useEffect(() => {
-    // 🎯 GLOBAL CLICK HAPTICS
+    // 🎯 GLOBAL CLICK HAPTICS POTENZIATI
     const handleGlobalClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement
       
-      // Button haptics
+      // Button haptics - FEEDBACK SOLIDO
       if (target.tagName === 'BUTTON' && !target.hasAttribute('data-no-haptic')) {
         haptic.trigger('button')
       }
@@ -48,12 +48,17 @@ const GlobalHapticIntegration: React.FC = () => {
       }
     }
 
-    // 📱 MOBILE TOUCH HAPTICS
+    // 📱 MOBILE TOUCH HAPTICS AVANZATI
     const handleTouchStart = (e: TouchEvent) => {
       const target = e.target as HTMLElement
       
       if (window.innerWidth < 768) {
-        if (target.tagName === 'BUTTON' || target.tagName === 'A') {
+        if (target.tagName === 'BUTTON') {
+          haptic.trigger('button') // FEEDBACK IMMEDIATO
+          target.style.transform = 'scale(0.98)'
+          target.style.transition = 'transform 0.1s ease'
+        } else if (target.tagName === 'A') {
+          haptic.trigger('tap')
           target.style.transform = 'scale(0.98)'
           target.style.transition = 'transform 0.1s ease'
         }
@@ -72,22 +77,22 @@ const GlobalHapticIntegration: React.FC = () => {
       }
     }
 
-    // 🔄 FORM HAPTICS
-    const handleFormSubmit = () => {
+    // 🔄 FORM HAPTICS MIGLIORATI
+    const handleFormSubmit = (e: SubmitEvent) => {
       haptic.trigger('success')
     }
 
     const handleInputFocus = (e: FocusEvent) => {
       const target = e.target as HTMLElement
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
-        haptic.trigger('tap')
+        haptic.trigger('selection')
       }
     }
 
     // 📱 MOBILE SCROLL HAPTICS
     const cleanupScroll = triggerHapticOnScroll()
 
-    // 🎯 SECTION INTERSECTION HAPTICS - AGGIUNTO WHOLESALE
+    // 🎯 SECTION INTERSECTION HAPTICS
     const cleanupSections = triggerHapticOnSectionChange([
       'hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact'
     ])
@@ -98,6 +103,16 @@ const GlobalHapticIntegration: React.FC = () => {
     document.addEventListener('touchend', handleTouchEnd, { passive: true })
     document.addEventListener('submit', handleFormSubmit)
     document.addEventListener('focusin', handleInputFocus)
+
+    // TEST HAPTIC AL CARICAMENTO
+    setTimeout(() => {
+      if (haptic.getSupport()) {
+        haptic.trigger('notification') // Test di benvenuto
+        console.log('🎯 Haptic Feedback ATTIVO!')
+      } else {
+        console.warn('⚠️ Haptic Feedback NON supportato su questo dispositivo')
+      }
+    }, 1000)
 
     // Cleanup
     return () => {

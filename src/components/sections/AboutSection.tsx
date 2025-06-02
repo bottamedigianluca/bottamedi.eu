@@ -206,4 +206,359 @@ const useOptimizedCountUp = (endValue: number, inView: boolean, delay: number = 
       
       const animate = (currentTime: number) => {
         if (!startTime) startTime = currentTime
-        const progress = Math.
+        const progress = Math.min((currentTime - startTime) / duration, 1)
+        
+        // Easing function ottimizzata
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4)
+        const currentValue = easeOutQuart * endValue
+        
+        setCount(Math.floor(currentValue))
+
+        if (progress < 1) {
+          requestAnimationFrame(animate)
+        } else {
+          setCount(endValue)
+        }
+      }
+
+      requestAnimationFrame(animate)
+    }
+
+    const timeoutId = setTimeout(startAnimation, delay)
+    return () => clearTimeout(timeoutId)
+  }, [inView, endValue, delay, shouldReduceMotion])
+
+  return count
+}
+
+// 📍 PERFORMANCE: Timeline Item Ottimizzato
+const TimelineItem: React.FC<{
+  item: any
+  index: number
+  isEven: boolean
+}> = React.memo(({ item, index, isEven }) => {
+  const [ref, inView] = useInView({
+    threshold: 0.2,
+    triggerOnce: true,
+    rootMargin: '50px'
+  })
+  
+  const shouldReduceMotion = useReducedMotion()
+
+  const itemVariants = useMemo(() => ({
+    hidden: { 
+      opacity: 0, 
+      x: shouldReduceMotion ? 0 : (isEven ? -60 : 60),
+      y: shouldReduceMotion ? 20 : 0
+    },
+    visible: { 
+      opacity: 1, 
+      x: 0, 
+      y: 0,
+      transition: {
+        duration: shouldReduceMotion ? 0.3 : 0.6,
+        delay: shouldReduceMotion ? 0 : index * 0.2,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
+  }), [index, isEven, shouldReduceMotion])
+
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={inView ? "visible" : "hidden"}
+      variants={itemVariants}
+      className={`flex flex-col lg:flex-row items-center gap-8 ${
+        isEven ? 'lg:flex-row-reverse' : ''
+      }`}
+    >
+      {/* Content */}
+      <div className="flex-1 space-y-4">
+        <div className="relative">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={inView ? { scale: 1 } : {}}
+            transition={{ 
+              duration: shouldReduceMotion ? 0.2 : 0.5, 
+              delay: shouldReduceMotion ? 0 : index * 0.2 + 0.3 
+            }}
+            className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl text-white font-bold text-lg shadow-lg"
+          >
+            {item.year}
+          </motion.div>
+        </div>
+        
+        <motion.h3
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ 
+            duration: shouldReduceMotion ? 0.2 : 0.6, 
+            delay: shouldReduceMotion ? 0 : index * 0.2 + 0.4 
+          }}
+          className="text-2xl lg:text-3xl font-bold text-neutral-900"
+        >
+          {item.title}
+        </motion.h3>
+        
+        <motion.p
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ 
+            duration: shouldReduceMotion ? 0.2 : 0.6, 
+            delay: shouldReduceMotion ? 0 : index * 0.2 + 0.5 
+          }}
+          className="text-base text-neutral-600 leading-relaxed"
+        >
+          {item.description}
+        </motion.p>
+      </div>
+
+      {/* Image ottimizzata con lazy loading */}
+      <motion.div
+        initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.8 }}
+        animate={inView ? { opacity: 1, scale: 1 } : {}}
+        transition={{ 
+          duration: shouldReduceMotion ? 0.2 : 0.6, 
+          delay: shouldReduceMotion ? 0 : index * 0.2 + 0.2 
+        }}
+        className="flex-1 relative group max-w-md"
+      >
+        <div className="relative overflow-hidden rounded-2xl shadow-xl">
+          <LazyImage
+            src={item.image}
+            alt={item.title}
+            className="w-full h-64 lg:h-72 transition-transform duration-500 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        </div>
+      </motion.div>
+    </motion.div>
+  )
+})
+
+TimelineItem.displayName = 'TimelineItem'
+
+// 💎 PERFORMANCE: Value Card Ottimizzata
+const ValueCard: React.FC<{
+  item: any
+  index: number
+}> = React.memo(({ item, index }) => {
+  const [ref, inView] = useInView({ 
+    threshold: 0.2, 
+    triggerOnce: true,
+    rootMargin: '50px'
+  })
+  
+  const count = useOptimizedCountUp(
+    parseInt(item.number.replace('+', '')),
+    inView,
+    index * 200
+  )
+  
+  const shouldReduceMotion = useReducedMotion()
+
+  const cardVariants = useMemo(() => ({
+    hidden: { 
+      opacity: 0, 
+      y: shouldReduceMotion ? 0 : 30,
+      scale: shouldReduceMotion ? 1 : 0.95
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: shouldReduceMotion ? 0.2 : 0.5,
+        delay: shouldReduceMotion ? 0 : index * 0.1,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
+  }), [index, shouldReduceMotion])
+
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={inView ? "visible" : "hidden"}
+      variants={cardVariants}
+      whileHover={shouldReduceMotion ? {} : { y: -5, scale: 1.02 }}
+      className="relative group"
+      style={{ willChange: 'transform' }}
+    >
+      <div className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-neutral-100 h-full">
+        {/* Icon e Counter */}
+        <div className="text-center mb-4">
+          <motion.div
+            whileHover={shouldReduceMotion ? {} : { scale: 1.1, rotate: 5 }}
+            className="text-4xl mb-3"
+          >
+            {item.icon}
+          </motion.div>
+          
+          {/* Counter animato ottimizzato */}
+          <div className="mb-2">
+            <motion.span 
+              className="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-600 block"
+              key={count}
+              initial={{ scale: shouldReduceMotion ? 1 : 1.2, opacity: 0.8 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: shouldReduceMotion ? 0.1 : 0.3 }}
+            >
+              {count}{item.number.includes('+') ? '+' : ''}
+            </motion.span>
+            <p className="text-xs sm:text-sm text-neutral-500 font-medium">
+              {item.label}
+            </p>
+          </div>
+        </div>
+        
+        {/* Title e Description */}
+        <div className="text-center">
+          <h3 className="text-lg font-bold text-neutral-900 mb-2">
+            {item.title}
+          </h3>
+          <p className="text-neutral-600 text-sm leading-relaxed">
+            {item.description}
+          </p>
+        </div>
+        
+        {/* Hover effect */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-600/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          initial={false}
+        />
+      </div>
+    </motion.div>
+  )
+})
+
+ValueCard.displayName = 'ValueCard'
+
+const AboutSection: React.FC<AboutSectionProps> = ({ language, inView }) => {
+  const { scrollYProgress } = useScroll()
+  const y = useTransform(scrollYProgress, [0, 1], [0, -30])
+  const shouldReduceMotion = useReducedMotion()
+  
+  const t = useMemo(() => translations[language], [language])
+
+  // 🎨 PERFORMANCE: Memoized animation variants
+  const headerVariants = useMemo(() => ({
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: shouldReduceMotion ? 0.2 : 0.6,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
+  }), [shouldReduceMotion])
+
+  const subtitleVariants = useMemo(() => ({
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: shouldReduceMotion ? 0.2 : 0.6,
+        delay: shouldReduceMotion ? 0 : 0.2,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
+  }), [shouldReduceMotion])
+
+  const valuesHeaderVariants = useMemo(() => ({
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: shouldReduceMotion ? 0.2 : 0.6,
+        delay: shouldReduceMotion ? 0 : 0.4,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
+  }), [shouldReduceMotion])
+
+  return (
+    <section id="about" className="py-16 lg:py-24 bg-gradient-to-br from-neutral-50 to-white relative overflow-hidden">
+      {/* Background decorations ottimizzate */}
+      {!shouldReduceMotion && (
+        <>
+          <motion.div
+            style={{ y }}
+            className="absolute top-1/4 left-0 w-48 h-48 bg-green-200/20 rounded-full blur-3xl"
+          />
+          <motion.div
+            style={{ y }}
+            className="absolute bottom-1/4 right-0 w-56 h-56 bg-green-300/20 rounded-full blur-3xl"
+          />
+        </>
+      )}
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header ottimizzato */}
+        <motion.div
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          variants={headerVariants}
+          className="text-center mb-16"
+        >
+          <motion.h2
+            className="text-3xl lg:text-5xl font-bold text-neutral-900 mb-4"
+            style={{
+              background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #f59e0b 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
+          >
+            {t.title}
+          </motion.h2>
+          <motion.p
+            initial="hidden"
+            animate={inView ? "visible" : "hidden"}
+            variants={subtitleVariants}
+            className="text-lg text-neutral-600 max-w-2xl mx-auto"
+          >
+            {t.subtitle}
+          </motion.p>
+        </motion.div>
+
+        {/* Timeline ottimizzata */}
+        <div className="space-y-20 mb-20">
+          {t.timeline.map((item, index) => (
+            <TimelineItem
+              key={`timeline-${index}`}
+              item={item}
+              index={index}
+              isEven={index % 2 === 0}
+            />
+          ))}
+        </div>
+
+        {/* Values Section ottimizzata */}
+        <motion.div
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          variants={valuesHeaderVariants}
+          className="text-center mb-12"
+        >
+          <h3 className="text-2xl lg:text-4xl font-bold text-neutral-900 mb-6">
+            {t.values.title}
+          </h3>
+        </motion.div>
+
+        {/* Values Cards ottimizzate */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {t.values.items.map((item, index) => (
+            <ValueCard key={`value-${index}`} item={item} index={index} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export default React.memo(AboutSection)

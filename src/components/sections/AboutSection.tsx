@@ -1,5 +1,5 @@
-import React from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import React, { useState, useCallback, useMemo } from 'react'
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 
 interface AboutSectionProps {
@@ -124,256 +124,86 @@ const translations = {
   }
 }
 
-const TimelineItem: React.FC<{
-  item: any
-  index: number
-  isEven: boolean
-}> = ({ item, index, isEven }) => {
+// 🚀 PERFORMANCE: Lazy Image Component Ottimizzato
+const LazyImage: React.FC<{
+  src: string
+  alt: string
+  className?: string
+  style?: React.CSSProperties
+}> = React.memo(({ src, alt, className = '', style = {} }) => {
+  const [imageState, setImageState] = useState<'loading' | 'loaded' | 'error'>('loading')
   const [ref, inView] = useInView({
-    threshold: 0.3,
-    triggerOnce: true
+    threshold: 0.1,
+    triggerOnce: true,
+    rootMargin: '50px' // Preload quando vicino al viewport
   })
 
+  const handleLoad = useCallback(() => {
+    setImageState('loaded')
+  }, [])
+
+  const handleError = useCallback(() => {
+    setImageState('error')
+    console.warn(`Failed to load image: ${src}`)
+  }, [src])
+
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, x: isEven ? -60 : 60 }}
-      animate={inView ? { opacity: 1, x: 0 } : {}}
-      transition={{ duration: 0.6, delay: index * 0.2 }}
-      className={`flex flex-col lg:flex-row items-center gap-8 ${
-        isEven ? 'lg:flex-row-reverse' : ''
-      }`}
-    >
-      {/* Content */}
-      <div className="flex-1 space-y-4">
-        <div className="relative">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={inView ? { scale: 1 } : {}}
-            transition={{ duration: 0.5, delay: index * 0.2 + 0.3 }}
-            className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl text-white font-bold text-lg shadow-lg"
-          >
-            {item.year}
-          </motion.div>
+    <div ref={ref} className={`relative overflow-hidden ${className}`} style={style}>
+      {/* Skeleton loader */}
+      {imageState === 'loading' && (
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
+      )}
+      
+      {/* Error fallback */}
+      {imageState === 'error' && (
+        <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
+          <div className="text-center text-gray-400">
+            <div className="w-12 h-12 mx-auto mb-2 bg-gray-200 rounded-lg flex items-center justify-center">
+              📷
+            </div>
+            <p className="text-xs">Immagine non disponibile</p>
+          </div>
         </div>
-        
-        <motion.h3
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: index * 0.2 + 0.4 }}
-          className="text-2xl lg:text-3xl font-bold text-neutral-900"
-        >
-          {item.title}
-        </motion.h3>
-        
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: index * 0.2 + 0.5 }}
-          className="text-base text-neutral-600 leading-relaxed"
-        >
-          {item.description}
-        </motion.p>
-      </div>
-
-      {/* Image */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={inView ? { opacity: 1, scale: 1 } : {}}
-        transition={{ duration: 0.6, delay: index * 0.2 + 0.2 }}
-        className="flex-1 relative group max-w-md"
-      >
-        <div className="relative overflow-hidden rounded-2xl shadow-xl">
-          <img
-            src={item.image}
-            alt={item.title}
-            className="w-full h-64 lg:h-72 object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        </div>
-      </motion.div>
-    </motion.div>
+      )}
+      
+      {/* Actual image - solo se in view */}
+      {inView && imageState !== 'error' && (
+        <img
+          src={src}
+          alt={alt}
+          className={`w-full h-full object-cover transition-opacity duration-500 ${
+            imageState === 'loaded' ? 'opacity-100' : 'opacity-0'
+          }`}
+          loading="lazy"
+          decoding="async"
+          onLoad={handleLoad}
+          onError={handleError}
+          style={{ willChange: 'opacity' }}
+        />
+      )}
+    </div>
   )
-}
+})
 
-// Hook personalizzato per il counter animato
-const useCountUp = (endValue: number, startValue: number = 0, duration: number = 2000) => {
-  const [count, setCount] = React.useState(startValue)
-  const [ref, inView] = useInView({ threshold: 0.3, triggerOnce: true })
+LazyImage.displayName = 'LazyImage'
 
+// 🔢 PERFORMANCE: Counter Hook Ottimizzato
+const useOptimizedCountUp = (endValue: number, inView: boolean, delay: number = 0) => {
+  const [count, setCount] = useState(0)
+  const shouldReduceMotion = useReducedMotion()
+  
   React.useEffect(() => {
     if (!inView) return
 
-    let startTime: number
-    const animate = (currentTime: number) => {
-      if (!startTime) startTime = currentTime
-      const progress = Math.min((currentTime - startTime) / duration, 1)
-      
-      // Easing function per un'animazione più fluida
-      const easeOutQuart = 1 - Math.pow(1 - progress, 4)
-      const currentValue = startValue + (endValue - startValue) * easeOutQuart
-      
-      setCount(Math.floor(currentValue))
-
-      if (progress < 1) {
-        requestAnimationFrame(animate)
-      } else {
+    const startAnimation = () => {
+      if (shouldReduceMotion) {
         setCount(endValue)
+        return
       }
-    }
 
-    requestAnimationFrame(animate)
-  }, [inView, endValue, startValue, duration])
-
-  return { ref, count }
-}
-
-const ValueCard: React.FC<{
-  item: any
-  index: number
-}> = ({ item, index }) => {
-  const { ref, count } = useCountUp(
-    parseInt(item.number.replace('+', '')),
-    0,
-    2000 + index * 200
-  )
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      whileHover={{ y: -5, scale: 1.02 }}
-      className="relative group"
-    >
-      <div className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-neutral-100 h-full">
-        {/* Icon e Counter */}
-        <div className="text-center mb-4">
-          <motion.div
-            whileHover={{ scale: 1.1, rotate: 5 }}
-            className="text-4xl mb-3"
-          >
-            {item.icon}
-          </motion.div>
-          
-          {/* Counter animato - dimensioni responsive */}
-          <div className="mb-2">
-            <motion.span 
-              className="text-2xl sm:text-3xl lg:text-4xl font-bold text-brand-600 block"
-              key={count}
-              initial={{ scale: 1.2, opacity: 0.8 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              {count}{item.number.includes('+') ? '+' : ''}
-            </motion.span>
-            <p className="text-xs sm:text-sm text-neutral-500 font-medium">
-              {item.label}
-            </p>
-          </div>
-        </div>
-        
-        {/* Title e Description */}
-        <div className="text-center">
-          <h3 className="text-lg font-bold text-neutral-900 mb-2">
-            {item.title}
-          </h3>
-          <p className="text-neutral-600 text-sm leading-relaxed">
-            {item.description}
-          </p>
-        </div>
-        
-        {/* Hover effect */}
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-accent-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          initial={false}
-        />
-      </div>
-    </motion.div>
-  )
-}
-
-const AboutSection: React.FC<AboutSectionProps> = ({ language, inView }) => {
-  const { scrollYProgress } = useScroll()
-  const y = useTransform(scrollYProgress, [0, 1], [0, -30])
-  
-  const t = translations[language]
-
-  return (
-    <section id="about" className="py-16 lg:py-24 bg-gradient-to-br from-neutral-50 to-white relative overflow-hidden">
-      {/* Background decorations - Ottimizzate */}
-      <motion.div
-        style={{ y }}
-        className="absolute top-1/4 left-0 w-48 h-48 bg-brand-200/20 rounded-full blur-3xl"
-      />
-      <motion.div
-        style={{ y }}
-        className="absolute bottom-1/4 right-0 w-56 h-56 bg-accent-200/20 rounded-full blur-3xl"
-      />
-
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <motion.h2
-            className="text-3xl lg:text-5xl font-bold text-neutral-900 mb-4"
-            style={{
-              background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #f59e0b 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}
-          >
-            {t.title}
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg text-neutral-600 max-w-2xl mx-auto"
-          >
-            {t.subtitle}
-          </motion.p>
-        </motion.div>
-
-        {/* Timeline */}
-        <div className="space-y-20 mb-20">
-          {t.timeline.map((item, index) => (
-            <TimelineItem
-              key={index}
-              item={item}
-              index={index}
-              isEven={index % 2 === 0}
-            />
-          ))}
-        </div>
-
-        {/* Values Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-center mb-12"
-        >
-          <h3 className="text-2xl lg:text-4xl font-bold text-neutral-900 mb-6">
-            {t.values.title}
-          </h3>
-        </motion.div>
-
-        {/* Values Cards - Grid responsive */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {t.values.items.map((item, index) => (
-            <ValueCard key={index} item={item} index={index} />
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-export default AboutSection
+      let startTime: number
+      const duration = 2000 + delay
+      
+      const animate = (currentTime: number) => {
+        if (!startTime) startTime = currentTime
+        const progress = Math.

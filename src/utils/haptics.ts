@@ -19,6 +19,77 @@ class HapticManager {
       pattern: [15],
       description: 'Tap leggero per link e elementi cliccabili'
     },
+    
+    // 🎯 FEEDBACK MEDI (20-50ms)
+    button: {
+      pattern: [30, 10, 25],
+      description: 'Pressione bottone principale - FEEDBACK SOLIDO'
+    },
+    toggle: {
+      pattern: [25, 15, 35],
+      description: 'Toggle switch, menu, cambio stato'
+    },
+    scroll: {
+      pattern: [12],
+      description: 'Bordi scroll e boundaries'
+    },
+    
+    // 🎯 FEEDBACK FORTI (50-100ms)
+    success: {
+      pattern: [40, 20, 15, 20, 45],
+      description: 'Azione completata con successo'
+    },
+    error: {
+      pattern: [60, 60, 60],
+      description: 'Errore, azione fallita'
+    },
+    warning: {
+      pattern: [35, 80, 35],
+      description: 'Attenzione, conferma richiesta'
+    },
+    
+    // 🎯 FEEDBACK SPECIALI
+    notification: {
+      pattern: [20, 40, 15, 40, 25],
+      description: 'Notifica importante o benvenuto'
+    },
+    heartbeat: {
+      pattern: [25, 30, 45, 30, 25],
+      description: 'Feedback ritmico per loading'
+    },
+    impact: {
+      pattern: [50, 30, 20],
+      description: 'Impatto forte per azioni critiche'
+    },
+    
+    // 🎯 FEEDBACK DOCK MOBILE
+    dock_open: {
+      pattern: [20, 15, 30],
+      description: 'Apertura dock mobile'
+    },
+    dock_close: {
+      pattern: [30, 15, 20],
+      description: 'Chiusura dock mobile'
+    },
+    navigation: {
+      pattern: [25, 10, 25],
+      description: 'Navigazione tra sezioni'
+    },
+    
+    // 🎯 FEEDBACK FORM E INTERAZIONI
+    form_submit: {
+      pattern: [35, 25, 15, 25, 40],
+      description: 'Invio form o email'
+    },
+    phone_call: {
+      pattern: [30, 20, 30, 20, 30],
+      description: 'Apertura chiamata telefonica'
+    },
+    email_open: {
+      pattern: [25, 20, 35],
+      description: 'Apertura client email'
+    }
+  }
     selection: {
       pattern: [20],
       description: 'Selezione elemento o focus input'

@@ -1,19 +1,9 @@
-# Disabilita Git LFS per tutti i file media
-*.webp !filter !diff !merge
-*.mp4 !filter !diff !merge
-*.png !filter !diff !merge
-*.jpg !filter !diff !merge
-*.jpeg !filter !diff !merge
-*.gif !filter !diff !merge
-*.svg !filter !diff !merge
-*.ico !filter !diff !merge
+# Tutti i file in public/images (assumendo siano tutti WebP o altri file grandi)
+public/images/* filter=lfs diff=lfs merge=lfs -text
 
-# File di testo normale
-*.txt text
-*.md text
-*.json text
-*.js text
-*.ts text
-*.tsx text
-*.css text
-*.html text
+# Tutti i file in public/videos (assumendo siano tutti MP4 o altri file grandi)
+public/videos/* filter=lfs diff=lfs merge=lfs -text
+
+# File WebP specifici nella cartella public
+public/favicon.webp filter=lfs diff=lfs merge=lfs -text
+public/logo-bottamedi.webp filter=lfs diff=lfs merge=lfs -text

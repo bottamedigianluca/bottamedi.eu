@@ -4,18 +4,64 @@
   "description": "Banchetto e Ingrosso Frutta e Verdura a Mezzolombardo",
   "start_url": "/",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#ffffff",
   "theme_color": "#22c55e",
+  "lang": "it",
+  "scope": "/",
+  "categories": ["food", "shopping", "business"],
   "icons": [
     {
-      "src": "/images/icon-192.png",
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9IiMyMmM1NWUiLz4KPHN2ZyB4PSI0OCIgeT0iNDgiIHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KPHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPC9zdmc+CjwvcmVjdD4KPC9zdmc+",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     },
     {
-      "src": "/images/icon-512.png", 
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iNjQiIGZpbGw9IiMyMmM1NWUiLz4KPHN2ZyB4PSIxMjgiIHk9IjEyOCIgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSI+Cjxwb","
+      "sizes": "512x512", 
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Banchetto",
+      "short_name": "Banchetto",
+      "description": "Vai al banchetto",
+      "url": "/#dettaglio",
+      "icons": [
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9Ijk2IiBoZWlnaHQ9Ijk2IiByeD0iMTIiIGZpbGw9IiMyMmM1NWUiLz4KPHN2ZyB4PSIyNCIgeT0iMjQiIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KPHBhdGggZD0iTTcgNEwyMCA0TDE5IDEyTDggMTJMNyA0WiIgZmlsbD0id2hpdGUiLz4KPGNpcmNsZSBjeD0iOSIgY3k9IjE5IiByPSIyIiBmaWxsPSJ3aGl0ZSIvPgo8Y2lyY2xlIGN4PSIxNyIgY3k9IjE5IiByPSIyIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPC9yZWN0Pgo8L3N2Zz4K",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Ingrosso",
+      "short_name": "Ingrosso", 
+      "description": "Servizio HORECA",
+      "url": "/#services",
+      "icons": [
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9Ijk2IiBoZWlnaHQ9Ijk2IiByeD0iMTIiIGZpbGw9IiMyMmM1NWUiLz4KPHN2ZyB4PSIyNCIgeT0iMjQiIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KPHBhdGggZD0iTTMgNkwyMSA2TDIwIDEySDE2TDE0IDE5SDEwTDggMTJINCIgZmlsbD0id2hpdGUiLz4KPC9zdmc+CjwvcmVjdD4KPC9zdmc+Cg==",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzcwIiBoZWlnaHQ9IjY0MCIgdmlld0JveD0iMCAwIDM3MCA2NDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzNzAiIGhlaWdodD0iNjQwIiBmaWxsPSIjZmZmZmZmIi8+CjxyZWN0IHg9IjIwIiB5PSI1MCIgd2lkdGg9IjMzMCIgaGVpZ2h0PSI4MCIgZmlsbD0iIzIyYzU1ZSIgcng9IjgiLz4KPHN2ZyB4PSIyMCIgeT0iMTQwIiB3aWR0aD0iMzMwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMzMCAyMDAiIGZpbGw9Im5vbmUiPgo8cmVjdCB3aWR0aD0iMzMwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2Y5ZmFmYiIgcng9IjgiLz4KPHN2ZyB4PSIyMCIgeT0iMzUwIiB3aWR0aD0iMzMwIiBoZWlnaHQ9IjI1MCIgdmlld0JveD0iMCAwIDMzMCAyNTAiIGZpbGw9Im5vbmUiPgo8cmVjdCB3aWR0aD0iMzMwIiBoZWlnaHQ9IjI1MCIgZmlsbD0iI2ZmZmZmZiIgcng9IjgiLz4KPC9zdmc+CjwvcmVjdD4KPC9zdmc+Cg==",
+      "sizes": "370x640",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAyNCIgaGVpZ2h0PSI3NjgiIHZpZXdCb3g9IjAgMCAxMDI0IDc2OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEwMjQiIGhlaWdodD0iNzY4IiBmaWxsPSIjZmZmZmZmIi8+CjxyZWN0IHg9IjQwIiB5PSI0MCIgd2lkdGg9Ijk0NCIgaGVpZ2h0PSI4MCIgZmlsbD0iIzIyYzU1ZSIgcng9IjgiLz4KPHN2ZyB4PSI0MCIgeT0iMTQwIiB3aWR0aD0iOTQ0IiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDk0NCAzMDAiIGZpbGw9Im5vbmUiPgo8cmVjdCB3aWR0aD0iOTQ0IiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2Y5ZmFmYiIgcng9IjgiLz4KPHN2ZyB4PSI0MCIgeT0iNDYwIiB3aWR0aD0iOTQ0IiBoZWlnaHQ9IjI2OCIgdmlld0JveD0iMCAwIDk0NCAyNjgiIGZpbGw9Im5vbmUiPgo8cmVjdCB3aWR0aD0iOTQ0IiBoZWlnaHQ9IjI2OCIgZmlsbD0iI2ZmZmZmZiIgcng9IjgiLz4KPC9zdmc+CjwvcmVjdD4KPC9zdmc+Cg==",
+      "sizes": "1024x768", 
+      "type": "image/svg+xml",
+      "form_factor": "wide"
     }
   ]
 }

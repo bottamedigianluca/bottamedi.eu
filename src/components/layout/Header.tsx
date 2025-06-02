@@ -60,7 +60,7 @@ const Header: React.FC<HeaderProps> = ({
             className="flex items-center cursor-pointer"
           >
             <img
-              src="/logo-bottamedi.png"
+              src="/logo-bottamedi.webp"
               alt="Bottamedi Logo"
               className="h-24 w-auto object-contain"
               style={{

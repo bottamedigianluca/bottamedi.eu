@@ -124,80 +124,66 @@ const translations = {
   }
 }
 
-// Animazioni perfezionate
-const smoothVariants = {
-  container: {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    }
-  },
-  card: {
-    hidden: { opacity: 0, y: 30, scale: 0.95 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
-    }
-  },
+// 🎭 ANIMAZIONI ULTRA OTTIMIZZATE PER PERFORMANCE
+const optimizedVariants = {
   cardHover: {
-    y: -5,
-    scale: 1.02,
+    y: -3,
+    scale: 1.01,
     transition: { 
-      duration: 0.3, 
+      duration: 0.2, 
       ease: [0.25, 0.46, 0.45, 0.94]
     }
   },
-  image: {
-    hover: { 
-      scale: 1.05, 
-      transition: { 
-        duration: 0.4, 
-        ease: "easeOut" 
-      } 
-    }
-  },
   detailsPanel: {
-    hidden: { opacity: 0, x: 30 },
+    hidden: { 
+      opacity: 0, 
+      x: 20,
+      filter: 'blur(2px)'
+    },
     visible: { 
       opacity: 1, 
       x: 0,
+      filter: 'blur(0px)',
       transition: {
-        duration: 0.4,
+        duration: 0.3,
         ease: [0.25, 0.46, 0.45, 0.94]
       }
     },
     exit: { 
       opacity: 0, 
-      x: -30,
+      x: -20,
+      filter: 'blur(2px)',
       transition: {
-        duration: 0.3,
+        duration: 0.2,
         ease: "easeIn"
       }
     }
   },
   feature: {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 10 },
     visible: { 
       opacity: 1, 
       y: 0,
       transition: {
-        duration: 0.3,
+        duration: 0.2,
+        ease: "easeOut"
+      }
+    }
+  },
+  stat: {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      transition: {
+        duration: 0.2,
         ease: "easeOut"
       }
     }
   }
 }
 
-// Componente ServiceCard ottimizzato
+// 🎨 COMPONENTE SERVICE CARD OTTIMIZZATO
 const ServiceCard: React.FC<{
   service: any
   index: number
@@ -210,75 +196,100 @@ const ServiceCard: React.FC<{
     triggerOnce: true
   })
 
+  const [imageLoaded, setImageLoaded] = useState(false)
+
+  const cardVariants = useMemo(() => ({
+    hidden: { opacity: 0, y: 20, scale: 0.98 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.4,
+        delay: index * 0.1,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
+  }), [index])
+
   return (
     <motion.div
       ref={ref}
       initial="hidden"
       animate={inView ? "visible" : "hidden"}
-      variants={smoothVariants.card}
-      transition={{ delay: index * 0.15 }}
+      variants={cardVariants}
       className="relative"
     >
       <motion.div
         onClick={onClick}
-        whileHover={!isMobile ? smoothVariants.cardHover : undefined}
-        whileTap={{ scale: 0.98 }}
+        whileHover={!isMobile ? optimizedVariants.cardHover : undefined}
+        whileTap={{ scale: 0.99 }}
         className={`
-          relative overflow-hidden rounded-3xl cursor-pointer transition-all duration-300
+          relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-200
           ${isActive 
-            ? 'ring-4 ring-offset-2 ring-blue-300 shadow-2xl' 
+            ? 'ring-2 ring-offset-1 ring-blue-400 shadow-xl' 
             : 'shadow-lg hover:shadow-xl'
           }
-          ${isMobile ? 'mb-8' : ''}
+          ${isMobile ? 'mb-6' : ''}
         `}
+        style={{ willChange: 'transform' }}
       >
-        {/* Image Container */}
-        <div className={`relative overflow-hidden ${isMobile ? 'h-64' : 'h-80'}`}>
+        {/* Image Container OTTIMIZZATO */}
+        <div className={`relative overflow-hidden ${isMobile ? 'h-56' : 'h-64'}`}>
+          {/* Loading placeholder */}
+          {!imageLoaded && (
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
+          )}
+          
           <motion.img
             src={service.image}
             alt={service.title}
             className="w-full h-full object-cover"
-            variants={smoothVariants.image}
             loading="lazy"
+            onLoad={() => setImageLoaded(true)}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ 
+              opacity: imageLoaded ? 1 : 0,
+              scale: imageLoaded ? 1 : 1.05
+            }}
+            transition={{ duration: 0.4 }}
+            style={{ willChange: 'transform, opacity' }}
           />
-          <div className={`absolute inset-0 bg-gradient-to-t ${service.color} opacity-75`} />
-          
-          {/* Overlay Pattern */}
-          <div className="absolute inset-0 bg-black/10" />
+          <div className={`absolute inset-0 bg-gradient-to-t ${service.color} opacity-70`} />
         </div>
 
-        {/* Content Overlay */}
-        <div className="absolute inset-0 flex flex-col justify-end p-6 lg:p-8 text-white">
-          <div className="text-4xl lg:text-5xl mb-4 drop-shadow-lg">{service.icon}</div>
-          <h3 className="text-xl lg:text-2xl xl:text-3xl font-bold mb-2 drop-shadow-lg">
+        {/* Content Overlay OTTIMIZZATO */}
+        <div className="absolute inset-0 flex flex-col justify-end p-5 lg:p-6 text-white">
+          <div className="text-3xl lg:text-4xl mb-3 drop-shadow-lg">{service.icon}</div>
+          <h3 className="text-lg lg:text-xl xl:text-2xl font-bold mb-2 drop-shadow-lg leading-tight">
             {service.title}
           </h3>
-          <p className="text-white/90 mb-4 text-sm lg:text-base drop-shadow">
+          <p className="text-white/90 mb-3 text-sm lg:text-base drop-shadow leading-relaxed">
             {service.shortDesc}
           </p>
           
-          {/* Stats Preview */}
+          {/* Stats Preview OTTIMIZZATO */}
           <div className="flex space-x-4 text-xs lg:text-sm">
             {service.stats.slice(0, 2).map((stat: any, i: number) => (
               <div key={i} className="text-center">
-                <div className="font-bold text-lg drop-shadow">{stat.value}</div>
-                <div className="text-white/80 drop-shadow">{stat.label}</div>
+                <div className="font-bold text-base lg:text-lg drop-shadow">{stat.value}</div>
+                <div className="text-white/80 drop-shadow text-xs">{stat.label}</div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Active Indicator */}
+        {/* Active Indicator OTTIMIZZATO */}
         <AnimatePresence>
           {isActive && (
             <motion.div
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg"
+              transition={{ duration: 0.15 }}
+              className="absolute top-3 right-3 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-lg"
             >
-              <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
+              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -287,114 +298,153 @@ const ServiceCard: React.FC<{
   )
 })
 
-// Componente Mobile Card completo
+ServiceCard.displayName = 'ServiceCard'
+
+// 📱 COMPONENTE MOBILE CARD COMPLETO OTTIMIZZATO
 const MobileServiceCard: React.FC<{
   service: any
   index: number
   language: string
   t: any
-}> = ({ service, index, language, t }) => {
+}> = React.memo(({ service, index, language, t }) => {
   const [ref, inView] = useInView({
-    threshold: 0.2,
+    threshold: 0.15,
     triggerOnce: true
   })
+
+  const [imageLoaded, setImageLoaded] = useState(false)
+
+  const cardVariants = useMemo(() => ({
+    hidden: { opacity: 0, y: 30, scale: 0.97 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        delay: index * 0.15,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
+  }), [index])
 
   return (
     <motion.div
       ref={ref}
       initial="hidden"
       animate={inView ? "visible" : "hidden"}
-      variants={smoothVariants.card}
-      transition={{ delay: index * 0.2 }}
-      className="bg-white rounded-3xl shadow-xl overflow-hidden mb-8"
+      variants={cardVariants}
+      className="bg-white rounded-2xl shadow-lg overflow-hidden mb-6"
     >
-      {/* Mobile Image */}
-      <div className="relative h-64 overflow-hidden">
+      {/* Mobile Image OTTIMIZZATA */}
+      <div className="relative h-56 overflow-hidden">
+        {!imageLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
+        )}
+        
         <img
           src={service.image}
           alt={service.title}
           className="w-full h-full object-cover"
           loading="lazy"
+          onLoad={() => setImageLoaded(true)}
+          style={{ 
+            opacity: imageLoaded ? 1 : 0,
+            transition: 'opacity 0.3s ease'
+          }}
         />
-        <div className={`absolute inset-0 bg-gradient-to-t ${service.color} opacity-75`} />
+        <div className={`absolute inset-0 bg-gradient-to-t ${service.color} opacity-70`} />
         
-        <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-          <div className="text-4xl mb-3">{service.icon}</div>
-          <h3 className="text-2xl font-bold mb-2">{service.title}</h3>
-          <p className="text-white/90">{service.shortDesc}</p>
+        <div className="absolute inset-0 flex flex-col justify-end p-5 text-white">
+          <div className="text-3xl mb-2">{service.icon}</div>
+          <h3 className="text-xl font-bold mb-1">{service.title}</h3>
+          <p className="text-white/90 text-sm">{service.shortDesc}</p>
         </div>
       </div>
 
-      {/* Mobile Content */}
-      <div className="p-6">
+      {/* Mobile Content OTTIMIZZATO */}
+      <div className="p-5">
         {/* Description */}
-        <div className="mb-6">
-          <p className="text-gray-700 leading-relaxed mb-4">
+        <div className="mb-5">
+          <p className="text-gray-700 leading-relaxed mb-3 text-sm">
             {service.description}
           </p>
-          <p className="text-gray-600 leading-relaxed text-sm">
+          <p className="text-gray-600 leading-relaxed text-xs">
             {service.longDescription}
           </p>
         </div>
 
-        {/* Features */}
-        <div className="mb-6">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4">{t.whatWeOffer}</h4>
-          <div className="space-y-3">
+        {/* Features OTTIMIZZATE */}
+        <div className="mb-5">
+          <h4 className="text-base font-semibold text-gray-900 mb-3">{t.whatWeOffer}</h4>
+          <div className="space-y-2">
             {service.features.map((feature: any, featureIndex: number) => (
               <motion.div
                 key={featureIndex}
                 initial="hidden"
                 animate={inView ? "visible" : "hidden"}
-                variants={smoothVariants.feature}
-                transition={{ delay: 0.3 + featureIndex * 0.1 }}
-                className={`flex items-start space-x-3 p-3 rounded-xl ${service.bgColor} border border-gray-100`}
+                variants={optimizedVariants.feature}
+                transition={{ delay: 0.2 + featureIndex * 0.05 }}
+                className={`flex items-start space-x-3 p-3 rounded-lg ${service.bgColor} border border-gray-50`}
               >
-                <div className="text-xl flex-shrink-0">{feature.icon}</div>
+                <div className="text-lg flex-shrink-0">{feature.icon}</div>
                 <div>
-                  <h5 className={`font-semibold ${service.textColor} mb-1`}>{feature.title}</h5>
-                  <p className="text-gray-600 text-sm">{feature.desc}</p>
+                  <h5 className={`font-medium ${service.textColor} mb-1 text-sm`}>{feature.title}</h5>
+                  <p className="text-gray-600 text-xs leading-relaxed">{feature.desc}</p>
                 </div>
               </motion.div>
             ))}
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-4">
+        {/* Stats OTTIMIZZATE */}
+        <div className="grid grid-cols-3 gap-3">
           {service.stats.map((stat: any, statIndex: number) => (
             <motion.div
               key={statIndex}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={inView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ delay: 0.5 + statIndex * 0.1 }}
-              className="text-center p-3 bg-gray-50 rounded-xl"
+              initial="hidden"
+              animate={inView ? "visible" : "hidden"}
+              variants={optimizedVariants.stat}
+              transition={{ delay: 0.4 + statIndex * 0.05 }}
+              className="text-center p-3 bg-gray-50 rounded-lg"
             >
-              <div className={`text-2xl font-bold bg-gradient-to-r ${service.color} bg-clip-text text-transparent`}>
+              <div className={`text-xl font-bold bg-gradient-to-r ${service.color} bg-clip-text text-transparent`}>
                 {stat.value}
               </div>
-              <div className="text-xs text-gray-600 mt-1">{stat.label}</div>
+              <div className="text-xs text-gray-600 mt-1 leading-tight">{stat.label}</div>
             </motion.div>
           ))}
         </div>
       </div>
     </motion.div>
   )
-}
+})
 
-// Componente principale
+MobileServiceCard.displayName = 'MobileServiceCard'
+
+// 🖥️ COMPONENTE PRINCIPALE OTTIMIZZATO
 const ServicesSection: React.FC<ServicesSectionProps> = ({ language, inView = true }) => {
   const [activeService, setActiveService] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
   
   const t = useMemo(() => translations[language], [language])
 
-  // Detect mobile
+  // Detect mobile OTTIMIZZATO
   React.useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 1024)
     checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
+    
+    let timeoutId: NodeJS.Timeout
+    const debouncedResize = () => {
+      clearTimeout(timeoutId)
+      timeoutId = setTimeout(checkMobile, 100)
+    }
+    
+    window.addEventListener('resize', debouncedResize)
+    return () => {
+      window.removeEventListener('resize', debouncedResize)
+      clearTimeout(timeoutId)
+    }
   }, [])
 
   const handleServiceClick = useCallback((index: number) => {
@@ -402,35 +452,35 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ language, inView = tr
   }, [])
 
   return (
-    <section id="services" className="py-16 lg:py-24 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 opacity-40 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-72 h-72 bg-green-200 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-blue-200 rounded-full blur-3xl"></div>
+    <section id="services" className="py-16 lg:py-20 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
+      {/* Background Elements OTTIMIZZATI */}
+      <div className="absolute inset-0 opacity-30 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-64 h-64 bg-green-200 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-blue-200 rounded-full blur-3xl"></div>
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
-        {/* Header */}
+        {/* Header OTTIMIZZATO */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16 lg:mb-20"
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12 lg:mb-16"
         >
-          <h2 className="text-3xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6">
+          <h2 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-4">
             <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
               {t.title}
             </span>
           </h2>
-          <p className="text-lg lg:text-xl xl:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             {t.subtitle}
           </p>
         </motion.div>
 
         {/* Content */}
         {isMobile ? (
-          /* Mobile Layout - Cards complete */
-          <div className="space-y-0">
+          /* Mobile Layout OTTIMIZZATO */
+          <div>
             {t.services.map((service, index) => (
               <MobileServiceCard
                 key={service.id}
@@ -442,15 +492,10 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ language, inView = tr
             ))}
           </div>
         ) : (
-          /* Desktop Layout */
-          <motion.div
-            variants={smoothVariants.container}
-            initial="hidden"
-            animate={inView ? "visible" : "hidden"}
-            className="grid lg:grid-cols-2 gap-12 items-start"
-          >
+          /* Desktop Layout OTTIMIZZATO */
+          <div className="grid lg:grid-cols-2 gap-10 items-start">
             {/* Service Cards */}
-            <div className="space-y-6">
+            <div className="space-y-5">
               {t.services.map((service, index) => (
                 <ServiceCard
                   key={service.id}
@@ -462,86 +507,88 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ language, inView = tr
               ))}
             </div>
 
-            {/* Details Panel */}
-            <div className="sticky top-24">
+            {/* Details Panel ULTRA OTTIMIZZATO */}
+            <div className="sticky top-20">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeService}
-                  variants={smoothVariants.detailsPanel}
+                  variants={optimizedVariants.detailsPanel}
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="bg-white rounded-3xl shadow-2xl p-8 xl:p-10 border border-gray-100"
+                  className="bg-white rounded-2xl shadow-xl p-6 xl:p-8 border border-gray-100"
+                  style={{ willChange: 'transform, opacity' }}
                 >
                   {/* Header */}
-                  <div className="flex items-center space-x-4 mb-8">
-                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${t.services[activeService].color} flex items-center justify-center text-3xl shadow-lg`}>
+                  <div className="flex items-center space-x-4 mb-6">
+                    <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${t.services[activeService].color} flex items-center justify-center text-2xl shadow-lg`}>
                       {t.services[activeService].icon}
                     </div>
                     <div>
-                      <h3 className="text-2xl xl:text-3xl font-bold text-gray-900">
+                      <h3 className="text-xl xl:text-2xl font-bold text-gray-900">
                         {t.services[activeService].title}
                       </h3>
-                      <p className="text-gray-600">{t.services[activeService].shortDesc}</p>
+                      <p className="text-gray-600 text-sm">{t.services[activeService].shortDesc}</p>
                     </div>
                   </div>
 
                   {/* Description */}
-                  <div className="mb-8">
-                    <p className="text-lg text-gray-700 leading-relaxed mb-4">
+                  <div className="mb-6">
+                    <p className="text-gray-700 leading-relaxed mb-3 text-sm lg:text-base">
                       {t.services[activeService].description}
                     </p>
-                    <p className="text-gray-600 leading-relaxed">
+                    <p className="text-gray-600 leading-relaxed text-sm">
                       {t.services[activeService].longDescription}
                     </p>
                   </div>
 
-                  {/* Features */}
-                  <div className="mb-8">
-                    <h4 className="text-xl font-semibold text-gray-900 mb-6">{t.whatWeOffer}</h4>
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                  {/* Features OTTIMIZZATE */}
+                  <div className="mb-6">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-4">{t.whatWeOffer}</h4>
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
                       {t.services[activeService].features.map((feature: any, index: number) => (
                         <motion.div
                           key={index}
                           initial="hidden"
                           animate="visible"
-                          variants={smoothVariants.feature}
-                          transition={{ delay: index * 0.05 }}
-                          className={`flex items-start space-x-3 p-4 rounded-2xl ${t.services[activeService].bgColor} border border-gray-100 hover:shadow-md transition-shadow duration-200`}
+                          variants={optimizedVariants.feature}
+                          transition={{ delay: index * 0.03 }}
+                          className={`flex items-start space-x-3 p-3 rounded-xl ${t.services[activeService].bgColor} border border-gray-100 hover:shadow-sm transition-shadow duration-150`}
                         >
-                          <div className="text-2xl flex-shrink-0">{feature.icon}</div>
+                          <div className="text-xl flex-shrink-0">{feature.icon}</div>
                           <div>
-                            <h5 className={`font-semibold ${t.services[activeService].textColor} mb-1`}>
+                            <h5 className={`font-medium ${t.services[activeService].textColor} mb-1 text-sm`}>
                               {feature.title}
                             </h5>
-                            <p className="text-gray-600 text-sm">{feature.desc}</p>
+                            <p className="text-gray-600 text-xs leading-relaxed">{feature.desc}</p>
                           </div>
                         </motion.div>
                       ))}
                     </div>
                   </div>
 
-                  {/* Stats */}
-                  <div className="grid grid-cols-3 gap-6">
+                  {/* Stats OTTIMIZZATE */}
+                  <div className="grid grid-cols-3 gap-4">
                     {t.services[activeService].stats.map((stat: any, index: number) => (
                       <motion.div
                         key={index}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.2 + index * 0.1 }}
-                        className="text-center p-4 bg-gray-50 rounded-2xl"
+                        initial="hidden"
+                        animate="visible"
+                        variants={optimizedVariants.stat}
+                        transition={{ delay: 0.1 + index * 0.05 }}
+                        className="text-center p-3 bg-gray-50 rounded-xl"
                       >
-                        <div className={`text-3xl font-bold bg-gradient-to-r ${t.services[activeService].color} bg-clip-text text-transparent`}>
+                        <div className={`text-2xl font-bold bg-gradient-to-r ${t.services[activeService].color} bg-clip-text text-transparent`}>
                           {stat.value}
                         </div>
-                        <div className="text-sm text-gray-600 mt-1">{stat.label}</div>
+                        <div className="text-xs text-gray-600 mt-1 leading-tight">{stat.label}</div>
                       </motion.div>
                     ))}
                   </div>
                 </motion.div>
               </AnimatePresence>
             </div>
-          </motion.div>
+          </div>
         )}
       </div>
     </section>

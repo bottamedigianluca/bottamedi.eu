@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 
 interface HeroSectionProps {
   language: 'it' | 'de'
@@ -33,53 +33,144 @@ const translations = {
   }
 }
 
-const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
-  const ref = useRef<HTMLDivElement>(null)
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const { scrollY } = useScroll()
-  
-  const t = translations[language]
-  
-  // Parallax leggero per performance
-  const y = useTransform(scrollY, [0, 800], [0, 100])
-  const opacity = useTransform(scrollY, [0, 600], [1, 0.3])
-
-  // Hook per animazione counter
-  const [count, setCount] = React.useState(0)
-
-  React.useEffect(() => {
-    if (inView) {
-      let startTime: number
-      const animate = (currentTime: number) => {
-        if (!startTime) startTime = currentTime
-        const progress = Math.min((currentTime - startTime) / 2000, 1)
-        
-        const easeOutQuart = 1 - Math.pow(1 - progress, 4)
-        const currentValue = easeOutQuart * t.yearsCount
-        
-        setCount(Math.floor(currentValue))
-
-        if (progress < 1) {
-          requestAnimationFrame(animate)
-        } else {
-          setCount(t.yearsCount)
-        }
-      }
-
-      requestAnimationFrame(animate)
-    }
-  }, [inView, t.yearsCount])
+// 🚀 PERFORMANCE: Memoized Counter Hook con requestAnimationFrame
+const useOptimizedCounter = (endValue: number, inView: boolean, duration: number = 2000) => {
+  const [count, setCount] = useState(0)
+  const animationRef = useRef<number>()
+  const startTimeRef = useRef<number>()
 
   useEffect(() => {
-    if (inView && videoRef.current) {
-      videoRef.current.play().catch(() => {
-        console.log('Autoplay failed')
-      })
+    if (!inView) return
+
+    const animate = (currentTime: number) => {
+      if (!startTimeRef.current) startTimeRef.current = currentTime
+      const progress = Math.min((currentTime - startTimeRef.current) / duration, 1)
+      
+      // Easing function ottimizzata
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4)
+      const currentValue = easeOutQuart * endValue
+      
+      setCount(Math.floor(currentValue))
+
+      if (progress < 1) {
+        animationRef.current = requestAnimationFrame(animate)
+      } else {
+        setCount(endValue)
+      }
+    }
+
+    animationRef.current = requestAnimationFrame(animate)
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+    }
+  }, [inView, endValue, duration])
+
+  return count
+}
+
+// 🎬 PERFORMANCE: Memoized Video Component
+const OptimizedVideoBackground: React.FC<{ inView: boolean }> = React.memo(({ inView }) => {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const [videoLoaded, setVideoLoaded] = useState(false)
+  const [videoError, setVideoError] = useState(false)
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || !inView) return
+
+    const playVideo = async () => {
+      try {
+        await video.play()
+        console.log('📹 Video playing')
+      } catch (error) {
+        console.warn('📹 Video autoplay failed:', error)
+        setVideoError(true)
+      }
+    }
+
+    if (video.readyState >= 2) {
+      playVideo()
+    } else {
+      video.addEventListener('loadeddata', playVideo, { once: true })
+    }
+
+    return () => {
+      video.removeEventListener('loadeddata', playVideo)
     }
   }, [inView])
 
-  // Funzioni CTA con sezioni corrette
-  const handleCTAClick = (type: 'dettaglio' | 'services' | 'about') => {
+  const handleLoadedData = useCallback(() => {
+    setVideoLoaded(true)
+  }, [])
+
+  const handleError = useCallback(() => {
+    setVideoError(true)
+    console.warn('📹 Video failed to load')
+  }, [])
+
+  // Fallback per dispositivi che non supportano il video
+  if (videoError) {
+    return (
+      <div 
+        className="w-full h-full bg-gradient-to-br from-green-600 via-green-500 to-green-700"
+        style={{
+          backgroundImage: 'url(/images/poster.webp)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      />
+    )
+  }
+
+  return (
+    <>
+      {/* Loading placeholder */}
+      {!videoLoaded && (
+        <div className="absolute inset-0 bg-gradient-to-br from-green-600 via-green-500 to-green-700 animate-pulse" />
+      )}
+      
+      <video
+        ref={videoRef}
+        className={`w-full h-full object-cover transition-opacity duration-500 ${
+          videoLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        poster="/images/poster.webp"
+        onLoadedData={handleLoadedData}
+        onError={handleError}
+        style={{ willChange: 'opacity' }}
+      >
+        <source src="/videos/hero-video-verdure-rotanti.mp4" type="video/mp4" />
+      </video>
+    </>
+  )
+})
+
+OptimizedVideoBackground.displayName = 'OptimizedVideoBackground'
+
+const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
+  const ref = useRef<HTMLDivElement>(null)
+  const { scrollY } = useScroll()
+  const shouldReduceMotion = useReducedMotion()
+  
+  const t = useMemo(() => translations[language], [language])
+  
+  // 🚀 PERFORMANCE: Parallax ottimizzato con range limitato
+  const y = useTransform(scrollY, [0, 800], [0, shouldReduceMotion ? 0 : 60])
+  const opacity = useTransform(scrollY, [0, 600], [1, 0.4])
+
+  // 📊 Counter animato ottimizzato
+  const count = useOptimizedCounter(t.yearsCount, inView, 2000)
+
+  // 🎯 PERFORMANCE: Memoized click handlers
+  const handleCTAClick = useCallback((type: 'dettaglio' | 'services' | 'about') => {
     const sectionMap = {
       dettaglio: 'dettaglio',
       services: 'services',
@@ -90,51 +181,76 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
     }
-  }
+
+    // 🎯 Haptic feedback ottimizzato
+    if ('vibrate' in navigator) {
+      try {
+        navigator.vibrate(25)
+      } catch (e) {
+        console.log('Haptic non disponibile')
+      }
+    }
+  }, [])
+
+  // 🎨 PERFORMANCE: Memoized animation variants
+  const animationVariants = useMemo(() => ({
+    initial: { opacity: 0, y: shouldReduceMotion ? 0 : 40 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: shouldReduceMotion ? 0.1 : 0.8, ease: "easeOut" }
+  }), [shouldReduceMotion])
+
+  const titleVariants = useMemo(() => ({
+    initial: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
+    animate: { opacity: 1, y: 0 },
+    transition: { delay: shouldReduceMotion ? 0 : 0.4, duration: shouldReduceMotion ? 0.1 : 0.6 }
+  }), [shouldReduceMotion])
+
+  const subtitleVariants = useMemo(() => ({
+    initial: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { delay: shouldReduceMotion ? 0 : 0.6, duration: shouldReduceMotion ? 0.1 : 0.5 }
+  }), [shouldReduceMotion])
+
+  // 🎨 CTAs memoizzati per performance
+  const ctaButtons = useMemo(() => [
+    { type: 'dettaglio' as const, label: t.cta1, icon: '🛒', gradient: 'from-green-500 to-green-600' },
+    { type: 'services' as const, label: t.cta2, icon: '🚛', gradient: 'from-blue-500 to-blue-600' },
+    { type: 'about' as const, label: t.cta3, icon: '🌱', gradient: 'from-gray-500 to-gray-600' }
+  ], [t])
 
   return (
     <section
       id="hero"
       ref={ref}
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      style={{ willChange: 'transform' }}
     >
-      {/* Background Video ottimizzato */}
+      {/* 🎬 Background Video Ottimizzato */}
       <div className="absolute inset-0 w-full h-full">
-        <video
-          ref={videoRef}
-          className="w-full h-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          poster="/images/poster.webp"
-        >
-          <source src="/videos/hero-video-verdure-rotanti.mp4" type="video/mp4" />
-        </video>
+        <OptimizedVideoBackground inView={inView} />
         
-        {/* Overlay semplificato */}
+        {/* Overlay ottimizzato con gradients ridotti */}
         <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/30 to-black/60" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
       </div>
 
-      {/* Content ottimizzato e centrato */}
+      {/* 📱 Content ottimizzato e centrato */}
       <motion.div
         style={{ y, opacity }}
         className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto"
       >
-        {/* Header - Logo Grande a Sinistra */}
+        {/* 🏆 Header ottimizzato */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          initial={animationVariants.initial}
+          animate={animationVariants.animate}
+          transition={animationVariants.transition}
           className="mb-8"
         >
-          {/* Titolo principale senza logo centrale */}
+          {/* Titolo principale ottimizzato */}
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
+            initial={titleVariants.initial}
+            animate={titleVariants.animate}
+            transition={titleVariants.transition}
             className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-4 text-center"
             style={{
               fontFamily: "'Playfair Display', serif",
@@ -142,32 +258,34 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.4))'
+              filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.4))',
+              willChange: 'transform'
             }}
           >
             {t.title}
           </motion.h1>
           
-          {/* Sottotitolo */}
+          {/* Sottotitolo ottimizzato */}
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
+            initial={subtitleVariants.initial}
+            animate={subtitleVariants.animate}
+            transition={subtitleVariants.transition}
             className="text-xl md:text-2xl lg:text-3xl text-white/95 font-light tracking-wide mb-2 text-center"
             style={{ 
               fontFamily: "'Playfair Display', serif",
-              textShadow: '0 2px 8px rgba(0,0,0,0.5)'
+              textShadow: '0 2px 8px rgba(0,0,0,0.5)',
+              willChange: 'transform'
             }}
           >
             {t.subtitle}
           </motion.h2>
         </motion.div>
 
-        {/* Slogan più Umile e Catchy */}
+        {/* 🏷️ Slogan ottimizzato */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
+          transition={{ delay: shouldReduceMotion ? 0 : 0.8, duration: shouldReduceMotion ? 0.1 : 0.5 }}
           className="mb-8 text-center"
         >
           <motion.p 
@@ -183,24 +301,25 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
             {t.tagline2}
           </motion.p>
           
-          {/* Badge Da oltre 50 anni con counter animato */}
+          {/* 🎯 Badge con counter animato ottimizzato */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1, duration: 0.4 }}
+            transition={{ delay: shouldReduceMotion ? 0 : 1, duration: shouldReduceMotion ? 0.1 : 0.4 }}
             className="flex justify-center mt-4"
           >
             <motion.div 
               className="inline-flex items-center space-x-2 bg-gradient-to-r from-emerald-500/20 to-green-500/20 backdrop-blur-md border border-white/30 rounded-full px-6 py-3 text-white font-semibold shadow-lg"
-              whileHover={{ scale: 1.05 }}
+              whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
+              style={{ willChange: 'transform' }}
             >
               <motion.span 
                 className="text-xl"
-                animate={{ 
+                animate={shouldReduceMotion ? {} : { 
                   rotate: [0, 10, -10, 0],
                   scale: [1, 1.1, 1]
                 }}
-                transition={{ 
+                transition={shouldReduceMotion ? {} : { 
                   duration: 3, 
                   repeat: Infinity, 
                   ease: "easeInOut" 
@@ -212,7 +331,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
                 <span>{t.since}</span>
                 <motion.span 
                   key={count}
-                  initial={{ scale: 1.2, opacity: 0.8 }}
+                  initial={{ scale: shouldReduceMotion ? 1 : 1.2, opacity: 0.8 }}
                   animate={{ scale: 1, opacity: 1 }}
                   className="font-bold text-lg"
                 >
@@ -224,147 +343,90 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
           </motion.div>
         </motion.div>
 
-        {/* CTA Buttons - Tutti e 3 Visibili, Simmetrici e Ben Proporzionati */}
+        {/* 🎯 CTA Buttons Ottimizzati */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.6 }}
+          transition={{ delay: shouldReduceMotion ? 0 : 1.2, duration: shouldReduceMotion ? 0.1 : 0.6 }}
           className="flex flex-col items-center space-y-6"
         >
-          {/* Mobile Layout - Stack Verticale */}
+          {/* 📱 Mobile Layout ottimizzato */}
           <div className="flex flex-col md:hidden space-y-3 w-full max-w-xs mx-auto">
-            <motion.button
-              onClick={() => handleCTAClick('dettaglio')}
-              whileHover={{ scale: 1.05, y: -3 }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.4, duration: 0.5 }}
-              className="group relative bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl font-bold text-base shadow-xl hover:shadow-green-500/25 transition-all duration-300 flex items-center justify-center space-x-2 w-full"
-            >
-              <span className="text-lg">🛒</span>
-              <span>{t.cta1}</span>
-            </motion.button>
-
-            <motion.button
-              onClick={() => handleCTAClick('services')}
-              whileHover={{ scale: 1.05, y: -3 }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.5, duration: 0.5 }}
-              className="group relative bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-bold text-base shadow-xl hover:shadow-blue-500/25 transition-all duration-300 flex items-center justify-center space-x-2 w-full"
-            >
-              <span className="text-lg">🚛</span>
-              <span>{t.cta2}</span>
-            </motion.button>
-
-            <motion.button
-              onClick={() => handleCTAClick('about')}
-              whileHover={{ scale: 1.05, y: -3 }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.6, duration: 0.5 }}
-              className="group relative border-2 border-white/50 text-white px-6 py-3 rounded-xl font-bold text-base backdrop-blur-md hover:bg-white/10 hover:border-white/70 transition-all duration-300 flex items-center justify-center space-x-2 w-full"
-            >
-              <span className="text-lg">🌱</span>
-              <span>{t.cta3}</span>
-            </motion.button>
+            {ctaButtons.map((button, index) => (
+              <motion.button
+                key={button.type}
+                onClick={() => handleCTAClick(button.type)}
+                whileHover={shouldReduceMotion ? {} : { scale: 1.05, y: -3 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: shouldReduceMotion ? 0 : 1.4 + index * 0.1, duration: shouldReduceMotion ? 0.1 : 0.5 }}
+                className={`group relative bg-gradient-to-r ${
+                  button.type === 'about' 
+                    ? 'border-2 border-white/50 text-white backdrop-blur-md hover:bg-white/10 hover:border-white/70' 
+                    : `${button.gradient} text-white shadow-xl`
+                } px-6 py-3 rounded-xl font-bold text-base transition-all duration-300 flex items-center justify-center space-x-2 w-full`}
+                style={{ willChange: 'transform' }}
+              >
+                <span className="text-lg">{button.icon}</span>
+                <span>{button.label}</span>
+              </motion.button>
+            ))}
           </div>
 
-          {/* Desktop Layout - 3 Bottoni Simmetrici Affiancati */}
+          {/* 🖥️ Desktop Layout ottimizzato */}
           <div className="hidden md:flex items-center justify-center space-x-4 lg:space-x-6">
-            <motion.button
-              onClick={() => handleCTAClick('dettaglio')}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.3, duration: 0.5 }}
-              whileHover={{ scale: 1.05, y: -4 }}
-              whileTap={{ scale: 0.95 }}
-              className="group relative bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 lg:px-8 lg:py-4 rounded-xl font-bold text-sm lg:text-base shadow-xl hover:shadow-xl hover:shadow-green-500/25 transition-all duration-300 flex items-center space-x-2 min-w-[140px] lg:min-w-[160px] justify-center"
-            >
-              <span className="text-lg lg:text-xl">🛒</span>
-              <span>{t.cta1}</span>
-            </motion.button>
-
-            <motion.button
-              onClick={() => handleCTAClick('services')}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.4, duration: 0.5 }}
-              whileHover={{ scale: 1.05, y: -4 }}
-              whileTap={{ scale: 0.95 }}
-              className="group relative bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 lg:px-8 lg:py-4 rounded-xl font-bold text-sm lg:text-base shadow-xl hover:shadow-xl hover:shadow-blue-500/25 transition-all duration-300 flex items-center space-x-2 min-w-[140px] lg:min-w-[160px] justify-center"
-            >
-              <span className="text-lg lg:text-xl">🚛</span>
-              <span>{t.cta2}</span>
-            </motion.button>
-
-            <motion.button
-              onClick={() => handleCTAClick('about')}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.5, duration: 0.5 }}
-              whileHover={{ scale: 1.05, y: -4 }}
-              whileTap={{ scale: 0.95 }}
-              className="group relative border-2 border-white/40 text-white px-6 py-3 lg:px-8 lg:py-4 rounded-xl font-bold text-sm lg:text-base backdrop-blur-md hover:bg-white/10 hover:border-white/60 transition-all duration-300 flex items-center space-x-2 min-w-[140px] lg:min-w-[160px] justify-center"
-            >
-              <span className="text-lg lg:text-xl">🌱</span>
-              <span>{t.cta3}</span>
-            </motion.button>
+            {ctaButtons.map((button, index) => (
+              <motion.button
+                key={button.type}
+                onClick={() => handleCTAClick(button.type)}
+                initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: shouldReduceMotion ? 0 : 1.3 + index * 0.1, duration: shouldReduceMotion ? 0.1 : 0.5 }}
+                whileHover={shouldReduceMotion ? {} : { scale: 1.05, y: -4 }}
+                whileTap={{ scale: 0.95 }}
+                className={`group relative ${
+                  button.type === 'about'
+                    ? 'border-2 border-white/40 text-white backdrop-blur-md hover:bg-white/10 hover:border-white/60'
+                    : `bg-gradient-to-r ${button.gradient} text-white shadow-xl hover:shadow-xl`
+                } px-6 py-3 lg:px-8 lg:py-4 rounded-xl font-bold text-sm lg:text-base transition-all duration-300 flex items-center space-x-2 min-w-[140px] lg:min-w-[160px] justify-center`}
+                style={{ willChange: 'transform' }}
+              >
+                <span className="text-lg lg:text-xl">{button.icon}</span>
+                <span>{button.label}</span>
+              </motion.button>
+            ))}
           </div>
 
-          {/* Scroll Indicator - Moderno */}
+          {/* 📍 Scroll Indicator ottimizzato */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 2, duration: 0.6 }}
+            transition={{ delay: shouldReduceMotion ? 0 : 2, duration: shouldReduceMotion ? 0.1 : 0.6 }}
             className="text-center mt-6 md:mt-8"
           >
             <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              animate={shouldReduceMotion ? {} : { y: [0, 8, 0] }}
+              transition={shouldReduceMotion ? {} : { duration: 2, repeat: Infinity, ease: "easeInOut" }}
               className="text-white/80 flex flex-col items-center space-y-3"
             >
-              {/* Icona moderna a tre puntini */}
+              {/* Icona scroll ottimizzata */}
               <div className="flex flex-col space-y-1">
-                <motion.div 
-                  className="w-1 h-1 bg-white/60 rounded-full mx-auto"
-                  animate={{ 
-                    opacity: [0.4, 1, 0.4],
-                    scale: [1, 1.2, 1] 
-                  }}
-                  transition={{ 
-                    duration: 1.5, 
-                    repeat: Infinity, 
-                    delay: 0 
-                  }}
-                />
-                <motion.div 
-                  className="w-1 h-1 bg-white/80 rounded-full mx-auto"
-                  animate={{ 
-                    opacity: [0.4, 1, 0.4],
-                    scale: [1, 1.2, 1] 
-                  }}
-                  transition={{ 
-                    duration: 1.5, 
-                    repeat: Infinity, 
-                    delay: 0.2 
-                  }}
-                />
-                <motion.div 
-                  className="w-1 h-1 bg-white rounded-full mx-auto"
-                  animate={{ 
-                    opacity: [0.4, 1, 0.4],
-                    scale: [1, 1.2, 1] 
-                  }}
-                  transition={{ 
-                    duration: 1.5, 
-                    repeat: Infinity, 
-                    delay: 0.4 
-                  }}
-                />
+                {[0, 0.2, 0.4].map((delay, index) => (
+                  <motion.div 
+                    key={index}
+                    className="w-1 h-1 bg-white/60 rounded-full mx-auto"
+                    animate={shouldReduceMotion ? {} : { 
+                      opacity: [0.4, 1, 0.4],
+                      scale: [1, 1.2, 1] 
+                    }}
+                    transition={shouldReduceMotion ? {} : { 
+                      duration: 1.5, 
+                      repeat: Infinity, 
+                      delay 
+                    }}
+                  />
+                ))}
               </div>
               <div className="text-xs hidden md:block font-medium opacity-80">
                 Scorri per scoprire di più
@@ -374,11 +436,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
         </motion.div>
       </motion.div>
 
-      {/* Elementi decorativi ridotti */}
+      {/* 🎨 Elementi decorativi ridotti per performance */}
       <div className="absolute top-1/4 left-0 w-48 h-48 bg-green-500/5 rounded-full blur-2xl opacity-50"></div>
       <div className="absolute bottom-1/4 right-0 w-48 h-48 bg-amber-400/5 rounded-full blur-2xl opacity-50"></div>
     </section>
   )
 }
 
-export default HeroSection
+export default React.memo(HeroSection)

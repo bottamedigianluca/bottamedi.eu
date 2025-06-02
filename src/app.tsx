@@ -141,7 +141,7 @@ const PremiumGlobalStyles: React.FC = () => {
         transform: scale(0.98) !important;
       }
 
-      /* 📱 MOBILE OPTIMIZATION AVANZATA */
+      /* 📱 MOBILE OPTIMIZATION PULITA */
       @media (max-width: 767px) {
         * {
           -webkit-tap-highlight-color: transparent;
@@ -162,16 +162,7 @@ const PremiumGlobalStyles: React.FC = () => {
         
         body {
           overscroll-behavior: contain;
-          /* IMPORTANTE: Assicura spazio per il dock */
           padding-bottom: env(safe-area-inset-bottom, 0);
-        }
-
-        /* FORCE DOCK VISIBILITY */
-        #mobile-dock-root {
-          display: block !important;
-          visibility: visible !important;
-          opacity: 1 !important;
-          pointer-events: auto !important;
         }
       }
 
@@ -209,7 +200,7 @@ const PremiumGlobalStyles: React.FC = () => {
         border: 1px solid rgba(255, 255, 255, 0.18) !important;
       }
 
-      /* 📱 MOBILE DOCK GARANTITO SEMPRE VISIBILE */
+      /* 📱 MOBILE DOCK DISCRETO E NATURALE */
       .dock-container {
         position: fixed !important;
         z-index: 999999 !important;
@@ -217,18 +208,6 @@ const PremiumGlobalStyles: React.FC = () => {
         bottom: 0 !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
-        /* FORCE VISIBILITY */
-        display: flex !important;
-        visibility: visible !important;
-      }
-
-      /* ASSICURA CHE IL DOCK NON SIA MAI NASCOSTO */
-      @media (max-width: 767px) {
-        .dock-container {
-          display: flex !important;
-          visibility: visible !important;
-          opacity: 1 !important;
-        }
       }
 
       /* NASCONDE SU DESKTOP */

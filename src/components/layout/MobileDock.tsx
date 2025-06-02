@@ -65,7 +65,7 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // 🧠 SMART DETECTION OTTIMIZZATO - Più affidabile e responsivo
+  // 🧠 SMART DETECTION OTTIMIZZATO - Più discreto e meno invadente
   useEffect(() => {
     if (!isMobile || !isReady) return
 
@@ -85,49 +85,44 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
       setLastScrollY(currentScrollY)
       setScrollDirection(direction)
 
-      // 🎯 LOGICA SEMPLIFICATA E PIÙ AFFIDABILE
+      // 🎯 LOGICA PIÙ DISCRETA - Solo quando davvero necessario
       
-      // 1. Ha scrollato abbastanza (ridotto per essere più reattivo)
-      const hasSeenContent = currentScrollY > windowHeight * 0.2
+      // 1. Ha scrollato parecchio (più alto threshold)
+      const hasScrolledSignificantly = currentScrollY > windowHeight * 0.5
       
       // 2. Non è troppo in fondo
-      const notAtBottom = currentScrollY < documentHeight - windowHeight - 200
+      const notAtBottom = currentScrollY < documentHeight - windowHeight - 300
       
-      // 3. Comportamento di ricerca rapida
+      // 3. Comportamento di ricerca più evidente
       clearTimeout(scrollSpeedTimer)
       rapidScrollCount++
       scrollSpeedTimer = setTimeout(() => {
         if (mounted) rapidScrollCount = 0
-      }, 800)
+      }, 1000)
       
-      const isSearchingBehavior = rapidScrollCount > 2
+      const isActivelySearching = rapidScrollCount > 4 // Soglia più alta
       
-      // 4. Pausa per riflettere (ridotto tempo)
+      // 4. Pausa più lunga per essere sicuri che serve
       clearTimeout(scrollTimeout)
       scrollTimeout = setTimeout(() => {
-        if (mounted && hasSeenContent && notAtBottom) {
+        if (mounted && hasScrolledSignificantly && notAtBottom) {
           setIsUserLookingForHelp(true)
         }
-      }, 1500)
+      }, 3000) // 3 secondi invece di 1.5
       
-      // 5. Attivazione immediata con comportamento di ricerca
-      if (isSearchingBehavior && hasSeenContent && notAtBottom) {
+      // 5. Solo con comportamento di ricerca molto evidente
+      if (isActivelySearching && hasScrolledSignificantly && notAtBottom) {
         setIsUserLookingForHelp(true)
       }
       
-      // Reset condizioni
-      if (!hasSeenContent || !notAtBottom) {
+      // Reset se in cima o in fondo
+      if (currentScrollY < windowHeight * 0.3 || !notAtBottom) {
         setIsUserLookingForHelp(false)
       }
     }
 
-    // INIZIALIZZAZIONE IMMEDIATA - Mostra dock dopo breve delay iniziale
-    const initTimeout = setTimeout(() => {
-      if (mounted && window.scrollY > 100) {
-        setIsUserLookingForHelp(true)
-      }
-    }, 2000)
-
+    // NESSUNA INIZIALIZZAZIONE AUTOMATICA - Solo su richiesta utente
+    
     window.addEventListener('scroll', handleScroll, { passive: true })
     
     return () => {
@@ -135,13 +130,13 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
       window.removeEventListener('scroll', handleScroll)
       clearTimeout(scrollTimeout)
       clearTimeout(scrollSpeedTimer)
-      clearTimeout(initTimeout)
     }
   }, [lastScrollY, isMobile, isReady])
 
-  // 👁️ VISIBILITY LOGIC MIGLIORATA
+  // 👁️ VISIBILITY LOGIC PIÙ RIGOROSA
   useEffect(() => {
     if (!isMobile) return
+    // Solo quando scrolling up E l'utente cerca aiuto attivamente
     setIsVisible(isUserLookingForHelp && scrollDirection === 'up')
   }, [isUserLookingForHelp, scrollDirection, isMobile])
 

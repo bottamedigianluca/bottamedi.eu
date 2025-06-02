@@ -1,4 +1,51 @@
-longDescription: 'Collaboriamo direttamente con i migliori agricoltori del territorio per offrire verdure di stagione sempre fresche e saporite. I nostri famosi pomodori cuore di bue, le zucche di Mantova, i cavoli verza del Trentino e tutte le verdure a foglia verde vengono selezionate una per una. Privilegiamo sempre i prodotti a chilometro zero quando possibile, per ridurre l\'impatto ambientale e garantire la massima freschezza.',
+import React, { useState, useCallback, useMemo } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useInView } from 'react-intersection-observer'
+
+interface ProductsSectionProps {
+  language: 'it' | 'de'
+  inView: boolean
+}
+
+const translations = {
+  it: {
+    title: 'I Nostri Prodotti',
+    subtitle: 'Oltre 150 varietà di frutta e verdura fresca selezionata ogni giorno',
+    categories: [
+      {
+        id: 'fruits',
+        title: 'Frutta Fresca',
+        shortDesc: 'Varietà di stagione dal Trentino e oltre',
+        description: 'La nostra frutta viene selezionata alle prime ore del mattino dai migliori produttori del Trentino Alto Adige e da fornitori selezionati in tutta Italia.',
+        longDescription: 'Ogni giorno iniziamo la nostra giornata controllando personalmente ogni cassetta di frutta che arriva al nostro deposito. Dalle famose mele Melinda del Trentino agli agrumi siciliani, dalla frutta esotica di stagione ai piccoli frutti di montagna, garantiamo sempre la massima freschezza e qualità. La nostra esperienza di 50 anni ci permette di selezionare solo i prodotti migliori per i nostri clienti.',
+        icon: '🍎',
+        color: 'from-red-500 to-orange-500',
+        image: '/images/melinda_golden.webp',
+        products: [
+          { name: 'Mele Melinda DOP', season: 'Tutto l\'anno', origin: 'Val di Non' },
+          { name: 'Kiwi Gold Premium', season: 'Ott-Apr', origin: 'Trentino' },
+          { name: 'Pesche & Albicocche', season: 'Giu-Set', origin: 'Emilia Romagna' },
+          { name: 'Uva da tavola Italia', season: 'Ago-Nov', origin: 'Puglia/Sicilia' },
+          { name: 'Agrumi Premium', season: 'Nov-Apr', origin: 'Sicilia/Calabria' },
+          { name: 'Frutti di bosco', season: 'Mag-Set', origin: 'Val di Sole' },
+          { name: 'Pere Williams', season: 'Lug-Ott', origin: 'Val di Non' },
+          { name: 'Fragole di montagna', season: 'Mar-Giu', origin: 'Altopiani trentini' },
+          { name: 'Susine Regina Claudia', season: 'Lug-Set', origin: 'Trentino' },
+          { name: 'Ciliegie Duroni', season: 'Mag-Lug', origin: 'Vignola/Trentino' }
+        ],
+        features: [
+          { icon: '🌅', title: 'Selezione Mattutina', desc: 'Controllo qualità alle prime ore' },
+          { icon: '❄️', title: 'Catena del Freddo', desc: 'Conservazione ottimale garantita' },
+          { icon: '🏔️', title: 'Prodotti Alpini', desc: 'Specialità del territorio trentino' },
+          { icon: '📦', title: 'Packaging Curato', desc: 'Confezionamento per preservare la freschezza' }
+        ]
+      },
+      {
+        id: 'vegetables',
+        title: 'Verdure Fresche',
+        shortDesc: 'Dal campo alla tavola in 24 ore',
+        description: 'Le nostre verdure arrivano direttamente dai campi del Trentino Alto Adige e del Veneto, garantendo freschezza e sapore autentici.',
+        longDescription: 'Collaboriamo direttamente con i migliori agricoltori del territorio per offrire verdure di stagione sempre fresche e saporite. I nostri famosi pomodori cuore di bue, le zucche di Mantova, i cavoli verza del Trentino e tutte le verdure a foglia verde vengono selezionate una per una. Privilegiamo sempre i prodotti a chilometro zero quando possibile, per ridurre l\'impatto ambientale e garantire la massima freschezza.',
         icon: '🥬',
         color: 'from-green-500 to-emerald-500',
         image: '/images/pomodori_cuore_bue.webp',
@@ -35,7 +82,7 @@ longDescription: 'Collaboriamo direttamente con i migliori agricoltori del terri
           { name: 'Pere Williams', season: 'Ago-Nov', origin: 'Val di Non' },
           { name: 'Piccoli Frutti', season: 'Giu-Set', origin: 'Val di Sole' },
           { name: 'Erbe Aromatiche Alpine', season: 'Mar-Set', origin: 'Altopiani' },
-          { name: 'Castagne', season: 'Set-Nov', origin: 'Pochi' },
+          { name: 'Castagne', season: 'Set-Nov', origin: 'Valsugana' },
           { name: 'Noci della Valle', season: 'Set-Mar', origin: 'Valle dell\'Adige' },
           { name: 'Funghi Porcini', season: 'Set-Nov', origin: 'Boschi trentini' },
           { name: 'Mirtilli di montagna', season: 'Lug-Set', origin: 'Sopra i 1000m' },
@@ -97,7 +144,7 @@ longDescription: 'Collaboriamo direttamente con i migliori agricoltori del terri
           { name: 'Mantua Kürbisse', season: 'Sep-Feb', origin: 'Lombardei' },
           { name: 'Gemischte Salate', season: 'Ganzjährig', origin: 'Venetien' },
           { name: 'Kohl und Wirsing', season: 'Okt-Mär', origin: 'Südtirol' },
-          { name: 'Weißer Spargel', season: 'Mär-Jun', origin: 'Zambana' },
+          { name: 'Weißer Spargel', season: 'Mär-Jun', origin: 'Zambana/Lungo Adige' },
           { name: 'Treviso Radicchio', season: 'Nov-Feb', origin: 'Venetien' },
           { name: 'Bergkartoffeln', season: 'Aug-Mär', origin: 'Südtiroler Hochebenen' },
           { name: 'Violette Auberginen', season: 'Jun-Sep', origin: 'Südtirol/Venetien' },
@@ -515,51 +562,141 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ language, inView }) =
                 </p>
               </div>
 
-              {/* Products Grid */import React, { useState, useCallback, useMemo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useInView } from 'react-intersection-observer'
+              {/* Products Grid */}
+              <div className="mb-6">
+                <h4 className="text-xl font-semibold text-gray-900 mb-5">La nostra selezione:</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {t.categories[activeCategory].products.map((product: any, index: number) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2, delay: index * 0.03 }}
+                      className="bg-gray-50 rounded-xl p-3 hover:bg-gray-100 transition-colors duration-150"
+                    >
+                      <h5 className="font-semibold text-gray-900 mb-1 text-sm">{product.name}</h5>
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-gray-600">{product.origin}</span>
+                        <span className="bg-white text-gray-700 px-2 py-1 rounded-full">
+                          {product.season}
+                        </span>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
 
-interface ProductsSectionProps {
-  language: 'it' | 'de'
-  inView: boolean
+              {/* Features */}
+              <div>
+                <h4 className="text-xl font-semibold text-gray-900 mb-5">I nostri plus:</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {t.categories[activeCategory].features.map((feature: any, index: number) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                      className="flex items-start space-x-3 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-150"
+                    >
+                      <div className="text-2xl">{feature.icon}</div>
+                      <div>
+                        <h5 className="font-semibold text-gray-900 mb-1">{feature.title}</h5>
+                        <p className="text-gray-600 text-sm">{feature.desc}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* CTA Section OTTIMIZZATA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="text-center bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl p-8 lg:p-12 mt-16"
+        >
+          <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
+            Vieni a Scoprire la Qualità Bottamedi
+          </h3>
+          <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
+            Visita il nostro banchetto in Via Cavalleggeri Udine a Mezzolombardo e lasciati guidare dalla nostra esperienza di 50 anni nella selezione dei prodotti migliori.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <motion.button
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => {
+                const element = document.getElementById('dettaglio')
+                if (element) {
+                  const offset = 80
+                  const elementPosition = element.offsetTop - offset
+                  window.scrollTo({
+                    top: Math.max(0, elementPosition),
+                    behavior: 'smooth'
+                  })
+                }
+              }}
+              className="inline-flex items-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              <span>📍</span>
+              <span>Vieni al Banchetto</span>
+            </motion.button>
+
+            <motion.button
+              onClick={() => {
+                const element = document.getElementById('wholesale')
+                if (element) {
+                  const offset = 80
+                  const elementPosition = element.offsetTop - offset
+                  window.scrollTo({
+                    top: Math.max(0, elementPosition),
+                    behavior: 'smooth'
+                  })
+                }
+              }}
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              className="inline-flex items-center space-x-2 border-2 border-green-500 text-green-600 px-6 py-3 rounded-xl font-semibold text-base hover:bg-green-50 transition-all duration-300"
+            >
+              <span>🏢</span>
+              <span>Servizio Ingrosso</span>
+            </motion.button>
+          </div>
+
+          {/* Contact Info OTTIMIZZATA */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="mt-6 pt-6 border-t border-green-200"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto text-sm text-gray-600">
+              <div className="flex items-center justify-center space-x-2">
+                <span>📍</span>
+                <span>Via Cavalleggeri Udine, Mezzolombardo</span>
+              </div>
+              <div className="flex items-center justify-center space-x-2">
+                <span>🕒</span>
+                <span>Lun-Sab: 07:00-19:30</span>
+              </div>
+              <div className="flex items-center justify-center space-x-2">
+                <span>📞</span>
+                <span>+39 351 577 6198</span>
+              </div>
+              <div className="flex items-center justify-center space-x-2">
+                <span>📧</span>
+                <span>bottamedipierluigi@virgilio.it</span>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  )
 }
 
-const translations = {
-  it: {
-    title: 'I Nostri Prodotti',
-    subtitle: 'Oltre 150 varietà di frutta e verdura fresca selezionata ogni giorno',
-    categories: [
-      {
-        id: 'fruits',
-        title: 'Frutta Fresca',
-        shortDesc: 'Varietà di stagione dal Trentino e oltre',
-        description: 'La nostra frutta viene selezionata alle prime ore del mattino dai migliori produttori del Trentino Alto Adige e da fornitori selezionati in tutta Italia.',
-        longDescription: 'Ogni giorno iniziamo la nostra giornata controllando personalmente ogni cassetta di frutta che arriva al nostro deposito. Dalle famose mele Melinda del Trentino agli agrumi siciliani, dalla frutta esotica di stagione ai piccoli frutti di montagna, garantiamo sempre la massima freschezza e qualità. La nostra esperienza di 50 anni ci permette di selezionare solo i prodotti migliori per i nostri clienti.',
-        icon: '🍎',
-        color: 'from-red-500 to-orange-500',
-        image: '/images/melinda_golden.webp',
-        products: [
-          { name: 'Mele Melinda DOP', season: 'Tutto l\'anno', origin: 'Val di Non' },
-          { name: 'Kiwi Gold Premium', season: 'Ott-Apr', origin: 'Trentino' },
-          { name: 'Pesche & Albicocche', season: 'Giu-Set', origin: 'Emilia Romagna' },
-          { name: 'Uva da tavola Italia', season: 'Ago-Nov', origin: 'Puglia/Sicilia' },
-          { name: 'Agrumi Premium', season: 'Nov-Apr', origin: 'Sicilia/Calabria' },
-          { name: 'Frutti di bosco', season: 'Mag-Set', origin: 'Val di Sole' },
-          { name: 'Pere Williams', season: 'Lug-Ott', origin: 'Val di Non' },
-          { name: 'Fragole di montagna', season: 'Mar-Giu', origin: 'Altopiani trentini' },
-          { name: 'Susine Regina Claudia', season: 'Lug-Set', origin: 'Trentino' },
-          { name: 'Ciliegie Duroni', season: 'Mag-Lug', origin: 'Vignola/Trentino' }
-        ],
-        features: [
-          { icon: '🌅', title: 'Selezione Mattutina', desc: 'Controllo qualità alle prime ore' },
-          { icon: '❄️', title: 'Catena del Freddo', desc: 'Conservazione ottimale garantita' },
-          { icon: '🏔️', title: 'Prodotti Alpini', desc: 'Specialità del territorio trentino' },
-          { icon: '📦', title: 'Packaging Curato', desc: 'Confezionamento per preservare la freschezza' }
-        ]
-      },
-      {
-        id: 'vegetables',
-        title: 'Verdure Fresche',
-        shortDesc: 'Dal campo alla tavola in 24 ore',
-        description: 'Le nostre verdure arrivano direttamente dai campi del Trentino Alto Adige e del Veneto, garantendo freschezza e sapore autentici.',
-        longDescription: 'Collabori
+export default ProductsSection

@@ -1,6 +1,4 @@
-import React from 'react';
-
-// utils/haptics.ts - Sistema Haptic Feedback Avanzato per Bottamedi
+// utils/haptics.ts - Sistema Haptic Feedback per Bottamedi
 
 interface HapticPattern {
   pattern: number[];
@@ -11,143 +9,107 @@ class HapticManager {
   private isSupported: boolean = false;
   private isEnabled: boolean = true;
   private lastTrigger: number = 0;
-  private minInterval: number = 50; // Minimo 50ms tra feedback
+  private minInterval: number = 50;
   
   private patterns: Record<string, HapticPattern> = {
-    // 🎯 FEEDBACK LEGGERI (1-20ms)
+    // Feedback leggeri
     tap: {
       pattern: [15],
-      description: 'Tap leggero per link e elementi cliccabili'
+      description: 'Tap leggero'
     },
     selection: {
       pattern: [20],
-      description: 'Selezione elemento o focus input'
-    },
-    tick: {
-      pattern: [8],
-      description: 'Feedback micro per hover e stati'
+      description: 'Selezione elemento'
     },
     
-    // 🎯 FEEDBACK MEDI (20-50ms)
+    // Feedback medi - SOLIDI
     button: {
       pattern: [30, 10, 25],
-      description: 'Pressione bottone principale - FEEDBACK SOLIDO'
+      description: 'Pressione bottone - FEEDBACK SOLIDO'
     },
     toggle: {
       pattern: [25, 15, 35],
-      description: 'Toggle switch, menu, cambio stato'
+      description: 'Toggle menu'
     },
     scroll: {
       pattern: [12],
-      description: 'Bordi scroll e boundaries'
+      description: 'Bordi scroll'
     },
     
-    // 🎯 FEEDBACK FORTI (50-100ms)
+    // Feedback forti
     success: {
       pattern: [40, 20, 15, 20, 45],
-      description: 'Azione completata con successo'
+      description: 'Azione completata'
     },
     error: {
       pattern: [60, 60, 60],
-      description: 'Errore, azione fallita'
+      description: 'Errore'
     },
     warning: {
       pattern: [35, 80, 35],
-      description: 'Attenzione, conferma richiesta'
+      description: 'Attenzione'
     },
     
-    // 🎯 FEEDBACK SPECIALI
+    // Feedback speciali
     notification: {
       pattern: [20, 40, 15, 40, 25],
-      description: 'Notifica importante o benvenuto'
-    },
-    heartbeat: {
-      pattern: [25, 30, 45, 30, 25],
-      description: 'Feedback ritmico per loading'
-    },
-    impact: {
-      pattern: [50, 30, 20],
-      description: 'Impatto forte per azioni critiche'
-    },
-    
-    // 🎯 FEEDBACK DOCK MOBILE
-    dock_open: {
-      pattern: [20, 15, 30],
-      description: 'Apertura dock mobile'
-    },
-    dock_close: {
-      pattern: [30, 15, 20],
-      description: 'Chiusura dock mobile'
+      description: 'Notifica benvenuto'
     },
     navigation: {
       pattern: [25, 10, 25],
-      description: 'Navigazione tra sezioni'
+      description: 'Navigazione sezioni'
     },
     
-    // 🎯 FEEDBACK FORM E INTERAZIONI
-    form_submit: {
-      pattern: [35, 25, 15, 25, 40],
-      description: 'Invio form o email'
-    },
+    // Feedback specifici
     phone_call: {
       pattern: [30, 20, 30, 20, 30],
-      description: 'Apertura chiamata telefonica'
+      description: 'Chiamata telefonica'
     },
     email_open: {
       pattern: [25, 20, 35],
-      description: 'Apertura client email'
+      description: 'Apertura email'
+    },
+    form_submit: {
+      pattern: [35, 25, 15, 25, 40],
+      description: 'Invio form'
     }
   };
 
   constructor() {
-    this.initialize();
-  }
-
-  private initialize(): void {
     this.checkSupport();
-    this.testCapabilities();
+    this.testSystem();
   }
 
   private checkSupport(): void {
-    // Verifica supporto base
     this.isSupported = 'vibrate' in navigator && typeof navigator.vibrate === 'function';
     
     if (!this.isSupported) {
-      console.info('🎯 Haptic: Vibration API non supportata su questo dispositivo');
+      console.info('🎯 Haptic: Vibration API non supportata');
       return;
     }
 
-    // Test più approfondito
     try {
-      // Test silenzioso per verificare se l'API è davvero funzionante
-      const testResult = navigator.vibrate(0);
-      if (testResult === false) {
-        this.isSupported = false;
-        console.warn('🎯 Haptic: Vibration API bloccata o non funzionante');
-      }
+      navigator.vibrate(0);
     } catch (error) {
       this.isSupported = false;
-      console.warn('🎯 Haptic: Errore durante il test dell\'API:', error);
+      console.warn('🎯 Haptic: API non funzionante:', error);
     }
   }
 
-  private testCapabilities(): void {
+  private testSystem(): void {
     if (!this.isSupported) return;
 
-    // Test ritardato per evitare blocco all'avvio
     setTimeout(() => {
       this.trigger('notification');
-      console.log('🎯 Haptic Feedback System ATTIVO! Patterns disponibili:', Object.keys(this.patterns).length);
+      console.log('🎯 Haptic System ATTIVO! Patterns:', Object.keys(this.patterns).length);
     }, 1500);
   }
 
   public trigger(type: keyof typeof this.patterns): boolean {
-    // Controlli preliminari
     if (!this.isSupported || !this.isEnabled) {
       return false;
     }
 
-    // Rate limiting per evitare spam
     const now = Date.now();
     if (now - this.lastTrigger < this.minInterval) {
       return false;
@@ -163,26 +125,16 @@ class HapticManager {
       const success = navigator.vibrate(pattern.pattern);
       if (success) {
         this.lastTrigger = now;
-        // Debug solo in development
-        if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
-          console.log(`🎯 Haptic: ${type} - ${pattern.description}`);
-        }
       }
       return success;
     } catch (error) {
-      console.warn('🎯 Haptic: Errore durante trigger:', error);
+      console.warn('🎯 Haptic: Errore trigger:', error);
       return false;
     }
   }
 
   public triggerCustom(pattern: number[]): boolean {
     if (!this.isSupported || !this.isEnabled || !Array.isArray(pattern)) {
-      return false;
-    }
-
-    // Validazione pattern
-    if (pattern.length === 0 || pattern.some(p => typeof p !== 'number' || p < 0 || p > 1000)) {
-      console.warn('🎯 Haptic: Pattern custom non valido');
       return false;
     }
 
@@ -193,7 +145,7 @@ class HapticManager {
       }
       return success;
     } catch (error) {
-      console.warn('🎯 Haptic: Errore durante custom trigger:', error);
+      console.warn('🎯 Haptic: Errore custom:', error);
       return false;
     }
   }
@@ -203,20 +155,18 @@ class HapticManager {
       try {
         navigator.vibrate(0);
       } catch (error) {
-        console.warn('🎯 Haptic: Errore durante stop:', error);
+        console.warn('🎯 Haptic: Errore stop:', error);
       }
     }
   }
 
   public enable(): void {
     this.isEnabled = true;
-    console.log('🎯 Haptic: Sistema abilitato');
   }
 
   public disable(): void {
     this.isEnabled = false;
     this.stop();
-    console.log('🎯 Haptic: Sistema disabilitato');
   }
 
   public getSupport(): boolean {
@@ -230,70 +180,41 @@ class HapticManager {
   public getPatterns(): Record<string, HapticPattern> {
     return { ...this.patterns };
   }
-
-  public addPattern(name: string, pattern: number[], description: string): boolean {
-    if (!Array.isArray(pattern) || pattern.some(p => typeof p !== 'number' || p < 0)) {
-      return false;
-    }
-
-    this.patterns[name] = { pattern, description };
-    return true;
-  }
-
-  public getStats(): {
-    supported: boolean;
-    enabled: boolean;
-    patternCount: number;
-    lastTrigger: number;
-  } {
-    return {
-      supported: this.isSupported,
-      enabled: this.isEnabled,
-      patternCount: Object.keys(this.patterns).length,
-      lastTrigger: this.lastTrigger
-    };
-  }
 }
 
-// 🎯 ISTANZA GLOBALE SINGLETON
+// Istanza globale
 export const haptic = new HapticManager();
 
-// 🎯 HOOK PER SCROLL HAPTIC CON DEBOUNCE
+// Hook per scroll haptic
 export const triggerHapticOnScroll = (): (() => void) => {
   let lastScrollY = 0;
-  let ticking = false;
-  let lastBoundaryTrigger = 0;
-  const boundaryDelay = 500; // 500ms tra trigger boundaries
+  let lastTrigger = 0;
+  const delay = 500;
 
   const handleScroll = () => {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        const currentScrollY = window.scrollY;
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight;
-        const now = Date.now();
+    const currentScrollY = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    const now = Date.now();
 
-        // Haptic ai bordi con debounce
-        if (currentScrollY <= 5 && lastScrollY > 5) {
-          // Top boundary
-          if (now - lastBoundaryTrigger > boundaryDelay) {
-            haptic.trigger('scroll');
-            lastBoundaryTrigger = now;
-          }
-        } else if (currentScrollY + windowHeight >= documentHeight - 10 && 
-                   lastScrollY + windowHeight < documentHeight - 10) {
-          // Bottom boundary
-          if (now - lastBoundaryTrigger > boundaryDelay) {
-            haptic.trigger('scroll');
-            lastBoundaryTrigger = now;
-          }
-        }
-
-        lastScrollY = currentScrollY;
-        ticking = false;
-      });
-      ticking = true;
+    // Top boundary
+    if (currentScrollY <= 5 && lastScrollY > 5) {
+      if (now - lastTrigger > delay) {
+        haptic.trigger('scroll');
+        lastTrigger = now;
+      }
     }
+    
+    // Bottom boundary
+    if (currentScrollY + windowHeight >= documentHeight - 10 && 
+        lastScrollY + windowHeight < documentHeight - 10) {
+      if (now - lastTrigger > delay) {
+        haptic.trigger('scroll');
+        lastTrigger = now;
+      }
+    }
+
+    lastScrollY = currentScrollY;
   };
 
   window.addEventListener('scroll', handleScroll, { passive: true });
@@ -303,39 +224,32 @@ export const triggerHapticOnScroll = (): (() => void) => {
   };
 };
 
-// 🎯 HOOK PER SECTION CHANGES CON DEBOUNCE
+// Hook per section changes
 export const triggerHapticOnSectionChange = (sectionIds: string[]): (() => void) => {
   const observers: IntersectionObserver[] = [];
   let currentSection: string | null = null;
-  let lastSectionChange = 0;
-  const sectionDelay = 800; // 800ms tra cambi sezione
+  let lastChange = 0;
+  const delay = 800;
 
   sectionIds.forEach(sectionId => {
     const element = document.getElementById(sectionId);
-    if (!element) {
-      console.warn(`🎯 Haptic: Sezione "${sectionId}" non trovata per intersection observer`);
-      return;
-    }
+    if (!element) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting && entry.target.id !== currentSection) {
             const now = Date.now();
-            if (now - lastSectionChange > sectionDelay) {
+            if (now - lastChange > delay) {
               currentSection = entry.target.id;
               haptic.trigger('navigation');
-              lastSectionChange = now;
-              
-              if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
-                console.log(`🎯 Haptic: Navigazione verso sezione "${currentSection}"`);
-              }
+              lastChange = now;
             }
           }
         });
       },
       {
-        threshold: 0.6, // 60% visibile
+        threshold: 0.6,
         rootMargin: '-5% 0px -5% 0px'
       }
     );
@@ -349,7 +263,7 @@ export const triggerHapticOnSectionChange = (sectionIds: string[]): (() => void)
   };
 };
 
-// 🎯 UTILITY FUNCTIONS
+// Utility functions
 export const withHaptic = <T extends any[]>(
   callback: (...args: T) => void, 
   hapticType: keyof typeof haptic.patterns = 'button'
@@ -365,12 +279,10 @@ export const addHapticToElement = (
   hapticType: keyof typeof haptic.patterns = 'button',
   eventType: string = 'click'
 ): (() => void) => {
-  const handler = (e: Event) => {
-    // Evita haptic se l'elemento è disabilitato
-    if (element.hasAttribute('disabled') || element.classList.contains('disabled')) {
-      return;
+  const handler = () => {
+    if (!element.hasAttribute('disabled')) {
+      haptic.trigger(hapticType);
     }
-    haptic.trigger(hapticType);
   };
   
   element.addEventListener(eventType, handler);
@@ -380,7 +292,7 @@ export const addHapticToElement = (
   };
 };
 
-// 🎯 REACT HOOK AVANZATO
+// React hook
 export const useHaptic = () => {
   const trigger = (type: keyof typeof haptic.patterns) => {
     return haptic.trigger(type);
@@ -402,58 +314,21 @@ export const useHaptic = () => {
     haptic.disable();
   };
 
-  const isSupported = haptic.getSupport();
-  const isEnabled = haptic.getEnabled();
-
   return {
     trigger,
     triggerCustom,
     stop,
     enable,
     disable,
-    isSupported,
-    isEnabled,
-    patterns: haptic.getPatterns(),
-    stats: haptic.getStats()
+    isSupported: haptic.getSupport(),
+    isEnabled: haptic.getEnabled(),
+    patterns: haptic.getPatterns()
   };
 };
 
-// 🎯 COMPONENTE REACT PER TESTING E DEBUG
-export const HapticTestButton: React.FC<{
-  type: keyof typeof haptic.patterns;
-  children: React.ReactNode;
-  className?: string;
-  style?: React.CSSProperties;
-}> = ({ type, children, className = '', style = {} }) => {
-  const handleClick = () => {
-    const success = haptic.trigger(type);
-    console.log(`🎯 Test Haptic "${type}": ${success ? 'SUCCESS' : 'FAILED'}`);
-  };
-
-  return (
-    <button
-      onClick={handleClick}
-      className={`haptic-test-button ${className}`}
-      style={{
-        padding: '8px 16px',
-        margin: '4px',
-        border: '1px solid #ccc',
-        borderRadius: '4px',
-        background: '#f5f5f5',
-        cursor: 'pointer',
-        ...style
-      }}
-      data-haptic-type={type}
-      title={`Test haptic: ${haptic.getPatterns()[type]?.description || type}`}
-    >
-      {children}
-    </button>
-  );
-};
-
-// 🎯 ESPORTAZIONE DEFAULT
+// Export default
 export default haptic;
 
-// 🎯 TYPES EXPORT
+// Types
 export type { HapticPattern };
 export type HapticType = keyof typeof haptic.patterns;

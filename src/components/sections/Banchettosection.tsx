@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 
@@ -146,75 +146,108 @@ const translations = {
   }
 }
 
-// 🖼️ COMPONENTE GALLERY ITEM OTTIMIZZATO (INTEGRATO)
+// 🖼️ COMPONENTE GALLERY ITEM ULTRA OTTIMIZZATO
 const GalleryItem: React.FC<{
   item: any
   index: number
-}> = ({ item, index }) => {
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [hasError, setHasError] = useState(false)
+}> = React.memo(({ item, index }) => {
+  const [imageState, setImageState] = useState<'loading' | 'loaded' | 'error'>('loading')
   const [ref, inView] = useInView({
     threshold: 0.1,
     triggerOnce: true,
-    rootMargin: '100px' // Carica prima che entri nella viewport
+    rootMargin: '100px' // Carica prima su mobile
   })
 
-  const handleImageLoad = () => {
-    setIsLoaded(true)
-  }
+  const handleImageLoad = useCallback(() => {
+    setImageState('loaded')
+  }, [])
 
-  const handleImageError = () => {
-    setHasError(true)
-    setIsLoaded(true)
-  }
+  const handleImageError = useCallback(() => {
+    setImageState('error')
+  }, [])
+
+  // Memoizza le varianti di animazione
+  const itemVariants = useMemo(() => ({
+    hidden: { 
+      opacity: 0, 
+      y: 20, 
+      scale: 0.98 
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: {
+        duration: 0.4,
+        delay: Math.min(index * 0.05, 0.3),
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
+  }), [index])
+
+  const imageVariants = useMemo(() => ({
+    loading: { 
+      opacity: 0, 
+      scale: 1.05,
+      filter: 'blur(4px)'
+    },
+    loaded: { 
+      opacity: 1, 
+      scale: 1,
+      filter: 'blur(0px)',
+      transition: { 
+        duration: 0.5,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    },
+    hover: { 
+      scale: 1.03,
+      transition: { 
+        duration: 0.3,
+        ease: "easeOut"
+      } 
+    }
+  }), [])
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 30, scale: 0.95 }}
-      animate={inView ? { 
-        opacity: 1, 
-        y: 0, 
-        scale: 1
-      } : {}}
-      transition={{
-        duration: 0.6,
-        delay: Math.min(index * 0.1, 0.8), // Max delay 0.8s
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }}
-      className="group relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500"
+      initial="hidden"
+      animate={inView ? "visible" : "hidden"}
+      variants={itemVariants}
+      whileHover={{ y: -3 }}
+      className="group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
+      style={{ willChange: 'transform' }}
     >
-      {/* 📷 IMAGE CONTAINER */}
-      <div className="relative h-64 overflow-hidden bg-gradient-to-br from-green-50 to-green-100">
+      {/* 📷 IMAGE CONTAINER MOBILE OTTIMIZZATO */}
+      <div className="relative h-56 overflow-hidden bg-gradient-to-br from-green-50 to-green-100">
         
-        {/* 🔄 LOADING PLACEHOLDER */}
-        {!isLoaded && !hasError && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="flex flex-col items-center space-y-3">
-              <motion.div 
-                className="w-8 h-8 border-3 border-green-200 border-t-green-500 rounded-full"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-              />
-              <span className="text-green-600 text-sm font-medium">Caricamento...</span>
+        {/* 🔄 LOADING SKELETON MOBILE */}
+        {imageState === 'loading' && (
+          <div className="absolute inset-0 flex items-center justify-center bg-green-100">
+            <div className="flex flex-col items-center space-y-2">
+              <div className="w-8 h-8 border-2 border-green-300 border-t-green-600 rounded-full animate-spin" />
+              <div className="text-green-600 text-xs font-medium">Caricamento...</div>
             </div>
           </div>
         )}
 
         {/* ❌ ERROR PLACEHOLDER */}
-        {hasError && (
+        {imageState === 'error' && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-            <div className="text-center text-gray-500">
-              <svg className="w-16 h-16 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-              </svg>
-              <p className="text-sm">Immagine non disponibile</p>
+            <div className="text-center text-gray-400">
+              <div className="w-12 h-12 mx-auto mb-2 bg-gray-200 rounded-lg flex items-center justify-center">
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <p className="text-xs">Immagine non disponibile</p>
             </div>
           </div>
         )}
 
-        {/* 🖼️ ACTUAL IMAGE */}
-        {!hasError && (
+        {/* 🖼️ IMMAGINE PRINCIPALE MOBILE FRIENDLY */}
+        {imageState !== 'error' && (
           <motion.img
             src={inView ? item.src : ''}
             alt={item.description}
@@ -222,131 +255,158 @@ const GalleryItem: React.FC<{
             loading="lazy"
             onLoad={handleImageLoad}
             onError={handleImageError}
-            initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ 
-              opacity: isLoaded ? 1 : 0,
-              scale: isLoaded ? 1 : 1.1
-            }}
-            transition={{ 
-              duration: 0.8,
-              ease: "easeOut"
-            }}
-            whileHover={{ scale: 1.05 }}
+            initial="loading"
+            animate={imageState}
+            whileHover="hover"
+            variants={imageVariants}
             style={{
-              willChange: 'transform, opacity'
+              willChange: 'transform, opacity, filter'
             }}
+            // MOBILE OPTIMIZATIONS
+            decoding="async"
+            fetchPriority={index < 4 ? "high" : "low"}
           />
         )}
         
-        {/* 🌈 GRADIENT OVERLAY */}
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"
-          initial={{ opacity: 0.7 }}
-          whileHover={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
+        {/* 🌈 GRADIENT OVERLAY OTTIMIZZATO */}
+        <div 
+          className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300"
+          style={{ willChange: 'opacity' }}
         />
 
-        {/* 📝 TITLE OVERLAY */}
-        <div className="absolute bottom-4 left-4 right-4">
+        {/* 📝 TITLE OVERLAY OTTIMIZZATO */}
+        <div className="absolute bottom-3 left-3 right-3">
           <motion.h3 
-            className="text-white font-bold text-lg mb-1 drop-shadow-lg"
-            initial={{ opacity: 0, y: 10 }}
-            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.3, duration: 0.5 }}
+            className="text-white font-semibold text-sm mb-1 drop-shadow-lg leading-tight"
+            initial={{ opacity: 0, y: 5 }}
+            animate={imageState === 'loaded' ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.2, duration: 0.3 }}
           >
             {item.title}
           </motion.h3>
         </div>
       </div>
 
-      {/* ✨ HOVER EFFECTS */}
-      <motion.div
+      {/* ✨ HOVER EFFECTS OTTIMIZZATI */}
+      <div
         className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-        initial={false}
-      />
-
-      {/* 📱 MOBILE TOUCH FEEDBACK */}
-      <motion.div
-        className="absolute inset-0 bg-white/10 opacity-0 pointer-events-none"
-        whileTap={{ opacity: 0.3 }}
-        transition={{ duration: 0.1 }}
+        style={{ willChange: 'opacity' }}
       />
     </motion.div>
   )
-}
+})
+
+// Imposta displayName per il debugging
+GalleryItem.displayName = 'GalleryItem'
 
 const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView }) => {
   const t = translations[language]
 
-  const scrollToContact = () => {
+  const scrollToContact = useCallback(() => {
     const element = document.getElementById('contact')
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
+      const offset = 80
+      const elementPosition = element.offsetTop - offset
+      window.scrollTo({
+        top: Math.max(0, elementPosition),
+        behavior: 'smooth'
+      })
     }
-  }
+  }, [])
+
+  // Memoizza le varianti per evitare ricrearle ad ogni render
+  const containerVariants = useMemo(() => ({
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.03,
+        delayChildren: 0.1
+      }
+    }
+  }), [])
+
+  const headerVariants = useMemo(() => ({
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
+  }), [])
 
   return (
-    <section id="dettaglio" className="py-24 lg:py-32 bg-gradient-to-br from-green-50 to-white relative overflow-hidden">
-      {/* 🎨 Background Elements */}
-      <div className="absolute top-1/4 left-0 w-96 h-96 bg-green-200/20 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-green-300/20 rounded-full blur-3xl" />
+    <section id="dettaglio" className="py-20 lg:py-28 bg-gradient-to-br from-green-50 to-white relative overflow-hidden">
+      {/* 🎨 Background Elements OTTIMIZZATI */}
+      <div className="absolute top-1/4 left-0 w-80 h-80 bg-green-200/15 rounded-full blur-3xl" />
+      <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-green-300/15 rounded-full blur-3xl" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* 🏪 HERO IMAGE */}
+        {/* 🏪 HERO IMAGE OTTIMIZZATA */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="mb-16"
+          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="mb-14"
         >
-          <div className="relative h-96 lg:h-[500px] rounded-3xl overflow-hidden shadow-2xl">
+          <div className="relative h-80 lg:h-96 rounded-2xl overflow-hidden shadow-xl">
             <img
               src="/images/banchetto.webp"
               alt="Il Banchetto Bottamedi a Mezzolombardo ricco di frutta e verdura fresca"
               className="w-full h-full object-cover"
               loading="eager"
+              style={{ willChange: 'transform' }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
           </div>
         </motion.div>
 
-        {/* 📝 HEADER */}
+        {/* 📝 HEADER OTTIMIZZATO */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-center mb-20"
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          variants={headerVariants}
+          className="text-center mb-16"
         >
-          <h2 className="text-4xl lg:text-5xl font-bold text-neutral-900 mb-6">
+          <h2 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-neutral-900 mb-5 leading-tight">
             {t.title}
           </h2>
-          <p className="text-xl text-green-600 font-semibold mb-4">
+          <p className="text-lg lg:text-xl text-green-600 font-semibold mb-3">
             {t.subtitle}
           </p>
-          <p className="text-lg text-neutral-600 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-base lg:text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
             {t.description}
           </p>
         </motion.div>
 
-        {/* 🖼️ GALLERY OTTIMIZZATA */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-16">
-          {t.gallery.map((item, index) => (
-            <GalleryItem key={index} item={item} index={index} />
-          ))}
-        </div>
-
-        {/* 🎯 CTA */}
+        {/* 🖼️ GALLERY ULTRA OTTIMIZZATA */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          variants={containerVariants}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-14"
+        >
+          {t.gallery.map((item, index) => (
+            <GalleryItem key={`${item.src}-${index}`} item={item} index={index} />
+          ))}
+        </motion.div>
+
+        {/* 🎯 CTA OTTIMIZZATO */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.6 }}
+          transition={{ duration: 0.6, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="text-center"
         >
           <motion.button
             onClick={scrollToContact}
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-4 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+            whileHover={{ scale: 1.03, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 lg:px-8 lg:py-4 rounded-xl font-semibold text-base lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+            style={{ willChange: 'transform' }}
           >
             {t.cta}
           </motion.button>

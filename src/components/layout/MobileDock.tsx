@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 
 interface MobileDockProps {
   language: 'it' | 'de'
@@ -38,8 +38,8 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
   
   const t = translations[language]
 
-  // 🍎 HAPTIC FEEDBACK SOFISTICATO
-  const triggerHaptic = (type: 'success' | 'warning' | 'error' | 'selection' = 'selection') => {
+  // 🍎 HAPTIC FEEDBACK OTTIMIZZATO
+  const triggerHaptic = useCallback((type: 'success' | 'warning' | 'error' | 'selection' = 'selection') => {
     if ('vibrate' in navigator) {
       const patterns = {
         success: [10, 50, 10],
@@ -49,113 +49,153 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
       }
       navigator.vibrate(patterns[type])
     }
-  }
+  }, [])
 
-  // 📱 DEVICE DETECTION
+  // 📱 DEVICE DETECTION OTTIMIZZATO
   useEffect(() => {
     const checkMobile = () => {
       const mobile = window.innerWidth < 768
       setIsMobile(mobile)
-      setTimeout(() => setIsReady(true), 200)
+      // Ritardo ridotto per responsività immediata
+      setTimeout(() => setIsReady(true), 100)
     }
+    
     checkMobile()
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // 🧠 SMART DETECTION - Logica avanzata per determinare quando l'utente cerca aiuto
+  // 🧠 SMART DETECTION OTTIMIZZATO - Più affidabile e responsivo
   useEffect(() => {
+    if (!isMobile || !isReady) return
+
     let scrollTimeout: NodeJS.Timeout
     let rapidScrollCount = 0
     let scrollSpeedTimer: NodeJS.Timeout
+    let mounted = true
     
     const handleScroll = () => {
+      if (!mounted) return
+      
       const currentScrollY = window.scrollY
       const windowHeight = window.innerHeight
       const documentHeight = document.documentElement.scrollHeight
-      const scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up'
+      const direction = currentScrollY > lastScrollY ? 'down' : 'up'
       
       setLastScrollY(currentScrollY)
-      setScrollDirection(scrollDirection)
+      setScrollDirection(direction)
 
-      // 🎯 LOGICA INTELLIGENTE: L'utente cerca aiuto quando...
+      // 🎯 LOGICA SEMPLIFICATA E PIÙ AFFIDABILE
       
-      // 1. Ha scrollato abbastanza da aver visto contenuto
-      const hasSeenContent = currentScrollY > windowHeight * 0.3
+      // 1. Ha scrollato abbastanza (ridotto per essere più reattivo)
+      const hasSeenContent = currentScrollY > windowHeight * 0.2
       
-      // 2. Non è nel footer (ultimi 300px)
-      const notInFooter = currentScrollY < documentHeight - windowHeight - 300
+      // 2. Non è troppo in fondo
+      const notAtBottom = currentScrollY < documentHeight - windowHeight - 200
       
-      // 3. Sta scrollando su e giù rapidamente (comportamento di ricerca)
+      // 3. Comportamento di ricerca rapida
       clearTimeout(scrollSpeedTimer)
       rapidScrollCount++
       scrollSpeedTimer = setTimeout(() => {
-        rapidScrollCount = 0
-      }, 1000)
+        if (mounted) rapidScrollCount = 0
+      }, 800)
       
-      const isSearchingBehavior = rapidScrollCount > 3
+      const isSearchingBehavior = rapidScrollCount > 2
       
-      // 4. Si è fermato a scrollare per più di 2 secondi (sta leggendo/pensando)
+      // 4. Pausa per riflettere (ridotto tempo)
       clearTimeout(scrollTimeout)
       scrollTimeout = setTimeout(() => {
-        if (hasSeenContent && notInFooter) {
+        if (mounted && hasSeenContent && notAtBottom) {
           setIsUserLookingForHelp(true)
         }
-      }, 2000)
+      }, 1500)
       
-      // 5. Comportamento di ricerca immediato
-      if (isSearchingBehavior && hasSeenContent && notInFooter) {
+      // 5. Attivazione immediata con comportamento di ricerca
+      if (isSearchingBehavior && hasSeenContent && notAtBottom) {
         setIsUserLookingForHelp(true)
       }
       
-      // Reset se troppo in alto o in fondo
-      if (!hasSeenContent || !notInFooter) {
+      // Reset condizioni
+      if (!hasSeenContent || !notAtBottom) {
         setIsUserLookingForHelp(false)
       }
     }
 
+    // INIZIALIZZAZIONE IMMEDIATA - Mostra dock dopo breve delay iniziale
+    const initTimeout = setTimeout(() => {
+      if (mounted && window.scrollY > 100) {
+        setIsUserLookingForHelp(true)
+      }
+    }, 2000)
+
     window.addEventListener('scroll', handleScroll, { passive: true })
+    
     return () => {
+      mounted = false
       window.removeEventListener('scroll', handleScroll)
       clearTimeout(scrollTimeout)
       clearTimeout(scrollSpeedTimer)
+      clearTimeout(initTimeout)
     }
-  }, [lastScrollY])
+  }, [lastScrollY, isMobile, isReady])
 
-  // 👁️ VISIBILITY LOGIC - Solo quando l'utente cerca davvero aiuto
+  // 👁️ VISIBILITY LOGIC MIGLIORATA
   useEffect(() => {
+    if (!isMobile) return
     setIsVisible(isUserLookingForHelp && scrollDirection === 'up')
-  }, [isUserLookingForHelp, scrollDirection])
+  }, [isUserLookingForHelp, scrollDirection, isMobile])
 
-  // 🎯 NAVIGATION
-  const scrollToSection = (sectionId: string) => {
+  // 🎯 NAVIGAZIONE PRECISA - Mapping corretto delle sezioni
+  const sectionMapping = useMemo(() => ({
+    'hero': 'hero',
+    'services': 'services', // Sezione servizi generica
+    'banchetto': 'dettaglio', // Sezione specifica banchetto
+    'ingrosso': 'wholesale', // Sezione specifica ingrosso
+    'products': 'products',
+    'about': 'about',
+    'contact': 'contact'
+  }), [])
+
+  const scrollToSection = useCallback((sectionId: string) => {
     triggerHaptic('success')
-    const element = document.getElementById(sectionId)
+    
+    const targetId = sectionMapping[sectionId as keyof typeof sectionMapping] || sectionId
+    const element = document.getElementById(targetId)
+    
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      // Offset per header fisso se presente
+      const offset = 80
+      const elementPosition = element.offsetTop - offset
+      
+      window.scrollTo({
+        top: Math.max(0, elementPosition),
+        behavior: 'smooth'
+      })
     }
+    
     setActiveSubmenu(null)
-    setIsUserLookingForHelp(false) // Nascondi dopo l'uso
-  }
+    // Non nascondere immediatamente per permettere di vedere l'azione
+    setTimeout(() => setIsUserLookingForHelp(false), 1000)
+  }, [sectionMapping, triggerHaptic])
 
-  const toggleSubmenu = (submenu: string) => {
+  const toggleSubmenu = useCallback((submenu: string) => {
     triggerHaptic('selection')
     setActiveSubmenu(activeSubmenu === submenu ? null : submenu)
-  }
+  }, [activeSubmenu, triggerHaptic])
 
-  const handleCall = (phone: string) => {
+  const handleCall = useCallback((phone: string) => {
     triggerHaptic('success')
     window.open(`tel:${phone}`, '_self')
     setActiveSubmenu(null)
-    setIsUserLookingForHelp(false)
-  }
+    setTimeout(() => setIsUserLookingForHelp(false), 500)
+  }, [triggerHaptic])
 
-  const handleMaps = (url: string) => {
+  const handleMaps = useCallback((url: string) => {
     triggerHaptic('success')
     window.open(url, '_blank')
     setActiveSubmenu(null)
-    setIsUserLookingForHelp(false)
-  }
+    setTimeout(() => setIsUserLookingForHelp(false), 500)
+  }, [triggerHaptic])
 
   // 🚫 NON MOSTRARE SE NON NECESSARIO
   if (!isMobile || !isReady) {
@@ -175,7 +215,7 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
         />
       )}
 
-      {/* DOCK CONTAINER CON ANIMAZIONE MAGNETICA */}
+      {/* DOCK CONTAINER CON ANIMAZIONE MAGNETICA OTTIMIZZATA */}
       <div className={`dock-container ${isVisible ? 'dock-visible' : 'dock-hidden'}`}>
         
         {/* SUBMENU TELEFONI PREMIUM */}
@@ -214,7 +254,7 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
           </div>
         )}
 
-        {/* SUBMENU NAVIGAZIONE PREMIUM */}
+        {/* SUBMENU NAVIGAZIONE PREMIUM - MAPPING CORRETTO */}
         {activeSubmenu === 'menu' && (
           <div className="submenu-panel submenu-navigation">
             <div className="submenu-header">
@@ -224,9 +264,11 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
             
             {[
               { id: 'hero', icon: '🏠', label: 'Home', color: 'home', desc: 'Torna all\'inizio' },
-              { id: 'services', icon: '⭐', label: 'I Nostri Servizi', color: 'services', desc: 'Banchetto e Ingrosso' },
+              { id: 'banchetto', icon: '🛒', label: t.banchetto, color: 'banchetto', desc: 'Scopri il nostro banchetto' },
+              { id: 'ingrosso', icon: '🚛', label: t.servizi, color: 'ingrosso', desc: 'Servizio HORECA' },
               { id: 'products', icon: '🍎', label: t.prodotti, color: 'products', desc: 'I nostri prodotti freschi' },
-              { id: 'contatti', icon: '📞', label: 'Contatti', color: 'contact', desc: 'Come raggiungerci' }
+              { id: 'about', icon: '🌱', label: 'La Nostra Storia', color: 'about', desc: 'Chi siamo' },
+              { id: 'contact', icon: '📞', label: 'Contatti', color: 'contact', desc: 'Come raggiungerci' }
             ].map((item) => (
               <div 
                 key={item.id}
@@ -336,20 +378,9 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
         </div>
       </div>
 
-      {/* STILI CSS ULTRA PREMIUM */}
+      {/* STILI CSS ULTRA PREMIUM OTTIMIZZATI */}
       <style>{`
-        /* BACKDROP SOFISTICATO */
-        .dock-backdrop {
-          position: fixed;
-          inset: 0;
-          z-index: 999998;
-          background: radial-gradient(circle at center, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.1) 100%);
-          backdrop-filter: blur(20px) saturate(150%);
-          -webkit-backdrop-filter: blur(20px) saturate(150%);
-          animation: backdropMagneticIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        /* CONTAINER MAGNETICO */
+        /* PERFORMANCE OTTIMIZZAZIONI */
         .dock-container {
           position: fixed;
           bottom: 0;
@@ -362,19 +393,20 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
           gap: 20px;
           padding: 0 24px 24px;
           padding-bottom: max(24px, env(safe-area-inset-bottom, 24px));
-          transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           pointer-events: none;
+          will-change: transform, opacity;
         }
 
         .dock-container * {
           pointer-events: auto;
         }
 
-        /* ANIMAZIONI ENTRATA MAGNETICA */
+        /* ANIMAZIONI OTTIMIZZATE */
         .dock-hidden {
           opacity: 0;
-          transform: translateX(-50%) translateY(120px) scale(0.8);
-          filter: blur(10px);
+          transform: translateX(-50%) translateY(100px) scale(0.9);
+          filter: blur(8px);
         }
 
         .dock-visible {
@@ -383,88 +415,58 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
           filter: blur(0px);
         }
 
-        /* DOCK PRINCIPALE ULTRA SOFISTICATA */
+        /* BACKDROP OTTIMIZZATO */
+        .dock-backdrop {
+          position: fixed;
+          inset: 0;
+          z-index: 999998;
+          background: radial-gradient(circle at center, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.1) 100%);
+          backdrop-filter: blur(15px) saturate(150%);
+          -webkit-backdrop-filter: blur(15px) saturate(150%);
+          animation: backdropIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          will-change: opacity;
+        }
+
+        /* DOCK PRINCIPALE OTTIMIZZATO */
         .main-dock {
           position: relative;
           background: linear-gradient(135deg, 
             rgba(255, 255, 255, 0.95) 0%, 
             rgba(255, 255, 255, 0.8) 50%,
             rgba(255, 255, 255, 0.95) 100%);
-          backdrop-filter: blur(40px) saturate(200%);
-          -webkit-backdrop-filter: blur(40px) saturate(200%);
-          border-radius: 32px;
-          padding: 12px 28px;
+          backdrop-filter: blur(30px) saturate(180%);
+          -webkit-backdrop-filter: blur(30px) saturate(180%);
+          border-radius: 28px;
+          padding: 10px 24px;
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 6px;
           box-shadow: 
-            0 32px 80px rgba(0, 0, 0, 0.25),
+            0 20px 50px rgba(0, 0, 0, 0.15),
             0 0 0 1px rgba(255, 255, 255, 0.8),
-            inset 0 1px 0 rgba(255, 255, 255, 0.9),
-            inset 0 0 20px rgba(255, 255, 255, 0.3);
-          border: 2px solid rgba(255, 255, 255, 0.4);
-          min-width: 320px;
+            inset 0 1px 0 rgba(255, 255, 255, 0.9);
+          border: 1.5px solid rgba(255, 255, 255, 0.4);
+          min-width: 280px;
           max-width: 90vw;
-          overflow: hidden;
+          will-change: transform;
         }
 
-        .main-dock::before {
-          content: '';
-          position: absolute;
-          inset: -2px;
-          background: linear-gradient(45deg, 
-            rgba(59, 130, 246, 0.3),
-            rgba(16, 185, 129, 0.3),
-            rgba(245, 158, 11, 0.3),
-            rgba(239, 68, 68, 0.3),
-            rgba(59, 130, 246, 0.3));
-          border-radius: 34px;
-          animation: dockBorderGlow 4s ease-in-out infinite;
-          opacity: 0;
-          transition: opacity 0.3s ease;
-        }
-
-        .main-dock:hover::before {
-          opacity: 1;
-        }
-
-        /* CORE MAGNETICO CENTRALE */
-        .dock-core {
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%, -50%);
-          width: 4px;
-          height: 4px;
-          background: radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, transparent 70%);
-          border-radius: 50%;
-          pointer-events: none;
-        }
-
-        .dock-core-glow {
-          position: absolute;
-          inset: -8px;
-          background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
-          border-radius: 50%;
-          animation: coreGlow 3s ease-in-out infinite;
-        }
-
-        /* BOTTONI DOCK SOFISTICATI */
+        /* BOTTONI DOCK OTTIMIZZATI */
         .dock-button {
           position: relative;
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 6px;
-          padding: 16px 20px;
+          gap: 4px;
+          padding: 12px 16px;
           border: none;
           background: transparent;
           color: #64748b;
           cursor: pointer;
-          border-radius: 20px;
-          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-          min-width: 70px;
-          overflow: hidden;
+          border-radius: 16px;
+          transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          min-width: 60px;
+          will-change: transform, color;
         }
 
         .dock-button-glow {
@@ -473,156 +475,125 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
           background: linear-gradient(135deg, 
             rgba(255, 255, 255, 0.4),
             rgba(255, 255, 255, 0.1));
-          border-radius: 18px;
+          border-radius: 14px;
           opacity: 0;
-          transition: all 0.3s ease;
+          transition: all 0.25s ease;
         }
 
         .dock-button:hover .dock-button-glow {
           opacity: 1;
-          transform: scale(1.05);
+          transform: scale(1.03);
         }
 
         .dock-button:hover {
           color: #3b82f6;
-          transform: translateY(-6px) scale(1.05);
+          transform: translateY(-4px) scale(1.03);
           background: rgba(59, 130, 246, 0.05);
         }
 
         .dock-button:active {
-          transform: translateY(-3px) scale(1.02);
+          transform: translateY(-2px) scale(1.01);
         }
 
         .dock-button-active {
           color: #3b82f6;
           background: linear-gradient(135deg, 
-            rgba(59, 130, 246, 0.15),
+            rgba(59, 130, 246, 0.12),
             rgba(59, 130, 246, 0.05));
-          transform: translateY(-4px);
-          box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+          transform: translateY(-3px);
+          box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
         }
 
-        .dock-button-active .dock-button-glow {
-          opacity: 1;
-          background: linear-gradient(135deg, 
-            rgba(59, 130, 246, 0.2),
-            rgba(59, 130, 246, 0.1));
-        }
-
-        /* ICONE DOCK */
+        /* ICONE E ETICHETTE */
         .dock-icon {
-          width: 28px;
-          height: 28px;
+          width: 24px;
+          height: 24px;
           display: flex;
           align-items: center;
           justify-content: center;
-          border-radius: 10px;
-          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+          border-radius: 8px;
+          transition: all 0.25s ease;
           position: relative;
           z-index: 2;
         }
 
-        /* ETICHETTE DOCK */
         .dock-label {
-          font-size: 11px;
-          font-weight: 700;
+          font-size: 10px;
+          font-weight: 600;
           line-height: 1;
           white-space: nowrap;
-          letter-spacing: 0.3px;
+          letter-spacing: 0.2px;
           position: relative;
           z-index: 2;
         }
 
-        /* PANNELLI SUBMENU ULTRA PREMIUM */
+        /* PANNELLI SUBMENU OTTIMIZZATI */
         .submenu-panel {
           background: linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.98) 0%, 
-            rgba(255, 255, 255, 0.92) 100%);
-          backdrop-filter: blur(40px) saturate(200%);
-          -webkit-backdrop-filter: blur(40px) saturate(200%);
-          border-radius: 28px;
-          padding: 24px;
+            rgba(255, 255, 255, 0.97) 0%, 
+            rgba(255, 255, 255, 0.9) 100%);
+          backdrop-filter: blur(30px) saturate(180%);
+          -webkit-backdrop-filter: blur(30px) saturate(180%);
+          border-radius: 24px;
+          padding: 20px;
           box-shadow: 
-            0 40px 100px rgba(0, 0, 0, 0.3),
+            0 30px 80px rgba(0, 0, 0, 0.2),
             0 0 0 1px rgba(255, 255, 255, 0.8),
             inset 0 1px 0 rgba(255, 255, 255, 0.9);
-          border: 2px solid rgba(255, 255, 255, 0.5);
-          min-width: 320px;
+          border: 1.5px solid rgba(255, 255, 255, 0.5);
+          min-width: 280px;
           max-width: 90vw;
-          animation: submenuMagneticIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-          overflow: hidden;
-          position: relative;
-        }
-
-        .submenu-panel::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.1) 0%,
-            transparent 50%,
-            rgba(255, 255, 255, 0.1) 100%);
-          pointer-events: none;
+          animation: submenuIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          will-change: transform, opacity;
         }
 
         /* HEADER SUBMENU */
         .submenu-header {
           display: flex;
           align-items: center;
-          gap: 12px;
-          margin-bottom: 20px;
-          padding-bottom: 16px;
+          gap: 10px;
+          margin-bottom: 16px;
+          padding-bottom: 12px;
           border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-          font-weight: 700;
-          font-size: 16px;
+          font-weight: 600;
+          font-size: 15px;
           color: #1e293b;
         }
 
         .submenu-indicator {
-          width: 8px;
-          height: 8px;
+          width: 6px;
+          height: 6px;
           background: linear-gradient(45deg, #3b82f6, #10b981);
           border-radius: 50%;
-          animation: indicatorPulse 2s ease-in-out infinite;
+          animation: pulse 2s ease-in-out infinite;
         }
 
-        /* ITEMS SUBMENU SOFISTICATI */
+        /* ITEMS SUBMENU OTTIMIZZATI */
         .submenu-item {
           display: flex;
           align-items: center;
-          gap: 16px;
-          padding: 18px 20px;
-          border-radius: 20px;
+          gap: 12px;
+          padding: 14px 16px;
+          border-radius: 16px;
           background: linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.8),
-            rgba(255, 255, 255, 0.4));
+            rgba(255, 255, 255, 0.7),
+            rgba(255, 255, 255, 0.3));
           cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+          transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           border: 1px solid rgba(255, 255, 255, 0.6);
-          margin-bottom: 12px;
+          margin-bottom: 8px;
           position: relative;
           overflow: hidden;
-        }
-
-        .submenu-item::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, 
-            rgba(59, 130, 246, 0.1),
-            rgba(16, 185, 129, 0.1));
-          opacity: 0;
-          transition: opacity 0.3s ease;
-        }
-
-        .submenu-item:hover::before {
-          opacity: 1;
+          will-change: transform;
         }
 
         .submenu-item:hover {
-          transform: translateY(-2px) scale(1.02);
-          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+          transform: translateY(-1px) scale(1.01);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
           border-color: rgba(59, 130, 246, 0.3);
+          background: linear-gradient(135deg, 
+            rgba(59, 130, 246, 0.08),
+            rgba(16, 185, 129, 0.08));
         }
 
         .submenu-item:active {
@@ -633,7 +604,7 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
           margin-bottom: 0;
         }
 
-        /* ICONE SUBMENU CON GLOW */
+        /* ICONE SUBMENU OTTIMIZZATE */
         .submenu-icon-wrapper {
           position: relative;
           display: flex;
@@ -643,33 +614,32 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
         }
 
         .submenu-icon {
-          width: 48px;
-          height: 48px;
-          border-radius: 16px;
+          width: 40px;
+          height: 40px;
+          border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 20px;
+          font-size: 18px;
           position: relative;
           z-index: 2;
-          transition: all 0.3s ease;
+          transition: all 0.25s ease;
         }
 
         .submenu-glow {
           position: absolute;
-          inset: -4px;
-          border-radius: 20px;
+          inset: -3px;
+          border-radius: 15px;
           opacity: 0;
-          transition: all 0.3s ease;
-          animation: glowPulse 3s ease-in-out infinite;
+          transition: all 0.25s ease;
         }
 
         .submenu-item:hover .submenu-glow {
-          opacity: 0.6;
-          transform: scale(1.1);
+          opacity: 0.4;
+          transform: scale(1.05);
         }
 
-        /* COLORI ICONE SPECIFICI */
+        /* COLORI ICONE */
         .banchetto-icon { background: linear-gradient(135deg, #10b981, #059669); color: white; }
         .banchetto-glow { background: radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, transparent 70%); }
 
@@ -679,8 +649,8 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
         .home-icon { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
         .home-glow { background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, transparent 70%); }
 
-        .services-icon { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
-        .services-glow { background: radial-gradient(circle, rgba(245, 158, 11, 0.4) 0%, transparent 70%); }
+        .about-icon { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+        .about-glow { background: radial-gradient(circle, rgba(245, 158, 11, 0.4) 0%, transparent 70%); }
 
         .products-icon { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
         .products-glow { background: radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, transparent 70%); }
@@ -696,60 +666,60 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
         }
 
         .submenu-title {
-          font-size: 16px;
-          font-weight: 700;
+          font-size: 14px;
+          font-weight: 600;
           color: #1e293b;
           line-height: 1.3;
-          margin-bottom: 4px;
-        }
-
-        .submenu-subtitle {
-          font-size: 14px;
-          color: #3b82f6;
-          font-weight: 600;
           margin-bottom: 2px;
         }
 
-        .submenu-description {
+        .submenu-subtitle {
           font-size: 13px;
-          color: #64748b;
+          color: #3b82f6;
           font-weight: 500;
-          line-height: 1.4;
+          margin-bottom: 1px;
+        }
+
+        .submenu-description {
+          font-size: 11px;
+          color: #64748b;
+          font-weight: 400;
+          line-height: 1.3;
         }
 
         /* FRECCIA SUBMENU */
         .submenu-arrow {
-          font-size: 18px;
+          font-size: 16px;
           color: #94a3b8;
-          transition: all 0.3s ease;
+          transition: all 0.25s ease;
           position: relative;
           z-index: 2;
         }
 
         .submenu-item:hover .submenu-arrow {
           color: #3b82f6;
-          transform: translateX(4px);
+          transform: translateX(3px);
         }
 
-        /* ANIMAZIONI KEYFRAMES */
-        @keyframes backdropMagneticIn {
+        /* ANIMAZIONI KEYFRAMES OTTIMIZZATE */
+        @keyframes backdropIn {
           from { 
             opacity: 0; 
-            backdrop-filter: blur(0px) saturate(100%);
-            -webkit-backdrop-filter: blur(0px) saturate(100%);
+            backdrop-filter: blur(0px);
+            -webkit-backdrop-filter: blur(0px);
           }
           to { 
             opacity: 1; 
-            backdrop-filter: blur(20px) saturate(150%);
-            -webkit-backdrop-filter: blur(20px) saturate(150%);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
           }
         }
 
-        @keyframes submenuMagneticIn {
+        @keyframes submenuIn {
           from { 
             opacity: 0; 
-            transform: translateY(30px) scale(0.9);
-            filter: blur(8px);
+            transform: translateY(20px) scale(0.95);
+            filter: blur(4px);
           }
           to { 
             opacity: 1; 
@@ -758,32 +728,10 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
           }
         }
 
-        @keyframes dockBorderGlow {
-          0%, 100% { 
-            transform: rotate(0deg); 
-            opacity: 0.3;
-          }
-          50% { 
-            transform: rotate(180deg); 
-            opacity: 0.7;
-          }
-        }
-
-        @keyframes coreGlow {
-          0%, 100% { 
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 0.5;
-          }
-          50% { 
-            transform: translate(-50%, -50%) scale(1.5);
-            opacity: 1;
-          }
-        }
-
-        @keyframes indicatorPulse {
+        @keyframes pulse {
           0%, 100% { 
             transform: scale(1);
-            opacity: 0.8;
+            opacity: 0.7;
           }
           50% { 
             transform: scale(1.2);
@@ -791,14 +739,35 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
           }
         }
 
-        @keyframes glowPulse {
+        /* CORE MAGNETICO */
+        .dock-core {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          width: 3px;
+          height: 3px;
+          background: radial-gradient(circle, rgba(59, 130, 246, 0.6) 0%, transparent 70%);
+          border-radius: 50%;
+          pointer-events: none;
+        }
+
+        .dock-core-glow {
+          position: absolute;
+          inset: -6px;
+          background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+          border-radius: 50%;
+          animation: coreGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes coreGlow {
           0%, 100% { 
-            transform: scale(1);
-            opacity: 0.3;
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0.4;
           }
           50% { 
-            transform: scale(1.1);
-            opacity: 0.6;
+            transform: translate(-50%, -50%) scale(1.3);
+            opacity: 0.8;
           }
         }
 
@@ -811,26 +780,26 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
 
         @media (max-width: 380px) {
           .main-dock {
-            min-width: 280px;
-            padding: 10px 20px;
+            min-width: 260px;
+            padding: 8px 18px;
           }
           
           .dock-button {
-            padding: 14px 16px;
-            min-width: 60px;
+            padding: 10px 14px;
+            min-width: 55px;
           }
           
           .submenu-panel {
-            min-width: 280px;
-            padding: 20px;
+            min-width: 260px;
+            padding: 18px;
           }
           
           .submenu-item {
-            padding: 16px 18px;
+            padding: 12px 14px;
           }
         }
 
-        /* iOS SAFE AREA AVANZATO */
+        /* iOS SAFE AREA */
         @supports (padding-bottom: env(safe-area-inset-bottom)) {
           .dock-container {
             padding-bottom: calc(24px + env(safe-area-inset-bottom));
@@ -842,11 +811,14 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
         .main-dock,
         .submenu-panel {
           will-change: transform, opacity;
+          backface-visibility: hidden;
+          transform-style: preserve-3d;
         }
 
         .dock-button,
         .submenu-item {
           will-change: transform;
+          backface-visibility: hidden;
         }
 
         /* ACCESSIBILITÀ */
@@ -873,15 +845,15 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
           
           .submenu-panel {
             background: linear-gradient(135deg, 
-              rgba(30, 30, 30, 0.98) 0%, 
-              rgba(20, 20, 20, 0.95) 100%);
+              rgba(30, 30, 30, 0.97) 0%, 
+              rgba(20, 20, 20, 0.93) 100%);
             border-color: rgba(255, 255, 255, 0.1);
           }
           
           .submenu-item {
             background: linear-gradient(135deg, 
-              rgba(40, 40, 40, 0.8),
-              rgba(30, 30, 30, 0.6));
+              rgba(40, 40, 40, 0.7),
+              rgba(30, 30, 30, 0.5));
             border-color: rgba(255, 255, 255, 0.1);
           }
           
@@ -902,51 +874,15 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
           }
         }
 
-        /* EFFETTI SPECIALI PREMIUM */
-        .main-dock {
-          position: relative;
-        }
-
-        .main-dock::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.1) 0%,
-            transparent 30%,
-            transparent 70%,
-            rgba(255, 255, 255, 0.1) 100%);
-          border-radius: inherit;
-          pointer-events: none;
-          animation: shimmer 3s ease-in-out infinite;
-        }
-
-        @keyframes shimmer {
-          0%, 100% { 
-            opacity: 0;
-            transform: translateX(-100%);
-          }
-          50% { 
-            opacity: 1;
-            transform: translateX(100%);
-          }
-        }
-
-        /* STATO TOUCH OTTIMIZZATO */
-        .dock-button:active,
-        .submenu-item:active {
-          transition: transform 0.1s ease !important;
-        }
-
-        /* INDICATORI DI STATO */
+        /* INDICATORE ATTIVO OTTIMIZZATO */
         .dock-button-active::after {
           content: '';
           position: absolute;
-          bottom: 8px;
+          bottom: 6px;
           left: 50%;
           transform: translateX(-50%);
-          width: 4px;
-          height: 4px;
+          width: 3px;
+          height: 3px;
           background: #3b82f6;
           border-radius: 50%;
           animation: activeIndicator 1.5s ease-in-out infinite;
@@ -955,10 +891,10 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
         @keyframes activeIndicator {
           0%, 100% { 
             transform: translateX(-50%) scale(1);
-            opacity: 0.8;
+            opacity: 0.7;
           }
           50% { 
-            transform: translateX(-50%) scale(1.5);
+            transform: translateX(-50%) scale(1.3);
             opacity: 1;
           }
         }

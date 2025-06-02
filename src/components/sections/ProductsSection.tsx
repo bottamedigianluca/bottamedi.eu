@@ -23,7 +23,7 @@ const translations = {
         image: '/images/melinda_golden.webp',
         products: [
           { name: 'Mele Melinda DOP', season: 'Tutto l\'anno', origin: 'Val di Non' },
-          { name: 'Kiwi Gold Premium', season: 'Ott-Apr', origin: 'Trentino' },
+          { name: 'Kiwi Gold Premium', season: 'Ott-Apr', origin: 'Nuova Zelanda' },
           { name: 'Pesche & Albicocche', season: 'Giu-Set', origin: 'Emilia Romagna' },
           { name: 'Uva da tavola Italia', season: 'Ago-Nov', origin: 'Puglia/Sicilia' },
           { name: 'Agrumi Premium', season: 'Nov-Apr', origin: 'Sicilia/Calabria' },
@@ -59,7 +59,7 @@ const translations = {
           { name: 'Patate di montagna', season: 'Ago-Mar', origin: 'Altopiani trentini' },
           { name: 'Melanzane viola', season: 'Giu-Set', origin: 'Trentino/Veneto' },
           { name: 'Zucchine tonde', season: 'Mag-Set', origin: 'Valle dei Laghi' },
-          { name: 'Carote novelle', season: 'Tutto l\'anno', origin: 'Trentino' }
+          { name: 'Finocchi dolci', season: 'Ott-Mar', origin: 'Trentino' }
         ],
         features: [
           { icon: '🚚', title: 'Filiera Corta', desc: 'Dal produttore in massimo 24 ore' },
@@ -113,7 +113,7 @@ const translations = {
         image: '/images/melinda_golden.webp',
         products: [
           { name: 'Melinda DOP Äpfel', season: 'Ganzjährig', origin: 'Nonstal' },
-          { name: 'Kiwi Gold Premium', season: 'Okt-Apr', origin: 'Südtirol' },
+          { name: 'Kiwi Gold Premium', season: 'Okt-Apr', origin: 'Neuseeland' },
           { name: 'Pfirsiche & Aprikosen', season: 'Jun-Sep', origin: 'Emilia Romagna' },
           { name: 'Tafeltrauben Italien', season: 'Aug-Nov', origin: 'Apulien/Sizilien' },
           { name: 'Premium Zitrusfrüchte', season: 'Nov-Apr', origin: 'Sizilien/Kalabrien' },
@@ -149,7 +149,7 @@ const translations = {
           { name: 'Bergkartoffeln', season: 'Aug-Mär', origin: 'Südtiroler Hochebenen' },
           { name: 'Violette Auberginen', season: 'Jun-Sep', origin: 'Südtirol/Venetien' },
           { name: 'Runde Zucchini', season: 'Mai-Sep', origin: 'Tal der Seen' },
-          { name: 'Junge Karotten', season: 'Ganzjährig', origin: 'Südtirol' }
+          { name: 'Süßer Fenchel', season: 'Okt-Mär', origin: 'Südtirol' }
         ],
         features: [
           { icon: '🚚', title: 'Kurze Lieferkette', desc: 'Vom Produzenten in maximal 24 Stunden' },

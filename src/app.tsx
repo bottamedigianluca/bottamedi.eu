@@ -2,7 +2,6 @@ import React, { Suspense, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { haptic, triggerHapticOnScroll, triggerHapticOnSectionChange } from './utils/haptics'
 
 // Lazy load components for better performance
 const Header = React.lazy(() => import('./components/layout/Header'))
@@ -25,40 +24,48 @@ const SectionLoader = () => (
   </div>
 )
 
-// 🍎 GLOBAL HAPTIC INTEGRATION COMPONENT AGGIORNATO
+// 🍎 HAPTIC FEEDBACK TEMPORANEO INTEGRATO
 const GlobalHapticIntegration: React.FC = () => {
   useEffect(() => {
-    // 🎯 GLOBAL CLICK HAPTICS POTENZIATI
-    const handleGlobalClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement
-      
-      // Button haptics - FEEDBACK SOLIDO
-      if (target.tagName === 'BUTTON' && !target.hasAttribute('data-no-haptic')) {
-        haptic.trigger('button')
-      }
-      
-      // Link haptics
-      if (target.tagName === 'A' && !target.hasAttribute('data-no-haptic')) {
-        haptic.trigger('tap')
-      }
-      
-      // Card/clickable haptics
-      if (target.closest('[data-clickable]')) {
-        haptic.trigger('selection')
+    // Sistema haptic temporaneo fino a quando non creiamo utils/haptics.ts
+    const triggerHaptic = (pattern: number[]) => {
+      if ('vibrate' in navigator) {
+        try {
+          navigator.vibrate(pattern)
+        } catch (error) {
+          console.warn('Haptic non supportato:', error)
+        }
       }
     }
 
-    // 📱 MOBILE TOUCH HAPTICS AVANZATI
+    // 🎯 GLOBAL CLICK HAPTICS
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      
+      if (target.tagName === 'BUTTON' && !target.hasAttribute('data-no-haptic')) {
+        triggerHaptic([30, 10, 25]) // button pattern
+      }
+      
+      if (target.tagName === 'A' && !target.hasAttribute('data-no-haptic')) {
+        triggerHaptic([15]) // tap pattern
+      }
+      
+      if (target.closest('[data-clickable]')) {
+        triggerHaptic([20]) // selection pattern
+      }
+    }
+
+    // 📱 MOBILE TOUCH HAPTICS
     const handleTouchStart = (e: TouchEvent) => {
       const target = e.target as HTMLElement
       
       if (window.innerWidth < 768) {
         if (target.tagName === 'BUTTON') {
-          haptic.trigger('button') // FEEDBACK IMMEDIATO
+          triggerHaptic([30, 10, 25])
           target.style.transform = 'scale(0.98)'
           target.style.transition = 'transform 0.1s ease'
         } else if (target.tagName === 'A') {
-          haptic.trigger('tap')
+          triggerHaptic([15])
           target.style.transform = 'scale(0.98)'
           target.style.transition = 'transform 0.1s ease'
         }
@@ -77,25 +84,27 @@ const GlobalHapticIntegration: React.FC = () => {
       }
     }
 
-    // 🔄 FORM HAPTICS MIGLIORATI
-    const handleFormSubmit = (e: SubmitEvent) => {
-      haptic.trigger('success')
+    // Form haptics
+    const handleFormSubmit = () => {
+      triggerHaptic([40, 20, 15, 20, 45]) // success pattern
     }
 
     const handleInputFocus = (e: FocusEvent) => {
       const target = e.target as HTMLElement
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
-        haptic.trigger('selection')
+        triggerHaptic([20]) // selection pattern
       }
     }
 
-    // 📱 MOBILE SCROLL HAPTICS
-    const cleanupScroll = triggerHapticOnScroll()
-
-    // 🎯 SECTION INTERSECTION HAPTICS
-    const cleanupSections = triggerHapticOnSectionChange([
-      'hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact'
-    ])
+    // TEST HAPTIC AL CARICAMENTO
+    setTimeout(() => {
+      if ('vibrate' in navigator) {
+        triggerHaptic([20, 40, 15, 40, 25]) // notification pattern
+        console.log('🎯 Haptic Feedback ATTIVO!')
+      } else {
+        console.warn('⚠️ Haptic Feedback NON supportato su questo dispositivo')
+      }
+    }, 1000)
 
     // Add event listeners
     document.addEventListener('click', handleGlobalClick)
@@ -104,16 +113,6 @@ const GlobalHapticIntegration: React.FC = () => {
     document.addEventListener('submit', handleFormSubmit)
     document.addEventListener('focusin', handleInputFocus)
 
-    // TEST HAPTIC AL CARICAMENTO
-    setTimeout(() => {
-      if (haptic.getSupport()) {
-        haptic.trigger('notification') // Test di benvenuto
-        console.log('🎯 Haptic Feedback ATTIVO!')
-      } else {
-        console.warn('⚠️ Haptic Feedback NON supportato su questo dispositivo')
-      }
-    }, 1000)
-
     // Cleanup
     return () => {
       document.removeEventListener('click', handleGlobalClick)
@@ -121,8 +120,6 @@ const GlobalHapticIntegration: React.FC = () => {
       document.removeEventListener('touchend', handleTouchEnd)
       document.removeEventListener('submit', handleFormSubmit)
       document.removeEventListener('focusin', handleInputFocus)
-      cleanupScroll()
-      cleanupSections()
     }
   }, [])
 
@@ -300,14 +297,18 @@ const App: React.FC = () => {
     document.documentElement.lang = language
     
     // 🍎 HAPTIC ON LANGUAGE CHANGE
-    haptic.trigger('toggle')
+    if ('vibrate' in navigator) {
+      navigator.vibrate([25, 15, 35]) // toggle pattern
+    }
   }
 
   const toggleMenu = () => {
     setState(prev => ({ ...prev, isMenuOpen: !prev.isMenuOpen }))
     
     // 🍎 HAPTIC ON MENU TOGGLE
-    haptic.trigger('button')
+    if ('vibrate' in navigator) {
+      navigator.vibrate([30, 10, 25]) // button pattern
+    }
   }
 
   // Page transition variants
@@ -407,7 +408,7 @@ const App: React.FC = () => {
           {/* AGGIUNTA: Wholesale Section - IMPORTANTE! */}
           <div ref={wholesaleRef}>
             <Suspense fallback={<SectionLoader />}>
-              <WholesaleContact language={state.language} />
+              <WholesaleContact language={state.language} inView={wholesaleInView} />
             </Suspense>
           </div>
 

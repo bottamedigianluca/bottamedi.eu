@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import { haptic } from '../utils/haptics'
 
 interface MobileDockProps {
   language: 'it' | 'de'
@@ -38,17 +39,9 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
   
   const t = translations[language]
 
-  // 🍎 HAPTIC FEEDBACK OTTIMIZZATO
-  const triggerHaptic = useCallback((type: 'success' | 'warning' | 'error' | 'selection' = 'selection') => {
-    if ('vibrate' in navigator) {
-      const patterns = {
-        success: [10, 50, 10],
-        warning: [15, 100, 15],
-        error: [25, 150, 25],
-        selection: [5]
-      }
-      navigator.vibrate(patterns[type])
-    }
+  // 🍎 HAPTIC FEEDBACK VERO E FUNZIONANTE
+  const triggerHaptic = useCallback((type: 'success' | 'warning' | 'error' | 'selection' | 'button' = 'selection') => {
+    haptic.trigger(type)
   }, [])
 
   // 📱 DEVICE DETECTION OTTIMIZZATO
@@ -174,7 +167,7 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
   }, [sectionMapping, triggerHaptic])
 
   const toggleSubmenu = useCallback((submenu: string) => {
-    triggerHaptic('selection')
+    triggerHaptic('button')
     setActiveSubmenu(activeSubmenu === submenu ? null : submenu)
   }, [activeSubmenu, triggerHaptic])
 
@@ -329,7 +322,7 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
           <button
             className={`dock-button ${activeSubmenu === 'menu' ? 'dock-button-active' : ''}`}
             onClick={() => toggleSubmenu('menu')}
-            onTouchStart={() => triggerHaptic('selection')}
+            onTouchStart={() => triggerHaptic('button')}
           >
             <div className="dock-button-glow"></div>
             <div className="dock-icon">
@@ -344,7 +337,7 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
           <button
             className={`dock-button ${activeSubmenu === 'phone' ? 'dock-button-active' : ''}`}
             onClick={() => toggleSubmenu('phone')}
-            onTouchStart={() => triggerHaptic('selection')}
+            onTouchStart={() => triggerHaptic('button')}
           >
             <div className="dock-button-glow"></div>
             <div className="dock-icon">

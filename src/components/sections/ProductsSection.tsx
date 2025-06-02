@@ -59,7 +59,7 @@ const translations = {
           { name: 'Patate di montagna', season: 'Ago-Mar', origin: 'Altopiani trentini' },
           { name: 'Melanzane viola', season: 'Giu-Set', origin: 'Trentino/Veneto' },
           { name: 'Zucchine tonde', season: 'Mag-Set', origin: 'Valle dei Laghi' },
-          { name: 'Finocchi dolci', season: 'Ott-Mar', origin: 'Trentino' }
+          { name: 'Pomodori San Marzano', season: 'Lug-Set', origin: 'Campania' }
         ],
         features: [
           { icon: '🚚', title: 'Filiera Corta', desc: 'Dal produttore in massimo 24 ore' },
@@ -149,7 +149,7 @@ const translations = {
           { name: 'Bergkartoffeln', season: 'Aug-Mär', origin: 'Südtiroler Hochebenen' },
           { name: 'Violette Auberginen', season: 'Jun-Sep', origin: 'Südtirol/Venetien' },
           { name: 'Runde Zucchini', season: 'Mai-Sep', origin: 'Tal der Seen' },
-          { name: 'Süßer Fenchel', season: 'Okt-Mär', origin: 'Südtirol' }
+          { name: 'San Marzano Tomaten', season: 'Jul-Sep', origin: 'Kampanien' }
         ],
         features: [
           { icon: '🚚', title: 'Kurze Lieferkette', desc: 'Vom Produzenten in maximal 24 Stunden' },
@@ -260,7 +260,8 @@ const MobileProductCard: React.FC<{
 
         {/* Quick Products Preview */}
         <div className="mb-5">
-          <h4 className="font-semibold text-gray-900 mb-3 text-sm">Alcuni dei nostri prodotti:</h4>
+          <h4 className="font-semibold text-gray-900 mb-3 text-sm">Alcuni esempi della nostra selezione:</h4>
+          <p className="text-xs text-gray-500 mb-3 italic">*Disponibilità variabile secondo stagione e mercato</p>
           <div className="flex flex-wrap gap-2">
             {category.products.slice(0, 3).map((product: any, i: number) => (
               <span key={i} className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
@@ -310,7 +311,8 @@ const MobileProductCard: React.FC<{
 
               {/* Complete Products List */}
               <div className="mb-5">
-                <h4 className="font-semibold text-gray-900 mb-3 text-sm">La nostra selezione:</h4>
+                <h4 className="font-semibold text-gray-900 mb-3 text-sm">Esempi della nostra selezione stagionale:</h4>
+                <p className="text-xs text-gray-500 mb-3 italic">*La disponibilità varia secondo stagione, mercato e qualità</p>
                 <div className="grid grid-cols-1 gap-2">
                   {category.products.map((product: any, i: number) => (
                     <motion.div
@@ -564,7 +566,8 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ language, inView }) =
 
               {/* Products Grid */}
               <div className="mb-6">
-                <h4 className="text-xl font-semibold text-gray-900 mb-5">La nostra selezione:</h4>
+                <h4 className="text-xl font-semibold text-gray-900 mb-3">Esempi della nostra selezione:</h4>
+                <p className="text-sm text-gray-500 mb-4 italic">*Disponibilità variabile secondo stagione, qualità e mercato di riferimento</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   {t.categories[activeCategory].products.map((product: any, index: number) => (
                     <motion.div

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 
 interface BanchettoSectionProps {
@@ -146,16 +146,19 @@ const translations = {
   }
 }
 
-// 🖼️ COMPONENTE GALLERY ITEM ULTRA OTTIMIZZATO
-const GalleryItem: React.FC<{
+// 🚀 PERFORMANCE: Advanced Lazy Image Component con Intersection Observer ottimizzato
+const AdvancedLazyImage: React.FC<{
   item: any
   index: number
-}> = React.memo(({ item, index }) => {
+  priority?: boolean
+}> = React.memo(({ item, index, priority = false }) => {
   const [imageState, setImageState] = useState<'loading' | 'loaded' | 'error'>('loading')
+  const shouldReduceMotion = useReducedMotion()
+  
   const [ref, inView] = useInView({
     threshold: 0.1,
     triggerOnce: true,
-    rootMargin: '100px' // Carica prima su mobile
+    rootMargin: priority ? '200px' : '100px' // Preload prioritarie prima
   })
 
   const handleImageLoad = useCallback(() => {
@@ -166,48 +169,48 @@ const GalleryItem: React.FC<{
     setImageState('error')
   }, [])
 
-  // Memoizza le varianti di animazione
+  // 🎨 PERFORMANCE: Memoized variants
   const itemVariants = useMemo(() => ({
     hidden: { 
       opacity: 0, 
-      y: 20, 
-      scale: 0.98 
+      y: shouldReduceMotion ? 0 : 20, 
+      scale: shouldReduceMotion ? 1 : 0.98 
     },
     visible: { 
       opacity: 1, 
       y: 0, 
       scale: 1,
       transition: {
-        duration: 0.4,
-        delay: Math.min(index * 0.05, 0.3),
+        duration: shouldReduceMotion ? 0.2 : 0.4,
+        delay: shouldReduceMotion ? 0 : Math.min(index * 0.05, 0.3),
         ease: [0.25, 0.46, 0.45, 0.94]
       }
     }
-  }), [index])
+  }), [index, shouldReduceMotion])
 
   const imageVariants = useMemo(() => ({
     loading: { 
       opacity: 0, 
-      scale: 1.05,
-      filter: 'blur(4px)'
+      scale: shouldReduceMotion ? 1 : 1.05,
+      filter: shouldReduceMotion ? 'none' : 'blur(4px)'
     },
     loaded: { 
       opacity: 1, 
       scale: 1,
       filter: 'blur(0px)',
       transition: { 
-        duration: 0.5,
+        duration: shouldReduceMotion ? 0.2 : 0.5,
         ease: [0.25, 0.46, 0.45, 0.94]
       }
     },
-    hover: { 
+    hover: shouldReduceMotion ? {} : { 
       scale: 1.03,
       transition: { 
         duration: 0.3,
         ease: "easeOut"
       } 
     }
-  }), [])
+  }), [shouldReduceMotion])
 
   return (
     <motion.div
@@ -215,14 +218,14 @@ const GalleryItem: React.FC<{
       initial="hidden"
       animate={inView ? "visible" : "hidden"}
       variants={itemVariants}
-      whileHover={{ y: -3 }}
+      whileHover={shouldReduceMotion ? {} : { y: -3 }}
       className="group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
       style={{ willChange: 'transform' }}
     >
-      {/* 📷 IMAGE CONTAINER MOBILE OTTIMIZZATO */}
+      {/* 📷 IMAGE CONTAINER ULTRA OTTIMIZZATO */}
       <div className="relative h-56 overflow-hidden bg-gradient-to-br from-green-50 to-green-100">
         
-        {/* 🔄 LOADING SKELETON MOBILE */}
+        {/* 🔄 LOADING SKELETON OTTIMIZZATO */}
         {imageState === 'loading' && (
           <div className="absolute inset-0 flex items-center justify-center bg-green-100">
             <div className="flex flex-col items-center space-y-2">
@@ -232,27 +235,25 @@ const GalleryItem: React.FC<{
           </div>
         )}
 
-        {/* ❌ ERROR PLACEHOLDER */}
+        {/* ❌ ERROR PLACEHOLDER OTTIMIZZATO */}
         {imageState === 'error' && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
             <div className="text-center text-gray-400">
               <div className="w-12 h-12 mx-auto mb-2 bg-gray-200 rounded-lg flex items-center justify-center">
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                </svg>
+                📷
               </div>
               <p className="text-xs">Immagine non disponibile</p>
             </div>
           </div>
         )}
 
-        {/* 🖼️ IMMAGINE PRINCIPALE MOBILE FRIENDLY */}
-        {imageState !== 'error' && (
+        {/* 🖼️ IMMAGINE PRINCIPALE ULTRA OTTIMIZZATA */}
+        {imageState !== 'error' && inView && (
           <motion.img
-            src={inView ? item.src : ''}
+            src={item.src}
             alt={item.description}
             className="w-full h-full object-cover"
-            loading="lazy"
+            loading={priority ? "eager" : "lazy"}
             onLoad={handleImageLoad}
             onError={handleImageError}
             initial="loading"
@@ -262,9 +263,9 @@ const GalleryItem: React.FC<{
             style={{
               willChange: 'transform, opacity, filter'
             }}
-            // MOBILE OPTIMIZATIONS
+            // PERFORMANCE OPTIMIZATIONS
             decoding="async"
-            fetchPriority={index < 4 ? "high" : "low"}
+            fetchPriority={priority ? "high" : "low"}
           />
         )}
         
@@ -278,9 +279,9 @@ const GalleryItem: React.FC<{
         <div className="absolute bottom-3 left-3 right-3">
           <motion.h3 
             className="text-white font-semibold text-sm mb-1 drop-shadow-lg leading-tight"
-            initial={{ opacity: 0, y: 5 }}
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 5 }}
             animate={imageState === 'loaded' ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.2, duration: 0.3 }}
+            transition={{ delay: shouldReduceMotion ? 0 : 0.2, duration: shouldReduceMotion ? 0.1 : 0.3 }}
           >
             {item.title}
           </motion.h3>
@@ -296,11 +297,51 @@ const GalleryItem: React.FC<{
   )
 })
 
-// Imposta displayName per il debugging
-GalleryItem.displayName = 'GalleryItem'
+AdvancedLazyImage.displayName = 'AdvancedLazyImage'
+
+// 🏆 PERFORMANCE: Hero Image Component Ottimizzato
+const HeroImage: React.FC<{ inView: boolean }> = React.memo(({ inView }) => {
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const shouldReduceMotion = useReducedMotion()
+
+  const handleImageLoad = useCallback(() => {
+    setImageLoaded(true)
+  }, [])
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 40 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: shouldReduceMotion ? 0.2 : 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="mb-14"
+    >
+      <div className="relative h-80 lg:h-96 rounded-2xl overflow-hidden shadow-xl">
+        {/* Loading placeholder */}
+        {!imageLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-br from-green-100 to-green-200 animate-pulse" />
+        )}
+        
+        <img
+          src="/images/banchetto.webp"
+          alt="Il Banchetto Bottamedi a Mezzolombardo ricco di frutta e verdura fresca"
+          className={`w-full h-full object-cover transition-opacity duration-500 ${
+            imageLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          loading="eager"
+          onLoad={handleImageLoad}
+          style={{ willChange: 'opacity' }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+      </div>
+    </motion.div>
+  )
+})
+
+HeroImage.displayName = 'HeroImage'
 
 const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView }) => {
-  const t = translations[language]
+  const t = useMemo(() => translations[language], [language])
+  const shouldReduceMotion = useReducedMotion()
 
   const scrollToContact = useCallback(() => {
     const element = document.getElementById('contact')
@@ -312,57 +353,70 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
         behavior: 'smooth'
       })
     }
+
+    // 🎯 Haptic feedback ottimizzato
+    if ('vibrate' in navigator) {
+      try {
+        navigator.vibrate(25)
+      } catch (e) {
+        console.log('Haptic non disponibile')
+      }
+    }
   }, [])
 
-  // Memoizza le varianti per evitare ricrearle ad ogni render
+  // 🎨 PERFORMANCE: Memoized animation variants
   const containerVariants = useMemo(() => ({
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.03,
-        delayChildren: 0.1
+        staggerChildren: shouldReduceMotion ? 0 : 0.03,
+        delayChildren: shouldReduceMotion ? 0 : 0.1
       }
     }
-  }), [])
+  }), [shouldReduceMotion])
 
   const headerVariants = useMemo(() => ({
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
     visible: { 
       opacity: 1, 
       y: 0,
       transition: {
-        duration: 0.6,
+        duration: shouldReduceMotion ? 0.2 : 0.6,
         ease: [0.25, 0.46, 0.45, 0.94]
       }
     }
-  }), [])
+  }), [shouldReduceMotion])
+
+  const ctaVariants = useMemo(() => ({
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: shouldReduceMotion ? 0.2 : 0.6,
+        delay: shouldReduceMotion ? 0 : 0.4,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
+  }), [shouldReduceMotion])
+
+  // 🚀 PERFORMANCE: Determina immagini prioritarie (prime 4)
+  const priorityImages = useMemo(() => new Set([0, 1, 2, 3]), [])
 
   return (
     <section id="dettaglio" className="py-20 lg:py-28 bg-gradient-to-br from-green-50 to-white relative overflow-hidden">
       {/* 🎨 Background Elements OTTIMIZZATI */}
-      <div className="absolute top-1/4 left-0 w-80 h-80 bg-green-200/15 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-green-300/15 rounded-full blur-3xl" />
+      {!shouldReduceMotion && (
+        <>
+          <div className="absolute top-1/4 left-0 w-80 h-80 bg-green-200/15 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-green-300/15 rounded-full blur-3xl" />
+        </>
+      )}
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* 🏪 HERO IMAGE OTTIMIZZATA */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="mb-14"
-        >
-          <div className="relative h-80 lg:h-96 rounded-2xl overflow-hidden shadow-xl">
-            <img
-              src="/images/banchetto.webp"
-              alt="Il Banchetto Bottamedi a Mezzolombardo ricco di frutta e verdura fresca"
-              className="w-full h-full object-cover"
-              loading="eager"
-              style={{ willChange: 'transform' }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-          </div>
-        </motion.div>
+        <HeroImage inView={inView} />
 
         {/* 📝 HEADER OTTIMIZZATO */}
         <motion.div
@@ -390,20 +444,25 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-14"
         >
           {t.gallery.map((item, index) => (
-            <GalleryItem key={`${item.src}-${index}`} item={item} index={index} />
+            <AdvancedLazyImage 
+              key={`gallery-${index}`} 
+              item={item} 
+              index={index}
+              priority={priorityImages.has(index)}
+            />
           ))}
         </motion.div>
 
         {/* 🎯 CTA OTTIMIZZATO */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          variants={ctaVariants}
           className="text-center"
         >
           <motion.button
             onClick={scrollToContact}
-            whileHover={{ scale: 1.03, y: -2 }}
+            whileHover={shouldReduceMotion ? {} : { scale: 1.03, y: -2 }}
             whileTap={{ scale: 0.97 }}
             className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 lg:px-8 lg:py-4 rounded-xl font-semibold text-base lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300"
             style={{ willChange: 'transform' }}
@@ -416,4 +475,4 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
   )
 }
 
-export default BanchettoSection
+export default React.memo(BanchettoSection)

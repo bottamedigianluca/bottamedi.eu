@@ -153,23 +153,34 @@ const PremiumGlobalStyles: React.FC = () => {
         transform: scale(0.98) !important;
       }
 
-      /* 📱 MOBILE OPTIMIZATION PULITA */
+      /* 📱 MOBILE OPTIMIZATION - ELIMINA RITARDI 300MS */
       @media (max-width: 767px) {
         * {
           -webkit-tap-highlight-color: transparent;
           -webkit-touch-callout: none;
           -webkit-user-select: none;
           user-select: none;
+          /* ELIMINA RITARDO 300MS */
+          touch-action: manipulation;
         }
 
         input, textarea, [contenteditable] {
           -webkit-user-select: text;
           user-select: text;
+          touch-action: auto;
+        }
+
+        button, a, [role="button"] {
+          /* ELIMINA COMPLETAMENTE IL RITARDO */
+          touch-action: manipulation;
+          -webkit-tap-highlight-color: transparent;
         }
 
         html {
           scroll-behavior: smooth;
           -webkit-overflow-scrolling: touch;
+          /* VIEWPORT OTTIMIZZATO */
+          -webkit-text-size-adjust: 100%;
         }
         
         body {

@@ -4,9 +4,6 @@ import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { haptic, triggerHapticOnScroll, triggerHapticOnSectionChange } from './utils/haptics'
 
-// 🍎 HAPTIC IMPORTS
-import { haptic, triggerHapticOnScroll, triggerHapticOnSectionChange } from './utils/haptics'
-
 // Lazy load components for better performance
 const Header = React.lazy(() => import('./components/layout/Header'))
 const HeroSection = React.lazy(() => import('./components/sections/HeroSection'))
@@ -14,6 +11,7 @@ const AboutSection = React.lazy(() => import('./components/sections/AboutSection
 const BanchettoSection = React.lazy(() => import('./components/sections/Banchettosection'))
 const ServicesSection = React.lazy(() => import('./components/sections/ServicesSection'))
 const ProductsSection = React.lazy(() => import('./components/sections/ProductsSection'))
+const WholesaleContact = React.lazy(() => import('./components/sections/Wholesalecontact'))
 const ContactSection = React.lazy(() => import('./components/sections/ContactSection'))
 const Footer = React.lazy(() => import('./components/layout/Footer'))
 const MobileDock = React.lazy(() => import('./components/layout/MobileDock'))
@@ -89,8 +87,10 @@ const GlobalHapticIntegration: React.FC = () => {
     // 📱 MOBILE SCROLL HAPTICS
     const cleanupScroll = triggerHapticOnScroll()
 
-    // 🎯 SECTION INTERSECTION HAPTICS
-    const cleanupSections = triggerHapticOnSectionChange(['hero', 'about', 'dettaglio', 'services', 'products', 'contact'])
+    // 🎯 SECTION INTERSECTION HAPTICS - AGGIUNTO WHOLESALE
+    const cleanupSections = triggerHapticOnSectionChange([
+      'hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact'
+    ])
 
     // Add event listeners
     document.addEventListener('click', handleGlobalClick)
@@ -114,7 +114,7 @@ const GlobalHapticIntegration: React.FC = () => {
   return null
 }
 
-// 🍎 PREMIUM GLOBAL STYLES
+// 🍎 PREMIUM GLOBAL STYLES OTTIMIZZATI
 const PremiumGlobalStyles: React.FC = () => {
   useEffect(() => {
     const style = document.createElement('style')
@@ -141,7 +141,7 @@ const PremiumGlobalStyles: React.FC = () => {
         transform: scale(0.98) !important;
       }
 
-      /* 📱 MOBILE OPTIMIZATION */
+      /* 📱 MOBILE OPTIMIZATION AVANZATA */
       @media (max-width: 767px) {
         * {
           -webkit-tap-highlight-color: transparent;
@@ -162,6 +162,16 @@ const PremiumGlobalStyles: React.FC = () => {
         
         body {
           overscroll-behavior: contain;
+          /* IMPORTANTE: Assicura spazio per il dock */
+          padding-bottom: env(safe-area-inset-bottom, 0);
+        }
+
+        /* FORCE DOCK VISIBILITY */
+        #mobile-dock-root {
+          display: block !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+          pointer-events: auto !important;
         }
       }
 
@@ -199,11 +209,33 @@ const PremiumGlobalStyles: React.FC = () => {
         border: 1px solid rgba(255, 255, 255, 0.18) !important;
       }
 
-      /* 📱 MOBILE DOCK ENSURES IT'S ALWAYS VISIBLE */
-      #mobile-dock-container {
+      /* 📱 MOBILE DOCK GARANTITO SEMPRE VISIBILE */
+      .dock-container {
         position: fixed !important;
         z-index: 999999 !important;
         pointer-events: auto !important;
+        bottom: 0 !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        /* FORCE VISIBILITY */
+        display: flex !important;
+        visibility: visible !important;
+      }
+
+      /* ASSICURA CHE IL DOCK NON SIA MAI NASCOSTO */
+      @media (max-width: 767px) {
+        .dock-container {
+          display: flex !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+        }
+      }
+
+      /* NASCONDE SU DESKTOP */
+      @media (min-width: 768px) {
+        .dock-container {
+          display: none !important;
+        }
       }
     `
     
@@ -240,12 +272,13 @@ const App: React.FC = () => {
     restDelta: 0.001
   })
 
-  // Intersection observer per le sezioni
+  // Intersection observer per TUTTE le sezioni incluso wholesale
   const [heroRef, heroInView] = useInView({ threshold: 0.1 })
   const [aboutRef, aboutInView] = useInView({ threshold: 0.1 })
   const [dettaglioRef, dettaglioInView] = useInView({ threshold: 0.1 })
   const [servicesRef, servicesInView] = useInView({ threshold: 0.1 })
   const [productsRef, productsInView] = useInView({ threshold: 0.1 })
+  const [wholesaleRef, wholesaleInView] = useInView({ threshold: 0.1 })
   const [contactRef, contactInView] = useInView({ threshold: 0.1 })
 
   // Language persistence
@@ -256,15 +289,16 @@ const App: React.FC = () => {
     }
   }, [])
 
-  // Detect current section
+  // Detect current section - AGGIUNTO WHOLESALE
   useEffect(() => {
     if (heroInView) setState(prev => ({ ...prev, currentSection: 'hero' }))
     else if (aboutInView) setState(prev => ({ ...prev, currentSection: 'about' }))
     else if (dettaglioInView) setState(prev => ({ ...prev, currentSection: 'dettaglio' }))
     else if (servicesInView) setState(prev => ({ ...prev, currentSection: 'services' }))
     else if (productsInView) setState(prev => ({ ...prev, currentSection: 'products' }))
+    else if (wholesaleInView) setState(prev => ({ ...prev, currentSection: 'wholesale' }))
     else if (contactInView) setState(prev => ({ ...prev, currentSection: 'contact' }))
-  }, [heroInView, aboutInView, dettaglioInView, servicesInView, productsInView, contactInView])
+  }, [heroInView, aboutInView, dettaglioInView, servicesInView, productsInView, wholesaleInView, contactInView])
 
   const updateLanguage = (language: 'it' | 'de') => {
     setState(prev => ({ ...prev, language }))
@@ -306,6 +340,7 @@ const App: React.FC = () => {
         <meta name="description" content="Scopri 50 anni di tradizione familiare nell'ortofrutta. Freschezza quotidiana e qualità superiore per retail e HORECA a Mezzolombardo, Trentino." />
         <meta name="keywords" content="frutta verdura, mezzolombardo, trentino, ingrosso ortofrutta, HORECA, freschezza, qualità" />
         <link rel="canonical" href="https://www.bottamedi.eu" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
       </Helmet>
 
       {/* Progress bar ottimizzato */}
@@ -375,6 +410,13 @@ const App: React.FC = () => {
             </Suspense>
           </div>
 
+          {/* AGGIUNTA: Wholesale Section - IMPORTANTE! */}
+          <div ref={wholesaleRef}>
+            <Suspense fallback={<SectionLoader />}>
+              <WholesaleContact language={state.language} />
+            </Suspense>
+          </div>
+
           {/* Contact Section */}
           <div ref={contactRef}>
             <Suspense fallback={<SectionLoader />}>
@@ -402,10 +444,12 @@ const App: React.FC = () => {
         </AnimatePresence>
       </motion.div>
 
-      {/* 📱 MOBILE DOCK - INDIPENDENTE DAL LAYOUT PRINCIPALE */}
-      <Suspense fallback={null}>
-        <MobileDock language={state.language} />
-      </Suspense>
+      {/* 📱 MOBILE DOCK - CONTAINER ISOLATO E GARANTITO */}
+      <div id="mobile-dock-root" className="block lg:hidden">
+        <Suspense fallback={null}>
+          <MobileDock language={state.language} />
+        </Suspense>
+      </div>
     </>
   )
 }

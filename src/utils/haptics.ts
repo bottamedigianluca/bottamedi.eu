@@ -1,354 +1,408 @@
-import React, { Suspense, useEffect, useState } from 'react'
-import { Helmet } from 'react-helmet-async'
-import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
-import { useInView } from 'react-intersection-observer'
+// utils/haptics.ts - Sistema Haptic Feedback COMPLETO per iOS + Android
 
-// Lazy load components for better performance
-const Header = React.lazy(() => import('./components/layout/Header'))
-const HeroSection = React.lazy(() => import('./components/sections/HeroSection'))
-const AboutSection = React.lazy(() => import('./components/sections/AboutSection'))
-const BanchettoSection = React.lazy(() => import('./components/sections/Banchettosection'))
-const ServicesSection = React.lazy(() => import('./components/sections/ServicesSection'))
-const ProductsSection = React.lazy(() => import('./components/sections/ProductsSection'))
-const WholesaleContact = React.lazy(() => import('./components/sections/Wholesalecontact'))
-const ContactSection = React.lazy(() => import('./components/sections/ContactSection'))
-const Footer = React.lazy(() => import('./components/layout/Footer'))
-const MobileDock = React.lazy(() => import('./components/layout/MobileDock'))
+interface HapticPattern {
+  pattern: number[];
+  description: string;
+  fallback?: 'visual' | 'audio' | 'both';
+}
 
-// Performance optimized loading component
-const SectionLoader = () => (
-  <div className="h-96 flex items-center justify-center">
-    <div className="relative">
-      <div className="w-8 h-8 border-2 border-green-200 border-t-green-600 rounded-full animate-spin"></div>
-    </div>
-  </div>
-)
+class UniversalHapticManager {
+  private isSupported: boolean = false;
+  private isEnabled: boolean = true;
+  private lastTrigger: number = 0;
+  private minInterval: number = 50;
+  private userInteracted: boolean = false;
+  private isIOS: boolean = false;
+  private isAndroid: boolean = false;
+  private audioContext: AudioContext | null = null;
+  
+  private patterns: Record<string, HapticPattern> = {
+    // Pattern ottimizzati per tutti i dispositivi
+    tap: {
+      pattern: [10],
+      description: 'Tap leggero',
+      fallback: 'visual'
+    },
+    selection: {
+      pattern: [15],
+      description: 'Selezione elemento',
+      fallback: 'visual'
+    },
+    button: {
+      pattern: [25],
+      description: 'Pressione bottone',
+      fallback: 'both'
+    },
+    toggle: {
+      pattern: [30],
+      description: 'Toggle menu',
+      fallback: 'visual'
+    },
+    success: {
+      pattern: [20, 15, 25],
+      description: 'Azione completata',
+      fallback: 'both'
+    },
+    error: {
+      pattern: [50, 50],
+      description: 'Errore',
+      fallback: 'both'
+    },
+    notification: {
+      pattern: [15, 20, 25],
+      description: 'Notifica',
+      fallback: 'audio'
+    }
+  };
 
-// 🍎 HAPTIC FEEDBACK iOS-COMPATIBLE CORRETTO
-const GlobalHapticIntegration: React.FC = () => {
-  useEffect(() => {
-    let userInteracted = false;
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  constructor() {
+    this.detectDevice();
+    this.checkSupport();
+    this.setupUserInteractionDetection();
+    this.initializeAlternatives();
+  }
+
+  private detectDevice(): void {
+    const userAgent = navigator.userAgent.toLowerCase();
+    this.isIOS = /iphone|ipad|ipod/.test(userAgent);
+    this.isAndroid = /android/.test(userAgent);
     
-    console.log(`🍎 Device: ${isIOS ? 'iOS' : 'Other'}, Haptic API: ${'vibrate' in navigator}`);
+    console.log(`📱 Device: ${this.isIOS ? 'iOS' : this.isAndroid ? 'Android' : 'Desktop'}`);
+  }
 
-    const triggerHaptic = (pattern: number[]) => {
-      if (!('vibrate' in navigator)) {
-        return false;
-      }
+  private checkSupport(): void {
+    this.isSupported = 'vibrate' in navigator && typeof navigator.vibrate === 'function';
+    
+    if (this.isIOS) {
+      // iOS non supporta vibration API
+      this.isSupported = false;
+      console.log('🍎 iOS: Vibration API non supportata - usando alternative');
+    }
+    
+    console.log(`🎯 Haptic Support: ${this.isSupported ? 'YES' : 'NO'}`);
+  }
 
-      // iOS richiede interazione utente prima
-      if (isIOS && !userInteracted) {
-        console.log('🍎 iOS: Haptic bloccato - serve interazione utente prima');
-        return false;
-      }
-
+  private initializeAlternatives(): void {
+    // Initialize audio context per iOS feedback audio
+    if (this.isIOS) {
       try {
-        // iOS preferisce pattern semplici
-        const finalPattern = isIOS ? [pattern[0] || 25] : pattern;
-        const result = navigator.vibrate(finalPattern);
-        
-        if (result) {
-          console.log(`🎯 Haptic success: ${finalPattern}`);
-        } else {
-          console.log(`🎯 Haptic failed: ${finalPattern}`);
-        }
-        
-        return result;
-      } catch (error) {
-        console.warn('🎯 Haptic error:', error);
-        return false;
+        this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      } catch (e) {
+        console.log('🍎 Audio context non disponibile');
       }
     }
 
-    // Marca interazione utente
+    // Add CSS for visual feedback
+    this.addFeedbackCSS();
+  }
+
+  private addFeedbackCSS(): void {
+    const css = `
+      @keyframes haptic-ripple {
+        0% {
+          transform: scale(0);
+          opacity: 0.6;
+        }
+        100% {
+          transform: scale(1.5);
+          opacity: 0;
+        }
+      }
+      
+      @keyframes haptic-pulse {
+        0%, 100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+      
+      .haptic-ripple {
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        animation: haptic-ripple 0.3s ease-out;
+      }
+      
+      .haptic-pulse {
+        animation: haptic-pulse 0.2s ease-out;
+      }
+    `;
+
+    if (!document.getElementById('haptic-styles')) {
+      const style = document.createElement('style');
+      style.id = 'haptic-styles';
+      style.textContent = css;
+      document.head.appendChild(style);
+    }
+  }
+
+  private setupUserInteractionDetection(): void {
     const markUserInteraction = () => {
-      if (!userInteracted) {
-        userInteracted = true;
-        console.log('🎯 User interaction detected, haptics enabled');
+      if (!this.userInteracted) {
+        this.userInteracted = true;
+        console.log('🎯 User interaction detected');
         
-        // Test immediato su iOS dopo prima interazione
-        if (isIOS) {
-          setTimeout(() => {
-            triggerHaptic([25]);
-          }, 100);
+        // Test immediato per verificare funzionamento
+        if (this.isSupported) {
+          setTimeout(() => this.triggerHaptic([25]), 100);
+        } else if (this.isIOS) {
+          console.log('🍎 iOS: Using visual/audio feedback instead of vibration');
         }
       }
     };
 
-    // 🎯 GLOBAL HAPTICS OTTIMIZZATI
-    const handleGlobalClick = (e: MouseEvent) => {
-      markUserInteraction(); // CRITICAL per iOS
-      
-      const target = e.target as HTMLElement;
-      
-      if (target.tagName === 'BUTTON' && !target.hasAttribute('data-no-haptic')) {
-        triggerHaptic([25]); // Semplificato per iOS
-      }
-      
-      if (target.tagName === 'A' && !target.hasAttribute('data-no-haptic')) {
-        triggerHaptic([15]);
-      }
-      
-      if (target.closest('[data-clickable]')) {
-        triggerHaptic([20]);
-      }
-    }
-
-    // 📱 MOBILE TOUCH HAPTICS iOS-COMPATIBLE
-    const handleTouchStart = (e: TouchEvent) => {
-      markUserInteraction(); // CRITICAL per iOS
-      
-      const target = e.target as HTMLElement;
-      
-      if (window.innerWidth < 768) {
-        if (target.tagName === 'BUTTON') {
-          triggerHaptic([25]);
-          target.style.transform = 'scale(0.98)';
-          target.style.transition = 'transform 0.1s ease';
-        } else if (target.tagName === 'A') {
-          triggerHaptic([15]);
-          target.style.transform = 'scale(0.98)';
-          target.style.transition = 'transform 0.1s ease';
-        }
-      }
-    }
-
-    const handleTouchEnd = (e: TouchEvent) => {
-      const target = e.target as HTMLElement;
-      
-      if (window.innerWidth < 768) {
-        if (target.tagName === 'BUTTON' || target.tagName === 'A') {
-          setTimeout(() => {
-            target.style.transform = 'scale(1)';
-          }, 100);
-        }
-      }
-    }
-
-    // Form haptics
-    const handleFormSubmit = () => {
-      markUserInteraction();
-      triggerHaptic([30, 15, 25]);
-    }
-
-    const handleInputFocus = (e: FocusEvent) => {
-      markUserInteraction();
-      const target = e.target as HTMLElement;
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
-        triggerHaptic([20]);
-      }
-    }
-
-    // INIZIALIZZAZIONE RITARDATA per iOS
-    setTimeout(() => {
-      if ('vibrate' in navigator) {
-        console.log('🎯 Haptic System initialized!');
-        if (isIOS) {
-          console.log('🍎 iOS detected: haptics will activate after user interaction');
-        } else {
-          // Test immediato solo su non-iOS
-          triggerHaptic([20, 15, 25]);
-          console.log('🎯 Haptic test completed!');
-        }
-      } else {
-        console.warn('⚠️ Haptic Feedback NOT supported on this device');
-      }
-    }, 1000);
-
-    // Event listeners con priorità per iOS
     const events = ['click', 'touchstart', 'touchend', 'mousedown', 'keydown'];
     events.forEach(event => {
-      if (event === 'click') {
-        document.addEventListener(event, handleGlobalClick);
-      } else if (event === 'touchstart') {
-        document.addEventListener(event, handleTouchStart, { passive: true });
-      } else if (event === 'touchend') {
-        document.addEventListener(event, handleTouchEnd, { passive: true });
-      } else {
-        document.addEventListener(event, markUserInteraction, { passive: true });
-      }
+      document.addEventListener(event, markUserInteraction, { 
+        once: false,
+        passive: true 
+      });
     });
+  }
 
-    document.addEventListener('submit', handleFormSubmit);
-    document.addEventListener('focusin', handleInputFocus);
+  // Haptic nativo (Android/device che supportano)
+  private triggerHaptic(pattern: number[]): boolean {
+    if (!this.isSupported || !this.userInteracted) {
+      return false;
+    }
+
+    try {
+      const success = navigator.vibrate(pattern);
+      if (success) {
+        console.log(`🎯 Haptic success: ${pattern}`);
+      }
+      return success;
+    } catch (error) {
+      console.warn('🎯 Haptic error:', error);
+      return false;
+    }
+  }
+
+  // Audio feedback per iOS
+  private playAudioFeedback(frequency: number = 800, duration: number = 50): void {
+    if (!this.audioContext || !this.userInteracted) return;
+
+    try {
+      const oscillator = this.audioContext.createOscillator();
+      const gainNode = this.audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(this.audioContext.destination);
+
+      oscillator.frequency.value = frequency;
+      oscillator.type = 'sine';
+
+      gainNode.gain.setValueAtTime(0.05, this.audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration / 1000);
+
+      oscillator.start(this.audioContext.currentTime);
+      oscillator.stop(this.audioContext.currentTime + duration / 1000);
+    } catch (e) {
+      console.log('🍎 Audio feedback fallito');
+    }
+  }
+
+  // Visual feedback per tutti i dispositivi
+  private createVisualFeedback(element?: HTMLElement, type: string = 'tap'): void {
+    if (!element) return;
+
+    const colors = {
+      tap: '#22c55e',
+      button: '#3b82f6',
+      success: '#10b981',
+      error: '#ef4444',
+      notification: '#f59e0b'
+    };
+
+    // Ripple effect
+    const ripple = document.createElement('div');
+    ripple.className = 'haptic-ripple';
+    ripple.style.cssText = `
+      background: ${colors[type as keyof typeof colors] || colors.tap};
+      width: 20px;
+      height: 20px;
+    `;
+
+    const rect = element.getBoundingClientRect();
+    ripple.style.left = (rect.left + rect.width / 2 - 10) + 'px';
+    ripple.style.top = (rect.top + rect.height / 2 - 10) + 'px';
+
+    document.body.appendChild(ripple);
 
     // Cleanup
-    return () => {
-      document.removeEventListener('click', handleGlobalClick);
-      document.removeEventListener('touchstart', handleTouchStart);
-      document.removeEventListener('touchend', handleTouchEnd);
-      document.removeEventListener('submit', handleFormSubmit);
-      document.removeEventListener('focusin', handleInputFocus);
+    setTimeout(() => {
+      if (ripple.parentNode) {
+        ripple.parentNode.removeChild(ripple);
+      }
+    }, 300);
+
+    // Pulse effect sull'elemento
+    element.classList.add('haptic-pulse');
+    setTimeout(() => {
+      element.classList.remove('haptic-pulse');
+    }, 200);
+  }
+
+  // API pubblica principale
+  public trigger(type: keyof typeof this.patterns, element?: HTMLElement): boolean {
+    if (!this.isEnabled) return false;
+
+    const now = Date.now();
+    if (now - this.lastTrigger < this.minInterval) {
+      return false;
+    }
+
+    const pattern = this.patterns[type];
+    if (!pattern) {
+      console.warn(`🎯 Pattern "${type}" non trovato`);
+      return false;
+    }
+
+    let success = false;
+
+    // Prova haptic nativo
+    if (this.isSupported && this.userInteracted) {
+      success = this.triggerHaptic(pattern.pattern);
+    }
+
+    // Fallback per iOS e dispositivi non supportati
+    if (!success || this.isIOS) {
+      const fallback = pattern.fallback || 'visual';
       
-      events.forEach(event => {
-        if (!['click', 'touchstart', 'touchend'].includes(event)) {
-          document.removeEventListener(event, markUserInteraction);
+      if (fallback === 'visual' || fallback === 'both') {
+        this.createVisualFeedback(element, type);
+        success = true;
+      }
+      
+      if (fallback === 'audio' || fallback === 'both') {
+        if (this.isIOS) {
+          const frequencies = {
+            tap: 800,
+            button: 1000,
+            success: 1200,
+            error: 400,
+            notification: 900
+          };
+          this.playAudioFeedback(frequencies[type as keyof typeof frequencies] || 800, 30);
+          success = true;
         }
-      });
-    }
-  }, [])
-
-  return null
-}
-
-// 🍎 PREMIUM GLOBAL STYLES OTTIMIZZATI
-const PremiumGlobalStyles: React.FC = () => {
-  useEffect(() => {
-    const style = document.createElement('style')
-    style.textContent = `
-      /* 🍎 PREMIUM INTERACTIONS */
-      button, .button {
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        cursor: pointer;
-        -webkit-tap-highlight-color: transparent;
-        user-select: none;
-      }
-
-      button:active, .button:active {
-        transform: scale(0.98) !important;
-      }
-
-      a {
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        cursor: pointer;
-        -webkit-tap-highlight-color: transparent;
-      }
-
-      a:active {
-        transform: scale(0.98) !important;
-      }
-
-      /* 📱 MOBILE OPTIMIZATION - ELIMINA RITARDI 300MS */
-      @media (max-width: 767px) {
-        * {
-          -webkit-tap-highlight-color: transparent;
-          -webkit-touch-callout: none;
-          -webkit-user-select: none;
-          user-select: none;
-          /* ELIMINA RITARDO 300MS */
-          touch-action: manipulation;
-        }
-
-        input, textarea, [contenteditable] {
-          -webkit-user-select: text;
-          user-select: text;
-          touch-action: auto;
-        }
-
-        button, a, [role="button"] {
-          /* ELIMINA COMPLETAMENTE IL RITARDO */
-          touch-action: manipulation;
-          -webkit-tap-highlight-color: transparent;
-        }
-
-        html {
-          scroll-behavior: smooth;
-          -webkit-overflow-scrolling: touch;
-          /* VIEWPORT OTTIMIZZATO */
-          -webkit-text-size-adjust: 100%;
-        }
-        
-        body {
-          overscroll-behavior: contain;
-          padding-bottom: env(safe-area-inset-bottom, 0);
-        }
-      }
-
-      /* 🎨 PREMIUM CARDS */
-      [data-clickable] {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        cursor: pointer;
-        -webkit-tap-highlight-color: transparent;
-      }
-
-      [data-clickable]:hover {
-        transform: translateY(-2px) !important;
-      }
-
-      [data-clickable]:active {
-        transform: translateY(0) scale(0.98) !important;
-      }
-
-      /* 🌟 PREMIUM FOCUS */
-      button:focus, a:focus, input:focus, textarea:focus {
-        outline: 2px solid rgba(34, 197, 94, 0.5) !important;
-        outline-offset: 2px !important;
-      }
-
-      /* 🍎 APPLE FONTS */
-      .apple-font {
-        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif !important;
-      }
-
-      /* 🌈 GLASS MORPHISM */
-      .glass {
-        background: rgba(255, 255, 255, 0.25) !important;
-        backdrop-filter: blur(10px) !important;
-        -webkit-backdrop-filter: blur(10px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.18) !important;
-      }
-
-      /* 📱 MOBILE DOCK GARANTITO - FORCE STYLES */
-      .mobile-dock-container {
-        position: fixed !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        z-index: 9999 !important;
-        pointer-events: auto !important;
-        display: block !important;
-      }
-
-      /* NASCONDE SU DESKTOP */
-      @media (min-width: 1024px) {
-        .mobile-dock-container {
-          display: none !important;
-        }
-      }
-
-      /* FORCE su mobile */
-      @media (max-width: 1023px) {
-        .mobile-dock-container {
-          display: block !important;
-        }
-      }
-    `
-    
-    document.head.appendChild(style)
-    
-    return () => {
-      if (document.head.contains(style)) {
-        document.head.removeChild(style)
       }
     }
-  }, [])
 
-  return null
+    if (success) {
+      this.lastTrigger = now;
+    }
+
+    return success;
+  }
+
+  public triggerCustom(pattern: number[], element?: HTMLElement): boolean {
+    if (!this.isSupported || !this.userInteracted) {
+      if (element) {
+        this.createVisualFeedback(element, 'tap');
+        return true;
+      }
+      return false;
+    }
+
+    return this.triggerHaptic(pattern);
+  }
+
+  public stop(): void {
+    if (this.isSupported) {
+      try {
+        navigator.vibrate(0);
+      } catch (error) {
+        console.warn('🎯 Stop error:', error);
+      }
+    }
+  }
+
+  public enable(): void {
+    this.isEnabled = true;
+  }
+
+  public disable(): void {
+    this.isEnabled = false;
+    this.stop();
+  }
+
+  // Getters
+  public getSupport(): boolean {
+    return this.isSupported;
+  }
+
+  public getEnabled(): boolean {
+    return this.isEnabled;
+  }
+
+  public getUserInteracted(): boolean {
+    return this.userInteracted;
+  }
+
+  public isIOSDevice(): boolean {
+    return this.isIOS;
+  }
+
+  public isAndroidDevice(): boolean {
+    return this.isAndroid;
+  }
+
+  public getPatterns(): Record<string, HapticPattern> {
+    return { ...this.patterns };
+  }
 }
 
-// Global state for language and theme
-interface AppState {
-  language: 'it' | 'de'
-  isMenuOpen: boolean
-  currentSection: string
-}
+// Istanza globale
+export const haptic = new UniversalHapticManager();
 
-const App: React.FC = () => {
-  const [state, setState] = useState<AppState>({
-    language: 'it',
-    isMenuOpen: false,
-    currentSection: 'hero'
-  })
+// React hook con supporto completo
+export const useHaptic = () => {
+  const trigger = (type: keyof typeof haptic.patterns, element?: HTMLElement) => {
+    return haptic.trigger(type, element);
+  };
 
-  const { scrollYProgress } = useScroll()
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  })
+  const triggerCustom = (pattern: number[], element?: HTMLElement) => {
+    return haptic.triggerCustom(pattern, element);
+  };
 
-  // Intersection observer per TUTTE le sezioni incluso wholesale
-  const [heroRef, heroInView] = useInView({ threshold: 0.1 })
-  const [aboutRef, aboutInView] = useInView({ threshold: 0.1 })
-  const [dettaglioRef,
+  return {
+    trigger,
+    triggerCustom,
+    stop: () => haptic.stop(),
+    enable: () => haptic.enable(),
+    disable: () => haptic.disable(),
+    isSupported: haptic.getSupport(),
+    isEnabled: haptic.getEnabled(),
+    isIOS: haptic.isIOSDevice(),
+    isAndroid: haptic.isAndroidDevice(),
+    userInteracted: haptic.getUserInteracted(),
+    patterns: haptic.getPatterns()
+  };
+};
+
+// Utility per elementi DOM
+export const addHapticToElement = (
+  element: HTMLElement, 
+  hapticType: keyof typeof haptic.patterns = 'button',
+  eventType: string = 'click'
+): (() => void) => {
+  const handler = (e: Event) => {
+    if (!element.hasAttribute('disabled')) {
+      haptic.trigger(hapticType, element);
+    }
+  };
+  
+  element.addEventListener(eventType, handler);
+  
+  return () => {
+    element.removeEventListener(eventType, handler);
+  };
+};
+
+export default haptic;
+export type { HapticPattern };
+export type HapticType = keyof typeof haptic.patterns;

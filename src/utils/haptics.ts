@@ -1,4 +1,32 @@
+import React from 'react'
+
 // utils/haptics.ts - Sistema Haptic Feedback Avanzato per Bottamedi
+
+interface HapticPattern {
+  pattern: number[]
+  description: string
+}
+
+class HapticManager {
+  private isSupported: boolean = false
+  private isEnabled: boolean = true
+  private lastTrigger: number = 0
+  private minInterval: number = 50 // Minimo 50ms tra feedback
+  
+  private patterns: Record<string, HapticPattern> = {
+    // 🎯 FEEDBACK LEGGERI (1-20ms)
+    tap: {
+      pattern: [15],
+      description: 'Tap leggero per link e elementi cliccabili'
+    },
+    selection: {
+      pattern: [20],
+      description: 'Selezione elemento o focus input'
+    },
+    tick: {
+      pattern: [8],
+      description: 'Feedback micro per hover e stati'
+    },// utils/haptics.ts - Sistema Haptic Feedback Avanzato per Bottamedi
 
 interface HapticPattern {
   pattern: number[]
@@ -325,7 +353,7 @@ export const triggerHapticOnSectionChange = (sectionIds: string[]): (() => void)
               haptic.trigger('navigation')
               lastSectionChange = now
               
-              if (process.env.NODE_ENV === 'development') {
+              if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
                 console.log(`🎯 Haptic: Navigazione verso sezione "${currentSection}"`)
               }
             }
@@ -417,8 +445,6 @@ export const useHaptic = () => {
 }
 
 // 🎯 COMPONENTE REACT PER TESTING E DEBUG
-import React from 'react'
-
 export const HapticTestButton: React.FC<{
   type: keyof typeof haptic.patterns
   children: React.ReactNode

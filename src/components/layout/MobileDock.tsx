@@ -280,7 +280,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 100, opacity: 0, scale: 0.9 }}
             transition={{ type: 'spring', damping: 30, stiffness: 400 }}
-            className="fixed bottom-28 left-4 right-4 z-[1000] pointer-events-auto"
+            className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
           >
             <div 
               className="relative overflow-hidden"
@@ -392,7 +392,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 100, opacity: 0, scale: 0.9 }}
             transition={{ type: 'spring', damping: 30, stiffness: 400 }}
-            className="fixed bottom-28 left-4 right-4 z-[1000] pointer-events-auto"
+            className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
           >
             <div 
               className="relative overflow-hidden"
@@ -469,7 +469,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 gap-3">
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -478,16 +478,6 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     >
                       <PhoneIcon />
                       <span className="ml-2 text-sm">Chiama</span>
-                    </motion.button>
-                    
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => handleWhatsApp(t.contacts.banchettoPhone)}
-                      className="flex items-center justify-center p-3 rounded-xl bg-green-600 text-white font-semibold shadow-md hover:shadow-lg transition-all"
-                    >
-                      <WhatsAppIcon />
-                      <span className="ml-2 text-sm">WhatsApp</span>
                     </motion.button>
                   </div>
                 </motion.div>
@@ -518,7 +508,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 gap-3">
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -527,16 +517,6 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     >
                       <PhoneIcon />
                       <span className="ml-2 text-sm">Chiama</span>
-                    </motion.button>
-                    
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => handleWhatsApp(t.contacts.ingrossoPhone)}
-                      className="flex items-center justify-center p-3 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:shadow-lg transition-all"
-                    >
-                      <WhatsAppIcon />
-                      <span className="ml-2 text-sm">WhatsApp</span>
                     </motion.button>
                   </div>
                 </motion.div>
@@ -554,7 +534,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 100, opacity: 0, scale: 0.9 }}
             transition={{ type: 'spring', damping: 30, stiffness: 400 }}
-            className="fixed bottom-28 left-4 right-4 z-[1000] pointer-events-auto"
+            className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
           >
             <div 
               className="relative overflow-hidden"

@@ -305,6 +305,7 @@ const App: React.FC = () => {
   const [productsRef, productsInView] = useInView({ threshold: 0.1 })
   const [wholesaleRef, wholesaleInView] = useInView({ threshold: 0.1 })
   const [contactRef, contactInView] = useInView({ threshold: 0.1 })
+  const [footerRef, footerInView] = useInView({ threshold: 0.3 })
 
   useEffect(() => {
     const savedLanguage = localStorage.getItem('bottamedi-language') as 'it' | 'de'
@@ -436,9 +437,11 @@ const App: React.FC = () => {
           </div>
         </main>
 
-        <Suspense fallback={<div className="h-64 bg-neutral-900" />}>
-          <Footer language={state.language} />
-        </Suspense>
+        <div ref={footerRef}>
+          <Suspense fallback={<div className="h-64 bg-neutral-900" />}>
+            <Footer language={state.language} />
+          </Suspense>
+        </div>
 
         <AnimatePresence>
           {state.isMenuOpen && (
@@ -455,7 +458,10 @@ const App: React.FC = () => {
 
       <div className="mobile-dock-container lg:hidden">
         <Suspense fallback={null}>
-          <MobileDock language={state.language} />
+          <MobileDock 
+            language={state.language} 
+            hideInFooter={footerInView}
+          />
         </Suspense>
       </div>
     </>

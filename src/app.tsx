@@ -13,6 +13,8 @@ const WholesaleContact = React.lazy(() => import('./components/sections/Wholesal
 const ContactSection = React.lazy(() => import('./components/sections/ContactSection'))
 const Footer = React.lazy(() => import('./components/layout/Footer'))
 const MobileDock = React.lazy(() => import('./components/layout/MobileDock'))
+const CookieBanner = React.lazy(() => import('./components/legal/CookieBanner'))
+const LegalDocuments = React.lazy(() => import('./components/legal/LegalDocuments'))
 
 const SectionLoader = () => (
   <div className="h-96 flex items-center justify-center">
@@ -282,13 +284,15 @@ interface AppState {
   language: 'it' | 'de'
   isMenuOpen: boolean
   currentSection: string
+  showLegalDocs: boolean
 }
 
 const App: React.FC = () => {
   const [state, setState] = useState<AppState>({
     language: 'it',
     isMenuOpen: false,
-    currentSection: 'hero'
+    currentSection: 'hero',
+    showLegalDocs: false
   })
 
   const { scrollYProgress } = useScroll()
@@ -324,10 +328,31 @@ const App: React.FC = () => {
     else if (contactInView) setState(prev => ({ ...prev, currentSection: 'contact' }))
   }, [heroInView, aboutInView, dettaglioInView, servicesInView, productsInView, wholesaleInView, contactInView])
 
+  // Track section views
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.gtag && state.currentSection) {
+      window.gtag('event', 'section_view', {
+        event_category: 'engagement',
+        event_label: state.currentSection,
+        custom_parameter_section: state.currentSection
+      })
+    }
+  }, [state.currentSection])
+
   const updateLanguage = (language: 'it' | 'de') => {
     setState(prev => ({ ...prev, language }))
     localStorage.setItem('bottamedi-language', language)
     document.documentElement.lang = language
+    
+    // Track language change
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'language_change', {
+        event_category: 'user_preference',
+        event_label: language,
+        value: 1
+      })
+    }
+    
     if ('vibrate' in navigator) {
       try {
         navigator.vibrate([25])
@@ -339,12 +364,33 @@ const App: React.FC = () => {
 
   const toggleMenu = () => {
     setState(prev => ({ ...prev, isMenuOpen: !prev.isMenuOpen }))
+    
+    // Track menu interactions
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'menu_toggle', {
+        event_category: 'navigation',
+        event_label: state.isMenuOpen ? 'close' : 'open'
+      })
+    }
+    
     if ('vibrate' in navigator) {
       try {
         navigator.vibrate([25])
       } catch (e) {
         console.log('Haptic non disponibile')
       }
+    }
+  }
+
+  const toggleLegalDocs = () => {
+    setState(prev => ({ ...prev, showLegalDocs: !prev.showLegalDocs }))
+    
+    // Track legal docs access
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'legal_docs_toggle', {
+        event_category: 'privacy',
+        event_label: state.showLegalDocs ? 'close' : 'open'
+      })
     }
   }
 
@@ -439,9 +485,28 @@ const App: React.FC = () => {
 
         <div ref={footerRef}>
           <Suspense fallback={<div className="h-64 bg-neutral-900" />}>
-            <Footer language={state.language} />
+            <Footer 
+              language={state.language} 
+              onLegalDocsToggle={toggleLegalDocs}
+            />
           </Suspense>
         </div>
+
+        {/* Legal Documents Section */}
+        <AnimatePresence>
+          {state.showLegalDocs && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Suspense fallback={<div className="h-64 bg-gray-50" />}>
+                <LegalDocuments language={state.language} />
+              </Suspense>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <AnimatePresence>
           {state.isMenuOpen && (
@@ -464,6 +529,11 @@ const App: React.FC = () => {
           />
         </Suspense>
       </div>
+
+      {/* Cookie Banner */}
+      <Suspense fallback={null}>
+        <CookieBanner language={state.language} />
+      </Suspense>
     </>
   )
 }

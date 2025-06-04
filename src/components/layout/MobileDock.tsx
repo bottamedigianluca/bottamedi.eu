@@ -10,6 +10,8 @@ const translations = {
     menu: 'Menu',
     call: 'Chiama',
     directions: 'Mappa',
+    whatsapp: 'WhatsApp',
+    close: 'Chiudi',
     sections: [
       { id: 'about', label: 'Storia', icon: '🌱' },
       { id: 'dettaglio', label: 'Banchetto', icon: '🛒' },
@@ -22,13 +24,17 @@ const translations = {
       banchetto: 'Banchetto',
       ingrosso: 'Ingrosso',
       banchettoPhone: '351 577 6198',
-      ingrossoPhone: '0461 602534'
+      ingrossoPhone: '0461 602534',
+      banchettoAddress: 'Via Cavalleggeri Udine',
+      ingrossoAddress: 'Via de Gasperi, 47'
     }
   },
   de: {
     menu: 'Menü',
     call: 'Anrufen',
     directions: 'Karte',
+    whatsapp: 'WhatsApp',
+    close: 'Schließen',
     sections: [
       { id: 'about', label: 'Geschichte', icon: '🌱' },
       { id: 'dettaglio', label: 'Marktstand', icon: '🛒' },
@@ -41,7 +47,9 @@ const translations = {
       banchetto: 'Marktstand',
       ingrosso: 'Großhandel',
       banchettoPhone: '351 577 6198',
-      ingrossoPhone: '0461 602534'
+      ingrossoPhone: '0461 602534',
+      banchettoAddress: 'Via Cavalleggeri Udine',
+      ingrossoAddress: 'Via de Gasperi, 47'
     }
   }
 }
@@ -64,8 +72,10 @@ const useScrollDetection = () => {
           const { offsetTop, offsetHeight } = element
           if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
             setCurrentSection(sectionId)
-            // Mostra solo se NON siamo nella hero
-            setIsVisible(sectionId !== 'hero')
+            // Mostra solo se NON siamo nella hero e NON nel footer
+            const isInHero = sectionId === 'hero'
+            const isNearFooter = window.scrollY + window.innerHeight > document.body.scrollHeight - 100
+            setIsVisible(!isInHero && !isNearFooter)
             break
           }
         }
@@ -74,10 +84,10 @@ const useScrollDetection = () => {
 
     const handleScroll = () => {
       clearTimeout(timeoutId)
-      timeoutId = setTimeout(detectSection, 10) // Throttle ridotto
+      timeoutId = setTimeout(detectSection, 10)
     }
 
-    detectSection() // Check iniziale
+    detectSection()
     window.addEventListener('scroll', handleScroll, { passive: true })
     
     return () => {
@@ -89,7 +99,7 @@ const useScrollDetection = () => {
   return { isVisible, currentSection }
 }
 
-// 🏆 COMPONENTE PRINCIPALE PREMIUM
+// 🏆 COMPONENTE PREMIUM DOCK ULTRA-WIDE
 const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
   const [activeMenu, setActiveMenu] = useState<'none' | 'menu' | 'call' | 'directions'>('none')
   const [isMobile, setIsMobile] = useState(false)
@@ -102,7 +112,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
     const checkMobile = () => {
       const mobile = window.innerWidth < 1024
       setIsMobile(mobile)
-      if (!mobile) setActiveMenu('none') // Chiudi menu su desktop
+      if (!mobile) setActiveMenu('none')
     }
     
     checkMobile()
@@ -132,10 +142,14 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
 
   // Handle WhatsApp
   const handleWhatsApp = useCallback(() => {
-    const message = encodeURIComponent('Ciao! Sono interessato ai vostri prodotti.')
+    const message = encodeURIComponent(
+      language === 'it' 
+        ? 'Ciao! Sono interessato ai vostri prodotti.' 
+        : 'Hallo! Ich interessiere mich für Ihre Produkte.'
+    )
     window.open(`https://wa.me/393515776198?text=${message}`, '_blank')
     setActiveMenu('none')
-  }, [])
+  }, [language])
 
   // Handle directions
   const handleDirections = useCallback((type: 'banchetto' | 'ingrosso') => {
@@ -147,29 +161,33 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
     setActiveMenu('none')
   }, [])
 
-  // Toggle menu
+  // Toggle menu con reset dello stato attivo
   const toggleMenu = useCallback((menu: 'menu' | 'call' | 'directions') => {
-    setActiveMenu(prev => prev === menu ? 'none' : menu)
+    setActiveMenu(prev => {
+      const newState = prev === menu ? 'none' : menu
+      // Reset focus dopo il cambio stato
+      setTimeout(() => {
+        if (document.activeElement && document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur()
+        }
+      }, 100)
+      return newState
+    })
+  }, [])
+
+  // Close all menus
+  const closeAllMenus = useCallback(() => {
+    setActiveMenu('none')
+    // Reset focus
+    if (document.activeElement && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur()
+    }
   }, [])
 
   // Memoized variants
   const variants = useMemo(() => ({
     dock: {
-      hidden: { y: 100, opacity: 0, scale: 0.9 },
-      visible: { 
-        y: 0, 
-        opacity: 1, 
-        scale: 1,
-        transition: {
-          type: 'spring',
-          damping: 25,
-          stiffness: 400,
-          duration: shouldReduceMotion ? 0.1 : undefined
-        }
-      }
-    },
-    popup: {
-      hidden: { y: 50, opacity: 0, scale: 0.95 },
+      hidden: { y: 100, opacity: 0, scale: 0.95 },
       visible: { 
         y: 0, 
         opacity: 1, 
@@ -177,10 +195,29 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
         transition: {
           type: 'spring',
           damping: 30,
+          stiffness: 400,
+          duration: shouldReduceMotion ? 0.1 : undefined
+        }
+      }
+    },
+    popup: {
+      hidden: { y: 20, opacity: 0, scale: 0.95 },
+      visible: { 
+        y: 0, 
+        opacity: 1, 
+        scale: 1,
+        transition: {
+          type: 'spring',
+          damping: 25,
           stiffness: 500,
           duration: shouldReduceMotion ? 0.1 : undefined
         }
       }
+    },
+    button: {
+      idle: { scale: 1, y: 0 },
+      hover: { scale: 1.05, y: -2 },
+      tap: { scale: 0.95, y: 0 }
     }
   }), [shouldReduceMotion])
 
@@ -189,16 +226,16 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
 
   return (
     <>
-      {/* 🌫️ BACKDROP MINIMAL */}
+      {/* 🌫️ BACKDROP ELEGANTE */}
       <AnimatePresence>
         {activeMenu !== 'none' && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: shouldReduceMotion ? 0.1 : 0.15 }}
-            className="fixed inset-0 bg-black/10 backdrop-blur-sm z-[9997]"
-            onClick={() => setActiveMenu('none')}
+            transition={{ duration: shouldReduceMotion ? 0.1 : 0.2 }}
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[9997]"
+            onClick={closeAllMenus}
           />
         )}
       </AnimatePresence>
@@ -211,39 +248,45 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className="fixed bottom-16 left-2 right-2 z-[9999]"
+            className="fixed bottom-20 left-3 right-3 z-[9999]"
           >
-            <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/30 overflow-hidden max-w-sm mx-auto">
-              {/* Header minimo */}
-              <div className="px-4 py-2 border-b border-gray-100/50 flex items-center justify-between">
-                <span className="text-sm font-semibold text-gray-900">{t.menu}</span>
-                <button
-                  onClick={() => setActiveMenu('none')}
-                  className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 text-xs"
+            <div className="bg-white/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden">
+              {/* Header elegante */}
+              <div className="px-6 py-4 border-b border-gray-100/50 flex items-center justify-between bg-gradient-to-r from-gray-50/50 to-transparent">
+                <span className="text-base font-bold text-gray-900">{t.menu}</span>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={closeAllMenus}
+                  className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100/80 text-gray-600 text-sm hover:bg-gray-200/80 transition-colors"
                 >
                   ✕
-                </button>
+                </motion.button>
               </div>
 
-              {/* Grid compatto */}
-              <div className="p-3 grid grid-cols-3 gap-2">
+              {/* Grid sezioni */}
+              <div className="p-4 grid grid-cols-3 gap-3">
                 {t.sections.map((item, index) => (
                   <motion.button
                     key={item.id}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: shouldReduceMotion ? 0 : index * 0.02, duration: shouldReduceMotion ? 0.1 : 0.2 }}
+                    transition={{ delay: shouldReduceMotion ? 0 : index * 0.03, duration: shouldReduceMotion ? 0.1 : 0.3 }}
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => scrollToSection(item.id)}
+                    onBlur={() => {}} // Reset focus
                     className={`
-                      flex flex-col items-center p-2 rounded-lg transition-colors text-center
+                      flex flex-col items-center p-4 rounded-2xl transition-all duration-300 text-center
+                      focus:outline-none focus:ring-0
                       ${currentSection === item.id 
-                        ? 'bg-green-50 text-green-600' 
-                        : 'hover:bg-gray-50 text-gray-700'
+                        ? 'bg-gradient-to-b from-green-50 to-green-100 text-green-700 shadow-lg border border-green-200' 
+                        : 'hover:bg-gray-50 text-gray-700 hover:shadow-md'
                       }
                     `}
                   >
-                    <div className="text-lg mb-1">{item.icon}</div>
-                    <span className="text-xs font-medium leading-tight">{item.label}</span>
+                    <div className="text-2xl mb-2">{item.icon}</div>
+                    <span className="text-sm font-semibold leading-tight">{item.label}</span>
                   </motion.button>
                 ))}
               </div>
@@ -260,75 +303,99 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className="fixed bottom-16 left-2 right-2 z-[9999]"
+            className="fixed bottom-20 left-3 right-3 z-[9999]"
           >
-            <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/30 overflow-hidden max-w-sm mx-auto">
-              <div className="px-4 py-2 border-b border-gray-100/50 flex items-center justify-between">
-                <span className="text-sm font-semibold text-gray-900">{t.call}</span>
-                <button
-                  onClick={() => setActiveMenu('none')}
-                  className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 text-xs"
+            <div className="bg-white/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-100/50 flex items-center justify-between bg-gradient-to-r from-blue-50/50 to-transparent">
+                <span className="text-base font-bold text-gray-900">{t.call}</span>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={closeAllMenus}
+                  className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100/80 text-gray-600 text-sm hover:bg-gray-200/80 transition-colors"
                 >
                   ✕
-                </button>
+                </motion.button>
               </div>
 
-              <div className="p-3 space-y-2">
+              <div className="p-4 space-y-3">
                 {/* Banchetto */}
-                <div className="bg-green-50 rounded-xl p-3 border border-green-100">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white text-sm">🛒</div>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="bg-gradient-to-r from-green-50 to-green-100 rounded-2xl p-4 border border-green-200"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white text-lg shadow-lg">🛒</div>
                       <div>
-                        <h4 className="text-sm font-semibold text-gray-900">{t.contacts.banchetto}</h4>
-                        <p className="text-xs text-gray-600">Via Cavalleggeri Udine</p>
+                        <h4 className="text-lg font-bold text-gray-900">{t.contacts.banchetto}</h4>
+                        <p className="text-sm text-gray-600">{t.contacts.banchettoAddress}</p>
                       </div>
                     </div>
                   </div>
-                  <div className="flex space-x-1">
-                    <button
+                  <div className="flex space-x-2">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => handleCall(t.contacts.banchettoPhone)}
-                      className="flex-1 bg-green-500 text-white py-2 px-3 rounded-lg text-xs font-medium flex items-center justify-center space-x-1"
+                      onBlur={() => {}}
+                      className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-xl text-sm font-bold flex items-center justify-center space-x-2 shadow-lg focus:outline-none focus:ring-0"
                     >
                       <span>📞</span>
                       <span>{t.contacts.banchettoPhone}</span>
-                    </button>
-                    <button
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
                       onClick={handleWhatsApp}
-                      className="bg-green-600 text-white py-2 px-3 rounded-lg text-xs font-medium"
+                      onBlur={() => {}}
+                      className="bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-4 rounded-xl text-sm font-bold shadow-lg focus:outline-none focus:ring-0"
                     >
                       💬
-                    </button>
+                    </motion.button>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Ingrosso */}
-                <div className="bg-blue-50 rounded-xl p-3 border border-blue-100">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white text-sm">🚛</div>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl p-4 border border-blue-200"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white text-lg shadow-lg">🚛</div>
                       <div>
-                        <h4 className="text-sm font-semibold text-gray-900">{t.contacts.ingrosso}</h4>
-                        <p className="text-xs text-gray-600">Via de Gasperi, 47</p>
+                        <h4 className="text-lg font-bold text-gray-900">{t.contacts.ingrosso}</h4>
+                        <p className="text-sm text-gray-600">{t.contacts.ingrossoAddress}</p>
                       </div>
                     </div>
                   </div>
-                  <div className="flex space-x-1">
-                    <button
+                  <div className="flex space-x-2">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => handleCall(t.contacts.ingrossoPhone)}
-                      className="flex-1 bg-blue-500 text-white py-2 px-3 rounded-lg text-xs font-medium flex items-center justify-center space-x-1"
+                      onBlur={() => {}}
+                      className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-xl text-sm font-bold flex items-center justify-center space-x-2 shadow-lg focus:outline-none focus:ring-0"
                     >
                       <span>📞</span>
                       <span>{t.contacts.ingrossoPhone}</span>
-                    </button>
-                    <button
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
                       onClick={handleWhatsApp}
-                      className="bg-blue-600 text-white py-2 px-3 rounded-lg text-xs font-medium"
+                      onBlur={() => {}}
+                      className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-xl text-sm font-bold shadow-lg focus:outline-none focus:ring-0"
                     >
                       💬
-                    </button>
+                    </motion.button>
                   </div>
-                </div>
+                </motion.div>
               </div>
             </div>
           </motion.div>
@@ -343,56 +410,70 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className="fixed bottom-16 left-2 right-2 z-[9999]"
+            className="fixed bottom-20 left-3 right-3 z-[9999]"
           >
-            <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/30 overflow-hidden max-w-sm mx-auto">
-              <div className="px-4 py-2 border-b border-gray-100/50 flex items-center justify-between">
-                <span className="text-sm font-semibold text-gray-900">{t.directions}</span>
-                <button
-                  onClick={() => setActiveMenu('none')}
-                  className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 text-xs"
+            <div className="bg-white/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-100/50 flex items-center justify-between bg-gradient-to-r from-purple-50/50 to-transparent">
+                <span className="text-base font-bold text-gray-900">{t.directions}</span>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={closeAllMenus}
+                  className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100/80 text-gray-600 text-sm hover:bg-gray-200/80 transition-colors"
                 >
                   ✕
-                </button>
+                </motion.button>
               </div>
 
-              <div className="p-3 space-y-2">
-                <button
+              <div className="p-4 space-y-3">
+                <motion.button
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => handleDirections('banchetto')}
-                  className="w-full bg-green-50 hover:bg-green-100 rounded-xl p-3 border border-green-100 transition-colors text-left"
+                  onBlur={() => {}}
+                  className="w-full bg-gradient-to-r from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 rounded-2xl p-4 border border-green-200 transition-all text-left focus:outline-none focus:ring-0"
                 >
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center text-white">🛒</div>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-14 h-14 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">🛒</div>
                     <div className="flex-1">
-                      <h4 className="text-sm font-semibold text-gray-900">{t.contacts.banchetto}</h4>
-                      <p className="text-xs text-gray-600">Via Cavalleggeri Udine</p>
-                      <p className="text-xs text-green-600 font-medium">Mezzolombardo (TN)</p>
+                      <h4 className="text-lg font-bold text-gray-900">{t.contacts.banchetto}</h4>
+                      <p className="text-sm text-gray-600">{t.contacts.banchettoAddress}</p>
+                      <p className="text-sm text-green-600 font-bold">Mezzolombardo (TN)</p>
                     </div>
-                    <div className="text-gray-400">📍</div>
+                    <div className="text-green-500 text-xl">📍</div>
                   </div>
-                </button>
+                </motion.button>
 
-                <button
+                <motion.button
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => handleDirections('ingrosso')}
-                  className="w-full bg-blue-50 hover:bg-blue-100 rounded-xl p-3 border border-blue-100 transition-colors text-left"
+                  onBlur={() => {}}
+                  className="w-full bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-2xl p-4 border border-blue-200 transition-all text-left focus:outline-none focus:ring-0"
                 >
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center text-white">🚛</div>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-14 h-14 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">🚛</div>
                     <div className="flex-1">
-                      <h4 className="text-sm font-semibold text-gray-900">{t.contacts.ingrosso}</h4>
-                      <p className="text-xs text-gray-600">Via de Gasperi, 47</p>
-                      <p className="text-xs text-blue-600 font-medium">Mezzolombardo (TN)</p>
+                      <h4 className="text-lg font-bold text-gray-900">{t.contacts.ingrosso}</h4>
+                      <p className="text-sm text-gray-600">{t.contacts.ingrossoAddress}</p>
+                      <p className="text-sm text-blue-600 font-bold">Mezzolombardo (TN)</p>
                     </div>
-                    <div className="text-gray-400">📍</div>
+                    <div className="text-blue-500 text-xl">📍</div>
                   </div>
-                </button>
+                </motion.button>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 🏠 DOCK PRINCIPALE PREMIUM */}
+      {/* 🏠 DOCK PRINCIPALE ULTRA-WIDE PREMIUM */}
       <AnimatePresence>
         {isVisible && (
           <motion.div
@@ -400,75 +481,96 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className="fixed bottom-2 left-1/2 transform -translate-x-1/2 z-[9999] pointer-events-none"
+            className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-[9999] pointer-events-none"
           >
             <div className="pointer-events-auto">
-              {/* Dock sottile e premium */}
-              <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl border border-white/40 px-3 py-2">
-                <div className="flex items-center space-x-1">
+              {/* Dock Ultra-Wide Premium */}
+              <div className="bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/60 px-6 py-3">
+                <div className="flex items-center justify-center space-x-6">
                   
-                  {/* MENU */}
-                  <button
+                  {/* MENU BUTTON */}
+                  <motion.button
+                    variants={variants.button}
+                    initial="idle"
+                    whileHover="hover"
+                    whileTap="tap"
                     onClick={() => toggleMenu('menu')}
+                    onBlur={() => {}}
                     className={`
                       flex flex-col items-center justify-center
-                      w-12 h-12 rounded-xl transition-all duration-200
+                      w-16 h-16 rounded-2xl transition-all duration-300
+                      focus:outline-none focus:ring-0
                       ${activeMenu === 'menu'
-                        ? 'bg-gray-900 text-white scale-105' 
-                        : 'bg-transparent text-gray-700 hover:bg-gray-100 active:scale-95'
+                        ? 'bg-gradient-to-b from-gray-800 to-gray-900 text-white shadow-xl scale-105' 
+                        : 'bg-transparent text-gray-700 hover:bg-gray-100/80'
                       }
                     `}
                   >
                     <motion.div
                       animate={activeMenu === 'menu' ? { rotate: 90 } : { rotate: 0 }}
-                      transition={{ duration: shouldReduceMotion ? 0.1 : 0.2 }}
-                      className="text-base"
+                      transition={{ duration: shouldReduceMotion ? 0.1 : 0.3 }}
+                      className="text-xl font-bold"
                     >
                       ☰
                     </motion.div>
-                  </button>
+                    <span className="text-xs font-semibold mt-1">{t.menu}</span>
+                  </motion.button>
 
-                  {/* CALL */}
-                  <button
+                  {/* CALL BUTTON */}
+                  <motion.button
+                    variants={variants.button}
+                    initial="idle"
+                    whileHover="hover"
+                    whileTap="tap"
                     onClick={() => toggleMenu('call')}
+                    onBlur={() => {}}
                     className={`
                       flex flex-col items-center justify-center
-                      w-12 h-12 rounded-xl transition-all duration-200
+                      w-16 h-16 rounded-2xl transition-all duration-300
+                      focus:outline-none focus:ring-0
                       ${activeMenu === 'call'
-                        ? 'bg-green-500 text-white scale-105' 
-                        : 'bg-transparent text-gray-700 hover:bg-gray-100 active:scale-95'
+                        ? 'bg-gradient-to-b from-green-500 to-green-600 text-white shadow-xl scale-105' 
+                        : 'bg-transparent text-gray-700 hover:bg-gray-100/80'
                       }
                     `}
                   >
                     <motion.div
-                      animate={activeMenu === 'call' ? { scale: 1.1 } : { scale: 1 }}
-                      transition={{ duration: shouldReduceMotion ? 0.1 : 0.15 }}
-                      className="text-base"
+                      animate={activeMenu === 'call' ? { scale: 1.2, rotate: 5 } : { scale: 1, rotate: 0 }}
+                      transition={{ duration: shouldReduceMotion ? 0.1 : 0.3 }}
+                      className="text-xl"
                     >
                       📞
                     </motion.div>
-                  </button>
+                    <span className="text-xs font-semibold mt-1">{t.call}</span>
+                  </motion.button>
 
-                  {/* DIRECTIONS */}
-                  <button
+                  {/* DIRECTIONS BUTTON */}
+                  <motion.button
+                    variants={variants.button}
+                    initial="idle"
+                    whileHover="hover"
+                    whileTap="tap"
                     onClick={() => toggleMenu('directions')}
+                    onBlur={() => {}}
                     className={`
                       flex flex-col items-center justify-center
-                      w-12 h-12 rounded-xl transition-all duration-200
+                      w-16 h-16 rounded-2xl transition-all duration-300
+                      focus:outline-none focus:ring-0
                       ${activeMenu === 'directions'
-                        ? 'bg-blue-500 text-white scale-105' 
-                        : 'bg-transparent text-gray-700 hover:bg-gray-100 active:scale-95'
+                        ? 'bg-gradient-to-b from-blue-500 to-blue-600 text-white shadow-xl scale-105' 
+                        : 'bg-transparent text-gray-700 hover:bg-gray-100/80'
                       }
                     `}
                   >
                     <motion.div
-                      animate={activeMenu === 'directions' ? { scale: 1.1 } : { scale: 1 }}
-                      transition={{ duration: shouldReduceMotion ? 0.1 : 0.15 }}
-                      className="text-base"
+                      animate={activeMenu === 'directions' ? { scale: 1.2, rotate: -5 } : { scale: 1, rotate: 0 }}
+                      transition={{ duration: shouldReduceMotion ? 0.1 : 0.3 }}
+                      className="text-xl"
                     >
                       🗺️
                     </motion.div>
-                  </button>
+                    <span className="text-xs font-semibold mt-1">{t.directions}</span>
+                  </motion.button>
                 </div>
               </div>
             </div>

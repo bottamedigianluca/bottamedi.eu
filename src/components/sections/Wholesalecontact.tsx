@@ -64,7 +64,9 @@ const translations = {
       success: 'Richiesta inviata con successo!',
       successMessage: 'Ti contatteremo entro 24 ore per fornirti il listino personalizzato.',
       error: 'Errore nell\'invio. Riprova o contattaci direttamente.'
-    }
+    },
+    whyChoose: 'Perché scegliere Bottamedi per il tuo business:',
+    directContacts: 'Contatti diretti:'
   },
   de: {
     title: 'Großhandels-Preisliste anfordern',
@@ -123,7 +125,9 @@ const translations = {
       success: 'Anfrage erfolgreich gesendet!',
       successMessage: 'Wir werden Sie innerhalb von 24 Stunden kontaktieren, um Ihnen die personalisierte Preisliste zu liefern.',
       error: 'Fehler beim Senden. Versuchen Sie es erneut oder kontaktieren Sie uns direkt.'
-    }
+    },
+    whyChoose: 'Warum Bottamedi für Ihr Unternehmen wählen:',
+    directContacts: 'Direkte Kontakte:'
   }
 }
 
@@ -147,7 +151,6 @@ const WholesaleContact: React.FC<WholesaleContactProps> = ({ language, inView })
     setStatus('sending')
 
     try {
-      // Email diretta e concisa
       const emailSubject = encodeURIComponent(`Richiesta Listino HORECA - ${formData.businessName}`)
       const emailBody = encodeURIComponent(`Buongiorno,
 
@@ -164,14 +167,11 @@ ${formData.message ? `NOTE: ${formData.message}` : ''}
 Grazie,
 ${formData.contactPerson}`)
 
-      // Apri client email
       const mailtoLink = `mailto:bottamedipierluigi@virgilio.it?subject=${emailSubject}&body=${emailBody}`
       window.open(mailtoLink, '_blank')
       
-      // UX immediata
       setStatus('success')
       
-      // Reset automatico dopo 2 secondi
       setTimeout(() => {
         setStatus('idle')
         setFormData({
@@ -196,6 +196,15 @@ ${formData.contactPerson}`)
     setFormData(prev => ({ ...prev, [field]: value }))
   }, [])
 
+  const resetButtonFocus = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    const target = e.currentTarget
+    target.blur()
+    setTimeout(() => {
+      target.blur()
+      target.classList.remove('active', 'focus', 'pressed')
+    }, 150)
+  }, [])
+
   const isFormValid = formData.businessName && 
                      formData.contactPerson && 
                      formData.phone && 
@@ -205,7 +214,6 @@ ${formData.contactPerson}`)
 
   return (
     <section id="wholesale" className="py-20 lg:py-24 bg-gradient-to-br from-blue-50 via-white to-green-50 relative overflow-hidden">
-      {/* Background Elements */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-0 right-1/4 w-80 h-80 bg-blue-200 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-green-200 rounded-full blur-3xl"></div>
@@ -214,7 +222,6 @@ ${formData.contactPerson}`)
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-6xl mx-auto">
           
-          {/* Header - APPARE IMMEDIATAMENTE */}
           <motion.div
             initial={{ opacity: 1, y: 0 }}
             className="text-center mb-16"
@@ -241,10 +248,9 @@ ${formData.contactPerson}`)
 
           <div className="grid lg:grid-cols-2 gap-10 items-start">
             
-            {/* Benefits - SEMPLIFICATI */}
             <div className="space-y-6">
               <h3 className="text-xl font-bold text-gray-900 mb-5">
-                Perché scegliere Bottamedi per il tuo business:
+                {t.whyChoose}
               </h3>
               
               <div className="space-y-4">
@@ -262,9 +268,8 @@ ${formData.contactPerson}`)
                 ))}
               </div>
 
-              {/* Contact Info */}
               <div className="bg-gradient-to-br from-green-50 to-blue-50 p-5 rounded-xl border border-green-200">
-                <h4 className="font-semibold text-gray-900 mb-3 text-sm">Contatti diretti:</h4>
+                <h4 className="font-semibold text-gray-900 mb-3 text-sm">{t.directContacts}</h4>
                 <div className="space-y-2 text-xs text-gray-600">
                   <div className="flex items-center space-x-2">
                     <span>📞</span>
@@ -282,7 +287,6 @@ ${formData.contactPerson}`)
               </div>
             </div>
 
-            {/* Form - SEMPLIFICATO */}
             <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
               <AnimatePresence mode="wait">
                 {status === 'success' ? (
@@ -315,7 +319,6 @@ ${formData.contactPerson}`)
                       </p>
                     </div>
 
-                    {/* Business Name & Contact Person */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -327,7 +330,7 @@ ${formData.contactPerson}`)
                           value={formData.businessName}
                           onChange={(e) => handleInputChange('businessName', e.target.value)}
                           placeholder={t.form.businessNamePlaceholder}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm outline-none"
                         />
                       </div>
                       
@@ -341,12 +344,11 @@ ${formData.contactPerson}`)
                           value={formData.contactPerson}
                           onChange={(e) => handleInputChange('contactPerson', e.target.value)}
                           placeholder={t.form.contactPersonPlaceholder}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm outline-none"
                         />
                       </div>
                     </div>
 
-                    {/* Phone & Email */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -358,7 +360,7 @@ ${formData.contactPerson}`)
                           value={formData.phone}
                           onChange={(e) => handleInputChange('phone', e.target.value)}
                           placeholder={t.form.phonePlaceholder}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm outline-none"
                         />
                       </div>
                       
@@ -372,12 +374,11 @@ ${formData.contactPerson}`)
                           value={formData.email}
                           onChange={(e) => handleInputChange('email', e.target.value)}
                           placeholder={t.form.emailPlaceholder}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm outline-none"
                         />
                       </div>
                     </div>
 
-                    {/* Business Type & Location */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -387,7 +388,7 @@ ${formData.contactPerson}`)
                           required
                           value={formData.businessType}
                           onChange={(e) => handleInputChange('businessType', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white text-sm outline-none"
                         >
                           {t.form.businessTypeOptions.map((option, index) => (
                             <option key={index} value={index === 0 ? '' : option}>
@@ -406,12 +407,11 @@ ${formData.contactPerson}`)
                           value={formData.location}
                           onChange={(e) => handleInputChange('location', e.target.value)}
                           placeholder={t.form.locationPlaceholder}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm outline-none"
                         />
                       </div>
                     </div>
 
-                    {/* Message */}
                     <div>
                       <label className="block text-xs font-medium text-gray-700 mb-1">
                         {t.form.message}
@@ -421,33 +421,37 @@ ${formData.contactPerson}`)
                         value={formData.message}
                         onChange={(e) => handleInputChange('message', e.target.value)}
                         placeholder={t.form.messagePlaceholder}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none text-sm"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none text-sm outline-none"
                       />
                     </div>
 
-                    {/* Privacy */}
                     <div className="flex items-start space-x-2">
                       <input
                         type="checkbox"
                         id="privacy"
                         checked={privacyAccepted}
                         onChange={(e) => setPrivacyAccepted(e.target.checked)}
-                        className="mt-0.5 h-3 w-3 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        className="mt-0.5 h-3 w-3 text-blue-600 border-gray-300 rounded focus:ring-blue-500 outline-none"
                       />
                       <label htmlFor="privacy" className="text-xs text-gray-600 leading-relaxed">
                         {t.form.privacy}
                       </label>
                     </div>
 
-                    {/* Submit Button */}
                     <button
                       type="submit"
                       disabled={!isFormValid || status === 'sending'}
-                      className={`w-full py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-300 ${
+                      onClick={resetButtonFocus}
+                      onBlur={() => {}}
+                      className={`w-full py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-300 outline-none focus:outline-none ${
                         isFormValid && status !== 'sending'
-                          ? 'bg-gradient-to-r from-blue-600 to-green-600 text-white shadow-lg hover:shadow-xl hover:scale-[1.02]'
+                          ? 'bg-gradient-to-r from-blue-600 to-green-600 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]'
                           : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       }`}
+                      style={{ 
+                        WebkitTapHighlightColor: 'transparent',
+                        userSelect: 'none'
+                      }}
                     >
                       {status === 'sending' ? (
                         <div className="flex items-center justify-center space-x-2">
@@ -462,7 +466,6 @@ ${formData.contactPerson}`)
                       )}
                     </button>
 
-                    {/* Error Message */}
                     {status === 'error' && (
                       <div className="text-center text-red-600 text-xs bg-red-50 p-2 rounded-lg">
                         {t.form.error}

@@ -1,4 +1,61 @@
-window.trackBusinessInquiry = function(type, source) {
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+  <!-- Google Analytics 4 (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZYL9HZJKCE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    // Configurazione avanzata GA4
+    gtag('config', 'G-ZYL9HZJKCE', {
+      page_title: 'Bottamedi Frutta e Verdura Mezzolombardo',
+      page_location: window.location.href,
+      content_group1: 'Ortofrutta Trentino',
+      content_group2: 'HORECA Services',
+      custom_map: {
+        'custom_parameter_1': 'trentino_alto_adige',
+        'custom_parameter_2': 'mezzolombardo'
+      },
+      send_page_view: true,
+      enhanced_measurement: {
+        scrolls: true,
+        outbound_clicks: true,
+        site_search: true,
+        video_engagement: true,
+        file_downloads: true
+      }
+    });
+
+    // Configurazione cookie consent
+    gtag('consent', 'default', {
+      analytics_storage: 'denied',
+      ad_storage: 'denied',
+      functionality_storage: 'granted',
+      personalization_storage: 'denied',
+      security_storage: 'granted'
+    });
+
+    // Eventi personalizzati di tracciamento
+    window.trackEvent = function(action, category, label, value) {
+      gtag('event', action, {
+        event_category: category || 'engagement',
+        event_label: label || '',
+        value: value || 1
+      });
+    };
+
+    window.trackMobileDock = function(action, submenu) {
+      gtag('event', 'mobile_dock_interaction', {
+        event_category: 'engagement',
+        event_label: action,
+        custom_parameter_submenu: submenu || 'main',
+        value: 1
+      });
+    };
+
+    window.trackBusinessInquiry = function(type, source) {
       gtag('event', 'business_inquiry', {
         event_category: 'conversion',
         event_label: type, // 'retail' o 'horeca'
@@ -145,9 +202,7 @@ window.trackBusinessInquiry = function(type, source) {
         "name": "Ingrosso"
       }
     ],
-    "openingHours": [
-      "Mo-Sa 07:00-19:30"
-    ],
+    "openingHours": ["Mo-Sa 07:00-19:30"],
     "specialOpeningHoursSpecification": [
       {
         "@type": "OpeningHoursSpecification",
@@ -229,36 +284,6 @@ window.trackBusinessInquiry = function(type, source) {
       "bestRating": "5",
       "worstRating": "1"
     },
-    "review": [
-      {
-        "@type": "Review",
-        "reviewRating": {
-          "@type": "Rating",
-          "ratingValue": "5",
-          "bestRating": "5"
-        },
-        "author": {
-          "@type": "Person",
-          "name": "Marco Rossi"
-        },
-        "reviewBody": "Frutta e verdura sempre freschissima, personale cordiale e prezzi onesti. Il mio banchetto di fiducia da anni! Consigliatissimo per qualità e servizio.",
-        "datePublished": "2024-12-15"
-      },
-      {
-        "@type": "Review",
-        "reviewRating": {
-          "@type": "Rating",
-          "ratingValue": "5",
-          "bestRating": "5"
-        },
-        "author": {
-          "@type": "Person", 
-          "name": "Chef Giuseppe Verdi"
-        },
-        "reviewBody": "Forniamo il nostro ristorante tramite Bottamedi da oltre 10 anni. Qualità eccellente, consegne puntuali e prezzi competitivi. Perfetti per il settore HORECA.",
-        "datePublished": "2024-11-28"
-      }
-    ],
     "contactPoint": [
       {
         "@type": "ContactPoint",
@@ -953,67 +978,4 @@ window.trackBusinessInquiry = function(type, source) {
   </script>
 
 </body>
-</html><!DOCTYPE html>
-<html lang="it" class="scroll-smooth">
-<head>
-  <!-- Google Analytics 4 (GA4) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZYL9HZJKCE"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    // Configurazione avanzata GA4
-    gtag('config', 'G-ZYL9HZJKCE', {
-      page_title: 'Bottamedi Frutta e Verdura Mezzolombardo',
-      page_location: window.location.href,
-      content_group1: 'Ortofrutta Trentino',
-      content_group2: 'HORECA Services',
-      custom_map: {
-        'custom_parameter_1': 'trentino_alto_adige',
-        'custom_parameter_2': 'mezzolombardo'
-      },
-      send_page_view: true,
-      enhanced_measurement: {
-        scrolls: true,
-        outbound_clicks: true,
-        site_search: true,
-        video_engagement: true,
-        file_downloads: true
-      }
-    });
-
-    // Configurazione cookie consent
-    gtag('consent', 'default', {
-      analytics_storage: 'denied',
-      ad_storage: 'denied',
-      functionality_storage: 'granted',
-      personalization_storage: 'denied',
-      security_storage: 'granted'
-    });
-
-    // Eventi personalizzati di tracciamento
-    window.trackEvent = function(action, category, label, value) {
-      gtag('event', action, {
-        event_category: category || 'engagement',
-        event_label: label || '',
-        value: value || 1
-      });
-    };
-
-    window.trackMobileDock = function(action, submenu) {
-      gtag('event', 'mobile_dock_interaction', {
-        event_category: 'engagement',
-        event_label: action,
-        custom_parameter_submenu: submenu || 'main',
-        value: 1
-      });
-    };
-
-    window.trackBusinessInquiry = function(type, source) {
-      gtag('event', 'business_inquiry', {
-        event_category: 'conversion',
-        event_label: type, // 'retail' o 'horeca'
-        custom_parameter_source: source || 'website',
-        value: 10
-      });
+</html>

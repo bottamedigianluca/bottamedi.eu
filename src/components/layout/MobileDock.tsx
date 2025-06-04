@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import React, { useState, useEffect, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface MobileDockProps {
   language: 'it' | 'de'
@@ -71,7 +71,6 @@ const useScrollDetection = () => {
           const { offsetTop, offsetHeight } = element
           if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
             setCurrentSection(sectionId)
-            // Mostra la dock solo se NON siamo nella hero section e NON siamo vicino al footer
             const isInHero = sectionId === 'hero'
             const isNearFooter = window.scrollY + window.innerHeight > document.body.scrollHeight - 200
             setIsVisible(!isInHero && !isNearFooter)
@@ -102,7 +101,6 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
   const [activeMenu, setActiveMenu] = useState<'none' | 'menu' | 'call' | 'directions'>('none')
   const [isMobile, setIsMobile] = useState(false)
   const { isVisible, currentSection } = useScrollDetection()
-  const shouldReduceMotion = useReducedMotion()
   const t = translations[language]
 
   useEffect(() => {
@@ -167,7 +165,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
   if (!isMobile) return null
 
   return (
-    <>
+    <div className="lg:hidden">
       {/* Backdrop */}
       <AnimatePresence>
         {activeMenu !== 'none' && (
@@ -192,25 +190,13 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
             className="fixed bottom-24 left-4 right-4 z-[1000]"
           >
             <div 
-              className="relative bg-white rounded-3xl overflow-hidden"
+              className="relative bg-white rounded-3xl overflow-hidden shadow-2xl"
               style={{
                 background: 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
-                boxShadow: `
-                  0 25px 50px -12px rgba(0, 0, 0, 0.25),
-                  0 0 0 1px rgba(255, 255, 255, 0.05),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.1)
-                `,
                 transform: 'perspective(1000px) rotateX(2deg)'
               }}
             >
-              {/* Header con effetto 3D */}
-              <div 
-                className="px-6 py-4 border-b border-gray-100"
-                style={{
-                  background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
-                  boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-                }}
-              >
+              <div className="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-transparent">
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-bold text-gray-900">{t.menu}</span>
                   <motion.button
@@ -218,62 +204,30 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
                     whileTap={{ scale: 0.9 }}
                     onClick={closeAllMenus}
                     className="w-10 h-10 flex items-center justify-center rounded-xl bg-white shadow-lg text-gray-600 hover:text-red-500 transition-colors"
-                    style={{
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-                    }}
                   >
                     ✕
                   </motion.button>
                 </div>
               </div>
               
-              {/* Grid delle sezioni con effetti 3D */}
               <div className="p-6 grid grid-cols-3 gap-4">
                 {t.sections.map((item, index) => (
                   <motion.button
                     key={item.id}
-                    initial={{ opacity: 0, y: 20, rotateX: -15 }}
-                    animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05, duration: 0.3 }}
-                    whileHover={{ 
-                      scale: 1.05, 
-                      y: -5,
-                      rotateX: 5,
-                      transition: { duration: 0.2 }
-                    }}
-                    whileTap={{ scale: 0.95, y: 0 }}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => scrollToSection(item.id)}
-                    className={`
-                      relative flex flex-col items-center p-4 rounded-2xl transition-all duration-300
-                      ${currentSection === item.id 
-                        ? 'text-green-700' 
-                        : 'text-gray-700'
-                      }
-                    `}
-                    style={{
-                      background: currentSection === item.id 
-                        ? 'linear-gradient(145deg, #dcfce7 0%, #bbf7d0 100%)'
-                        : 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
-                      boxShadow: currentSection === item.id
-                        ? `
-                          0 8px 16px -4px rgba(34, 197, 94, 0.3),
-                          0 0 0 1px rgba(34, 197, 94, 0.1),
-                          inset 0 1px 0 rgba(255, 255, 255, 0.1)
-                        `
-                        : `
-                          0 4px 8px -2px rgba(0, 0, 0, 0.1),
-                          0 0 0 1px rgba(0, 0, 0, 0.05),
-                          inset 0 1px 0 rgba(255, 255, 255, 0.1)
-                        `,
-                      transform: 'perspective(500px)'
-                    }}
+                    className={`flex flex-col items-center p-4 rounded-2xl transition-all duration-300 ${
+                      currentSection === item.id 
+                        ? 'bg-green-50 text-green-700 shadow-lg border-2 border-green-200' 
+                        : 'bg-white text-gray-700 hover:bg-gray-50 shadow-md'
+                    }`}
                   >
-                    <div className="text-2xl mb-2 transform transition-transform duration-200">
-                      {item.icon}
-                    </div>
-                    <span className="text-sm font-semibold leading-tight text-center">
-                      {item.label}
-                    </span>
+                    <div className="text-2xl mb-2">{item.icon}</div>
+                    <span className="text-sm font-semibold leading-tight text-center">{item.label}</span>
                   </motion.button>
                 ))}
               </div>
@@ -292,24 +246,8 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
             transition={{ type: 'spring', damping: 25, stiffness: 400 }}
             className="fixed bottom-24 left-4 right-4 z-[1000]"
           >
-            <div 
-              className="relative bg-white rounded-3xl overflow-hidden"
-              style={{
-                background: 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
-                boxShadow: `
-                  0 25px 50px -12px rgba(0, 0, 0, 0.25),
-                  0 0 0 1px rgba(255, 255, 255, 0.05),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.1)
-                `,
-                transform: 'perspective(1000px) rotateX(2deg)'
-              }}
-            >
-              <div 
-                className="px-6 py-4 border-b border-gray-100"
-                style={{
-                  background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)'
-                }}
-              >
+            <div className="relative bg-white rounded-3xl overflow-hidden shadow-2xl">
+              <div className="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-transparent">
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-bold text-gray-900">{t.call}</span>
                   <motion.button
@@ -324,20 +262,11 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
               </div>
               
               <div className="p-6 space-y-4">
-                {/* Banchetto */}
                 <motion.button
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleCall(t.contacts.banchettoPhone)}
-                  className="w-full p-4 rounded-2xl text-left transition-all duration-300"
-                  style={{
-                    background: 'linear-gradient(145deg, #ecfdf5 0%, #d1fae5 100%)',
-                    boxShadow: `
-                      0 4px 8px -2px rgba(34, 197, 94, 0.2),
-                      0 0 0 1px rgba(34, 197, 94, 0.1),
-                      inset 0 1px 0 rgba(255, 255, 255, 0.1)
-                    `
-                  }}
+                  className="w-full p-4 rounded-2xl text-left bg-green-50 hover:bg-green-100 transition-all duration-300 shadow-md"
                 >
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
@@ -351,20 +280,11 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
                   </div>
                 </motion.button>
 
-                {/* Ingrosso */}
                 <motion.button
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleCall(t.contacts.ingrossoPhone)}
-                  className="w-full p-4 rounded-2xl text-left transition-all duration-300"
-                  style={{
-                    background: 'linear-gradient(145deg, #eff6ff 0%, #dbeafe 100%)',
-                    boxShadow: `
-                      0 4px 8px -2px rgba(59, 130, 246, 0.2),
-                      0 0 0 1px rgba(59, 130, 246, 0.1),
-                      inset 0 1px 0 rgba(255, 255, 255, 0.1)
-                    `
-                  }}
+                  className="w-full p-4 rounded-2xl text-left bg-blue-50 hover:bg-blue-100 transition-all duration-300 shadow-md"
                 >
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
@@ -393,24 +313,8 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
             transition={{ type: 'spring', damping: 25, stiffness: 400 }}
             className="fixed bottom-24 left-4 right-4 z-[1000]"
           >
-            <div 
-              className="relative bg-white rounded-3xl overflow-hidden"
-              style={{
-                background: 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
-                boxShadow: `
-                  0 25px 50px -12px rgba(0, 0, 0, 0.25),
-                  0 0 0 1px rgba(255, 255, 255, 0.05),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.1)
-                `,
-                transform: 'perspective(1000px) rotateX(2deg)'
-              }}
-            >
-              <div 
-                className="px-6 py-4 border-b border-gray-100"
-                style={{
-                  background: 'linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%)'
-                }}
-              >
+            <div className="relative bg-white rounded-3xl overflow-hidden shadow-2xl">
+              <div className="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-transparent">
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-bold text-gray-900">{t.directions}</span>
                   <motion.button
@@ -429,15 +333,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleDirections('banchetto')}
-                  className="w-full p-4 rounded-2xl text-left transition-all duration-300"
-                  style={{
-                    background: 'linear-gradient(145deg, #ecfdf5 0%, #d1fae5 100%)',
-                    boxShadow: `
-                      0 4px 8px -2px rgba(34, 197, 94, 0.2),
-                      0 0 0 1px rgba(34, 197, 94, 0.1),
-                      inset 0 1px 0 rgba(255, 255, 255, 0.1)
-                    `
-                  }}
+                  className="w-full p-4 rounded-2xl text-left bg-green-50 hover:bg-green-100 transition-all duration-300 shadow-md"
                 >
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
@@ -454,15 +350,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleDirections('ingrosso')}
-                  className="w-full p-4 rounded-2xl text-left transition-all duration-300"
-                  style={{
-                    background: 'linear-gradient(145deg, #eff6ff 0%, #dbeafe 100%)',
-                    boxShadow: `
-                      0 4px 8px -2px rgba(59, 130, 246, 0.2),
-                      0 0 0 1px rgba(59, 130, 246, 0.1),
-                      inset 0 1px 0 rgba(255, 255, 255, 0.1)
-                    `
-                  }}
+                  className="w-full p-4 rounded-2xl text-left bg-blue-50 hover:bg-blue-100 transition-all duration-300 shadow-md"
                 >
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
@@ -487,170 +375,106 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
             initial={{ y: 100, opacity: 0, scale: 0.8 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 100, opacity: 0, scale: 0.8 }}
-            transition={{ 
-              type: 'spring', 
-              damping: 20, 
-              stiffness: 300,
-              opacity: { duration: 0.2 }
-            }}
+            transition={{ type: 'spring', damping: 20, stiffness: 300 }}
             className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-[1001]"
           >
             <div 
-              className="relative px-2 py-2"
+              className="relative px-2 py-2 bg-white/20 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30"
               style={{
-                background: 'linear-gradient(145deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%)',
+                background: 'linear-gradient(145deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1))',
                 backdropFilter: 'blur(20px)',
                 WebkitBackdropFilter: 'blur(20px)',
-                borderRadius: '28px',
-                boxShadow: `
-                  0 32px 64px -12px rgba(0, 0, 0, 0.4),
-                  0 0 0 1px rgba(255, 255, 255, 0.1),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.2),
-                  inset 0 -1px 0 rgba(0, 0, 0, 0.1)
-                `,
-                transform: 'perspective(1000px) rotateX(8deg)',
-                transformStyle: 'preserve-3d'
+                boxShadow: '0 25px 45px -12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2)',
+                transform: 'perspective(800px) rotateX(5deg)'
               }}
             >
-              {/* Piano della dock con ombra interna */}
-              <div 
-                className="absolute inset-2 rounded-3xl"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.05) 100%)',
-                  transform: 'translateZ(-2px)'
-                }}
-              />
-              
-              <div className="relative flex items-center space-x-1">
-                {/* Pulsante Menu */}
+              <div className="flex items-center space-x-2">
+                {/* Menu Button */}
                 <motion.button
-                  whileHover={{ 
-                    scale: 1.1, 
-                    y: -4,
-                    rotateY: 10,
-                    transition: { duration: 0.2 }
-                  }}
-                  whileTap={{ 
-                    scale: 0.95, 
-                    y: 0,
-                    transition: { duration: 0.1 }
-                  }}
+                  whileHover={{ scale: 1.1, y: -3, rotateY: 10 }}
+                  whileTap={{ scale: 0.95, y: 0 }}
                   onClick={() => toggleMenu('menu')}
-                  className={`
-                    relative flex flex-col items-center justify-center w-16 h-16 rounded-2xl
-                    transition-all duration-300 group
-                    ${activeMenu === 'menu' ? 'text-green-600' : 'text-gray-700'}
-                  `}
+                  className={`relative flex flex-col items-center justify-center w-14 h-14 rounded-2xl transition-all duration-300 ${
+                    activeMenu === 'menu' ? 'bg-green-100 text-green-600 shadow-lg' : 'bg-white/90 text-gray-700 shadow-md hover:shadow-lg'
+                  }`}
                   style={{
-                    background: activeMenu === 'menu' 
-                      ? 'linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%)'
-                      : 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
-                    boxShadow: activeMenu === 'menu'
-                      ? `
-                        0 8px 25px -8px rgba(34, 197, 94, 0.6),
-                        0 0 0 1px rgba(34, 197, 94, 0.2),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.3),
-                        inset 0 -1px 0 rgba(34, 197, 94, 0.1)
-                      `
-                      : `
-                        0 6px 20px -6px rgba(0, 0, 0, 0.3),
-                        0 0 0 1px rgba(255, 255, 255, 0.1),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.3),
-                        inset 0 -1px 0 rgba(0, 0, 0, 0.1)
-                      `,
-                    transform: 'perspective(500px) translateZ(4px)',
-                    transformStyle: 'preserve-3d'
+                    transform: 'perspective(400px) translateZ(2px)',
+                    boxShadow: activeMenu === 'menu' 
+                      ? '0 8px 20px -6px rgba(34,197,94,0.4), inset 0 1px 0 rgba(255,255,255,0.3)'
+                      : '0 4px 12px -3px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.3)'
+                  }}
+                >
+                  <motion.div 
+                    animate={activeMenu === 'menu' ? { rotate: 180, scale: 1.1 } : { rotate: 0, scale: 1 }}
+                    className="text-lg font-bold mb-1"
+                  >
+                    ☰
+                  </motion.div>
+                  <span className="text-xs font-semibold">{t.menu}</span>
+                </motion.button>
+
+                {/* Call Button */}
+                <motion.button
+                  whileHover={{ scale: 1.1, y: -3, rotateY: -10 }}
+                  whileTap={{ scale: 0.95, y: 0 }}
+                  onClick={() => toggleMenu('call')}
+                  className={`relative flex flex-col items-center justify-center w-14 h-14 rounded-2xl transition-all duration-300 ${
+                    activeMenu === 'call' ? 'bg-blue-100 text-blue-600 shadow-lg' : 'bg-white/90 text-gray-700 shadow-md hover:shadow-lg'
+                  }`}
+                  style={{
+                    transform: 'perspective(400px) translateZ(2px)',
+                    boxShadow: activeMenu === 'call' 
+                      ? '0 8px 20px -6px rgba(59,130,246,0.4), inset 0 1px 0 rgba(255,255,255,0.3)'
+                      : '0 4px 12px -3px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.3)'
                   }}
                 >
                   <motion.div 
                     animate={activeMenu === 'call' ? { rotate: 5, scale: 1.1 } : { rotate: 0, scale: 1 }}
-                    className="text-xl mb-1"
+                    className="text-lg mb-1"
                   >
                     📞
                   </motion.div>
                   <span className="text-xs font-semibold">{t.call}</span>
                 </motion.button>
 
-                {/* Pulsante Directions */}
+                {/* Directions Button */}
                 <motion.button
-                  whileHover={{ 
-                    scale: 1.1, 
-                    y: -4,
-                    rotateY: 10,
-                    transition: { duration: 0.2 }
-                  }}
-                  whileTap={{ 
-                    scale: 0.95, 
-                    y: 0,
-                    transition: { duration: 0.1 }
-                  }}
+                  whileHover={{ scale: 1.1, y: -3, rotateY: 10 }}
+                  whileTap={{ scale: 0.95, y: 0 }}
                   onClick={() => toggleMenu('directions')}
-                  className={`
-                    relative flex flex-col items-center justify-center w-16 h-16 rounded-2xl
-                    transition-all duration-300 group
-                    ${activeMenu === 'directions' ? 'text-purple-600' : 'text-gray-700'}
-                  `}
+                  className={`relative flex flex-col items-center justify-center w-14 h-14 rounded-2xl transition-all duration-300 ${
+                    activeMenu === 'directions' ? 'bg-purple-100 text-purple-600 shadow-lg' : 'bg-white/90 text-gray-700 shadow-md hover:shadow-lg'
+                  }`}
                   style={{
-                    background: activeMenu === 'directions' 
-                      ? 'linear-gradient(145deg, #faf5ff 0%, #f3e8ff 100%)'
-                      : 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
-                    boxShadow: activeMenu === 'directions'
-                      ? `
-                        0 8px 25px -8px rgba(147, 51, 234, 0.6),
-                        0 0 0 1px rgba(147, 51, 234, 0.2),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.3),
-                        inset 0 -1px 0 rgba(147, 51, 234, 0.1)
-                      `
-                      : `
-                        0 6px 20px -6px rgba(0, 0, 0, 0.3),
-                        0 0 0 1px rgba(255, 255, 255, 0.1),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.3),
-                        inset 0 -1px 0 rgba(0, 0, 0, 0.1)
-                      `,
-                    transform: 'perspective(500px) translateZ(4px)',
-                    transformStyle: 'preserve-3d'
+                    transform: 'perspective(400px) translateZ(2px)',
+                    boxShadow: activeMenu === 'directions' 
+                      ? '0 8px 20px -6px rgba(147,51,234,0.4), inset 0 1px 0 rgba(255,255,255,0.3)'
+                      : '0 4px 12px -3px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.3)'
                   }}
                 >
                   <motion.div 
                     animate={activeMenu === 'directions' ? { rotate: -5, scale: 1.1 } : { rotate: 0, scale: 1 }}
-                    className="text-xl mb-1"
+                    className="text-lg mb-1"
                   >
                     🗺️
                   </motion.div>
                   <span className="text-xs font-semibold">{t.directions}</span>
                 </motion.button>
 
-                {/* Pulsante WhatsApp */}
+                {/* WhatsApp Button */}
                 <motion.button
-                  whileHover={{ 
-                    scale: 1.1, 
-                    y: -4,
-                    rotateY: -10,
-                    transition: { duration: 0.2 }
-                  }}
-                  whileTap={{ 
-                    scale: 0.95, 
-                    y: 0,
-                    transition: { duration: 0.1 }
-                  }}
+                  whileHover={{ scale: 1.1, y: -3, rotateY: -10 }}
+                  whileTap={{ scale: 0.95, y: 0 }}
                   onClick={handleWhatsApp}
-                  className="relative flex flex-col items-center justify-center w-16 h-16 rounded-2xl
-                    transition-all duration-300 group text-green-600"
+                  className="relative flex flex-col items-center justify-center w-14 h-14 rounded-2xl transition-all duration-300 bg-green-100 text-green-600 shadow-lg"
                   style={{
-                    background: 'linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%)',
-                    boxShadow: `
-                      0 6px 20px -6px rgba(34, 197, 94, 0.4),
-                      0 0 0 1px rgba(34, 197, 94, 0.2),
-                      inset 0 1px 0 rgba(255, 255, 255, 0.3),
-                      inset 0 -1px 0 rgba(34, 197, 94, 0.1)
-                    `,
-                    transform: 'perspective(500px) translateZ(4px)',
-                    transformStyle: 'preserve-3d'
+                    transform: 'perspective(400px) translateZ(2px)',
+                    boxShadow: '0 8px 20px -6px rgba(34,197,94,0.4), inset 0 1px 0 rgba(255,255,255,0.3)'
                   }}
                 >
                   <motion.div 
                     whileHover={{ rotate: 10, scale: 1.1 }}
-                    className="text-xl mb-1"
+                    className="text-lg mb-1"
                   >
                     💬
                   </motion.div>
@@ -661,57 +485,8 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   )
 }
 
-export default PremiumMobileDock(4px)',
-                    transformStyle: 'preserve-3d'
-                  }}
-                >
-                  <motion.div 
-                    animate={activeMenu === 'menu' ? { rotate: 180, scale: 1.1 } : { rotate: 0, scale: 1 }}
-                    className="text-xl font-bold mb-1"
-                  >
-                    ☰
-                  </motion.div>
-                  <span className="text-xs font-semibold">{t.menu}</span>
-                </motion.button>
-
-                {/* Pulsante Call */}
-                <motion.button
-                  whileHover={{ 
-                    scale: 1.1, 
-                    y: -4,
-                    rotateY: -10,
-                    transition: { duration: 0.2 }
-                  }}
-                  whileTap={{ 
-                    scale: 0.95, 
-                    y: 0,
-                    transition: { duration: 0.1 }
-                  }}
-                  onClick={() => toggleMenu('call')}
-                  className={`
-                    relative flex flex-col items-center justify-center w-16 h-16 rounded-2xl
-                    transition-all duration-300 group
-                    ${activeMenu === 'call' ? 'text-blue-600' : 'text-gray-700'}
-                  `}
-                  style={{
-                    background: activeMenu === 'call' 
-                      ? 'linear-gradient(145deg, #eff6ff 0%, #dbeafe 100%)'
-                      : 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
-                    boxShadow: activeMenu === 'call'
-                      ? `
-                        0 8px 25px -8px rgba(59, 130, 246, 0.6),
-                        0 0 0 1px rgba(59, 130, 246, 0.2),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.3),
-                        inset 0 -1px 0 rgba(59, 130, 246, 0.1)
-                      `
-                      : `
-                        0 6px 20px -6px rgba(0, 0, 0, 0.3),
-                        0 0 0 1px rgba(255, 255, 255, 0.1),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.3),
-                        inset 0 -1px 0 rgba(0, 0, 0, 0.1)
-                      `,
-                    transform: 'perspective(500px) translateZ
+export default PremiumMobileDock

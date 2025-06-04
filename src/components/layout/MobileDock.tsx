@@ -21,7 +21,7 @@ const translations = {
       { id: 'contact', label: 'Contatti', icon: '📞' }
     ],
     contacts: {
-      banchetto: 'Banchetto Retail',
+      banchetto: 'Banchetto',
       ingrosso: 'Ingrosso HORECA',
       banchettoPhone: '351 577 6198',
       ingrossoPhone: '0461 602534',
@@ -45,7 +45,7 @@ const translations = {
       { id: 'contact', label: 'Kontakt', icon: '📞' }
     ],
     contacts: {
-      banchetto: 'Marktstand Retail',
+      banchetto: 'Marktstand',
       ingrosso: 'Großhandel HORECA',
       banchettoPhone: '351 577 6198',
       ingrossoPhone: '0461 602534',

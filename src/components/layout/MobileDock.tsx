@@ -54,7 +54,6 @@ const translations = {
   }
 }
 
-// 🎯 Hook ottimizzato per rilevare posizione
 const useScrollDetection = () => {
   const [isVisible, setIsVisible] = useState(false)
   const [currentSection, setCurrentSection] = useState('hero')
@@ -72,7 +71,6 @@ const useScrollDetection = () => {
           const { offsetTop, offsetHeight } = element
           if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
             setCurrentSection(sectionId)
-            // Mostra solo se NON siamo nella hero e NON nel footer
             const isInHero = sectionId === 'hero'
             const isNearFooter = window.scrollY + window.innerHeight > document.body.scrollHeight - 100
             setIsVisible(!isInHero && !isNearFooter)
@@ -99,7 +97,6 @@ const useScrollDetection = () => {
   return { isVisible, currentSection }
 }
 
-// 🏆 COMPONENTE PREMIUM DOCK ULTRA-WIDE
 const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
   const [activeMenu, setActiveMenu] = useState<'none' | 'menu' | 'call' | 'directions'>('none')
   const [isMobile, setIsMobile] = useState(false)
@@ -107,7 +104,6 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
   const shouldReduceMotion = useReducedMotion()
   const t = translations[language]
 
-  // Detect mobile
   useEffect(() => {
     const checkMobile = () => {
       const mobile = window.innerWidth < 1024
@@ -120,7 +116,6 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Scroll to section
   const scrollToSection = useCallback((sectionId: string) => {
     const element = document.getElementById(sectionId)
     if (element) {
@@ -134,13 +129,11 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
     }
   }, [])
 
-  // Handle calls
   const handleCall = useCallback((phone: string) => {
     window.open(`tel:${phone.replace(/\s/g, '')}`, '_self')
     setActiveMenu('none')
   }, [])
 
-  // Handle WhatsApp
   const handleWhatsApp = useCallback(() => {
     const message = encodeURIComponent(
       language === 'it' 
@@ -151,7 +144,6 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
     setActiveMenu('none')
   }, [language])
 
-  // Handle directions
   const handleDirections = useCallback((type: 'banchetto' | 'ingrosso') => {
     const urls = {
       banchetto: 'https://www.google.com/maps/search/?api=1&query=Banchetto+Frutta+e+Verdura+Bottamedi+Via+Cavalleggeri+Udine+Mezzolombardo+TN',
@@ -161,11 +153,9 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
     setActiveMenu('none')
   }, [])
 
-  // Toggle menu con reset dello stato attivo
   const toggleMenu = useCallback((menu: 'menu' | 'call' | 'directions') => {
     setActiveMenu(prev => {
       const newState = prev === menu ? 'none' : menu
-      // Reset focus dopo il cambio stato
       setTimeout(() => {
         if (document.activeElement && document.activeElement instanceof HTMLElement) {
           document.activeElement.blur()
@@ -175,16 +165,13 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
     })
   }, [])
 
-  // Close all menus
   const closeAllMenus = useCallback(() => {
     setActiveMenu('none')
-    // Reset focus
     if (document.activeElement && document.activeElement instanceof HTMLElement) {
       document.activeElement.blur()
     }
   }, [])
 
-  // Memoized variants
   const variants = useMemo(() => ({
     dock: {
       hidden: { y: 100, opacity: 0, scale: 0.95 },
@@ -221,12 +208,10 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
     }
   }), [shouldReduceMotion])
 
-  // Non renderizzare su desktop o quando non visibile
   if (!isMobile || !isVisible) return null
 
   return (
     <>
-      {/* 🌫️ BACKDROP ELEGANTE */}
       <AnimatePresence>
         {activeMenu !== 'none' && (
           <motion.div
@@ -240,7 +225,6 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
         )}
       </AnimatePresence>
 
-      {/* 📱 MENU SECTIONS POPUP */}
       <AnimatePresence>
         {activeMenu === 'menu' && (
           <motion.div
@@ -251,7 +235,6 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
             className="fixed bottom-20 left-3 right-3 z-[9999]"
           >
             <div className="bg-white/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden">
-              {/* Header elegante */}
               <div className="px-6 py-4 border-b border-gray-100/50 flex items-center justify-between bg-gradient-to-r from-gray-50/50 to-transparent">
                 <span className="text-base font-bold text-gray-900">{t.menu}</span>
                 <motion.button
@@ -264,7 +247,6 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
                 </motion.button>
               </div>
 
-              {/* Grid sezioni */}
               <div className="p-4 grid grid-cols-3 gap-3">
                 {t.sections.map((item, index) => (
                   <motion.button
@@ -275,7 +257,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => scrollToSection(item.id)}
-                    onBlur={() => {}} // Reset focus
+                    onBlur={() => {}}
                     className={`
                       flex flex-col items-center p-4 rounded-2xl transition-all duration-300 text-center
                       focus:outline-none focus:ring-0
@@ -295,7 +277,6 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
         )}
       </AnimatePresence>
 
-      {/* 📞 CALL POPUP */}
       <AnimatePresence>
         {activeMenu === 'call' && (
           <motion.div
@@ -319,7 +300,6 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
               </div>
 
               <div className="p-4 space-y-3">
-                {/* Banchetto */}
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -358,7 +338,6 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
                   </div>
                 </motion.div>
 
-                {/* Ingrosso */}
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -402,7 +381,6 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
         )}
       </AnimatePresence>
 
-      {/* 🗺️ DIRECTIONS POPUP */}
       <AnimatePresence>
         {activeMenu === 'directions' && (
           <motion.div
@@ -473,7 +451,6 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
         )}
       </AnimatePresence>
 
-      {/* 🏠 DOCK PRINCIPALE ULTRA-WIDE PREMIUM */}
       <AnimatePresence>
         {isVisible && (
           <motion.div
@@ -484,11 +461,9 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
             className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-[9999] pointer-events-none"
           >
             <div className="pointer-events-auto">
-              {/* Dock Ultra-Wide Premium */}
               <div className="bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/60 px-6 py-3">
                 <div className="flex items-center justify-center space-x-6">
                   
-                  {/* MENU BUTTON */}
                   <motion.button
                     variants={variants.button}
                     initial="idle"
@@ -516,7 +491,6 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
                     <span className="text-xs font-semibold mt-1">{t.menu}</span>
                   </motion.button>
 
-                  {/* CALL BUTTON */}
                   <motion.button
                     variants={variants.button}
                     initial="idle"
@@ -544,7 +518,6 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
                     <span className="text-xs font-semibold mt-1">{t.call}</span>
                   </motion.button>
 
-                  {/* DIRECTIONS BUTTON */}
                   <motion.button
                     variants={variants.button}
                     initial="idle"

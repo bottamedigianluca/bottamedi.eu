@@ -22,7 +22,7 @@ const translations = {
       { id: 'contact', label: 'Contatti', icon: '📞' }
     ],
     contacts: {
-      banchetto: 'Banchetto Retail',
+      banchetto: 'Banchetto',
       ingrosso: 'Ingrosso HORECA',
       banchettoPhone: '351 577 6198',
       ingrossoPhone: '0461 602534',
@@ -46,7 +46,7 @@ const translations = {
       { id: 'contact', label: 'Kontakt', icon: '📞' }
     ],
     contacts: {
-      banchetto: 'Marktstand Retail',
+      banchetto: 'Marktstand',
       ingrosso: 'Großhandel HORECA',
       banchettoPhone: '351 577 6198',
       ingrossoPhone: '0461 602534',
@@ -115,7 +115,7 @@ const useScrollDetection = (hideInFooter: boolean) => {
       // Imposta un nuovo timeout per indicare che lo scroll è finito
       scrollTimeoutId = setTimeout(() => {
         setIsScrolling(false)
-      }, 150) // 150ms dopo che lo scroll si ferma
+      }, 800) // Aumentato a 800ms per evitare apparizioni durante la navigazione
 
       const sections = ['hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact']
       const scrollPosition = window.scrollY + window.innerHeight / 2
@@ -280,7 +280,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 100, opacity: 0, scale: 0.9 }}
             transition={{ type: 'spring', damping: 30, stiffness: 400 }}
-            className="fixed bottom-24 left-4 right-4 z-[1000] pointer-events-auto"
+            className="fixed bottom-28 left-4 right-4 z-[1000] pointer-events-auto"
           >
             <div 
               className="relative overflow-hidden"
@@ -392,7 +392,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 100, opacity: 0, scale: 0.9 }}
             transition={{ type: 'spring', damping: 30, stiffness: 400 }}
-            className="fixed bottom-24 left-4 right-4 z-[1000] pointer-events-auto"
+            className="fixed bottom-28 left-4 right-4 z-[1000] pointer-events-auto"
           >
             <div 
               className="relative overflow-hidden"
@@ -554,7 +554,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 100, opacity: 0, scale: 0.9 }}
             transition={{ type: 'spring', damping: 30, stiffness: 400 }}
-            className="fixed bottom-24 left-4 right-4 z-[1000] pointer-events-auto"
+            className="fixed bottom-28 left-4 right-4 z-[1000] pointer-events-auto"
           >
             <div 
               className="relative overflow-hidden"

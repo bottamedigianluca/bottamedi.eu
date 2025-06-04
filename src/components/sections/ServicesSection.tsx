@@ -10,22 +10,22 @@ interface ServicesSectionProps {
 const translations = {
   it: {
     title: 'I Nostri Servizi',
-    subtitle: 'Due modi per portare la qualità Bottamedi sulla tua tavola',
-    whatWeOffer: 'Cosa ti offriamo:',
+    subtitle: 'Due modalità per portare l\'eccellenza Bottamedi sulla tua tavola',
+    whatWeOffer: 'I nostri punti di forza:',
     services: [
       {
         id: 'dettaglio',
         title: 'Il Nostro Banchetto',
-        shortDesc: 'Esperienza diretta con i prodotti migliori',
-        description: 'Nel cuore di Mezzolombardo, il nostro colorato banchetto è molto più di un semplice punto vendita. È il luogo dove la passione di famiglia incontra la qualità quotidiana.',
-        longDescription: 'Ogni mattina alle prime luci dell\'alba, selezioniamo personalmente frutta e verdura freschissima, creando un arcobaleno di sapori e colori che racconta la storia della nostra terra. Qui trovi non solo prodotti freschi, ma anche consigli personalizzati tramandati da tre generazioni.',
+        shortDesc: 'Esperienza diretta con prodotti di qualità superiore',
+        description: 'Nel cuore di Mezzolombardo, il nostro colorato banchetto rappresenta molto più di un semplice punto vendita. È il luogo dove la tradizione familiare incontra l\'eccellenza quotidiana, dove ogni prodotto racconta una storia di qualità.',
+        longDescription: 'Ogni alba segna l\'inizio di una nuova giornata di selezione meticolosa. Il nostro team, forte di tre generazioni di esperienza, sceglie personalmente frutta e verdura freschissima, creando un caleidoscopio di sapori che rappresenta il meglio del territorio trentino e delle migliori produzioni italiane. Qui non trovi solo prodotti freschi, ma anche la competenza e i consigli di chi conosce ogni sfumatura del settore ortofrutticolo.',
         features: [
-          { icon: '🌅', title: 'Freschezza Mattutina', desc: 'Selezione quotidiana alle prime ore del giorno' },
-          { icon: '🎨', title: 'Varietà Colorata', desc: 'Oltre 100 tipologie di frutta e verdura sempre disponibili' },
-          { icon: '👨‍👩‍👧‍👦', title: 'Tradizione Familiare', desc: 'Consigli e ricette tramandati da tre generazioni' },
-          { icon: '🏔️', title: 'Prodotti del Territorio', desc: 'Specialità locali del Trentino Alto Adige selezionate' },
-          { icon: '💝', title: 'Servizio Personalizzato', desc: 'Attenzione individuale per ogni cliente' },
-          { icon: '🕰️', title: 'Orari Flessibili', desc: 'Aperti 6 giorni su 7 per la tua comodità' }
+          { icon: '🌅', title: 'Selezione Alba', desc: 'Controllo qualità e scelta prodotti alle prime ore del mattino' },
+          { icon: '🎨', title: 'Varietà Premium', desc: 'Oltre 150 tipologie di frutta e verdura sempre disponibili' },
+          { icon: '👨‍👩‍👧‍👦', title: 'Esperienza Generazionale', desc: 'Consigli e saperi tramandati da tre generazioni di specialisti' },
+          { icon: '🏔️', title: 'Prodotti del Territorio', desc: 'Eccellenze locali del Trentino Alto Adige accuratamente selezionate' },
+          { icon: '💝', title: 'Attenzione Personalizzata', desc: 'Servizio dedicato e consulenza individuale per ogni cliente' },
+          { icon: '🕰️', title: 'Disponibilità Estesa', desc: 'Aperti 6 giorni su 7 con orari pensati per la tua comodità' }
         ],
         icon: '🛒',
         color: 'from-green-500 to-green-600',
@@ -34,23 +34,23 @@ const translations = {
         image: '/images/banchetto.webp',
         stats: [
           { label: 'Anni di tradizione', value: '50' },
-          { label: 'Varietà disponibili', value: '100+' },
+          { label: 'Varietà disponibili', value: '150+' },
           { label: 'Clienti fedeli', value: '500+' }
         ]
       },
       {
         id: 'services',
-        title: 'Servizio Ingrosso HORECA',
-        shortDesc: 'Partner di fiducia per la tua attività',
-        description: 'Il cuore pulsante della nostra attività: forniamo ogni giorno ristoranti, hotel, pizzerie e negozi con la stessa passione e qualità che mettiamo al nostro banchetto.',
-        longDescription: 'Non siamo solo fornitori, siamo partner che comprendono le esigenze del tuo business. Ogni alba iniziamo il nostro lavoro selezionando i prodotti migliori per i nostri clienti HORECA. La nostra esperienza ci permette di anticipare le tue esigenze stagionali e proporti sempre il meglio del mercato.',
+        title: 'Divisione Ingrosso HORECA',
+        shortDesc: 'Partner strategico per la ristorazione di qualità',
+        description: 'La nostra divisione ingrosso rappresenta l\'anima pulsante dell\'attività Bottamedi: forniamo quotidianamente ristoranti d\'eccellenza, hotel di prestigio, pizzerie gourmet e attività commerciali con la medesima passione e rigore qualitativo che contraddistingue il nostro banchetto.',
+        longDescription: 'Non siamo semplici fornitori, ma veri partner strategici che comprendono e anticipano le esigenze del settore professionale. La nostra consolidata esperienza ci permette di servire con successo anche realtà istituzionali del territorio, garantendo sempre standard qualitativi superiori. Ogni alba il nostro team specializzato seleziona i prodotti migliori, applicando protocolli di qualità sviluppati in decenni di esperienza nel settore HORECA.',
         features: [
-          { icon: '🚚', title: 'Consegne Puntuali', desc: 'Servizio di consegna 6 giorni su 7 in orari concordati' },
-          { icon: '🔍', title: 'Selezione Rigorosa', desc: 'Controllo qualità su ogni singolo prodotto' },
-          { icon: '📋', title: 'Listini Personalizzati', desc: 'Prezzi competitivi adattati alle tue esigenze' },
-          { icon: '🤝', title: 'Partnership Duratura', desc: 'Rapporti di fiducia costruiti negli anni' },
-          { icon: '📱', title: 'Ordinazioni Semplici', desc: 'Sistema di ordini rapido e affidabile' },
-          { icon: '🎯', title: 'Prodotti Stagionali', desc: 'Consulenza su disponibilità e stagionalità' }
+          { icon: '🚚', title: 'Logistica Affidabile', desc: 'Consegne puntuali 6 giorni su 7 con orari concordati e rispettati' },
+          { icon: '🔍', title: 'Controllo Qualità Totale', desc: 'Selezione rigorosa e verifica su ogni singolo prodotto fornito' },
+          { icon: '📋', title: 'Condizioni Dedicate', desc: 'Listini personalizzati e condizioni commerciali studiate per ogni cliente' },
+          { icon: '🤝', title: 'Relazioni Durature', desc: 'Partnership consolidate basate su fiducia reciproca e professionalità' },
+          { icon: '📱', title: 'Ordinazioni Semplificate', desc: 'Sistema di ordini efficiente e comunicazione diretta sempre disponibile' },
+          { icon: '🎯', title: 'Consulenza Stagionale', desc: 'Supporto esperto su disponibilità, stagionalità e tendenze di mercato' }
         ],
         icon: '🚛',
         color: 'from-blue-500 to-blue-600',
@@ -58,31 +58,31 @@ const translations = {
         textColor: 'text-blue-600',
         image: '/images/albicocche_ingrosso_magazzino.webp',
         stats: [
-          { label: 'Ristoranti partner', value: '50+' },
+          { label: 'Partner commerciali', value: '50+' },
           { label: 'Consegne settimanali', value: '300+' },
-          { label: 'Anni di esperienza', value: '30+' }
+          { label: 'Anni nel settore HORECA', value: '30+' }
         ]
       }
     ]
   },
   de: {
     title: 'Unsere Dienstleistungen',
-    subtitle: 'Zwei Wege, um Bottamedi-Qualität auf Ihren Tisch zu bringen',
-    whatWeOffer: 'Was wir Ihnen bieten:',
+    subtitle: 'Zwei Modalitäten, um Bottamedi-Exzellenz auf Ihren Tisch zu bringen',
+    whatWeOffer: 'Unsere Stärken:',
     services: [
       {
         id: 'dettaglio',
         title: 'Unser Marktstand',
-        shortDesc: 'Direkter Kontakt mit den besten Produkten',
-        description: 'Im Herzen von Mezzolombardo ist unser bunter Marktstand viel mehr als nur ein Verkaufspunkt. Es ist der Ort, wo Familienleidenschaft auf tägliche Qualität trifft.',
-        longDescription: 'Jeden Morgen bei den ersten Lichtstrahlen wählen wir persönlich frischestes Obst und Gemüse aus und schaffen einen Regenbogen von Geschmäckern und Farben, der die Geschichte unseres Landes erzählt.',
+        shortDesc: 'Direkter Kontakt mit Produkten höchster Qualität',
+        description: 'Im Herzen von Mezzolombardo repräsentiert unser bunter Marktstand viel mehr als nur einen Verkaufspunkt. Es ist der Ort, wo Familientradition auf tägliche Exzellenz trifft, wo jedes Produkt eine Geschichte der Qualität erzählt.',
+        longDescription: 'Jede Morgendämmerung markiert den Beginn eines neuen Tages sorgfältiger Auswahl. Unser Team, gestärkt durch drei Generationen Erfahrung, wählt persönlich frischestes Obst und Gemüse aus und schafft ein Kaleidoskop von Geschmäckern, das das Beste des Südtiroler Gebiets und der besten italienischen Produktionen repräsentiert. Hier finden Sie nicht nur frische Produkte, sondern auch die Kompetenz und Beratung von denen, die jede Nuance des Obst- und Gemüsesektors kennen.',
         features: [
-          { icon: '🌅', title: 'Morgenfrische', desc: 'Tägliche Auswahl in den frühen Morgenstunden' },
-          { icon: '🎨', title: 'Bunte Vielfalt', desc: 'Über 100 Sorten Obst und Gemüse immer verfügbar' },
-          { icon: '👨‍👩‍👧‍👦', title: 'Familientradition', desc: 'Tipps und Rezepte aus drei Generationen' },
-          { icon: '🏔️', title: 'Regionale Produkte', desc: 'Ausgewählte lokale Spezialitäten aus Südtirol' },
-          { icon: '💝', title: 'Persönlicher Service', desc: 'Individuelle Betreuung für jeden Kunden' },
-          { icon: '🕰️', title: 'Flexible Zeiten', desc: '6 Tage die Woche für Ihre Bequemlichkeit geöffnet' }
+          { icon: '🌅', title: 'Morgendämmerung-Auswahl', desc: 'Qualitätskontrolle und Produktauswahl in den frühen Morgenstunden' },
+          { icon: '🎨', title: 'Premium-Vielfalt', desc: 'Über 150 Sorten Obst und Gemüse immer verfügbar' },
+          { icon: '👨‍👩‍👧‍👦', title: 'Generationenerfahrung', desc: 'Tipps und Wissen von drei Generationen Spezialisten weitergegeben' },
+          { icon: '🏔️', title: 'Regionale Produkte', desc: 'Sorgfältig ausgewählte lokale Exzellenzen aus Südtirol' },
+          { icon: '💝', title: 'Persönliche Betreuung', desc: 'Dedizierter Service und individuelle Beratung für jeden Kunden' },
+          { icon: '🕰️', title: 'Erweiterte Verfügbarkeit', desc: '6 Tage die Woche geöffnet mit für Ihre Bequemlichkeit gedachten Zeiten' }
         ],
         icon: '🛒',
         color: 'from-green-500 to-green-600',
@@ -91,23 +91,23 @@ const translations = {
         image: '/images/banchetto.webp',
         stats: [
           { label: 'Jahre Tradition', value: '50' },
-          { label: 'Verfügbare Sorten', value: '100+' },
+          { label: 'Verfügbare Sorten', value: '150+' },
           { label: 'Treue Kunden', value: '500+' }
         ]
       },
       {
         id: 'services',
-        title: 'HORECA Großhandel',
-        shortDesc: 'Vertrauenspartner für Ihr Unternehmen',
-        description: 'Das pulsierende Herz unserer Tätigkeit: Wir beliefern täglich Restaurants, Hotels, Pizzerien und Geschäfte mit derselben Leidenschaft und Qualität.',
-        longDescription: 'Wir sind nicht nur Lieferanten, sondern Partner, die die Bedürfnisse Ihres Unternehmens verstehen. Jeden Morgen beginnen wir unsere Arbeit mit der Auswahl der besten Produkte für unsere HORECA-Kunden.',
+        title: 'HORECA Großhandelsabteilung',
+        shortDesc: 'Strategischer Partner für Qualitätsgastronomie',
+        description: 'Unsere Großhandelsabteilung repräsentiert die pulsierende Seele der Bottamedi-Aktivität: Wir beliefern täglich Exzellenz-Restaurants, Prestige-Hotels, Gourmet-Pizzerien und Handelsbetriebe mit derselben Leidenschaft und Qualitätsstrenge, die unseren Marktstand auszeichnet.',
+        longDescription: 'Wir sind nicht einfache Lieferanten, sondern echte strategische Partner, die die Bedürfnisse des professionellen Sektors verstehen und antizipieren. Unsere konsolidierte Erfahrung ermöglicht es uns, auch institutionelle Realitäten des Gebiets erfolgreich zu bedienen und dabei immer höhere Qualitätsstandards zu garantieren. Jeden Morgen wählt unser spezialisiertes Team die besten Produkte aus und wendet Qualitätsprotokolle an, die in Jahrzehnten der Erfahrung im HORECA-Sektor entwickelt wurden.',
         features: [
-          { icon: '🚚', title: 'Pünktliche Lieferungen', desc: 'Lieferservice 6 Tage die Woche zu vereinbarten Zeiten' },
-          { icon: '🔍', title: 'Strenge Auswahl', desc: 'Qualitätskontrolle für jedes einzelne Produkt' },
-          { icon: '📋', title: 'Persönliche Preislisten', desc: 'Wettbewerbsfähige Preise angepasst an Ihre Bedürfnisse' },
-          { icon: '🤝', title: 'Dauerhafte Partnerschaft', desc: 'Vertrauensbeziehungen über Jahre aufgebaut' },
-          { icon: '📱', title: 'Einfache Bestellungen', desc: 'Schnelles und zuverlässiges Bestellsystem' },
-          { icon: '🎯', title: 'Saisonale Produkte', desc: 'Beratung zu Verfügbarkeit und Saisonalität' }
+          { icon: '🚚', title: 'Zuverlässige Logistik', desc: 'Pünktliche Lieferungen 6 Tage die Woche zu vereinbarten und eingehaltenen Zeiten' },
+          { icon: '🔍', title: 'Totale Qualitätskontrolle', desc: 'Strenge Auswahl und Überprüfung jedes einzelnen gelieferten Produkts' },
+          { icon: '📋', title: 'Dedizierte Konditionen', desc: 'Personalisierte Preislisten und für jeden Kunden studierte Handelsbedingungen' },
+          { icon: '🤝', title: 'Dauerhafte Beziehungen', desc: 'Konsolidierte Partnerschaften basierend auf gegenseitigem Vertrauen und Professionalität' },
+          { icon: '📱', title: 'Vereinfachte Bestellungen', desc: 'Effizientes Bestellsystem und direkte Kommunikation immer verfügbar' },
+          { icon: '🎯', title: 'Saisonale Beratung', desc: 'Expertenunterstützung zu Verfügbarkeit, Saisonalität und Markttrends' }
         ],
         icon: '🚛',
         color: 'from-blue-500 to-blue-600',
@@ -115,16 +115,15 @@ const translations = {
         textColor: 'text-blue-600',
         image: '/images/albicocche_ingrosso_magazzino.webp',
         stats: [
-          { label: 'Restaurant-Partner', value: '50+' },
+          { label: 'Geschäftspartner', value: '50+' },
           { label: 'Wöchentliche Lieferungen', value: '300+' },
-          { label: 'Jahre Erfahrung', value: '30+' }
+          { label: 'Jahre im HORECA-Sektor', value: '30+' }
         ]
       }
     ]
   }
 }
 
-// 🎭 ANIMAZIONI ULTRA OTTIMIZZATE PER PERFORMANCE
 const optimizedVariants = {
   cardHover: {
     y: -3,
@@ -183,7 +182,6 @@ const optimizedVariants = {
   }
 }
 
-// 🎨 COMPONENTE SERVICE CARD OTTIMIZZATO
 const ServiceCard: React.FC<{
   service: any
   index: number
@@ -234,9 +232,7 @@ const ServiceCard: React.FC<{
         `}
         style={{ willChange: 'transform' }}
       >
-        {/* Image Container OTTIMIZZATO */}
         <div className={`relative overflow-hidden ${isMobile ? 'h-56' : 'h-64'}`}>
-          {/* Loading placeholder */}
           {!imageLoaded && (
             <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
           )}
@@ -258,7 +254,6 @@ const ServiceCard: React.FC<{
           <div className={`absolute inset-0 bg-gradient-to-t ${service.color} opacity-70`} />
         </div>
 
-        {/* Content Overlay OTTIMIZZATO */}
         <div className="absolute inset-0 flex flex-col justify-end p-5 lg:p-6 text-white">
           <div className="text-3xl lg:text-4xl mb-3 drop-shadow-lg">{service.icon}</div>
           <h3 className="text-lg lg:text-xl xl:text-2xl font-bold mb-2 drop-shadow-lg leading-tight">
@@ -268,7 +263,6 @@ const ServiceCard: React.FC<{
             {service.shortDesc}
           </p>
           
-          {/* Stats Preview OTTIMIZZATO */}
           <div className="flex space-x-4 text-xs lg:text-sm">
             {service.stats.slice(0, 2).map((stat: any, i: number) => (
               <div key={i} className="text-center">
@@ -279,7 +273,6 @@ const ServiceCard: React.FC<{
           </div>
         </div>
 
-        {/* Active Indicator OTTIMIZZATO */}
         <AnimatePresence>
           {isActive && (
             <motion.div
@@ -300,7 +293,6 @@ const ServiceCard: React.FC<{
 
 ServiceCard.displayName = 'ServiceCard'
 
-// 📱 COMPONENTE MOBILE CARD COMPLETO OTTIMIZZATO
 const MobileServiceCard: React.FC<{
   service: any
   index: number
@@ -336,7 +328,6 @@ const MobileServiceCard: React.FC<{
       variants={cardVariants}
       className="bg-white rounded-2xl shadow-lg overflow-hidden mb-6"
     >
-      {/* Mobile Image OTTIMIZZATA */}
       <div className="relative h-56 overflow-hidden">
         {!imageLoaded && (
           <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
@@ -362,9 +353,7 @@ const MobileServiceCard: React.FC<{
         </div>
       </div>
 
-      {/* Mobile Content OTTIMIZZATO */}
       <div className="p-5">
-        {/* Description */}
         <div className="mb-5">
           <p className="text-gray-700 leading-relaxed mb-3 text-sm">
             {service.description}
@@ -374,7 +363,6 @@ const MobileServiceCard: React.FC<{
           </p>
         </div>
 
-        {/* Features OTTIMIZZATE */}
         <div className="mb-5">
           <h4 className="text-base font-semibold text-gray-900 mb-3">{t.whatWeOffer}</h4>
           <div className="space-y-2">
@@ -397,7 +385,6 @@ const MobileServiceCard: React.FC<{
           </div>
         </div>
 
-        {/* Stats OTTIMIZZATE */}
         <div className="grid grid-cols-3 gap-3">
           {service.stats.map((stat: any, statIndex: number) => (
             <motion.div
@@ -422,14 +409,12 @@ const MobileServiceCard: React.FC<{
 
 MobileServiceCard.displayName = 'MobileServiceCard'
 
-// 🖥️ COMPONENTE PRINCIPALE OTTIMIZZATO
 const ServicesSection: React.FC<ServicesSectionProps> = ({ language, inView = true }) => {
   const [activeService, setActiveService] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
   
   const t = useMemo(() => translations[language], [language])
 
-  // Detect mobile OTTIMIZZATO
   React.useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 1024)
     checkMobile()
@@ -453,14 +438,12 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ language, inView = tr
 
   return (
     <section id="services" className="py-16 lg:py-20 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
-      {/* Background Elements OTTIMIZZATI */}
       <div className="absolute inset-0 opacity-30 pointer-events-none">
         <div className="absolute top-0 left-1/4 w-64 h-64 bg-green-200 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-blue-200 rounded-full blur-3xl"></div>
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
-        {/* Header OTTIMIZZATO */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -477,9 +460,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ language, inView = tr
           </p>
         </motion.div>
 
-        {/* Content */}
         {isMobile ? (
-          /* Mobile Layout OTTIMIZZATO */
           <div>
             {t.services.map((service, index) => (
               <MobileServiceCard
@@ -492,9 +473,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ language, inView = tr
             ))}
           </div>
         ) : (
-          /* Desktop Layout OTTIMIZZATO */
           <div className="grid lg:grid-cols-2 gap-10 items-start">
-            {/* Service Cards */}
             <div className="space-y-5">
               {t.services.map((service, index) => (
                 <ServiceCard
@@ -507,7 +486,6 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ language, inView = tr
               ))}
             </div>
 
-            {/* Details Panel ULTRA OTTIMIZZATO */}
             <div className="sticky top-20">
               <AnimatePresence mode="wait">
                 <motion.div
@@ -519,7 +497,6 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ language, inView = tr
                   className="bg-white rounded-2xl shadow-xl p-6 xl:p-8 border border-gray-100"
                   style={{ willChange: 'transform, opacity' }}
                 >
-                  {/* Header */}
                   <div className="flex items-center space-x-4 mb-6">
                     <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${t.services[activeService].color} flex items-center justify-center text-2xl shadow-lg`}>
                       {t.services[activeService].icon}
@@ -532,7 +509,6 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ language, inView = tr
                     </div>
                   </div>
 
-                  {/* Description */}
                   <div className="mb-6">
                     <p className="text-gray-700 leading-relaxed mb-3 text-sm lg:text-base">
                       {t.services[activeService].description}
@@ -542,7 +518,6 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ language, inView = tr
                     </p>
                   </div>
 
-                  {/* Features OTTIMIZZATE */}
                   <div className="mb-6">
                     <h4 className="text-lg font-semibold text-gray-900 mb-4">{t.whatWeOffer}</h4>
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
@@ -567,7 +542,6 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ language, inView = tr
                     </div>
                   </div>
 
-                  {/* Stats OTTIMIZZATE */}
                   <div className="grid grid-cols-3 gap-4">
                     {t.services[activeService].stats.map((stat: any, index: number) => (
                       <motion.div

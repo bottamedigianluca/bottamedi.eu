@@ -191,9 +191,10 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
         '❤️ Rapporto di fiducia con ogni cliente',
         '📱 Supporto e consulenza sempre disponibili'
       ],
-      testimonial: {
-        text: "\"Da anni ci affidiamo a Bottamedi per il nostro ristorante. Qualità eccellente e puntualità garantita!\"",
-        author: "Marco R. - Ristorante La Tavola, Trento"
+      highlight: {
+        title: "La Nostra Promessa",
+        text: "Quando la valle è ancora avvolta nel silenzio dell'alba, noi siamo già al lavoro per selezionare con cura ogni frutto, ogni verdura. È la passione che tramanda da tre generazioni il sapore autentico della qualità.",
+        icon: "🌅"
       },
       mapSection: {
         title: 'Come Raggiungerci',
@@ -233,9 +234,10 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
         '❤️ Vertrauensverhältnis zu jedem Kunden',
         '📱 Support und Beratung immer verfügbar'
       ],
-      testimonial: {
-        text: "\"Seit Jahren vertrauen wir Bottamedi für unser Restaurant. Ausgezeichnete Qualität und garantierte Pünktlichkeit!\"",
-        author: "Marco R. - Restaurant La Tavola, Trient"
+      highlight: {
+        title: "Unser Versprechen",
+        text: "Wenn das Tal noch im Schweigen der Morgendämmerung gehüllt ist, sind wir bereits bei der Arbeit, um sorgfältig jede Frucht, jedes Gemüse auszuwählen. Es ist die Leidenschaft, die seit drei Generationen den authentischen Geschmack der Qualität weitergibt.",
+        icon: "🌅"
       },
       mapSection: {
         title: 'So Erreichen Sie Uns',
@@ -336,15 +338,20 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
             ))}
           </div>
           
-          {/* Testimonial */}
+          {/* Highlight Box */}
           <motion.div
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: shouldReduceMotion ? 0.2 : 0.4, delay: shouldReduceMotion ? 0 : 0.7 }}
-            className="mt-6 p-4 bg-white rounded-xl border border-green-200"
+            className="mt-6 p-6 bg-gradient-to-br from-green-50 to-blue-50 rounded-xl border border-green-200"
           >
-            <p className="text-neutral-600 italic text-sm mb-2">{t.testimonial.text}</p>
-            <p className="text-green-600 font-medium text-xs">— {t.testimonial.author}</p>
+            <div className="flex items-start space-x-4">
+              <div className="text-3xl">{t.highlight.icon}</div>
+              <div>
+                <h4 className="font-bold text-neutral-900 mb-2 text-lg">{t.highlight.title}</h4>
+                <p className="text-neutral-700 text-sm leading-relaxed italic">{t.highlight.text}</p>
+              </div>
+            </div>
           </motion.div>
         </motion.div>
 

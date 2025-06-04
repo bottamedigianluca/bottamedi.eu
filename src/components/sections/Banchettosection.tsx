@@ -66,6 +66,74 @@ const translations = {
       },
       {
         src: '/images/bottamedi_sacchetti_frutta_disidratata_mista.webp',
+        title: 'Frutta Disidratata Mista',
+        description: 'Sacchetti di frutta disidratata mista colorata e gustosa'
+      },
+      {
+        src: '/images/bottamedi_mele_melinda_montagna_cassetta.webp',
+        title: 'Mela di Montagna Melinda',
+        description: 'Cassetta di Mele Melinda \'Mela di Montagna\' fresche'
+      }
+    ]
+  },
+  de: {
+    title: 'Am Marktstand: Farben, Geschmäcker und tägliche Frische',
+    subtitle: 'Besuchen Sie uns in der Via Cavalleggeri Udine in Mezzolombardo!',
+    description: 'Lassen Sie sich von einer Explosion von Farben, Düften und dem besten frischen Obst und Gemüse verführen, das täglich mit der Sorgfalt und Leidenschaft der Familie ausgewählt wird, die uns seit Generationen auszeichnet.',
+    cta: 'Öffnungszeiten und Kontakt zum Marktstand',
+    gallery: [
+      {
+        src: '/images/banco_varieta_autunno.webp',
+        title: 'Saisonale Fülle',
+        description: 'Reiche Ausstellung von frischem saisonalem Obst, Gemüse und typischen Südtiroler Produkten'
+      },
+      {
+        src: '/images/pomodori_cuore_bue.webp',
+        title: 'Gemüse aus dem lokalen Garten',
+        description: 'Rote frische und duftende Ochsenherz-Tomaten'
+      },
+      {
+        src: '/images/melinda_golden.webp',
+        title: 'Golden Melinda',
+        description: 'Frische und saftige Golden Melinda Äpfel'
+      },
+      {
+        src: '/images/angurie.webp',
+        title: 'Sommerliche Süße',
+        description: 'Frische und saftige Wassermelonen, geschnitten und ganz'
+      },
+      {
+        src: '/images/meloni_sattin_dettaglio.webp',
+        title: 'Edle Melonen',
+        description: 'Duftende und süße Sattin Dolce Passione Melonen'
+      },
+      {
+        src: '/images/banco_frigo_disidratata_specialita.webp',
+        title: 'Schätze Südtirols',
+        description: 'Große Auswahl an Spezialitäten aus Südtirol'
+      },
+      {
+        src: '/images/arance_felici.webp',
+        title: 'Ausgewählte Zitrusfrüchte',
+        description: 'Frische und saftige Orangen La Favorita Felici'
+      },
+      {
+        src: '/images/zucche_decorate_banco.webp',
+        title: 'Wir erwarten Sie!',
+        description: 'Einladende und saisonale Atmosphäre am Marktstand'
+      },
+      {
+        src: '/images/bottamedi_mele_pink_lady_confezione.webp',
+        title: 'Pink Lady Äpfel',
+        description: 'Packung frischer und knackiger Pink Lady Äpfel'
+      },
+      {
+        src: '/images/bottamedi_ananas_fruitpoint_freschi.webp',
+        title: 'Exotische Qualitäts-Ananas',
+        description: 'Frische und reife Fruitpoint Ananas'
+      },
+      {
+        src: '/images/bottamedi_sacchetti_frutta_disidratata_mista.webp',
         title: 'Gemischte Trockenfrüchte',
         description: 'Beutel mit bunten und leckeren gemischten Trockenfrüchten'
       },
@@ -387,72 +455,4 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
   )
 }
 
-export default React.memo(BanchettoSection)_frutta_disidratata_mista.webp',
-        title: 'Frutta Disidratata Mista',
-        description: 'Sacchetti di frutta disidratata mista colorata e gustosa'
-      },
-      {
-        src: '/images/bottamedi_mele_melinda_montagna_cassetta.webp',
-        title: 'Mela di Montagna Melinda',
-        description: 'Cassetta di Mele Melinda \'Mela di Montagna\' fresche'
-      }
-    ]
-  },
-  de: {
-    title: 'Am Marktstand: Farben, Geschmäcker und tägliche Frische',
-    subtitle: 'Besuchen Sie uns in der Via Cavalleggeri Udine in Mezzolombardo!',
-    description: 'Lassen Sie sich von einer Explosion von Farben, Düften und dem besten frischen Obst und Gemüse verführen, das täglich mit der Sorgfalt und Leidenschaft der Familie ausgewählt wird, die uns seit Generationen auszeichnet.',
-    cta: 'Öffnungszeiten und Kontakt zum Marktstand',
-    gallery: [
-      {
-        src: '/images/banco_varieta_autunno.webp',
-        title: 'Saisonale Fülle',
-        description: 'Reiche Ausstellung von frischem saisonalem Obst, Gemüse und typischen Südtiroler Produkten'
-      },
-      {
-        src: '/images/pomodori_cuore_bue.webp',
-        title: 'Gemüse aus dem lokalen Garten',
-        description: 'Rote frische und duftende Ochsenherz-Tomaten'
-      },
-      {
-        src: '/images/melinda_golden.webp',
-        title: 'Golden Melinda',
-        description: 'Frische und saftige Golden Melinda Äpfel'
-      },
-      {
-        src: '/images/angurie.webp',
-        title: 'Sommerliche Süße',
-        description: 'Frische und saftige Wassermelonen, geschnitten und ganz'
-      },
-      {
-        src: '/images/meloni_sattin_dettaglio.webp',
-        title: 'Edle Melonen',
-        description: 'Duftende und süße Sattin Dolce Passione Melonen'
-      },
-      {
-        src: '/images/banco_frigo_disidratata_specialita.webp',
-        title: 'Schätze Südtirols',
-        description: 'Große Auswahl an Spezialitäten aus Südtirol'
-      },
-      {
-        src: '/images/arance_felici.webp',
-        title: 'Ausgewählte Zitrusfrüchte',
-        description: 'Frische und saftige Orangen La Favorita Felici'
-      },
-      {
-        src: '/images/zucche_decorate_banco.webp',
-        title: 'Wir erwarten Sie!',
-        description: 'Einladende und saisonale Atmosphäre am Marktstand'
-      },
-      {
-        src: '/images/bottamedi_mele_pink_lady_confezione.webp',
-        title: 'Pink Lady Äpfel',
-        description: 'Packung frischer und knackiger Pink Lady Äpfel'
-      },
-      {
-        src: '/images/bottamedi_ananas_fruitpoint_freschi.webp',
-        title: 'Exotische Qualitäts-Ananas',
-        description: 'Frische und reife Fruitpoint Ananas'
-      },
-      {
-        src: '/images/bottamedi_sacchetti
+export default React.memo(BanchettoSection);

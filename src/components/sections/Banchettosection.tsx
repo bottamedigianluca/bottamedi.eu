@@ -66,74 +66,6 @@ const translations = {
       },
       {
         src: '/images/bottamedi_sacchetti_frutta_disidratata_mista.webp',
-        title: 'Frutta Disidratata Mista',
-        description: 'Sacchetti di frutta disidratata mista colorata e gustosa'
-      },
-      {
-        src: '/images/bottamedi_mele_melinda_montagna_cassetta.webp',
-        title: 'Mela di Montagna Melinda',
-        description: 'Cassetta di Mele Melinda \'Mela di Montagna\' fresche'
-      }
-    ]
-  },
-  de: {
-    title: 'Am Marktstand: Farben, Geschmäcker und tägliche Frische',
-    subtitle: 'Besuchen Sie uns in der Via Cavalleggeri Udine in Mezzolombardo!',
-    description: 'Lassen Sie sich von einer Explosion von Farben, Düften und dem besten frischen Obst und Gemüse verführen, das täglich mit der Sorgfalt und Leidenschaft der Familie ausgewählt wird, die uns seit Generationen auszeichnet.',
-    cta: 'Öffnungszeiten und Kontakt zum Marktstand',
-    gallery: [
-      {
-        src: '/images/banco_varieta_autunno.webp',
-        title: 'Saisonale Fülle',
-        description: 'Reiche Ausstellung von frischem saisonalem Obst, Gemüse und typischen Trentiner Produkten'
-      },
-      {
-        src: '/images/pomodori_cuore_bue.webp',
-        title: 'Gemüse aus dem lokalen Garten',
-        description: 'Rote frische und duftende Ochsenherz-Tomaten'
-      },
-      {
-        src: '/images/melinda_golden.webp',
-        title: 'Golden Melinda',
-        description: 'Frische und saftige Golden Melinda Äpfel'
-      },
-      {
-        src: '/images/angurie.webp',
-        title: 'Sommerliche Süße',
-        description: 'Frische und saftige Wassermelonen, geschnitten und ganz'
-      },
-      {
-        src: '/images/meloni_sattin_dettaglio.webp',
-        title: 'Edle Melonen',
-        description: 'Duftende und süße Sattin Dolce Passione Melonen'
-      },
-      {
-        src: '/images/banco_frigo_disidratata_specialita.webp',
-        title: 'Schätze des Trentino',
-        description: 'Große Auswahl an Spezialitäten aus dem Trentino'
-      },
-      {
-        src: '/images/arance_felici.webp',
-        title: 'Ausgewählte Zitrusfrüchte',
-        description: 'Frische und saftige Orangen La Favorita Felici'
-      },
-      {
-        src: '/images/zucche_decorate_banco.webp',
-        title: 'Wir erwarten Sie!',
-        description: 'Einladende und saisonale Atmosphäre am Marktstand'
-      },
-      {
-        src: '/images/bottamedi_mele_pink_lady_confezione.webp',
-        title: 'Pink Lady Äpfel',
-        description: 'Packung frischer und knackiger Pink Lady Äpfel'
-      },
-      {
-        src: '/images/bottamedi_ananas_fruitpoint_freschi.webp',
-        title: 'Exotische Qualitäts-Ananas',
-        description: 'Frische und reife Fruitpoint Ananas'
-      },
-      {
-        src: '/images/bottamedi_sacchetti_frutta_disidratata_mista.webp',
         title: 'Gemischte Trockenfrüchte',
         description: 'Beutel mit bunten und leckeren gemischten Trockenfrüchten'
       },
@@ -146,7 +78,6 @@ const translations = {
   }
 }
 
-// 🚀 PERFORMANCE: Advanced Lazy Image Component con Intersection Observer ottimizzato
 const AdvancedLazyImage: React.FC<{
   item: any
   index: number
@@ -158,7 +89,7 @@ const AdvancedLazyImage: React.FC<{
   const [ref, inView] = useInView({
     threshold: 0.1,
     triggerOnce: true,
-    rootMargin: priority ? '200px' : '100px' // Preload prioritarie prima
+    rootMargin: priority ? '200px' : '100px'
   })
 
   const handleImageLoad = useCallback(() => {
@@ -169,7 +100,6 @@ const AdvancedLazyImage: React.FC<{
     setImageState('error')
   }, [])
 
-  // 🎨 PERFORMANCE: Memoized variants
   const itemVariants = useMemo(() => ({
     hidden: { 
       opacity: 0, 
@@ -222,10 +152,8 @@ const AdvancedLazyImage: React.FC<{
       className="group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
       style={{ willChange: 'transform' }}
     >
-      {/* 📷 IMAGE CONTAINER ULTRA OTTIMIZZATO */}
       <div className="relative h-56 overflow-hidden bg-gradient-to-br from-green-50 to-green-100">
         
-        {/* 🔄 LOADING SKELETON OTTIMIZZATO */}
         {imageState === 'loading' && (
           <div className="absolute inset-0 flex items-center justify-center bg-green-100">
             <div className="flex flex-col items-center space-y-2">
@@ -235,7 +163,6 @@ const AdvancedLazyImage: React.FC<{
           </div>
         )}
 
-        {/* ❌ ERROR PLACEHOLDER OTTIMIZZATO */}
         {imageState === 'error' && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
             <div className="text-center text-gray-400">
@@ -247,7 +174,6 @@ const AdvancedLazyImage: React.FC<{
           </div>
         )}
 
-        {/* 🖼️ IMMAGINE PRINCIPALE ULTRA OTTIMIZZATA */}
         {imageState !== 'error' && inView && (
           <motion.img
             src={item.src}
@@ -263,19 +189,16 @@ const AdvancedLazyImage: React.FC<{
             style={{
               willChange: 'transform, opacity, filter'
             }}
-            // PERFORMANCE OPTIMIZATIONS
             decoding="async"
             fetchPriority={priority ? "high" : "low"}
           />
         )}
         
-        {/* 🌈 GRADIENT OVERLAY OTTIMIZZATO */}
         <div 
           className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300"
           style={{ willChange: 'opacity' }}
         />
 
-        {/* 📝 TITLE OVERLAY OTTIMIZZATO */}
         <div className="absolute bottom-3 left-3 right-3">
           <motion.h3 
             className="text-white font-semibold text-sm mb-1 drop-shadow-lg leading-tight"
@@ -288,7 +211,6 @@ const AdvancedLazyImage: React.FC<{
         </div>
       </div>
 
-      {/* ✨ HOVER EFFECTS OTTIMIZZATI */}
       <div
         className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
         style={{ willChange: 'opacity' }}
@@ -299,7 +221,6 @@ const AdvancedLazyImage: React.FC<{
 
 AdvancedLazyImage.displayName = 'AdvancedLazyImage'
 
-// 🏆 PERFORMANCE: Hero Image Component Ottimizzato
 const HeroImage: React.FC<{ inView: boolean }> = React.memo(({ inView }) => {
   const [imageLoaded, setImageLoaded] = useState(false)
   const shouldReduceMotion = useReducedMotion()
@@ -316,7 +237,6 @@ const HeroImage: React.FC<{ inView: boolean }> = React.memo(({ inView }) => {
       className="mb-14"
     >
       <div className="relative h-80 lg:h-96 rounded-2xl overflow-hidden shadow-xl">
-        {/* Loading placeholder */}
         {!imageLoaded && (
           <div className="absolute inset-0 bg-gradient-to-br from-green-100 to-green-200 animate-pulse" />
         )}
@@ -354,7 +274,6 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
       })
     }
 
-    // 🎯 Haptic feedback ottimizzato
     if ('vibrate' in navigator) {
       try {
         navigator.vibrate(25)
@@ -364,7 +283,6 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
     }
   }, [])
 
-  // 🎨 PERFORMANCE: Memoized animation variants
   const containerVariants = useMemo(() => ({
     hidden: { opacity: 0 },
     visible: {
@@ -401,12 +319,10 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
     }
   }), [shouldReduceMotion])
 
-  // 🚀 PERFORMANCE: Determina immagini prioritarie (prime 4)
   const priorityImages = useMemo(() => new Set([0, 1, 2, 3]), [])
 
   return (
     <section id="dettaglio" className="py-20 lg:py-28 bg-gradient-to-br from-green-50 to-white relative overflow-hidden">
-      {/* 🎨 Background Elements OTTIMIZZATI */}
       {!shouldReduceMotion && (
         <>
           <div className="absolute top-1/4 left-0 w-80 h-80 bg-green-200/15 rounded-full blur-3xl" />
@@ -415,10 +331,8 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
       )}
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* 🏪 HERO IMAGE OTTIMIZZATA */}
         <HeroImage inView={inView} />
 
-        {/* 📝 HEADER OTTIMIZZATO */}
         <motion.div
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
@@ -436,7 +350,6 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
           </p>
         </motion.div>
 
-        {/* 🖼️ GALLERY ULTRA OTTIMIZZATA */}
         <motion.div
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
@@ -453,7 +366,6 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
           ))}
         </motion.div>
 
-        {/* 🎯 CTA OTTIMIZZATO */}
         <motion.div
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
@@ -475,4 +387,72 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
   )
 }
 
-export default React.memo(BanchettoSection)
+export default React.memo(BanchettoSection)_frutta_disidratata_mista.webp',
+        title: 'Frutta Disidratata Mista',
+        description: 'Sacchetti di frutta disidratata mista colorata e gustosa'
+      },
+      {
+        src: '/images/bottamedi_mele_melinda_montagna_cassetta.webp',
+        title: 'Mela di Montagna Melinda',
+        description: 'Cassetta di Mele Melinda \'Mela di Montagna\' fresche'
+      }
+    ]
+  },
+  de: {
+    title: 'Am Marktstand: Farben, Geschmäcker und tägliche Frische',
+    subtitle: 'Besuchen Sie uns in der Via Cavalleggeri Udine in Mezzolombardo!',
+    description: 'Lassen Sie sich von einer Explosion von Farben, Düften und dem besten frischen Obst und Gemüse verführen, das täglich mit der Sorgfalt und Leidenschaft der Familie ausgewählt wird, die uns seit Generationen auszeichnet.',
+    cta: 'Öffnungszeiten und Kontakt zum Marktstand',
+    gallery: [
+      {
+        src: '/images/banco_varieta_autunno.webp',
+        title: 'Saisonale Fülle',
+        description: 'Reiche Ausstellung von frischem saisonalem Obst, Gemüse und typischen Südtiroler Produkten'
+      },
+      {
+        src: '/images/pomodori_cuore_bue.webp',
+        title: 'Gemüse aus dem lokalen Garten',
+        description: 'Rote frische und duftende Ochsenherz-Tomaten'
+      },
+      {
+        src: '/images/melinda_golden.webp',
+        title: 'Golden Melinda',
+        description: 'Frische und saftige Golden Melinda Äpfel'
+      },
+      {
+        src: '/images/angurie.webp',
+        title: 'Sommerliche Süße',
+        description: 'Frische und saftige Wassermelonen, geschnitten und ganz'
+      },
+      {
+        src: '/images/meloni_sattin_dettaglio.webp',
+        title: 'Edle Melonen',
+        description: 'Duftende und süße Sattin Dolce Passione Melonen'
+      },
+      {
+        src: '/images/banco_frigo_disidratata_specialita.webp',
+        title: 'Schätze Südtirols',
+        description: 'Große Auswahl an Spezialitäten aus Südtirol'
+      },
+      {
+        src: '/images/arance_felici.webp',
+        title: 'Ausgewählte Zitrusfrüchte',
+        description: 'Frische und saftige Orangen La Favorita Felici'
+      },
+      {
+        src: '/images/zucche_decorate_banco.webp',
+        title: 'Wir erwarten Sie!',
+        description: 'Einladende und saisonale Atmosphäre am Marktstand'
+      },
+      {
+        src: '/images/bottamedi_mele_pink_lady_confezione.webp',
+        title: 'Pink Lady Äpfel',
+        description: 'Packung frischer und knackiger Pink Lady Äpfel'
+      },
+      {
+        src: '/images/bottamedi_ananas_fruitpoint_freschi.webp',
+        title: 'Exotische Qualitäts-Ananas',
+        description: 'Frische und reife Fruitpoint Ananas'
+      },
+      {
+        src: '/images/bottamedi_sacchetti

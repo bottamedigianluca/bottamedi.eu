@@ -345,44 +345,7 @@ EU-Verordnung 2016/679 (DSGVO) und italienisches Datenschutzgesetzbuch (D.Lgs. 1
                   : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
               }`}
             >
-              <div className="flex flex-col sm:flex-row gap-2 justify-center items-center text-sm">
-            <a 
-              href="mailto:bottamedipierluigi@virgilio.it" 
-              className="text-green-600 hover:text-green-700 underline transition-colors"
-              onClick={() => {
-                if (typeof window !== 'undefined' && window.gtag) {
-                  window.gtag('event', 'email_click', {
-                    event_category: 'contact',
-                    event_label: 'legal_footer'
-                  })
-                }
-              }}
-            >
-              📧 bottamedipierluigi@virgilio.it
-            </a>
-            <span className="hidden sm:inline text-gray-400">|</span>
-            <a 
-              href="tel:+390461602534" 
-              className="text-green-600 hover:text-green-700 underline transition-colors"
-              onClick={() => {
-                if (typeof window !== 'undefined' && window.gtag) {
-                  window.gtag('event', 'phone_click', {
-                    event_category: 'contact',
-                    event_label: 'legal_footer'
-                  })
-                }
-              }}
-            >
-              📞 +39 0461 602534
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export default React.memo(LegalDocuments)="flex items-center justify-between">
+              <div className="flex items-center justify-between">
                 <span className="font-medium">{title}</span>
                 <span className={`transform transition-transform duration-200 ${activeDoc === key ? 'rotate-180' : ''}`}>
                   ▼
@@ -425,4 +388,41 @@ export default React.memo(LegalDocuments)="flex items-center justify-between">
               : 'Bei Fragen zu persönlichen Daten oder Cookies kontaktieren Sie uns:'
             }
           </p>
-          <div className
+          <div className="flex flex-col sm:flex-row gap-2 justify-center items-center text-sm">
+            <a 
+              href="mailto:bottamedipierluigi@virgilio.it" 
+              className="text-green-600 hover:text-green-700 underline transition-colors"
+              onClick={() => {
+                if (typeof window !== 'undefined' && window.gtag) {
+                  window.gtag('event', 'email_click', {
+                    event_category: 'contact',
+                    event_label: 'legal_footer'
+                  })
+                }
+              }}
+            >
+              📧 bottamedipierluigi@virgilio.it
+            </a>
+            <span className="hidden sm:inline text-gray-400">|</span>
+            <a 
+              href="tel:+390461602534" 
+              className="text-green-600 hover:text-green-700 underline transition-colors"
+              onClick={() => {
+                if (typeof window !== 'undefined' && window.gtag) {
+                  window.gtag('event', 'phone_click', {
+                    event_category: 'contact',
+                    event_label: 'legal_footer'
+                  })
+                }
+              }}
+            >
+              📞 +39 0461 602534
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default React.memo(LegalDocuments)

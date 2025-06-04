@@ -10,24 +10,24 @@ interface AboutSectionProps {
 const translations = {
   it: {
     title: 'La Nostra Storia',
-    subtitle: 'Tre Generazioni di Passione',
+    subtitle: 'Tre Generazioni di Eccellenza nel Settore Ortofrutticolo',
     timeline: [
       {
         year: '1974',
-        title: 'Le Radici',
-        description: 'Tutto iniziò con nonno Lorenzo, che con dedizione e amore, fondò la nostra attività basata su qualità e fiducia.',
+        title: 'Le Fondamenta',
+        description: 'Nonno Lorenzo pose le prime pietre di quello che sarebbe diventato un punto di riferimento nel settore ortofrutticolo trentino. Con dedizione assoluta e visione imprenditoriale, fondò un\'attività basata su principi saldi: qualità inarrivabile, fiducia reciproca e servizio autentico.',
         image: '/images/melinda_golden.webp'
       },
       {
         year: '2013',
-        title: 'La Crescita',
-        description: 'Pierluigi continuò ad espandere l\'attività, consolidando rapporti con fornitori e produttori locali e trasformando la passione in un servizio strutturato.',
+        title: 'L\'Evoluzione',
+        description: 'Pierluigi trasformò la passione familiare in una realtà strutturata e moderna. Consolidando rapporti esclusivi con i migliori produttori locali e ampliando la rete di fornitura, elevò gli standard qualitativi e pose le basi per servire anche il settore professionale.',
         image: '/images/pomodori_cuore_bue.webp'
       },
       {
         year: 'OGGI',
         title: 'Il Futuro',
-        description: 'Lorenzo, Pierluigi con i figli e il resto della famiglia continuano la tradizione, unendo esperienza e innovazione per il futuro dell\'ortofrutta del Trentino Alto Adige.',
+        description: 'Lorenzo, Pierluigi con i figli e l\'intera famiglia Bottamedi continuano la tradizione con rinnovato slancio. Unendo l\'esperienza di tre generazioni all\'innovazione moderna, serviamo ogni giorno famiglie, ristoranti d\'eccellenza e istituti del territorio, sempre fedeli ai nostri valori fondanti.',
         image: '/images/kiwi-cuore.webp'
       }
     ],
@@ -37,54 +37,54 @@ const translations = {
         {
           icon: '🌱',
           title: 'Freschezza',
-          description: 'Selezioniamo quotidianamente solo i prodotti migliori',
+          description: 'Selezione quotidiana alle prime ore per garantire prodotti al massimo della qualità',
           number: '50',
           label: 'Anni di esperienza'
         },
         {
           icon: '⭐',
-          title: 'Qualità',
-          description: 'Standard elevati garantiti da tre generazioni di esperienza',
+          title: 'Eccellenza',
+          description: 'Standard elevati certificati da tre generazioni di competenza nel settore',
           number: '150+',
-          label: 'Prodotti selezionati'
+          label: 'Varietà selezionate'
         },
         {
           icon: '❤️',
           title: 'Passione',
-          description: 'L\'amore per il nostro lavoro si riflette in ogni prodotto',
+          description: 'L\'amore per il nostro lavoro si riflette nella cura di ogni singolo prodotto',
           number: '50+',
-          label: 'Ristoranti serviti'
+          label: 'Partner commerciali'
         },
         {
           icon: '🏔️',
           title: 'Territorio',
-          description: 'Valorizzamo i sapori autentici del Trentino Alto Adige',
+          description: 'Valorizzazione dei sapori autentici del Trentino Alto Adige e delle sue tradizioni',
           number: '6',
-          label: 'Giorni a settimana'
+          label: 'Giorni di servizio'
         }
       ]
     }
   },
   de: {
     title: 'Unsere Geschichte',
-    subtitle: 'Zwei Generationen Leidenschaft',
+    subtitle: 'Drei Generationen Exzellenz im Obst- und Gemüsesektor',
     timeline: [
       {
         year: '1974',
-        title: 'Die Wurzeln',
-        description: 'Alles begann mit Großvater Luigi, der mit Hingabe und Liebe für das Südtiroler Land unser Geschäft auf Qualität und Vertrauen gründete.',
+        title: 'Die Grundlagen',
+        description: 'Großvater Lorenzo legte die ersten Steine dessen, was zu einem Bezugspunkt im Südtiroler Obst- und Gemüsesektor werden sollte. Mit absoluter Hingabe und unternehmerischer Weitsicht gründete er ein Unternehmen basierend auf soliden Prinzipien: unerreichbare Qualität, gegenseitiges Vertrauen und authentischen Service.',
         image: '/images/melinda_golden.webp'
       },
       {
-        year: '1990',
-        title: 'Das Wachstum',
-        description: 'Vater Giovanni erweiterte das Geschäft, festigte Beziehungen zu lokalen Produzenten und verwandelte Leidenschaft in strukturierten Service.',
+        year: '2013',
+        title: 'Die Entwicklung',
+        description: 'Pierluigi verwandelte die Familienleidenschaft in eine strukturierte und moderne Realität. Durch die Festigung exklusiver Beziehungen zu den besten lokalen Produzenten und die Erweiterung des Liefernetzwerks hob er die Qualitätsstandards an und schuf die Grundlagen für die Belieferung auch des professionellen Sektors.',
         image: '/images/pomodori_cuore_bue.webp'
       },
       {
-        year: 'Heute',
+        year: 'HEUTE',
         title: 'Die Zukunft',
-        description: 'Pierluigi und die Familie Bottamedi setzen die Tradition fort und verbinden Erfahrung mit Innovation für die Zukunft der Südtiroler Obst- und Gemüsebranche.',
+        description: 'Lorenzo, Pierluigi mit den Söhnen und die gesamte Familie Bottamedi setzen die Tradition mit erneuertem Schwung fort. Durch die Verbindung der Erfahrung von drei Generationen mit moderner Innovation bedienen wir täglich Familien, Exzellenz-Restaurants und Institutionen des Gebiets, immer treu unseren Grundwerten.',
         image: '/images/kiwi-cuore.webp'
       }
     ],
@@ -94,37 +94,36 @@ const translations = {
         {
           icon: '🌱',
           title: 'Frische',
-          description: 'Wir wählen täglich nur die besten Produkte aus',
+          description: 'Tägliche Auswahl in den frühen Morgenstunden für Produkte höchster Qualität',
           number: '50',
           label: 'Jahre Erfahrung'
         },
         {
           icon: '⭐',
-          title: 'Qualität',
-          description: 'Hohe Standards garantiert durch drei Generationen Erfahrung',
+          title: 'Exzellenz',
+          description: 'Hohe Standards zertifiziert durch drei Generationen Kompetenz im Sektor',
           number: '150+',
-          label: 'Ausgewählte Produkte'
+          label: 'Ausgewählte Sorten'
         },
         {
           icon: '❤️',
           title: 'Leidenschaft',
-          description: 'Die Liebe zu unserer Arbeit spiegelt sich in jedem Produkt wider',
+          description: 'Die Liebe zu unserer Arbeit spiegelt sich in der Pflege jedes einzelnen Produkts wider',
           number: '50+',
-          label: 'Bediente Restaurants'
+          label: 'Geschäftspartner'
         },
         {
           icon: '🏔️',
           title: 'Territorium',
-          description: 'Wir schätzen die authentischen Aromen Südtirols',
+          description: 'Förderung der authentischen Aromen Südtirols und seiner Traditionen',
           number: '6',
-          label: 'Tage pro Woche'
+          label: 'Servicetage'
         }
       ]
     }
   }
 }
 
-// 🚀 PERFORMANCE: Lazy Image Component Ottimizzato
 const LazyImage: React.FC<{
   src: string
   alt: string
@@ -135,7 +134,7 @@ const LazyImage: React.FC<{
   const [ref, inView] = useInView({
     threshold: 0.1,
     triggerOnce: true,
-    rootMargin: '50px' // Preload quando vicino al viewport
+    rootMargin: '50px'
   })
 
   const handleLoad = useCallback(() => {
@@ -149,12 +148,10 @@ const LazyImage: React.FC<{
 
   return (
     <div ref={ref} className={`relative overflow-hidden ${className}`} style={style}>
-      {/* Skeleton loader */}
       {imageState === 'loading' && (
         <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
       )}
       
-      {/* Error fallback */}
       {imageState === 'error' && (
         <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
           <div className="text-center text-gray-400">
@@ -166,7 +163,6 @@ const LazyImage: React.FC<{
         </div>
       )}
       
-      {/* Actual image - solo se in view */}
       {inView && imageState !== 'error' && (
         <img
           src={src}
@@ -187,7 +183,6 @@ const LazyImage: React.FC<{
 
 LazyImage.displayName = 'LazyImage'
 
-// 🔢 PERFORMANCE: Counter Hook Ottimizzato
 const useOptimizedCountUp = (endValue: number, inView: boolean, delay: number = 0) => {
   const [count, setCount] = useState(0)
   const shouldReduceMotion = useReducedMotion()
@@ -208,7 +203,6 @@ const useOptimizedCountUp = (endValue: number, inView: boolean, delay: number = 
         if (!startTime) startTime = currentTime
         const progress = Math.min((currentTime - startTime) / duration, 1)
         
-        // Easing function ottimizzata
         const easeOutQuart = 1 - Math.pow(1 - progress, 4)
         const currentValue = easeOutQuart * endValue
         
@@ -231,7 +225,6 @@ const useOptimizedCountUp = (endValue: number, inView: boolean, delay: number = 
   return count
 }
 
-// 📍 PERFORMANCE: Timeline Item Ottimizzato
 const TimelineItem: React.FC<{
   item: any
   index: number
@@ -273,7 +266,6 @@ const TimelineItem: React.FC<{
         isEven ? 'lg:flex-row-reverse' : ''
       }`}
     >
-      {/* Content */}
       <div className="flex-1 space-y-4">
         <div className="relative">
           <motion.div
@@ -314,7 +306,6 @@ const TimelineItem: React.FC<{
         </motion.p>
       </div>
 
-      {/* Image ottimizzata con lazy loading */}
       <motion.div
         initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.8 }}
         animate={inView ? { opacity: 1, scale: 1 } : {}}
@@ -339,7 +330,6 @@ const TimelineItem: React.FC<{
 
 TimelineItem.displayName = 'TimelineItem'
 
-// 💎 PERFORMANCE: Value Card Ottimizzata
 const ValueCard: React.FC<{
   item: any
   index: number
@@ -387,7 +377,6 @@ const ValueCard: React.FC<{
       style={{ willChange: 'transform' }}
     >
       <div className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-neutral-100 h-full">
-        {/* Icon e Counter */}
         <div className="text-center mb-4">
           <motion.div
             whileHover={shouldReduceMotion ? {} : { scale: 1.1, rotate: 5 }}
@@ -396,7 +385,6 @@ const ValueCard: React.FC<{
             {item.icon}
           </motion.div>
           
-          {/* Counter animato ottimizzato */}
           <div className="mb-2">
             <motion.span 
               className="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-600 block"
@@ -413,7 +401,6 @@ const ValueCard: React.FC<{
           </div>
         </div>
         
-        {/* Title e Description */}
         <div className="text-center">
           <h3 className="text-lg font-bold text-neutral-900 mb-2">
             {item.title}
@@ -423,7 +410,6 @@ const ValueCard: React.FC<{
           </p>
         </div>
         
-        {/* Hover effect */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-600/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           initial={false}
@@ -442,7 +428,6 @@ const AboutSection: React.FC<AboutSectionProps> = ({ language, inView }) => {
   
   const t = useMemo(() => translations[language], [language])
 
-  // 🎨 PERFORMANCE: Memoized animation variants
   const headerVariants = useMemo(() => ({
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
     visible: { 
@@ -483,7 +468,6 @@ const AboutSection: React.FC<AboutSectionProps> = ({ language, inView }) => {
 
   return (
     <section id="about" className="py-16 lg:py-24 bg-gradient-to-br from-neutral-50 to-white relative overflow-hidden">
-      {/* Background decorations ottimizzate */}
       {!shouldReduceMotion && (
         <>
           <motion.div
@@ -498,7 +482,6 @@ const AboutSection: React.FC<AboutSectionProps> = ({ language, inView }) => {
       )}
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header ottimizzato */}
         <motion.div
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
@@ -526,7 +509,6 @@ const AboutSection: React.FC<AboutSectionProps> = ({ language, inView }) => {
           </motion.p>
         </motion.div>
 
-        {/* Timeline ottimizzata */}
         <div className="space-y-20 mb-20">
           {t.timeline.map((item, index) => (
             <TimelineItem
@@ -538,7 +520,6 @@ const AboutSection: React.FC<AboutSectionProps> = ({ language, inView }) => {
           ))}
         </div>
 
-        {/* Values Section ottimizzata */}
         <motion.div
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
@@ -550,7 +531,6 @@ const AboutSection: React.FC<AboutSectionProps> = ({ language, inView }) => {
           </h3>
         </motion.div>
 
-        {/* Values Cards ottimizzate */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {t.values.items.map((item, index) => (
             <ValueCard key={`value-${index}`} item={item} index={index} />

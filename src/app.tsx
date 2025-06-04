@@ -15,6 +15,10 @@ const Footer = React.lazy(() => import('./components/layout/Footer'))
 const MobileDock = React.lazy(() => import('./components/layout/MobileDock'))
 const CookieBanner = React.lazy(() => import('./components/legal/CookieBanner'))
 const LegalDocuments = React.lazy(() => import('./components/legal/LegalDocuments'))
+const BreadcrumbNavigation = React.lazy(() => import('./components/navigation/BreadcrumbNavigation'))
+
+// Import hooks for optimization
+import { useBreadcrumb } from './components/navigation/BreadcrumbNavigation'
 
 const SectionLoader = () => (
   <div className="h-96 flex items-center justify-center">
@@ -311,6 +315,9 @@ const App: React.FC = () => {
   const [contactRef, contactInView] = useInView({ threshold: 0.1 })
   const [footerRef, footerInView] = useInView({ threshold: 0.3 })
 
+  // Breadcrumb visibility hook
+  const showBreadcrumb = useBreadcrumb(state.currentSection)
+
   useEffect(() => {
     const savedLanguage = localStorage.getItem('bottamedi-language') as 'it' | 'de'
     if (savedLanguage) {
@@ -444,6 +451,27 @@ const App: React.FC = () => {
             onToggleMenu={toggleMenu}
           />
         </Suspense>
+
+        {/* Breadcrumb Navigation */}
+        <AnimatePresence>
+          {showBreadcrumb && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="fixed top-20 left-0 right-0 z-40"
+            >
+              <Suspense fallback={null}>
+                <BreadcrumbNavigation
+                  language={state.language}
+                  currentSection={state.currentSection}
+                  items={[]} // Auto-generated based on currentSection
+                />
+              </Suspense>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <main className="relative">
           <div ref={heroRef} id="hero">

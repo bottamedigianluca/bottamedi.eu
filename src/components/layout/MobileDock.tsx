@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 interface MobileDockProps {
   language: 'it' | 'de'
+  hideInFooter?: boolean
 }
 
 const translations = {
@@ -21,7 +22,7 @@ const translations = {
       { id: 'contact', label: 'Contatti', icon: '📞' }
     ],
     contacts: {
-      banchetto: 'Banchetto',
+      banchetto: 'Banchetto Retail',
       ingrosso: 'Ingrosso HORECA',
       banchettoPhone: '351 577 6198',
       ingrossoPhone: '0461 602534',
@@ -45,7 +46,7 @@ const translations = {
       { id: 'contact', label: 'Kontakt', icon: '📞' }
     ],
     contacts: {
-      banchetto: 'Marktstand',
+      banchetto: 'Marktstand Retail',
       ingrosso: 'Großhandel HORECA',
       banchettoPhone: '351 577 6198',
       ingrossoPhone: '0461 602534',
@@ -95,7 +96,7 @@ const ClockIcon = () => (
   </svg>
 )
 
-const useScrollDetection = () => {
+const useScrollDetection = (hideInFooter: boolean) => {
   const [isVisible, setIsVisible] = useState(false)
   const [currentSection, setCurrentSection] = useState('hero')
 
@@ -113,8 +114,8 @@ const useScrollDetection = () => {
           if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
             setCurrentSection(sectionId)
             const isInHero = sectionId === 'hero'
-            const isNearFooter = window.scrollY + window.innerHeight > document.body.scrollHeight - 200
-            setIsVisible(!isInHero && !isNearFooter)
+            // Nascondi il dock se siamo in hero, nel footer, o se hideInFooter è true
+            setIsVisible(!isInHero && !hideInFooter)
             break
           }
         }
@@ -133,15 +134,15 @@ const useScrollDetection = () => {
       window.removeEventListener('scroll', handleScroll)
       clearTimeout(timeoutId)
     }
-  }, [])
+  }, [hideInFooter])
 
   return { isVisible, currentSection }
 }
 
-const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
+const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter = false }) => {
   const [activeMenu, setActiveMenu] = useState<'none' | 'menu' | 'call' | 'directions'>('none')
   const [isMobile, setIsMobile] = useState(false)
-  const { isVisible, currentSection } = useScrollDetection()
+  const { isVisible, currentSection } = useScrollDetection(hideInFooter)
   const t = translations[language]
 
   useEffect(() => {

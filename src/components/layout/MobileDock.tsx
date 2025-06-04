@@ -99,11 +99,24 @@ const ClockIcon = () => (
 const useScrollDetection = (hideInFooter: boolean) => {
   const [isVisible, setIsVisible] = useState(false)
   const [currentSection, setCurrentSection] = useState('hero')
+  const [isScrolling, setIsScrolling] = useState(false)
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout
+    let scrollTimeoutId: NodeJS.Timeout
     
     const detectSection = () => {
+      // Indica che stiamo scrollando
+      setIsScrolling(true)
+      
+      // Cancella il timeout precedente
+      clearTimeout(scrollTimeoutId)
+      
+      // Imposta un nuovo timeout per indicare che lo scroll è finito
+      scrollTimeoutId = setTimeout(() => {
+        setIsScrolling(false)
+      }, 150) // 150ms dopo che lo scroll si ferma
+
       const sections = ['hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact']
       const scrollPosition = window.scrollY + window.innerHeight / 2
 
@@ -113,13 +126,22 @@ const useScrollDetection = (hideInFooter: boolean) => {
           const { offsetTop, offsetHeight } = element
           if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
             setCurrentSection(sectionId)
-            const isInHero = sectionId === 'hero'
-            // Nascondi il dock se siamo in hero, nel footer, o se hideInFooter è true
-            setIsVisible(!isInHero && !hideInFooter)
             break
           }
         }
       }
+    }
+
+    // Funzione separata per controllare la visibilità
+    const updateVisibility = () => {
+      const isInHero = currentSection === 'hero'
+      
+      // Nascondi il dock se:
+      // - Siamo nella hero section
+      // - Siamo nel footer (hideInFooter è true)
+      // - Stiamo attualmente scrollando
+      const shouldHide = isInHero || hideInFooter || isScrolling
+      setIsVisible(!shouldHide)
     }
 
     const handleScroll = () => {
@@ -133,8 +155,16 @@ const useScrollDetection = (hideInFooter: boolean) => {
     return () => {
       window.removeEventListener('scroll', handleScroll)
       clearTimeout(timeoutId)
+      clearTimeout(scrollTimeoutId)
     }
   }, [hideInFooter])
+
+  // Aggiorna la visibilità quando cambiano le condizioni
+  useEffect(() => {
+    const isInHero = currentSection === 'hero'
+    const shouldHide = isInHero || hideInFooter || isScrolling
+    setIsVisible(!shouldHide)
+  }, [currentSection, hideInFooter, isScrolling])
 
   return { isVisible, currentSection }
 }

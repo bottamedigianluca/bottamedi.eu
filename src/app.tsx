@@ -18,6 +18,7 @@ import ContactSection from './components/sections/ContactSection'
 // Legal Components
 import LegalDocuments from './components/legal/LegalDocuments'
 import CookieBanner from './components/legal/CookieBanner'
+import PrivacySettings from './components/legal/PrivacySettings'
 
 // Types
 type Language = 'it' | 'de'
@@ -211,15 +212,6 @@ function App() {
       metaDescription.setAttribute('content', descriptions[language])
     }
 
-    // Ensure viewport meta tag is correct
-    let viewportMeta = document.querySelector('meta[name="viewport"]')
-    if (!viewportMeta) {
-      viewportMeta = document.createElement('meta')
-      viewportMeta.setAttribute('name', 'viewport')
-      document.head.appendChild(viewportMeta)
-    }
-    viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0')
-
     // Analytics page view
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', 'page_view', {
@@ -265,7 +257,7 @@ function App() {
           inView={sectionsInView.services} 
         />
 
-        {/* Products Section */}
+        {/* Products Section (CORRETTA con CTA tradotta) */}
         <ProductsSection 
           language={language} 
           inView={sectionsInView.products} 
@@ -284,13 +276,13 @@ function App() {
         />
       </main>
 
-      {/* Footer */}
+      {/* Footer (CORRETTO con link legali funzionanti) */}
       <Footer language={language} />
       
-      {/* Legal Documents Section */}
+      {/* Legal Documents Section (NUOVO - collegato al footer) */}
       <LegalDocuments language={language} />
 
-      {/* Mobile Dock */}
+      {/* Mobile Dock (nascosto quando footer/documenti legali sono visibili) */}
       <MobileDock 
         language={language} 
         hideInFooter={hideInFooter || isScrolling}
@@ -298,6 +290,14 @@ function App() {
 
       {/* Cookie Banner */}
       <CookieBanner language={language} />
+
+      {/* Privacy Settings Component (per gestione cookie avanzata) */}
+      <div className="fixed bottom-4 right-4 z-40 lg:block hidden">
+        <PrivacySettings 
+          language={language}
+          className="opacity-80 hover:opacity-100 transition-opacity"
+        />
+      </div>
 
       {/* Loading States for Better UX */}
       <AnimatePresence>

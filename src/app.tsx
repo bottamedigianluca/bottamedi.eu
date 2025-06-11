@@ -256,7 +256,7 @@ function App() {
           inView={sectionsInView.services} 
         />
 
-        {/* Products Section (CORRETTA con CTA tradotta) */}
+        {/* Products Section */}
         <ProductsSection 
           language={language} 
           inView={sectionsInView.products} 
@@ -275,13 +275,13 @@ function App() {
         />
       </main>
 
-      {/* Footer (CORRETTO con link legali funzionanti) */}
+      {/* Footer */}
       <Footer language={language} />
       
-      {/* Legal Documents Section (NUOVO - collegato al footer) */}
+      {/* Legal Documents Section */}
       <LegalDocuments language={language} />
 
-      {/* Mobile Dock (nascosto quando footer/documenti legali sono visibili) */}
+      {/* Mobile Dock */}
       <MobileDock 
         language={language} 
         hideInFooter={hideInFooter || isScrolling}

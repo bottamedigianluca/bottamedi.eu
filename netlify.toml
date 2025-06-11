@@ -1,13 +1,51 @@
-[[headers]]
-  for = "*.tsx"
-  [headers.values]
-    Content-Type = "application/javascript"
+[build]
+  # Comando di build
+  command = "npm run build"
+  
+  # Directory di output
+  publish = "dist"
+  
+  # Directory base del progetto
+  base = "."
 
-[[headers]]
-  for = "*.ts"
-  [headers.values]
-    Content-Type = "application/javascript"
+[build.environment]
+  # Forza l'uso di Node.js 20 LTS (versione supportata e stabile)
+  NODE_VERSION = "20"
+  
+  # Usa NPM più recente
+  NPM_VERSION = "10"
+  
+  # Imposta NODE_ENV per build di produzione
+  NODE_ENV = "production"
+  
+  # Disabilita telemetry per build più veloce
+  NEXT_TELEMETRY_DISABLED = "1"
+  
+  # Ottimizzazioni Vite
+  VITE_BUILD_TARGET = "es2020"
 
+# Headers per ottimizzazione
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Cache per assets statici
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache per immagini
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+# Redirect per compatibilità
 [[redirects]]
   from = "/*"
   to = "/index.html"

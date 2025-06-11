@@ -1,4 +1,4 @@
-// Footer.tsx - VERSIONE CORRETTA
+// Footer.tsx - VERSIONE CORRETTA CON LINK CHE FUNZIONANO
 import React from 'react'
 import { motion } from 'framer-motion'
 
@@ -17,7 +17,11 @@ const translations = {
       about: 'La Nostra Storia',
       banchetto: 'Al Banchetto',
       services: 'Servizi Ingrosso',
-      contact: 'Contatti'
+      contact: 'Contatti',
+      // 📝 NOMI CORRETTI E STANDARD
+      privacy: 'Informativa Privacy',
+      terms: 'Termini e Condizioni',
+      cookies: 'Cookie Policy'
     },
     contact: {
       title: 'Contatti',
@@ -58,7 +62,10 @@ const translations = {
       about: 'Unsere Geschichte',
       banchetto: 'Marktstand',
       services: 'Großhandel Service',
-      contact: 'Kontakt'
+      contact: 'Kontakt',
+      privacy: 'Datenschutzerklärung',
+      terms: 'AGB',
+      cookies: 'Cookie-Richtlinie'
     },
     contact: {
       title: 'Kontakt',
@@ -123,6 +130,48 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
     const element = document.getElementById(sectionId)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  // 🔧 FUNZIONE CORRETTA PER APRIRE I DOCUMENTI LEGALI
+  const handleLegalDocumentClick = (docType: 'privacy' | 'terms' | 'cookies') => {
+    console.log('🔓 Tentativo di aprire documento:', docType, 'lingua:', language)
+    
+    // Dispatch evento con i parametri corretti
+    const event = new CustomEvent('openLegalDocument', { 
+      detail: { docType, language },
+      bubbles: true,
+      cancelable: true
+    })
+    
+    // Dispatch sia su window che su document per sicurezza
+    window.dispatchEvent(event)
+    document.dispatchEvent(event)
+    
+    console.log('📤 Evento dispatched:', event.detail)
+    
+    // Debug: controlla se il componente LegalDocuments esiste
+    const legalElement = document.getElementById('legal-documents')
+    console.log('📋 Elemento legal-documents trovato:', !!legalElement)
+    
+    // Scroll to legal section se esiste
+    setTimeout(() => {
+      const element = document.getElementById('legal-documents')
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+        console.log('📍 Scroll verso legal-documents')
+      } else {
+        console.warn('⚠️ Elemento legal-documents non trovato!')
+      }
+    }, 100)
+    
+    // Analytics tracking
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'legal_document_click', {
+        event_category: 'footer',
+        event_label: docType,
+        value: 1
+      })
     }
   }
 
@@ -310,7 +359,7 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
           </div>
         </motion.div>
 
-        {/* Copyright senza link legali */}
+        {/* 📝 BOTTOM BAR CON LINK LEGALI PICCOLI CHE FUNZIONANO */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -330,10 +379,41 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
               </p>
             </div>
             
-            {/* Made by */}
-            <p className="text-white/40 text-xs">
-              {t.legal.madeby}
-            </p>
+            {/* 🔗 LINK LEGALI PICCOLI STANDARD */}
+            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6">
+              <div className="flex flex-wrap items-center justify-center space-x-1 text-xs text-white/60">
+                <motion.button 
+                  onClick={() => handleLegalDocumentClick('privacy')}
+                  whileHover={{ scale: 1.05, color: 'rgba(255,255,255,0.9)' }}
+                  whileTap={{ scale: 0.95 }}
+                  className="hover:text-white transition-colors hover:underline px-2 py-1 rounded"
+                >
+                  {t.links.privacy}
+                </motion.button>
+                <span className="text-white/40 px-1">•</span>
+                <motion.button 
+                  onClick={() => handleLegalDocumentClick('terms')}
+                  whileHover={{ scale: 1.05, color: 'rgba(255,255,255,0.9)' }}
+                  whileTap={{ scale: 0.95 }}
+                  className="hover:text-white transition-colors hover:underline px-2 py-1 rounded"
+                >
+                  {t.links.terms}
+                </motion.button>
+                <span className="text-white/40 px-1">•</span>
+                <motion.button 
+                  onClick={() => handleLegalDocumentClick('cookies')}
+                  whileHover={{ scale: 1.05, color: 'rgba(255,255,255,0.9)' }}
+                  whileTap={{ scale: 0.95 }}
+                  className="hover:text-white transition-colors hover:underline px-2 py-1 rounded"
+                >
+                  {t.links.cookies}
+                </motion.button>
+              </div>
+              
+              <p className="text-white/40 text-xs">
+                {t.legal.madeby}
+              </p>
+            </div>
           </div>
         </motion.div>
       </div>
@@ -342,115 +422,3 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
 }
 
 export default Footer
-
-// =======================================================
-// COMPONENTE BAR FISSO - DA AGGIUNGERE NELL'APP.TSX
-// =======================================================
-
-interface LegalBarProps {
-  language: 'it' | 'de'
-}
-
-const LegalBar: React.FC<LegalBarProps> = ({ language }) => {
-  const [showCookieSettings, setShowCookieSettings] = React.useState(false)
-  
-  const legalTranslations = {
-    it: {
-      policy: 'Informativa Privacy',
-      terms: 'Termini di Servizio',
-      cookies: 'Gestisci Cookie',
-      cookieSettings: 'Impostazioni Cookie'
-    },
-    de: {
-      policy: 'Datenschutz',
-      terms: 'AGB',
-      cookies: 'Cookie-Einstellungen',
-      cookieSettings: 'Cookie-Einstellungen'
-    }
-  }
-
-  const t = legalTranslations[language]
-
-  // 🔓 FUNZIONE CORRETTA PER SBLOCCARE I DOCUMENTI
-  const handleLegalClick = (docType: 'privacy' | 'terms' | 'cookies') => {
-    if (docType === 'cookies') {
-      // Gestione cookie separata
-      setShowCookieSettings(true)
-      return
-    }
-
-    // 🔧 EVENTO CORRETTO PER PRIVACY E TERMS
-    const event = new CustomEvent('openLegalDocument', { 
-      detail: { docType, language } 
-    })
-    window.dispatchEvent(event)
-    
-    // Analytics tracking
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'legal_document_open', {
-        event_category: 'legal_bar',
-        event_label: docType,
-        value: 1
-      })
-    }
-  }
-
-  return (
-    <>
-      {/* 📌 BAR FISSO IN FONDO - SEMPRE VISIBILE */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-neutral-900/95 backdrop-blur-md border-t border-white/10">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-6 text-xs text-white/70">
-            
-            <button 
-              onClick={() => handleLegalClick('privacy')}
-              className="hover:text-white transition-colors hover:underline"
-            >
-              {t.policy}
-            </button>
-            
-            <span className="hidden sm:inline text-white/40">•</span>
-            
-            <button 
-              onClick={() => handleLegalClick('terms')}
-              className="hover:text-white transition-colors hover:underline"
-            >
-              {t.terms}
-            </button>
-            
-            <span className="hidden sm:inline text-white/40">•</span>
-            
-            <button 
-              onClick={() => handleLegalClick('cookies')}
-              className="hover:text-white transition-colors hover:underline"
-            >
-              {t.cookies}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 🍪 MODAL COOKIE SETTINGS */}
-      {showCookieSettings && (
-        <div className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl max-w-md w-full p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">{t.cookieSettings}</h3>
-            <p className="text-gray-600 text-sm mb-4">
-              Utilizziamo solo cookie tecnici necessari per il funzionamento del sito.
-            </p>
-            <div className="flex space-x-3">
-              <button
-                onClick={() => setShowCookieSettings(false)}
-                className="flex-1 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors"
-              >
-                Chiudi
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  )
-}
-
-export { LegalBar }

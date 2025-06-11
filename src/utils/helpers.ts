@@ -58,7 +58,7 @@ export const generateRandomId = (length = 8): string => {
 // Date utilities
 export const formatDate = (date: Date | string, locale = 'it-IT'): string => {
   const dateObj = typeof date === 'string' ? new Date(date) : date
-  return new Intl.DatetimeFormat(locale, {
+  return new Intl.DateTimeFormat(locale, {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -349,29 +349,6 @@ export const getScrollPercentage = (): number => {
   return (scrollTop / scrollHeight) * 100
 }
 
-// Image utilities
-export const preloadImage = (src: string): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => resolve()
-    img.onerror = reject
-    img.src = src
-  })
-}
-
-export const preloadImages = (urls: string[]): Promise<void[]> => {
-  return Promise.all(urls.map(preloadImage))
-}
-
-export const getImageDimensions = (src: string): Promise<{ width: number; height: number }> => {
-  return new Promise((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => resolve({ width: img.width, height: img.height })
-    img.onerror = reject
-    img.src = src
-  })
-}
-
 // Performance utilities
 export const debounce = <T extends (...args: any[]) => any>(
   func: T,
@@ -398,20 +375,6 @@ export const throttle = <T extends (...args: any[]) => any>(
       setTimeout(() => inThrottle = false, limit)
     }
   }
-}
-
-export const memoize = <T extends (...args: any[]) => any>(fn: T): T => {
-  const cache = new Map()
-  
-  return ((...args: Parameters<T>) => {
-    const key = JSON.stringify(args)
-    if (cache.has(key)) {
-      return cache.get(key)
-    }
-    const result = fn(...args)
-    cache.set(key, result)
-    return result
-  }) as T
 }
 
 // Device detection
@@ -458,51 +421,6 @@ export const copyToClipboard = async (text: string): Promise<boolean> => {
   }
 }
 
-export const downloadFile = (blob: Blob, filename: string): void => {
-  const url = window.URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.style.display = 'none'
-  a.href = url
-  a.download = filename
-  document.body.appendChild(a)
-  a.click()
-  window.URL.revokeObjectURL(url)
-  document.body.removeChild(a)
-}
-
-export const shareContent = async (data: ShareData): Promise<boolean> => {
-  if (navigator.share) {
-    try {
-      await navigator.share(data)
-      return true
-    } catch (error) {
-      console.warn('Native sharing failed:', error)
-    }
-  }
-  
-  // Fallback: copy URL to clipboard
-  if (data.url) {
-    return await copyToClipboard(data.url)
-  }
-  
-  return false
-}
-
-// Language utilities
-export const getLanguageFromStorage = (): 'it' | 'de' => {
-  return getLocalStorage(STORAGE_KEYS.language, 'it')
-}
-
-export const setLanguageToStorage = (language: 'it' | 'de'): void => {
-  setLocalStorage(STORAGE_KEYS.language, language)
-}
-
-export const getBrowserLanguage = (): 'it' | 'de' => {
-  const lang = navigator.language.toLowerCase()
-  if (lang.startsWith('de')) return 'de'
-  return 'it' // Default to Italian
-}
-
 // Error handling
 export const handleError = (error: unknown, context?: string): void => {
   const message = error instanceof Error ? error.message : 'Unknown error'
@@ -522,42 +440,45 @@ export const safeJsonParse = <T>(json: string, fallback: T): T => {
   }
 }
 
-// Export all utilities
-export const utils = {
-  // String
+// Language utilities
+export const getLanguageFromStorage = (): 'it' | 'de' => {
+  return getLocalStorage(STORAGE_KEYS.language, 'it')
+}
+
+export const setLanguageToStorage = (language: 'it' | 'de'): void => {
+  setLocalStorage(STORAGE_KEYS.language, language)
+}
+
+export const getBrowserLanguage = (): 'it' | 'de' => {
+  const lang = navigator.language.toLowerCase()
+  if (lang.startsWith('de')) return 'de'
+  return 'it' // Default to Italian
+}
+
+export default {
   capitalizeFirst,
   capitalizeWords,
   slugify,
   truncateText,
   stripHtml,
-  
-  // Number
   formatPrice,
   formatNumber,
   clamp,
   roundToDecimals,
   generateRandomId,
-  
-  // Date
   formatDate,
   formatTime,
   formatDateTime,
   isToday,
   daysSince,
-  
-  // Validation
   validateEmail,
   validatePhone,
   validateName,
   validateMessage,
-  
-  // URL
   isValidUrl,
   getUrlParams,
   buildUrl,
   getBaseDomain,
-  
-  // Storage
   setLocalStorage,
   getLocalStorage,
   removeLocalStorage,
@@ -567,57 +488,31 @@ export const utils = {
   setCookie,
   getCookie,
   deleteCookie,
-  
-  // Array
   shuffle,
   chunk,
   unique,
   groupBy,
   sortBy,
-  
-  // Object
   pick,
   omit,
   deepClone,
   isEmpty,
-  
-  // DOM
   scrollToElement,
   scrollToTop,
   getElementPosition,
   isElementInViewport,
   getScrollPercentage,
-  
-  // Image
-  preloadImage,
-  preloadImages,
-  getImageDimensions,
-  
-  // Performance
   debounce,
   throttle,
-  memoize,
-  
-  // Device
   isMobile,
   isIOS,
   isAndroid,
   isSafari,
   getTouchSupport,
-  
-  // Browser
   copyToClipboard,
-  downloadFile,
-  shareContent,
-  
-  // Language
+  handleError,
+  safeJsonParse,
   getLanguageFromStorage,
   setLanguageToStorage,
-  getBrowserLanguage,
-  
-  // Error handling
-  handleError,
-  safeJsonParse
+  getBrowserLanguage
 }
-
-export default utils

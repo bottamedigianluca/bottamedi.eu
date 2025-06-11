@@ -1,378 +1,165 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 
-// Lazy imports con fallback error boundary
+// 🚀 LAZY IMPORTS OTTIMIZZATI con error boundaries
 const Header = React.lazy(() => 
-  import('./components/layout/Header').catch(() => ({
-    default: () => <div className="h-20 bg-white shadow-sm" />
-  }))
+  import('./components/layout/Header').then(module => ({ default: module.default }))
+  .catch(() => import('./components/layout/Header'))
 )
+
 const HeroSection = React.lazy(() => 
-  import('./components/sections/HeroSection').catch(() => ({
-    default: ({ language }: any) => <div className="h-screen bg-green-50" />
-  }))
+  import('./components/sections/HeroSection').then(module => ({ default: module.default }))
+  .catch(() => ({ default: () => <div className="h-screen bg-green-50 flex items-center justify-center">
+    <h1 className="text-4xl font-bold text-green-600">BOTTAMEDI</h1>
+  </div> }))
 )
+
 const AboutSection = React.lazy(() => 
-  import('./components/sections/AboutSection').catch(() => ({
-    default: ({ language }: any) => <div className="h-96 bg-gray-50" />
-  }))
+  import('./components/sections/AboutSection').then(module => ({ default: module.default }))
+  .catch(() => ({ default: () => <div className="h-96 bg-gray-50" /> }))
 )
+
 const BanchettoSection = React.lazy(() => 
-  import('./components/sections/Banchettosection').catch(() => ({
-    default: ({ language }: any) => <div className="h-96 bg-green-50" />
-  }))
+  import('./components/sections/Banchettosection').then(module => ({ default: module.default }))
+  .catch(() => ({ default: () => <div className="h-96 bg-green-50" /> }))
 )
+
 const ServicesSection = React.lazy(() => 
-  import('./components/sections/ServicesSection').catch(() => ({
-    default: ({ language }: any) => <div className="h-96 bg-blue-50" />
-  }))
+  import('./components/sections/ServicesSection').then(module => ({ default: module.default }))
+  .catch(() => ({ default: () => <div className="h-96 bg-blue-50" /> }))
 )
+
 const ProductsSection = React.lazy(() => 
-  import('./components/sections/ProductsSection').catch(() => ({
-    default: ({ language }: any) => <div className="h-96 bg-emerald-50" />
-  }))
+  import('./components/sections/ProductsSection').then(module => ({ default: module.default }))
+  .catch(() => ({ default: () => <div className="h-96 bg-emerald-50" /> }))
 )
+
 const WholesaleContact = React.lazy(() => 
-  import('./components/sections/Wholesalecontact').catch(() => ({
-    default: ({ language }: any) => <div className="h-96 bg-orange-50" />
-  }))
+  import('./components/sections/Wholesalecontact').then(module => ({ default: module.default }))
+  .catch(() => ({ default: () => <div className="h-96 bg-orange-50" /> }))
 )
+
 const ContactSection = React.lazy(() => 
-  import('./components/sections/ContactSection').catch(() => ({
-    default: ({ language }: any) => <div className="h-96 bg-purple-50" />
-  }))
+  import('./components/sections/ContactSection').then(module => ({ default: module.default }))
+  .catch(() => ({ default: () => <div className="h-96 bg-purple-50" /> }))
 )
+
 const Footer = React.lazy(() => 
-  import('./components/layout/Footer').catch(() => ({
-    default: ({ language }: any) => <div className="h-64 bg-neutral-900" />
-  }))
+  import('./components/layout/Footer').then(module => ({ default: module.default }))
+  .catch(() => ({ default: () => <div className="h-64 bg-neutral-900" /> }))
 )
+
 const MobileDock = React.lazy(() => 
-  import('./components/layout/MobileDock').catch(() => ({
-    default: () => null
-  }))
+  import('./components/layout/MobileDock').then(module => ({ default: module.default }))
+  .catch(() => ({ default: () => null }))
 )
+
 const CookieBanner = React.lazy(() => 
-  import('./components/legal/CookieBanner').catch(() => ({
-    default: () => null
-  }))
+  import('./components/legal/CookieBanner').then(module => ({ default: module.default }))
+  .catch(() => ({ default: () => null }))
 )
+
 const LegalDocuments = React.lazy(() => 
-  import('./components/legal/LegalDocuments').catch(() => ({
-    default: ({ language }: any) => <div className="h-64 bg-gray-50" />
-  }))
-)
-const BreadcrumbNavigation = React.lazy(() => 
-  import('./components/navigation/BreadcrumbNavigation').catch(() => ({
-    default: () => null
-  }))
+  import('./components/legal/LegalDocuments').then(module => ({ default: module.default }))
+  .catch(() => ({ default: () => <div className="h-64 bg-gray-50" /> }))
 )
 
-// Import hooks safely
-let useBreadcrumb: any
-try {
-  useBreadcrumb = require('./components/navigation/BreadcrumbNavigation').useBreadcrumb
-} catch {
-  useBreadcrumb = () => false // Fallback
-}
-
-const SectionLoader = () => (
-  <div className="h-96 flex items-center justify-center">
-    <div className="relative">
-      <div className="w-8 h-8 border-2 border-green-200 border-t-green-600 rounded-full animate-spin"></div>
+// 🎯 PERFORMANCE: Fallback components ottimizzati
+const ComponentLoader = ({ height = "h-96" }: { height?: string }) => (
+  <div className={`${height} flex items-center justify-center`}>
+    <div className="flex flex-col items-center space-y-3">
+      <div className="w-8 h-8 border-2 border-green-200 border-t-green-600 rounded-full animate-spin" />
+      <div className="text-sm text-green-600 font-medium">Caricamento...</div>
     </div>
   </div>
 )
 
 const HeaderLoader = () => (
-  <div className="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-4">
-    <div className="w-32 h-8 bg-gray-200 rounded animate-pulse"></div>
+  <div className="h-20 bg-white/90 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-4">
+    <div className="w-32 h-8 bg-gray-200 rounded animate-pulse" />
     <div className="flex space-x-4">
-      <div className="w-8 h-8 bg-gray-200 rounded animate-pulse"></div>
-      <div className="w-8 h-8 bg-gray-200 rounded animate-pulse"></div>
+      <div className="w-8 h-8 bg-gray-200 rounded animate-pulse" />
+      <div className="w-8 h-8 bg-gray-200 rounded animate-pulse" />
     </div>
   </div>
 )
 
-const FooterLoader = () => (
-  <div className="h-64 bg-neutral-900 flex items-center justify-center">
-    <div className="w-8 h-8 border-2 border-gray-600 border-t-white rounded-full animate-spin"></div>
-  </div>
-)
+// 🎨 PERFORMANCE: Stili inline ottimizzati
+const inlineStyles = `
+  .mobile-dock-container {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    pointer-events: none !important;
+    z-index: 1000 !important;
+  }
+  @media (min-width: 1024px) {
+    .mobile-dock-container { display: none !important; }
+  }
+  .smooth-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+`
 
-const GlobalHapticIntegration: React.FC = () => {
+// 🎯 HOOK OTTIMIZZATO per sezioni in vista
+const useOptimizedInView = (threshold = 0.1) => {
+  return useInView({
+    threshold,
+    triggerOnce: false, // Manteniamo per il dock
+    rootMargin: '50px'
+  })
+}
+
+// 🎯 HOOK per visibilità mobile dock
+const useMobileDockVisibility = (currentSection: string, isFooterInView: boolean) => {
+  const [isVisible, setIsVisible] = useState(false)
+  const [isScrollingDown, setIsScrollingDown] = useState(false)
+  const [lastScrollY, setLastScrollY] = useState(0)
+
   useEffect(() => {
-    let userInteracted = false;
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    
-    console.log(`🍎 Device: ${isIOS ? 'iOS' : 'Other'}, Haptic API: ${'vibrate' in navigator}`);
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      const isScrollingDown = currentScrollY > lastScrollY
+      
+      setIsScrollingDown(isScrollingDown)
+      setLastScrollY(currentScrollY)
 
-    const triggerHaptic = (pattern: number[]) => {
-      if (!('vibrate' in navigator)) {
-        return false;
-      }
+      // Logica visibilità dock
+      const shouldShow = currentSection !== 'hero' && 
+                        !isFooterInView && 
+                        currentScrollY > 200 &&
+                        !isScrollingDown
 
-      if (isIOS && !userInteracted) {
-        console.log('🍎 iOS: Haptic bloccato - serve interazione utente prima');
-        return false;
-      }
-
-      try {
-        const finalPattern = isIOS ? [pattern[0] || 25] : pattern;
-        const result = navigator.vibrate(finalPattern);
-        
-        if (result) {
-          console.log(`🎯 Haptic success: ${finalPattern}`);
-        } else {
-          console.log(`🎯 Haptic failed: ${finalPattern}`);
-        }
-        
-        return result;
-      } catch (error) {
-        console.warn('🎯 Haptic error:', error);
-        return false;
-      }
+      setIsVisible(shouldShow)
     }
 
-    const markUserInteraction = () => {
-      if (!userInteracted) {
-        userInteracted = true;
-        console.log('🎯 User interaction detected, haptics enabled');
-        
-        if (isIOS) {
-          setTimeout(() => {
-            triggerHaptic([25]);
-          }, 100);
-        }
-      }
-    };
-
-    const handleGlobalClick = (e: MouseEvent) => {
-      markUserInteraction(); 
-      
-      const target = e.target as HTMLElement;
-      
-      if (target.tagName === 'BUTTON' && !target.hasAttribute('data-no-haptic')) {
-        triggerHaptic([25]);
-      }
-      
-      if (target.tagName === 'A' && !target.hasAttribute('data-no-haptic')) {
-        triggerHaptic([15]);
-      }
-      
-      if (target.closest('[data-clickable]')) {
-        triggerHaptic([20]);
-      }
+    const throttledScroll = () => {
+      requestAnimationFrame(handleScroll)
     }
 
-    const handleTouchStart = (e: TouchEvent) => {
-      markUserInteraction();
-      
-      const target = e.target as HTMLElement;
-      
-      if (window.innerWidth < 768) {
-        if (target.tagName === 'BUTTON') {
-          triggerHaptic([25]);
-          target.style.transform = 'scale(0.98)';
-          target.style.transition = 'transform 0.1s ease';
-        } else if (target.tagName === 'A') {
-          triggerHaptic([15]);
-          target.style.transform = 'scale(0.98)';
-          target.style.transition = 'transform 0.1s ease';
-        }
-      }
-    }
+    window.addEventListener('scroll', throttledScroll, { passive: true })
+    return () => window.removeEventListener('scroll', throttledScroll)
+  }, [currentSection, isFooterInView, lastScrollY])
 
-    const handleTouchEnd = (e: TouchEvent) => {
-      const target = e.target as HTMLElement;
-      
-      if (window.innerWidth < 768) {
-        if (target.tagName === 'BUTTON' || target.tagName === 'A') {
-          setTimeout(() => {
-            target.style.transform = 'scale(1)';
-          }, 100);
-        }
-      }
-    }
-
-    const handleFormSubmit = () => {
-      markUserInteraction();
-      triggerHaptic([30, 15, 25]);
-    }
-
-    const handleInputFocus = (e: FocusEvent) => {
-      markUserInteraction();
-      const target = e.target as HTMLElement;
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
-        triggerHaptic([20]);
-      }
-    }
-
-    setTimeout(() => {
-      if ('vibrate' in navigator) {
-        console.log('🎯 Haptic System initialized!');
-        if (isIOS) {
-          console.log('🍎 iOS detected: haptics will activate after user interaction');
-        } else {
-          triggerHaptic([20, 15, 25]);
-          console.log('🎯 Haptic test completed!');
-        }
-      } else {
-        console.warn('⚠️ Haptic Feedback NOT supported on this device');
-      }
-    }, 1000);
-
-    const events = ['click', 'touchstart', 'touchend', 'mousedown', 'keydown'];
-    events.forEach(event => {
-      if (event === 'click') {
-        document.addEventListener(event, handleGlobalClick);
-      } else if (event === 'touchstart') {
-        document.addEventListener(event, handleTouchStart, { passive: true });
-      } else if (event === 'touchend') {
-        document.addEventListener(event, handleTouchEnd, { passive: true });
-      } else {
-        document.addEventListener(event, markUserInteraction, { passive: true });
-      }
-    });
-
-    document.addEventListener('submit', handleFormSubmit);
-    document.addEventListener('focusin', handleInputFocus);
-
-    return () => {
-      document.removeEventListener('click', handleGlobalClick);
-      document.removeEventListener('touchstart', handleTouchStart);
-      document.removeEventListener('touchend', handleTouchEnd);
-      document.removeEventListener('submit', handleFormSubmit);
-      document.removeEventListener('focusin', handleInputFocus);
-      
-      events.forEach(event => {
-        if (!['click', 'touchstart', 'touchend'].includes(event)) {
-          document.removeEventListener(event, markUserInteraction);
-        }
-      });
-    }
-  }, [])
-
-  return null
+  return isVisible
 }
 
-const PremiumGlobalStyles: React.FC = () => {
-  useEffect(() => {
-    const style = document.createElement('style')
-    style.textContent = `
-      button, .button {
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        cursor: pointer;
-        -webkit-tap-highlight-color: transparent;
-        user-select: none;
-      }
-      button:active, .button:active {
-        transform: scale(0.98) !important;
-      }
-      a {
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        cursor: pointer;
-        -webkit-tap-highlight-color: transparent;
-      }
-      a:active {
-        transform: scale(0.98) !important;
-      }
-      @media (max-width: 767px) {
-        * {
-          -webkit-tap-highlight-color: transparent;
-          -webkit-touch-callout: none;
-          -webkit-user-select: none;
-          user-select: none;
-          touch-action: manipulation;
-        }
-        input, textarea, [contenteditable] {
-          -webkit-user-select: text;
-          user-select: text;
-          touch-action: auto;
-        }
-        button, a, [role="button"] {
-          touch-action: manipulation;
-          -webkit-tap-highlight-color: transparent;
-        }
-        html {
-          scroll-behavior: smooth;
-          -webkit-overflow-scrolling: touch;
-          -webkit-text-size-adjust: 100%;
-        }
-        body {
-          overscroll-behavior: contain;
-          padding-bottom: env(safe-area-inset-bottom, 0);
-        }
-      }
-      [data-clickable] {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        cursor: pointer;
-        -webkit-tap-highlight-color: transparent;
-      }
-      [data-clickable]:hover {
-        transform: translateY(-2px) !important;
-      }
-      [data-clickable]:active {
-        transform: translateY(0) scale(0.98) !important;
-      }
-      button:focus, a:focus, input:focus, textarea:focus {
-        outline: 2px solid rgba(34, 197, 94, 0.5) !important;
-        outline-offset: 2px !important;
-      }
-      .apple-font {
-        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif !important;
-      }
-      .glass {
-        background: rgba(255, 255, 255, 0.25) !important;
-        backdrop-filter: blur(10px) !important;
-        -webkit-backdrop-filter: blur(10px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.18) !important;
-      }
-      .mobile-dock-container {
-        position: fixed !important;
-        left: 0 !important;
-        right: 0 !important;
-        pointer-events: none !important;
-        display: block !important;
-      }
-      @media (min-width: 1024px) {
-        .mobile-dock-container {
-          display: none !important;
-        }
-      }
-      @media (max-width: 1023px) {
-        .mobile-dock-container {
-          display: block !important;
-        }
-      }
-    `
-    document.head.appendChild(style)
-    return () => {
-      if (document.head.contains(style)) {
-        document.head.removeChild(style)
-      }
-    }
-  }, [])
-  return null
-}
-
-interface AppState {
-  language: 'it' | 'de'
-  isMenuOpen: boolean
-  currentSection: string
-  showLegalDocs: boolean
-}
-
+// 🎯 MAIN APP COMPONENT
 const App: React.FC = () => {
-  const [state, setState] = useState<AppState>({
-    language: 'it',
-    isMenuOpen: false,
+  // 📊 STATE MANAGEMENT ottimizzato
+  const [appState, setAppState] = useState({
+    language: 'it' as 'it' | 'de',
     currentSection: 'hero',
-    showLegalDocs: false
+    showLegalDocs: false,
+    isMenuOpen: false,
+    componentsLoaded: new Set<string>()
   })
 
+  // 🚀 PERFORMANCE: Scroll progress ottimizzato
   const { scrollYProgress } = useScroll()
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -380,270 +167,343 @@ const App: React.FC = () => {
     restDelta: 0.001
   })
 
-  const [heroRef, heroInView] = useInView({ threshold: 0.1 })
-  const [aboutRef, aboutInView] = useInView({ threshold: 0.1 })
-  const [dettaglioRef, dettaglioInView] = useInView({ threshold: 0.1 })
-  const [servicesRef, servicesInView] = useInView({ threshold: 0.1 })
-  const [productsRef, productsInView] = useInView({ threshold: 0.1 })
-  const [wholesaleRef, wholesaleInView] = useInView({ threshold: 0.1 })
-  const [contactRef, contactInView] = useInView({ threshold: 0.1 })
-  const [footerRef, footerInView] = useInView({ threshold: 0.3 })
+  // 🎯 INTERSECTION OBSERVERS ottimizzati
+  const [heroRef, heroInView] = useOptimizedInView(0.3)
+  const [aboutRef, aboutInView] = useOptimizedInView(0.2)
+  const [dettaglioRef, dettaglioInView] = useOptimizedInView(0.2)
+  const [servicesRef, servicesInView] = useOptimizedInView(0.2)
+  const [productsRef, productsInView] = useOptimizedInView(0.2)
+  const [wholesaleRef, wholesaleInView] = useOptimizedInView(0.2)
+  const [contactRef, contactInView] = useOptimizedInView(0.2)
+  const [footerRef, footerInView] = useOptimizedInView(0.5)
 
-  // Breadcrumb visibility hook with fallback
-  const showBreadcrumb = useBreadcrumb ? useBreadcrumb(state.currentSection) : false
+  // 🎯 MOBILE DOCK VISIBILITY
+  const isDockVisible = useMobileDockVisibility(appState.currentSection, footerInView)
 
+  // 🎯 MEMOIZED VALUES
+  const sectionVisibility = useMemo(() => ({
+    hero: heroInView,
+    about: aboutInView,
+    dettaglio: dettaglioInView,
+    services: servicesInView,
+    products: productsInView,
+    wholesale: wholesaleInView,
+    contact: contactInView,
+    footer: footerInView
+  }), [heroInView, aboutInView, dettaglioInView, servicesInView, productsInView, wholesaleInView, contactInView, footerInView])
+
+  // 🎯 CURRENT SECTION DETECTION ottimizzato
+  useEffect(() => {
+    const currentSection = Object.entries(sectionVisibility)
+      .reverse() // Check from bottom to top
+      .find(([, isVisible]) => isVisible)?.[0] || 'hero'
+
+    if (currentSection !== appState.currentSection) {
+      setAppState(prev => ({ ...prev, currentSection }))
+      
+      // Analytics tracking ottimizzato
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'section_view', {
+          event_category: 'navigation',
+          event_label: currentSection,
+          value: 1
+        })
+      }
+    }
+  }, [sectionVisibility, appState.currentSection])
+
+  // 🎯 LANGUAGE MANAGEMENT
   useEffect(() => {
     const savedLanguage = localStorage.getItem('bottamedi-language') as 'it' | 'de'
-    if (savedLanguage) {
-      setState(prev => ({ ...prev, language: savedLanguage }))
+    if (savedLanguage && savedLanguage !== appState.language) {
+      setAppState(prev => ({ ...prev, language: savedLanguage }))
     }
   }, [])
 
-  useEffect(() => {
-    if (heroInView) setState(prev => ({ ...prev, currentSection: 'hero' }))
-    else if (aboutInView) setState(prev => ({ ...prev, currentSection: 'about' }))
-    else if (dettaglioInView) setState(prev => ({ ...prev, currentSection: 'dettaglio' }))
-    else if (servicesInView) setState(prev => ({ ...prev, currentSection: 'services' }))
-    else if (productsInView) setState(prev => ({ ...prev, currentSection: 'products' }))
-    else if (wholesaleInView) setState(prev => ({ ...prev, currentSection: 'wholesale' }))
-    else if (contactInView) setState(prev => ({ ...prev, currentSection: 'contact' }))
-  }, [heroInView, aboutInView, dettaglioInView, servicesInView, productsInView, wholesaleInView, contactInView])
-
-  // Track section views
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.gtag && state.currentSection) {
-      window.gtag('event', 'section_view', {
-        event_category: 'engagement',
-        event_label: state.currentSection,
-        custom_parameter_section: state.currentSection
-      })
-    }
-  }, [state.currentSection])
-
-  const updateLanguage = (language: 'it' | 'de') => {
-    setState(prev => ({ ...prev, language }))
+  // 🎯 HANDLERS ottimizzati con useCallback
+  const updateLanguage = useCallback((language: 'it' | 'de') => {
+    setAppState(prev => ({ ...prev, language }))
     localStorage.setItem('bottamedi-language', language)
     document.documentElement.lang = language
     
-    // Track language change
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', 'language_change', {
-        event_category: 'user_preference',
+        event_category: 'user_interaction',
         event_label: language,
         value: 1
       })
     }
+  }, [])
+
+  const toggleMenu = useCallback(() => {
+    setAppState(prev => ({ 
+      ...prev, 
+      isMenuOpen: !prev.isMenuOpen 
+    }))
+  }, [])
+
+  // 🎯 LEGAL DOCUMENTS HANDLER ottimizzato
+  const handleLegalDocumentOpen = useCallback((event: CustomEvent) => {
+    const { docType, language: eventLang } = event.detail
     
-    if ('vibrate' in navigator) {
-      try {
-        navigator.vibrate([25])
-      } catch (e) {
-        console.log('Haptic non disponibile')
+    if (eventLang === appState.language) {
+      console.log('📋 Opening legal document:', docType)
+      setAppState(prev => ({ ...prev, showLegalDocs: true }))
+      
+      // Smooth scroll to legal section
+      setTimeout(() => {
+        const element = document.getElementById('legal-documents')
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' })
+        }
+      }, 100)
+    }
+  }, [appState.language])
+
+  // Event listeners per documenti legali
+  useEffect(() => {
+    const handleEvent = (e: any) => handleLegalDocumentOpen(e)
+    
+    window.addEventListener('openLegalDocument', handleEvent)
+    document.addEventListener('openLegalDocument', handleEvent)
+    
+    return () => {
+      window.removeEventListener('openLegalDocument', handleEvent)
+      document.removeEventListener('openLegalDocument', handleEvent)
+    }
+  }, [handleLegalDocumentOpen])
+
+  const closeLegalDocs = useCallback(() => {
+    setAppState(prev => ({ ...prev, showLegalDocs: false }))
+    
+    // Scroll back to footer
+    setTimeout(() => {
+      const footer = document.querySelector('footer')
+      if (footer) {
+        footer.scrollIntoView({ behavior: 'smooth' })
       }
-    }
-  }
+    }, 100)
+  }, [])
 
-  const toggleMenu = () => {
-    setState(prev => ({ ...prev, isMenuOpen: !prev.isMenuOpen }))
-    
-    // Track menu interactions
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'menu_toggle', {
-        event_category: 'navigation',
-        event_label: state.isMenuOpen ? 'close' : 'open'
-      })
-    }
-    
-    if ('vibrate' in navigator) {
-      try {
-        navigator.vibrate([25])
-      } catch (e) {
-        console.log('Haptic non disponibile')
-      }
-    }
-  }
-
-  const toggleLegalDocs = () => {
-    setState(prev => ({ ...prev, showLegalDocs: !prev.showLegalDocs }))
-    
-    // Track legal docs access
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'legal_docs_toggle', {
-        event_category: 'privacy',
-        event_label: state.showLegalDocs ? 'close' : 'open'
-      })
-    }
-  }
-
-  const pageVariants = {
+  // 🎯 ANIMATION VARIANTS ottimizzate
+  const pageVariants = useMemo(() => ({
     initial: { opacity: 0, y: 20 },
     in: { opacity: 1, y: 0 },
     out: { opacity: 0, y: -20 }
-  }
+  }), [])
 
-  const pageTransition = {
-    type: 'tween',
-    ease: 'anticipate',
+  const pageTransition = useMemo(() => ({
+    type: 'tween' as const,
+    ease: 'easeOut' as const,
     duration: 0.4
-  }
+  }), [])
 
+  // 🎯 RENDER
   return (
     <>
-      <GlobalHapticIntegration />
-      <PremiumGlobalStyles />
+      {/* 🎨 INLINE STYLES */}
+      <style>{inlineStyles}</style>
+
+      {/* 📊 SEO HEAD */}
       <Helmet>
         <title>Bottamedi Frutta e Verdura | Eccellenza Trentina dal 1974</title>
         <meta name="description" content="Scopri 50 anni di tradizione familiare nell'ortofrutta. Freschezza quotidiana e qualità superiore per retail e HORECA a Mezzolombardo, Trentino." />
         <meta name="keywords" content="frutta verdura, mezzolombardo, trentino, ingrosso ortofrutta, HORECA, freschezza, qualità" />
         <link rel="canonical" href="https://www.bottamedi.eu" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
       </Helmet>
 
+      {/* 📊 PROGRESS BAR */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-green-600 transform-gpu z-50"
         style={{ scaleX, transformOrigin: '0%' }}
       />
 
+      {/* 🎨 BACKGROUND ELEMENTS */}
       <div className="fixed inset-0 opacity-10 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-300 rounded-full mix-blend-multiply filter blur-5xl animate-pulse"></div>
-        <div className="absolute top-3/4 right-1/4 w-96 h-96 bg-green-400 rounded-full mix-blend-multiply filter blur-5xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-300 rounded-full mix-blend-multiply filter blur-5xl animate-pulse" />
+        <div className="absolute top-3/4 right-1/4 w-96 h-96 bg-green-400 rounded-full mix-blend-multiply filter blur-5xl animate-pulse" style={{ animationDelay: '2s' }} />
       </div>
 
+      {/* 🎯 MAIN CONTAINER */}
       <motion.div
         initial="initial"
         animate="in"
         exit="out"
         variants={pageVariants}
         transition={pageTransition}
-        className="relative min-h-screen bg-white"
+        className="relative min-h-screen bg-white smooth-scroll"
       >
+        {/* 🎯 HEADER */}
         <Suspense fallback={<HeaderLoader />}>
           <Header
-            language={state.language}
+            language={appState.language}
             onLanguageChange={updateLanguage}
-            isMenuOpen={state.isMenuOpen}
+            isMenuOpen={appState.isMenuOpen}
             onToggleMenu={toggleMenu}
           />
         </Suspense>
 
-        {/* Breadcrumb Navigation */}
-        <AnimatePresence>
-          {showBreadcrumb && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="fixed top-20 left-0 right-0 z-40"
-            >
-              <Suspense fallback={null}>
-                <BreadcrumbNavigation
-                  language={state.language}
-                  currentSection={state.currentSection}
-                  items={[]} // Auto-generated based on currentSection
-                />
-              </Suspense>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
+        {/* 🎯 MAIN CONTENT */}
         <main className="relative">
+          
+          {/* HERO SECTION */}
           <div ref={heroRef} id="hero">
-            <Suspense fallback={<SectionLoader />}>
-              <HeroSection language={state.language} inView={heroInView} />
+            <Suspense fallback={<ComponentLoader height="h-screen" />}>
+              <HeroSection 
+                language={appState.language} 
+                inView={sectionVisibility.hero} 
+              />
             </Suspense>
           </div>
+
+          {/* ABOUT SECTION */}
           <div ref={aboutRef} id="about">
-            <Suspense fallback={<SectionLoader />}>
-              <AboutSection language={state.language} inView={aboutInView} />
+            <Suspense fallback={<ComponentLoader />}>
+              <AboutSection 
+                language={appState.language} 
+                inView={sectionVisibility.about} 
+              />
             </Suspense>
           </div>
+
+          {/* BANCHETTO SECTION */}
           <div ref={dettaglioRef} id="dettaglio">
-            <Suspense fallback={<SectionLoader />}>
-              <BanchettoSection language={state.language} inView={dettaglioInView} />
+            <Suspense fallback={<ComponentLoader />}>
+              <BanchettoSection 
+                language={appState.language} 
+                inView={sectionVisibility.dettaglio} 
+              />
             </Suspense>
           </div>
+
+          {/* SERVICES SECTION */}
           <div ref={servicesRef} id="services">
-            <Suspense fallback={<SectionLoader />}>
-              <ServicesSection language={state.language} inView={servicesInView} />
+            <Suspense fallback={<ComponentLoader />}>
+              <ServicesSection 
+                language={appState.language} 
+                inView={sectionVisibility.services} 
+              />
             </Suspense>
           </div>
+
+          {/* PRODUCTS SECTION */}
           <div ref={productsRef} id="products">
-            <Suspense fallback={<SectionLoader />}>
-              <ProductsSection language={state.language} inView={productsInView} />
+            <Suspense fallback={<ComponentLoader />}>
+              <ProductsSection 
+                language={appState.language} 
+                inView={sectionVisibility.products} 
+              />
             </Suspense>
           </div>
+
+          {/* WHOLESALE SECTION */}
           <div ref={wholesaleRef} id="wholesale">
-            <Suspense fallback={<SectionLoader />}>
-              <WholesaleContact language={state.language} inView={wholesaleInView} />
+            <Suspense fallback={<ComponentLoader />}>
+              <WholesaleContact 
+                language={appState.language} 
+                inView={sectionVisibility.wholesale} 
+              />
             </Suspense>
           </div>
+
+          {/* CONTACT SECTION */}
           <div ref={contactRef} id="contact">
-            <Suspense fallback={<SectionLoader />}>
-              <ContactSection language={state.language} inView={contactInView} />
+            <Suspense fallback={<ComponentLoader />}>
+              <ContactSection 
+                language={appState.language} 
+                inView={sectionVisibility.contact} 
+              />
             </Suspense>
           </div>
+
         </main>
 
+        {/* 🎯 FOOTER */}
         <div ref={footerRef}>
-          <Suspense fallback={<FooterLoader />}>
-            <Footer 
-              language={state.language} 
-              onLegalDocsToggle={toggleLegalDocs}
-            />
+          <Suspense fallback={<ComponentLoader height="h-64" />}>
+            <Footer language={appState.language} />
           </Suspense>
         </div>
 
-        {/* Legal Documents Section */}
+        {/* 🎯 LEGAL DOCUMENTS SECTION */}
         <AnimatePresence>
-          {state.showLegalDocs && (
+          {appState.showLegalDocs && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
+              exit={{ opacity: 0, y: 50 }}
               transition={{ duration: 0.3 }}
               id="legal-documents"
             >
-              <Suspense fallback={<div className="h-64 bg-gray-50" />}>
-                <LegalDocuments language={state.language} />
+              <Suspense fallback={<ComponentLoader height="h-64" />}>
+                <LegalDocuments language={appState.language} />
               </Suspense>
+              
+              {/* Close button */}
+              <div className="fixed bottom-4 right-4 z-50">
+                <motion.button
+                  onClick={closeLegalDocs}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-white text-gray-600 hover:text-gray-900 p-3 rounded-full shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </motion.button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Always visible Legal Documents section */}
-        <div id="legal-documents-static">
-          <Suspense fallback={<div className="h-64 bg-gray-50" />}>
-            <LegalDocuments language={state.language} />
-          </Suspense>
-        </div>
-
+        {/* 🎯 MOBILE MENU OVERLAY */}
         <AnimatePresence>
-          {state.isMenuOpen && (
+          {appState.isMenuOpen && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
               className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
               onClick={toggleMenu}
             />
           )}
         </AnimatePresence>
+
       </motion.div>
 
-      <div className="mobile-dock-container lg:hidden">
-        <Suspense fallback={null}>
-          <MobileDock 
-            language={state.language} 
-            hideInFooter={footerInView}
-          />
-        </Suspense>
+      {/* 🎯 MOBILE DOCK - OTTIMIZZATO */}
+      <div className="mobile-dock-container">
+        <AnimatePresence>
+          {isDockVisible && (
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 100, opacity: 0 }}
+              transition={{ 
+                type: 'spring', 
+                damping: 25, 
+                stiffness: 300,
+                duration: 0.3
+              }}
+            >
+              <Suspense fallback={null}>
+                <MobileDock 
+                  language={appState.language}
+                  hideInFooter={false} // Gestito dal hook
+                />
+              </Suspense>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* Cookie Banner */}
+      {/* 🍪 COOKIE BANNER - LAZY */}
       <Suspense fallback={null}>
-        <CookieBanner language={state.language} />
+        <CookieBanner language={appState.language} />
       </Suspense>
+
     </>
   )
 }

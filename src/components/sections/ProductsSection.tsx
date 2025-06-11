@@ -614,12 +614,12 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ language, inView }) =
           </AnimatePresence>
         </div>
 
-        {/* CTA Section CORRETTA E TRADOTTA */}
+        {/* CTA Section CORRETTA E TRADOTTA - FIXED VISIBILITY */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="bg-gradient-to-br from-green-50 via-white to-emerald-50 rounded-3xl p-8 lg:p-12 mt-16 border border-green-200"
+          className="bg-gradient-to-br from-green-50 via-white to-emerald-50 rounded-3xl p-8 lg:p-12 mt-16 border border-green-200 shadow-lg"
         >
           <div className="text-center mb-8">
             <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
@@ -671,7 +671,7 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ language, inView }) =
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 10 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.4 + index * 0.1 }}
                 className="bg-white rounded-2xl p-4 shadow-sm border border-green-100 hover:shadow-md transition-all duration-300"
               >
@@ -736,7 +736,7 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ language, inView }) =
           {/* Informazioni di contatto ottimizzate */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.8 }}
             className="mt-8 pt-6 border-t border-green-200"
           >

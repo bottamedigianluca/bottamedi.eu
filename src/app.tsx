@@ -44,15 +44,30 @@ function App() {
   const [isScrolling, setIsScrolling] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
-  // Mobile detection
+  // Mobile detection - improved
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
+      const isMobileDevice = window.innerWidth <= 768
+      setIsMobile(isMobileDevice)
+      
+      // Force update of CSS classes for mobile detection
+      if (isMobileDevice) {
+        document.body.classList.add('mobile-device')
+        document.body.classList.remove('desktop-device')
+      } else {
+        document.body.classList.add('desktop-device')
+        document.body.classList.remove('mobile-device')
+      }
     }
     
     checkMobile()
     window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
+    window.addEventListener('orientationchange', checkMobile)
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile)
+      window.removeEventListener('orientationchange', checkMobile)
+    }
   }, [])
 
   // Language detection from browser/localStorage
@@ -278,15 +293,13 @@ function App() {
 
   return (
     <div className="App">
-      {/* Header - Hidden on mobile */}
-      <div className="hidden lg:block">
-        <Header 
-          language={language} 
-          onLanguageChange={handleLanguageChange}
-          isMenuOpen={isMenuOpen}
-          onToggleMenu={handleToggleMenu}
-        />
-      </div>
+      {/* Header */}
+      <Header 
+        language={language} 
+        onLanguageChange={handleLanguageChange}
+        isMenuOpen={isMenuOpen}
+        onToggleMenu={handleToggleMenu}
+      />
 
       {/* Main Content with improved mobile styling - without z-index conflicts */}
       <main role="main">
@@ -339,13 +352,11 @@ function App() {
       {/* Legal Documents Section */}
       <LegalDocuments language={language} />
 
-      {/* Mobile Dock - Visible only on mobile */}
-      <div className="block lg:hidden">
-        <MobileDock 
-          language={language} 
-          hideInFooter={hideInFooter || isScrolling}
-        />
-      </div>
+      {/* Mobile Dock */}
+      <MobileDock 
+        language={language} 
+        hideInFooter={hideInFooter || isScrolling}
+      />
 
       {/* Cookie Banner */}
       <CookieBanner language={language} />
@@ -408,18 +419,19 @@ function App() {
         }}
       />
 
-      {/* Mobile debugging info - only in development */}
+      {/* Mobile debugging info - enhanced */}
       {process.env.NODE_ENV === 'development' && (
         <div className="fixed bottom-2 left-2 bg-black/80 text-white text-xs p-2 rounded font-mono z-50">
           <div>Section: {currentSection}</div>
           <div>Language: {language}</div>
           <div>Mobile: {isMobile ? 'Yes' : 'No'}</div>
-          <div>Viewport: {window.innerWidth}x{window.innerHeight}</div>
+          <div>Viewport: {typeof window !== 'undefined' ? `${window.innerWidth}x${window.innerHeight}` : 'Unknown'}</div>
+          <div>Body Classes: {typeof document !== 'undefined' ? document.body.className : 'Unknown'}</div>
           <div>Scrolling: {isScrolling ? 'Yes' : 'No'}</div>
         </div>
       )}
 
-      {/* Force correct mobile navigation CSS */}
+      {/* Improved mobile CSS fix with proper responsive behavior */}
       <style jsx global>{`
         /* Essential mobile fixes */
         * {
@@ -427,44 +439,59 @@ function App() {
           -moz-osx-font-smoothing: grayscale;
         }
         
-        /* Force header visibility rules */
-        @media (max-width: 1023px) {
-          header, .header, [class*="header"] {
+        /* Force proper header/mobile dock visibility */
+        @media (max-width: 768px) {
+          /* Hide desktop header on mobile */
+          header {
             display: none !important;
           }
           
-          .mobile-dock, [class*="mobile-dock"] {
+          /* Ensure mobile dock is visible */
+          .mobile-dock,
+          [class*="mobile-dock"],
+          [class*="MobileDock"] {
             display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 50 !important;
           }
         }
         
-        @media (min-width: 1024px) {
-          header, .header, [class*="header"] {
+        @media (min-width: 769px) {
+          /* Show desktop header */
+          header {
             display: block !important;
+            position: relative !important;
+            z-index: 50 !important;
           }
           
-          .mobile-dock, [class*="mobile-dock"] {
+          /* Hide mobile dock on desktop */
+          .mobile-dock,
+          [class*="mobile-dock"],
+          [class*="MobileDock"] {
             display: none !important;
           }
         }
         
-        /* Z-index hierarchy */
-        header {
-          position: relative;
-          z-index: 50;
-        }
-        
-        .mobile-dock {
-          position: fixed;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          z-index: 40;
-        }
-        
+        /* Ensure sections don't interfere */
         section {
           position: relative;
           z-index: 1;
+        }
+        
+        /* Body classes for additional control */
+        .mobile-device header {
+          display: none !important;
+        }
+        
+        .desktop-device .mobile-dock,
+        .desktop-device [class*="mobile-dock"],
+        .desktop-device [class*="MobileDock"] {
+          display: none !important;
         }
       `}</style>
     </div>

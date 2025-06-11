@@ -1,21 +1,106 @@
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 
-// Import diretti senza lazy loading
-import Header from './components/layout/Header'
-import HeroSection from './components/sections/HeroSection'
-import AboutSection from './components/sections/AboutSection'
-import BanchettoSection from './components/sections/Banchettosection'
-import ServicesSection from './components/sections/ServicesSection'
-import ProductsSection from './components/sections/ProductsSection'
-import WholesaleContact from './components/sections/Wholesalecontact'
-import ContactSection from './components/sections/ContactSection'
-import Footer from './components/layout/Footer'
-import MobileDock from './components/layout/MobileDock'
-import CookieBanner from './components/legal/CookieBanner'
-import LegalDocuments from './components/legal/LegalDocuments'
+// Lazy imports con fallback error boundary
+const Header = React.lazy(() => 
+  import('./components/layout/Header').catch(() => ({
+    default: () => <div className="h-20 bg-white shadow-sm" />
+  }))
+)
+const HeroSection = React.lazy(() => 
+  import('./components/sections/HeroSection').catch(() => ({
+    default: ({ language }: any) => <div className="h-screen bg-green-50" />
+  }))
+)
+const AboutSection = React.lazy(() => 
+  import('./components/sections/AboutSection').catch(() => ({
+    default: ({ language }: any) => <div className="h-96 bg-gray-50" />
+  }))
+)
+const BanchettoSection = React.lazy(() => 
+  import('./components/sections/Banchettosection').catch(() => ({
+    default: ({ language }: any) => <div className="h-96 bg-green-50" />
+  }))
+)
+const ServicesSection = React.lazy(() => 
+  import('./components/sections/ServicesSection').catch(() => ({
+    default: ({ language }: any) => <div className="h-96 bg-blue-50" />
+  }))
+)
+const ProductsSection = React.lazy(() => 
+  import('./components/sections/ProductsSection').catch(() => ({
+    default: ({ language }: any) => <div className="h-96 bg-emerald-50" />
+  }))
+)
+const WholesaleContact = React.lazy(() => 
+  import('./components/sections/Wholesalecontact').catch(() => ({
+    default: ({ language }: any) => <div className="h-96 bg-orange-50" />
+  }))
+)
+const ContactSection = React.lazy(() => 
+  import('./components/sections/ContactSection').catch(() => ({
+    default: ({ language }: any) => <div className="h-96 bg-purple-50" />
+  }))
+)
+const Footer = React.lazy(() => 
+  import('./components/layout/Footer').catch(() => ({
+    default: ({ language }: any) => <div className="h-64 bg-neutral-900" />
+  }))
+)
+const MobileDock = React.lazy(() => 
+  import('./components/layout/MobileDock').catch(() => ({
+    default: () => null
+  }))
+)
+const CookieBanner = React.lazy(() => 
+  import('./components/legal/CookieBanner').catch(() => ({
+    default: () => null
+  }))
+)
+const LegalDocuments = React.lazy(() => 
+  import('./components/legal/LegalDocuments').catch(() => ({
+    default: ({ language }: any) => <div className="h-64 bg-gray-50" />
+  }))
+)
+const BreadcrumbNavigation = React.lazy(() => 
+  import('./components/navigation/BreadcrumbNavigation').catch(() => ({
+    default: () => null
+  }))
+)
+
+// Import hooks safely
+let useBreadcrumb: any
+try {
+  useBreadcrumb = require('./components/navigation/BreadcrumbNavigation').useBreadcrumb
+} catch {
+  useBreadcrumb = () => false // Fallback
+}
+
+const SectionLoader = () => (
+  <div className="h-96 flex items-center justify-center">
+    <div className="relative">
+      <div className="w-8 h-8 border-2 border-green-200 border-t-green-600 rounded-full animate-spin"></div>
+    </div>
+  </div>
+)
+
+const HeaderLoader = () => (
+  <div className="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-4">
+    <div className="w-32 h-8 bg-gray-200 rounded animate-pulse"></div>
+    <div className="flex space-x-4">
+      <div className="w-8 h-8 bg-gray-200 rounded animate-pulse"></div>
+      <div className="w-8 h-8 bg-gray-200 rounded animate-pulse"></div>
+    </div>
+  </div>
+)
+
+const FooterLoader = () => (
+  <div className="h-64 bg-neutral-900 flex items-center justify-center">
+    <div className="w-8 h-8 border-2 border-gray-600 border-t-white rounded-full animate-spin"></div>
+  </div>
+)
 
 const GlobalHapticIntegration: React.FC = () => {
   useEffect(() => {
@@ -304,6 +389,9 @@ const App: React.FC = () => {
   const [contactRef, contactInView] = useInView({ threshold: 0.1 })
   const [footerRef, footerInView] = useInView({ threshold: 0.3 })
 
+  // Breadcrumb visibility hook with fallback
+  const showBreadcrumb = useBreadcrumb ? useBreadcrumb(state.currentSection) : false
+
   useEffect(() => {
     const savedLanguage = localStorage.getItem('bottamedi-language') as 'it' | 'de'
     if (savedLanguage) {
@@ -375,6 +463,18 @@ const App: React.FC = () => {
     }
   }
 
+  const toggleLegalDocs = () => {
+    setState(prev => ({ ...prev, showLegalDocs: !prev.showLegalDocs }))
+    
+    // Track legal docs access
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'legal_docs_toggle', {
+        event_category: 'privacy',
+        event_label: state.showLegalDocs ? 'close' : 'open'
+      })
+    }
+  }
+
   const pageVariants = {
     initial: { opacity: 0, y: 20 },
     in: { opacity: 1, y: 0 },
@@ -417,44 +517,105 @@ const App: React.FC = () => {
         transition={pageTransition}
         className="relative min-h-screen bg-white"
       >
-        <Header
-          language={state.language}
-          onLanguageChange={updateLanguage}
-          isMenuOpen={state.isMenuOpen}
-          onToggleMenu={toggleMenu}
-        />
+        <Suspense fallback={<HeaderLoader />}>
+          <Header
+            language={state.language}
+            onLanguageChange={updateLanguage}
+            isMenuOpen={state.isMenuOpen}
+            onToggleMenu={toggleMenu}
+          />
+        </Suspense>
+
+        {/* Breadcrumb Navigation */}
+        <AnimatePresence>
+          {showBreadcrumb && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="fixed top-20 left-0 right-0 z-40"
+            >
+              <Suspense fallback={null}>
+                <BreadcrumbNavigation
+                  language={state.language}
+                  currentSection={state.currentSection}
+                  items={[]} // Auto-generated based on currentSection
+                />
+              </Suspense>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <main className="relative">
           <div ref={heroRef} id="hero">
-            <HeroSection language={state.language} inView={heroInView} />
+            <Suspense fallback={<SectionLoader />}>
+              <HeroSection language={state.language} inView={heroInView} />
+            </Suspense>
           </div>
           <div ref={aboutRef} id="about">
-            <AboutSection language={state.language} inView={aboutInView} />
+            <Suspense fallback={<SectionLoader />}>
+              <AboutSection language={state.language} inView={aboutInView} />
+            </Suspense>
           </div>
           <div ref={dettaglioRef} id="dettaglio">
-            <BanchettoSection language={state.language} inView={dettaglioInView} />
+            <Suspense fallback={<SectionLoader />}>
+              <BanchettoSection language={state.language} inView={dettaglioInView} />
+            </Suspense>
           </div>
           <div ref={servicesRef} id="services">
-            <ServicesSection language={state.language} inView={servicesInView} />
+            <Suspense fallback={<SectionLoader />}>
+              <ServicesSection language={state.language} inView={servicesInView} />
+            </Suspense>
           </div>
           <div ref={productsRef} id="products">
-            <ProductsSection language={state.language} inView={productsInView} />
+            <Suspense fallback={<SectionLoader />}>
+              <ProductsSection language={state.language} inView={productsInView} />
+            </Suspense>
           </div>
           <div ref={wholesaleRef} id="wholesale">
-            <WholesaleContact language={state.language} inView={wholesaleInView} />
+            <Suspense fallback={<SectionLoader />}>
+              <WholesaleContact language={state.language} inView={wholesaleInView} />
+            </Suspense>
           </div>
           <div ref={contactRef} id="contact">
-            <ContactSection language={state.language} inView={contactInView} />
+            <Suspense fallback={<SectionLoader />}>
+              <ContactSection language={state.language} inView={contactInView} />
+            </Suspense>
           </div>
         </main>
 
         <div ref={footerRef}>
-          <Footer language={state.language} />
+          <Suspense fallback={<FooterLoader />}>
+            <Footer 
+              language={state.language} 
+              onLegalDocsToggle={toggleLegalDocs}
+            />
+          </Suspense>
         </div>
 
         {/* Legal Documents Section */}
-        <div id="legal-documents">
-          <LegalDocuments language={state.language} />
+        <AnimatePresence>
+          {state.showLegalDocs && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.3 }}
+              id="legal-documents"
+            >
+              <Suspense fallback={<div className="h-64 bg-gray-50" />}>
+                <LegalDocuments language={state.language} />
+              </Suspense>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Always visible Legal Documents section */}
+        <div id="legal-documents-static">
+          <Suspense fallback={<div className="h-64 bg-gray-50" />}>
+            <LegalDocuments language={state.language} />
+          </Suspense>
         </div>
 
         <AnimatePresence>
@@ -471,14 +632,18 @@ const App: React.FC = () => {
       </motion.div>
 
       <div className="mobile-dock-container lg:hidden">
-        <MobileDock 
-          language={state.language} 
-          hideInFooter={footerInView}
-        />
+        <Suspense fallback={null}>
+          <MobileDock 
+            language={state.language} 
+            hideInFooter={footerInView}
+          />
+        </Suspense>
       </div>
 
       {/* Cookie Banner */}
-      <CookieBanner language={state.language} />
+      <Suspense fallback={null}>
+        <CookieBanner language={state.language} />
+      </Suspense>
     </>
   )
 }

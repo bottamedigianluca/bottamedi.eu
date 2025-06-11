@@ -670,36 +670,196 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ language, inView }) =
             </motion.button>
           </div>
 
-          {/* Contact Info OTTIMIZZATA */}
+// Sostituire la sezione CTA alla fine di ProductsSection.tsx (circa linea 400-450)
+
+        {/* CTA Section OTTIMIZZATA E TRADOTTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="bg-gradient-to-br from-green-50 via-white to-emerald-50 rounded-3xl p-8 lg:p-12 mt-16 border border-green-200"
+        >
+          <div className="text-center mb-8">
+            <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
+              {language === 'it' 
+                ? 'Vieni a Scoprire la Qualità Bottamedi' 
+                : 'Entdecken Sie die Bottamedi-Qualität'
+              }
+            </h3>
+            <p className="text-lg text-gray-600 mb-6 max-w-3xl mx-auto">
+              {language === 'it'
+                ? 'Visita il nostro banchetto in Via Cavalleggeri Udine a Mezzolombardo e lasciati guidare dalla nostra esperienza di 50 anni nella selezione dei prodotti migliori.'
+                : 'Besuchen Sie unseren Marktstand in der Via Cavalleggeri Udine in Mezzolombardo und lassen Sie sich von unserer 50-jährigen Erfahrung bei der Auswahl der besten Produkte leiten.'
+              }
+            </p>
+          </div>
+          
+          {/* Grid di caratteristiche */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            {[
+              {
+                icon: '🌅',
+                title: language === 'it' ? 'Selezione Mattutina' : 'Morgendliche Auswahl',
+                desc: language === 'it' 
+                  ? 'Prodotti freschi selezionati alle prime ore' 
+                  : 'Frische Produkte in den frühen Morgenstunden ausgewählt'
+              },
+              {
+                icon: '🏔️',
+                title: language === 'it' ? 'Prodotti del Territorio' : 'Regionale Produkte',
+                desc: language === 'it' 
+                  ? 'Eccellenze del Trentino Alto Adige' 
+                  : 'Exzellenz aus Südtirol'
+              },
+              {
+                icon: '👨‍👩‍👧‍👦',
+                title: language === 'it' ? 'Tradizione Familiare' : 'Familientradition',
+                desc: language === 'it' 
+                  ? '3 generazioni di passione ed esperienza' 
+                  : '3 Generationen Leidenschaft und Erfahrung'
+              },
+              {
+                icon: '⭐',
+                title: language === 'it' ? 'Qualità Garantita' : 'Garantierte Qualität',
+                desc: language === 'it' 
+                  ? 'Standard elevati da oltre 50 anni' 
+                  : 'Hohe Standards seit über 50 Jahren'
+              }
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 10 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.3, delay: 0.4 + index * 0.1 }}
+                className="bg-white rounded-2xl p-4 shadow-sm border border-green-100 hover:shadow-md transition-all duration-300"
+              >
+                <div className="text-2xl mb-2 text-center">{feature.icon}</div>
+                <h4 className="font-semibold text-gray-900 text-sm text-center mb-1">
+                  {feature.title}
+                </h4>
+                <p className="text-gray-600 text-xs text-center leading-relaxed">
+                  {feature.desc}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Buttons d'azione */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <motion.button
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => {
+                const element = document.getElementById('dettaglio')
+                if (element) {
+                  const offset = 80
+                  const elementPosition = element.offsetTop - offset
+                  window.scrollTo({
+                    top: Math.max(0, elementPosition),
+                    behavior: 'smooth'
+                  })
+                }
+              }}
+              className="inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-xl font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-300 min-w-[200px]"
+            >
+              <span>🛒</span>
+              <span>
+                {language === 'it' ? 'Visita il Banchetto' : 'Besuchen Sie den Marktstand'}
+              </span>
+            </motion.button>
+
+            <motion.button
+              onClick={() => {
+                const element = document.getElementById('wholesale')
+                if (element) {
+                  const offset = 80
+                  const elementPosition = element.offsetTop - offset
+                  window.scrollTo({
+                    top: Math.max(0, elementPosition),
+                    behavior: 'smooth'
+                  })
+                }
+              }}
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              className="inline-flex items-center justify-center space-x-2 border-2 border-green-500 text-green-600 px-8 py-4 rounded-xl font-semibold text-base hover:bg-green-50 transition-all duration-300 min-w-[200px]"
+            >
+              <span>🏢</span>
+              <span>
+                {language === 'it' ? 'Servizio Ingrosso' : 'Großhandel Service'}
+              </span>
+            </motion.button>
+          </div>
+
+          {/* Informazioni di contatto ottimizzate */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="mt-6 pt-6 border-t border-green-200"
+            transition={{ duration: 0.5, delay: 0.8 }}
+            className="mt-8 pt-6 border-t border-green-200"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto text-sm text-gray-600">
-              <div className="flex items-center justify-center space-x-2">
-                <span>📍</span>
-                <span>Via Cavalleggeri Udine, Mezzolombardo</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+              {/* Banchetto Info */}
+              <div className="text-center">
+                <h4 className="font-semibold text-gray-900 mb-2 flex items-center justify-center space-x-2">
+                  <span>🛒</span>
+                  <span>
+                    {language === 'it' ? 'Banchetto (Dettaglio)' : 'Marktstand (Einzelhandel)'}
+                  </span>
+                </h4>
+                <div className="space-y-1 text-sm text-gray-600">
+                  <div className="flex items-center justify-center space-x-2">
+                    <span>📍</span>
+                    <span>Via Cavalleggeri Udine, Mezzolombardo (TN)</span>
+                  </div>
+                  <div className="flex items-center justify-center space-x-2">
+                    <span>🕒</span>
+                    <span>
+                      {language === 'it' ? 'Lun-Sab: 07:00-19:30' : 'Mo-Sa: 07:00-19:30'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-center space-x-2">
+                    <span>📞</span>
+                    <span>+39 351 577 6198</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center justify-center space-x-2">
-                <span>🕒</span>
-                <span>Lun-Sab: 07:00-19:30</span>
+
+              {/* HORECA Info */}
+              <div className="text-center">
+                <h4 className="font-semibold text-gray-900 mb-2 flex items-center justify-center space-x-2">
+                  <span>🏢</span>
+                  <span>
+                    {language === 'it' ? 'Ingrosso HORECA' : 'Großhandel HORECA'}
+                  </span>
+                </h4>
+                <div className="space-y-1 text-sm text-gray-600">
+                  <div className="flex items-center justify-center space-x-2">
+                    <span>📍</span>
+                    <span>Via A. de Gasperi, 47, Mezzolombardo (TN)</span>
+                  </div>
+                  <div className="flex items-center justify-center space-x-2">
+                    <span>📞</span>
+                    <span>+39 0461 602534</span>
+                  </div>
+                  <div className="flex items-center justify-center space-x-2">
+                    <span>📧</span>
+                    <span>bottamedipierluigi@virgilio.it</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center justify-center space-x-2">
-                <span>📞</span>
-                <span>+39 351 577 6198</span>
-              </div>
-              <div className="flex items-center justify-center space-x-2">
-                <span>📧</span>
-                <span>bottamedipierluigi@virgilio.it</span>
-              </div>
+            </div>
+
+            {/* Call to action finale */}
+            <div className="text-center mt-6">
+              <p className="text-gray-600 text-sm max-w-2xl mx-auto">
+                {language === 'it'
+                  ? '💡 Hai bisogno di consigli? Il nostro team è sempre disponibile per guidarti nella scelta dei prodotti migliori per le tue esigenze!'
+                  : '💡 Brauchen Sie Beratung? Unser Team steht Ihnen immer zur Verfügung, um Sie bei der Auswahl der besten Produkte für Ihre Bedürfnisse zu unterstützen!'
+                }
+              </p>
             </div>
           </motion.div>
         </motion.div>
-      </div>
-    </section>
-  )
-}
 
 export default ProductsSection

@@ -1,31 +1,65 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
+import { resolve } from 'path'
 
+// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react()
-  ],
+  plugins: [react()],
+  
+  // Path aliases
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+      '@/components': resolve(__dirname, './src/components'),
+      '@/sections': resolve(__dirname, './src/components/sections'),
+      '@/layout': resolve(__dirname, './src/components/layout'),
+      '@/legal': resolve(__dirname, './src/components/legal'),
+      '@/ui': resolve(__dirname, './src/components/ui'),
+      '@/types': resolve(__dirname, './src/components/types')
+    }
+  },
+
+  // Build optimizations
   build: {
-    target: 'esnext',
+    target: 'es2020',
+    cssCodeSplit: true,
+    sourcemap: false,
     minify: 'terser',
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          animations: ['framer-motion']
+          animations: ['framer-motion'],
+          utils: ['react-intersection-observer']
         }
       }
     }
   },
-  optimizeDeps: {
-    include: ['react', 'react-dom', 'framer-motion']
-  },
+
+  // Dev server
   server: {
     port: 3000,
-    open: true,
+    host: true,
     cors: true
   },
-  preview: {
-    port: 3000
+
+  // Optimizations
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'framer-motion',
+      'react-intersection-observer'
+    ]
+  },
+
+  // CSS
+  css: {
+    postcss: {
+      plugins: [
+        require('tailwindcss'),
+        require('autoprefixer')
+      ]
+    }
   }
 })

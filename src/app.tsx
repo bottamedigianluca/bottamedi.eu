@@ -278,13 +278,15 @@ function App() {
 
   return (
     <div className="App">
-      {/* Header */}
-      <Header 
-        language={language} 
-        onLanguageChange={handleLanguageChange}
-        isMenuOpen={isMenuOpen}
-        onToggleMenu={handleToggleMenu}
-      />
+      {/* Header - Hidden on mobile */}
+      <div className="hidden lg:block">
+        <Header 
+          language={language} 
+          onLanguageChange={handleLanguageChange}
+          isMenuOpen={isMenuOpen}
+          onToggleMenu={handleToggleMenu}
+        />
+      </div>
 
       {/* Main Content with improved mobile styling - without z-index conflicts */}
       <main role="main">
@@ -337,11 +339,13 @@ function App() {
       {/* Legal Documents Section */}
       <LegalDocuments language={language} />
 
-      {/* Mobile Dock */}
-      <MobileDock 
-        language={language} 
-        hideInFooter={hideInFooter || isScrolling}
-      />
+      {/* Mobile Dock - Visible only on mobile */}
+      <div className="block lg:hidden">
+        <MobileDock 
+          language={language} 
+          hideInFooter={hideInFooter || isScrolling}
+        />
+      </div>
 
       {/* Cookie Banner */}
       <CookieBanner language={language} />
@@ -415,26 +419,49 @@ function App() {
         </div>
       )}
 
-      {/* Minimal mobile CSS fix - without forcing sections visibility */}
+      {/* Force correct mobile navigation CSS */}
       <style jsx global>{`
-        /* Only essential mobile fixes */
+        /* Essential mobile fixes */
         * {
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
         
-        /* Ensure header has proper z-index hierarchy */
+        /* Force header visibility rules */
+        @media (max-width: 1023px) {
+          header, .header, [class*="header"] {
+            display: none !important;
+          }
+          
+          .mobile-dock, [class*="mobile-dock"] {
+            display: block !important;
+          }
+        }
+        
+        @media (min-width: 1024px) {
+          header, .header, [class*="header"] {
+            display: block !important;
+          }
+          
+          .mobile-dock, [class*="mobile-dock"] {
+            display: none !important;
+          }
+        }
+        
+        /* Z-index hierarchy */
         header {
           position: relative;
           z-index: 50;
         }
         
-        /* Mobile dock should be below header but above content */
         .mobile-dock {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
           z-index: 40;
         }
         
-        /* Ensure sections don't interfere with header */
         section {
           position: relative;
           z-index: 1;

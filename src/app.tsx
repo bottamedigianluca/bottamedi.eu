@@ -18,7 +18,6 @@ import ContactSection from './components/sections/ContactSection'
 // Legal Components
 import LegalDocuments from './components/legal/LegalDocuments'
 import CookieBanner from './components/legal/CookieBanner'
-import PrivacySettings from './components/legal/PrivacySettings'
 
 // Types
 type Language = 'it' | 'de'
@@ -290,14 +289,6 @@ function App() {
 
       {/* Cookie Banner */}
       <CookieBanner language={language} />
-
-      {/* Privacy Settings Component (per gestione cookie avanzata) */}
-      <div className="fixed bottom-4 right-4 z-40 lg:block hidden">
-        <PrivacySettings 
-          language={language}
-          className="opacity-80 hover:opacity-100 transition-opacity"
-        />
-      </div>
 
       {/* Loading States for Better UX */}
       <AnimatePresence>

@@ -1,44 +1,11 @@
 [build]
-  # Comando di build senza npm ci
   command = "npm install && npm run build"
-  
-  # Directory di output
   publish = "dist"
-  
-  # Directory base del progetto
-  base = "."
 
 [build.environment]
-  # Forza l'uso di Node.js 20 LTS
   NODE_VERSION = "20"
-  
-  # Usa NPM più recente
   NPM_VERSION = "10"
-  
-  # Imposta NODE_ENV per build di produzione
   NODE_ENV = "production"
-  
-  # Disabilita telemetry per build più veloce
-  NEXT_TELEMETRY_DISABLED = "1"
-  
-  # Ottimizzazioni Vite
-  VITE_BUILD_TARGET = "es2020"
-  
-  # Forza pulizia cache
-  NPM_CONFIG_CACHE = "/opt/buildhome/.npm"
-
-# Cache per build più veloci
-[build.processing]
-  skip_processing = false
-
-# Headers per ottimizzazione
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
 
 # Cache per assets statici
 [[headers]]
@@ -52,7 +19,7 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000"
 
-# Redirect per compatibilità
+# Redirect per SPA
 [[redirects]]
   from = "/*"
   to = "/index.html"

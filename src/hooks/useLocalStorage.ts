@@ -73,19 +73,26 @@ export const useLocalStorageWithExpiry = <T>(
       if (!item) return initialValue
 
       const data = safeJsonParse(item, null)
-      if (!data || typeof data !== 'object' || !data.hasOwnProperty('value') || !data.hasOwnProperty('timestamp')) {
+      if (!data || typeof data !== 'object' || data === null) {
+        return initialValue
+      }
+
+      // Type assertion for data object
+      const parsedData = data as { value?: T; timestamp?: number }
+      
+      if (!parsedData.hasOwnProperty('value') || !parsedData.hasOwnProperty('timestamp')) {
         return initialValue
       }
 
       const now = new Date().getTime()
-      if (now - data.timestamp > ttl) {
+      if (parsedData.timestamp && now - parsedData.timestamp > ttl) {
         // Data expired, remove it
         window.localStorage.removeItem(key)
         setIsExpired(true)
         return initialValue
       }
 
-      return data.value
+      return parsedData.value || initialValue
     } catch (error) {
       handleError(error, `useLocalStorageWithExpiry get ${key}`)
       return initialValue

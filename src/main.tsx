@@ -1,11 +1,11 @@
 import React, { Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
-import { HelmetProvider } from 'react-helmet-async'
 import { MotionConfig } from 'framer-motion'
 import './index.css'
 
 // Lazy load the main App component
 const App = React.lazy(() => import('./app'))
+
 // Performance optimized loading component
 const LoadingFallback = () => (
   <div className="fixed inset-0 bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
@@ -28,19 +28,17 @@ const root = createRoot(container)
 // Render with performance optimizations
 root.render(
   <React.StrictMode>
-    <HelmetProvider>
-      <MotionConfig
-        transition={{
-          type: "tween",
-          duration: 0.3,
-          ease: "easeOut"
-        }}
-        reducedMotion="user"
-      >
-        <Suspense fallback={<LoadingFallback />}>
-          <App />
-        </Suspense>
-      </MotionConfig>
-    </HelmetProvider>
+    <MotionConfig
+      transition={{
+        type: "tween",
+        duration: 0.3,
+        ease: "easeOut"
+      }}
+      reducedMotion="user"
+    >
+      <Suspense fallback={<LoadingFallback />}>
+        <App />
+      </Suspense>
+    </MotionConfig>
   </React.StrictMode>
 )

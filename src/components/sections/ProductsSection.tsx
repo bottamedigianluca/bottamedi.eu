@@ -230,7 +230,240 @@ const MobileProductCard: React.FC<{
       <div className="relative h-48 overflow-hidden">
         {!imageLoaded && (
           <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
-      })
+        )}
+        
+        <img
+          src={category.image}
+          alt={category.title}
+          className="w-full h-full object-cover"
+          loading="lazy"
+          onLoad={() => setImageLoaded(true)}
+          style={{ 
+            opacity: imageLoaded ? 1 : 0,
+            transition: 'opacity 0.3s ease'
+          }}
+        />
+        <div className={`absolute inset-0 bg-gradient-to-t ${category.color} opacity-75`} />
+        
+        <div className="absolute inset-0 p-5 flex flex-col justify-end text-white">
+          <div className="text-3xl mb-2">{category.icon}</div>
+          <h3 className="text-xl font-bold mb-1">{category.title}</h3>
+          <p className="text-white/90 text-sm">{category.shortDesc}</p>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-5">
+        <p className="text-gray-700 leading-relaxed mb-4 text-sm">
+          {category.description}
+        </p>
+
+        {/* Quick Products Preview */}
+        <div className="mb-5">
+          <h4 className="font-semibold text-gray-900 mb-3 text-sm">Alcuni esempi della nostra selezione:</h4>
+          <p className="text-xs text-gray-500 mb-3 italic">*Disponibilità variabile secondo stagione e mercato</p>
+          <div className="flex flex-wrap gap-2">
+            {category.products.slice(0, 3).map((product: any, i: number) => (
+              <span key={i} className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
+                {product.name}
+              </span>
+            ))}
+            {category.products.length > 3 && (
+              <span className="bg-gray-200 text-gray-600 px-2 py-1 rounded-full text-xs">
+                +{category.products.length - 3} altri...
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Toggle Button */}
+        <motion.button
+          onClick={onToggle}
+          whileTap={{ scale: 0.98 }}
+          className={`w-full py-3 px-4 rounded-xl font-medium transition-all duration-300 flex items-center justify-center space-x-2 text-sm ${
+            isExpanded 
+              ? `bg-gradient-to-r ${category.color} text-white` 
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          <span>{isExpanded ? 'Mostra Meno' : 'Scopri Tutti i Prodotti'}</span>
+          <motion.div
+            animate={{ rotate: isExpanded ? 180 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            ▼
+          </motion.div>
+        </motion.button>
+
+        {/* Expanded Content */}
+        <AnimatePresence>
+          {isExpanded && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25 }}
+              className="mt-5 pt-5 border-t border-gray-100"
+            >
+              <p className="text-gray-600 leading-relaxed mb-5 text-sm">
+                {category.longDescription}
+              </p>
+
+              {/* Complete Products List */}
+              <div className="mb-5">
+                <h4 className="font-semibold text-gray-900 mb-3 text-sm">Esempi della nostra selezione stagionale:</h4>
+                <p className="text-xs text-gray-500 mb-3 italic">*La disponibilità varia secondo stagione, mercato e qualità</p>
+                <div className="grid grid-cols-1 gap-2">
+                  {category.products.map((product: any, i: number) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.2, delay: i * 0.03 }}
+                      className="flex justify-between items-center p-2 bg-gray-50 rounded-lg"
+                    >
+                      <div>
+                        <h5 className="font-medium text-gray-900 text-sm">{product.name}</h5>
+                        <p className="text-xs text-gray-600">{product.origin}</p>
+                      </div>
+                      <span className="bg-white text-gray-700 px-2 py-1 rounded-full text-xs">
+                        {product.season}
+                      </span>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Features */}
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-3 text-sm">I nostri plus:</h4>
+                <div className="space-y-2">
+                  {category.features.map((feature: any, i: number) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.2, delay: i * 0.05 }}
+                      className="flex items-start space-x-3 p-2 rounded-lg bg-gray-50"
+                    >
+                      <div className="text-lg">{feature.icon}</div>
+                      <div>
+                        <h5 className="font-medium text-gray-900 mb-1 text-sm">{feature.title}</h5>
+                        <p className="text-gray-600 text-xs">{feature.desc}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  )
+})
+
+MobileProductCard.displayName = 'MobileProductCard'
+
+const DesktopProductCard: React.FC<{
+  category: any
+  index: number
+  isActive: boolean
+  onClick: () => void
+}> = React.memo(({ category, index, isActive, onClick }) => {
+  const [ref, inView] = useInView({
+    threshold: 0.2,
+    triggerOnce: true
+  })
+
+  const [imageLoaded, setImageLoaded] = useState(false)
+
+  const cardVariants = useMemo(() => ({
+    hidden: { opacity: 0, y: 20, scale: 0.98 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: {
+        duration: 0.4,
+        delay: index * 0.1,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
+  }), [index])
+
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={inView ? "visible" : "hidden"}
+      variants={cardVariants}
+      className="relative"
+    >
+      <motion.div
+        onClick={onClick}
+        whileHover={{ y: -3, scale: 1.01 }}
+        whileTap={{ scale: 0.99 }}
+        className={`
+          relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-250
+          ${isActive 
+            ? 'ring-2 ring-offset-1 ring-green-400 shadow-xl' 
+            : 'shadow-lg hover:shadow-xl'
+          }
+        `}
+        style={{ willChange: 'transform' }}
+      >
+        <div className="relative h-56 overflow-hidden">
+          {!imageLoaded && (
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
+          )}
+          
+          <img
+            src={category.image}
+            alt={category.title}
+            className="w-full h-full object-cover"
+            loading="lazy"
+            onLoad={() => setImageLoaded(true)}
+            style={{ 
+              opacity: imageLoaded ? 1 : 0,
+              transition: 'opacity 0.3s ease',
+              willChange: 'opacity'
+            }}
+          />
+          <div className={`absolute inset-0 bg-gradient-to-t ${category.color} opacity-75`} />
+        </div>
+
+        <div className="absolute inset-0 flex flex-col justify-end p-5 text-white">
+          <div className="text-3xl mb-3">{category.icon}</div>
+          <h3 className="text-lg font-bold mb-2">{category.title}</h3>
+          <p className="text-white/90 text-sm mb-3">{category.shortDesc}</p>
+          
+          <div className="flex flex-wrap gap-1">
+            {category.products.slice(0, 2).map((product: any, i: number) => (
+              <span key={i} className="bg-white/20 text-white px-2 py-1 rounded-full text-xs">
+                {product.name}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <AnimatePresence>
+          {isActive && (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0 }}
+              transition={{ duration: 0.15 }}
+              className="absolute top-3 right-3 w-6 h-6 bg-white rounded-full flex items-center justify-center"
+            >
+              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </motion.div>
+  )
+})
 
 DesktopProductCard.displayName = 'DesktopProductCard'
 
@@ -575,236 +808,4 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ language, inView }) =
   )
 }
 
-export default ProductsSection}
-        
-        <img
-          src={category.image}
-          alt={category.title}
-          className="w-full h-full object-cover"
-          loading="lazy"
-          onLoad={() => setImageLoaded(true)}
-          style={{ 
-            opacity: imageLoaded ? 1 : 0,
-            transition: 'opacity 0.3s ease'
-          }}
-        />
-        <div className={`absolute inset-0 bg-gradient-to-t ${category.color} opacity-75`} />
-        
-        <div className="absolute inset-0 p-5 flex flex-col justify-end text-white">
-          <div className="text-3xl mb-2">{category.icon}</div>
-          <h3 className="text-xl font-bold mb-1">{category.title}</h3>
-          <p className="text-white/90 text-sm">{category.shortDesc}</p>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="p-5">
-        <p className="text-gray-700 leading-relaxed mb-4 text-sm">
-          {category.description}
-        </p>
-
-        {/* Quick Products Preview */}
-        <div className="mb-5">
-          <h4 className="font-semibold text-gray-900 mb-3 text-sm">Alcuni esempi della nostra selezione:</h4>
-          <p className="text-xs text-gray-500 mb-3 italic">*Disponibilità variabile secondo stagione e mercato</p>
-          <div className="flex flex-wrap gap-2">
-            {category.products.slice(0, 3).map((product: any, i: number) => (
-              <span key={i} className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
-                {product.name}
-              </span>
-            ))}
-            {category.products.length > 3 && (
-              <span className="bg-gray-200 text-gray-600 px-2 py-1 rounded-full text-xs">
-                +{category.products.length - 3} altri...
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Toggle Button */}
-        <motion.button
-          onClick={onToggle}
-          whileTap={{ scale: 0.98 }}
-          className={`w-full py-3 px-4 rounded-xl font-medium transition-all duration-300 flex items-center justify-center space-x-2 text-sm ${
-            isExpanded 
-              ? `bg-gradient-to-r ${category.color} text-white` 
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
-        >
-          <span>{isExpanded ? 'Mostra Meno' : 'Scopri Tutti i Prodotti'}</span>
-          <motion.div
-            animate={{ rotate: isExpanded ? 180 : 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            ▼
-          </motion.div>
-        </motion.button>
-
-        {/* Expanded Content */}
-        <AnimatePresence>
-          {isExpanded && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.25 }}
-              className="mt-5 pt-5 border-t border-gray-100"
-            >
-              <p className="text-gray-600 leading-relaxed mb-5 text-sm">
-                {category.longDescription}
-              </p>
-
-              {/* Complete Products List */}
-              <div className="mb-5">
-                <h4 className="font-semibold text-gray-900 mb-3 text-sm">Esempi della nostra selezione stagionale:</h4>
-                <p className="text-xs text-gray-500 mb-3 italic">*La disponibilità varia secondo stagione, mercato e qualità</p>
-                <div className="grid grid-cols-1 gap-2">
-                  {category.products.map((product: any, i: number) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2, delay: i * 0.03 }}
-                      className="flex justify-between items-center p-2 bg-gray-50 rounded-lg"
-                    >
-                      <div>
-                        <h5 className="font-medium text-gray-900 text-sm">{product.name}</h5>
-                        <p className="text-xs text-gray-600">{product.origin}</p>
-                      </div>
-                      <span className="bg-white text-gray-700 px-2 py-1 rounded-full text-xs">
-                        {product.season}
-                      </span>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Features */}
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-3 text-sm">I nostri plus:</h4>
-                <div className="space-y-2">
-                  {category.features.map((feature: any, i: number) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2, delay: i * 0.05 }}
-                      className="flex items-start space-x-3 p-2 rounded-lg bg-gray-50"
-                    >
-                      <div className="text-lg">{feature.icon}</div>
-                      <div>
-                        <h5 className="font-medium text-gray-900 mb-1 text-sm">{feature.title}</h5>
-                        <p className="text-gray-600 text-xs">{feature.desc}</p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.div>
-  )
-})
-
-MobileProductCard.displayName = 'MobileProductCard'
-
-const DesktopProductCard: React.FC<{
-  category: any
-  index: number
-  isActive: boolean
-  onClick: () => void
-}> = React.memo(({ category, index, isActive, onClick }) => {
-  const [ref, inView] = useInView({
-    threshold: 0.2,
-    triggerOnce: true
-  })
-
-  const [imageLoaded, setImageLoaded] = useState(false)
-
-  const cardVariants = useMemo(() => ({
-    hidden: { opacity: 0, y: 20, scale: 0.98 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      scale: 1,
-      transition: {
-        duration: 0.4,
-        delay: index * 0.1,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
-    }
-  }), [index])
-
-  return (
-    <motion.div
-      ref={ref}
-      initial="hidden"
-      animate={inView ? "visible" : "hidden"}
-      variants={cardVariants}
-      className="relative"
-    >
-      <motion.div
-        onClick={onClick}
-        whileHover={{ y: -3, scale: 1.01 }}
-        whileTap={{ scale: 0.99 }}
-        className={`
-          relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-250
-          ${isActive 
-            ? 'ring-2 ring-offset-1 ring-green-400 shadow-xl' 
-            : 'shadow-lg hover:shadow-xl'
-          }
-        `}
-        style={{ willChange: 'transform' }}
-      >
-        <div className="relative h-56 overflow-hidden">
-          {!imageLoaded && (
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
-          )}
-          
-          <img
-            src={category.image}
-            alt={category.title}
-            className="w-full h-full object-cover"
-            loading="lazy"
-            onLoad={() => setImageLoaded(true)}
-            style={{ 
-              opacity: imageLoaded ? 1 : 0,
-              transition: 'opacity 0.3s ease',
-              willChange: 'opacity'
-            }}
-          />
-          <div className={`absolute inset-0 bg-gradient-to-t ${category.color} opacity-75`} />
-        </div>
-
-        <div className="absolute inset-0 flex flex-col justify-end p-5 text-white">
-          <div className="text-3xl mb-3">{category.icon}</div>
-          <h3 className="text-lg font-bold mb-2">{category.title}</h3>
-          <p className="text-white/90 text-sm mb-3">{category.shortDesc}</p>
-          
-          <div className="flex flex-wrap gap-1">
-            {category.products.slice(0, 2).map((product: any, i: number) => (
-              <span key={i} className="bg-white/20 text-white px-2 py-1 rounded-full text-xs">
-                {product.name}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        <AnimatePresence>
-          {isActive && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0 }}
-              transition={{ duration: 0.15 }}
-              className="absolute top-3 right-3 w-6 h-6 bg-white rounded-full flex items-center justify-center"
-            >
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </motion.div>
-  )
+export default ProductsSection

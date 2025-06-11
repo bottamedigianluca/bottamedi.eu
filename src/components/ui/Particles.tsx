@@ -43,6 +43,23 @@ const Particles: React.FC<ParticleSystemProps> = ({
   const particlesRef = useRef<Particle[]>([])
   const animationRef = useRef<number>()
 
+  // Get velocity based on direction
+  const getDirectionVelocity = () => {
+    switch (direction) {
+      case 'up':
+        return -Math.random() * 2 - 0.5
+      case 'down':
+        return Math.random() * 2 + 0.5
+      case 'left':
+        return -Math.random() * 2 - 0.5
+      case 'right':
+        return Math.random() * 2 + 0.5
+      case 'random':
+      default:
+        return (Math.random() - 0.5) * 2
+    }
+  }
+
   // Initialize particles
   const initParticles = () => {
     const particles: Particle[] = []
@@ -66,7 +83,133 @@ const Particles: React.FC<ParticleSystemProps> = ({
       })
     }
 
-    return (
+    return particles;
+  }
+
+  // Update particles
+  const updateParticles = () => {
+    const container = containerRef.current
+    if (!container) return
+
+    const { width, height } = container.getBoundingClientRect()
+
+    particlesRef.current = particlesRef.current.map(particle => {
+      // Update position
+      particle.x += particle.vx
+      particle.y += particle.vy
+      particle.life += 16 // ~60fps
+
+      // Wrap around edges
+      if (particle.x < 0) particle.x = width
+      if (particle.x > width) particle.x = 0
+      if (particle.y < 0) particle.y = height
+      if (particle.y > height) particle.y = 0
+
+      // Reset particle if life exceeded
+      if (particle.life > particle.maxLife) {
+        particle.x = Math.random() * width
+        particle.y = direction === 'up' ? height : direction === 'down' ? 0 : Math.random() * height
+        particle.life = 0
+      }
+
+      return particle
+    })
+  }
+
+  // Draw particles
+  const drawParticles = () => {
+    const canvas = canvasRef.current
+    const ctx = canvas?.getContext('2d')
+    if (!canvas || !ctx) return
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+    // Set blur effect
+    if (blur) {
+      ctx.filter = 'blur(1px)'
+    }
+
+    // Draw each particle
+    particlesRef.current.forEach(particle => {
+      ctx.save()
+      
+      // Set opacity based on life
+      const lifeRatio = 1 - (particle.life / particle.maxLife)
+      ctx.globalAlpha = particle.opacity * lifeRatio
+
+      // Set color
+      ctx.fillStyle = particle.color
+
+      // Draw shape
+      switch (shape) {
+        case 'circle':
+          ctx.beginPath()
+          ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
+          ctx.fill()
+          break
+        case 'square':
+          ctx.fillRect(
+            particle.x - particle.size / 2,
+            particle.y - particle.size / 2,
+            particle.size,
+            particle.size
+          )
+          break
+        case 'triangle':
+          ctx.beginPath()
+          ctx.moveTo(particle.x, particle.y - particle.size)
+          ctx.lineTo(particle.x - particle.size, particle.y + particle.size)
+          ctx.lineTo(particle.x + particle.size, particle.y + particle.size)
+          ctx.closePath()
+          ctx.fill()
+          break
+      }
+
+      ctx.restore()
+    })
+  }
+
+  // Animation loop
+  const animate = () => {
+    updateParticles()
+    drawParticles()
+    animationRef.current = requestAnimationFrame(animate)
+  }
+
+  // Resize canvas
+  const resizeCanvas = () => {
+    const canvas = canvasRef.current
+    const container = containerRef.current
+    if (!canvas || !container) return
+
+    const { width, height } = container.getBoundingClientRect()
+    canvas.width = width
+    canvas.height = height
+  }
+
+  // Initialize
+  useEffect(() => {
+    particlesRef.current = initParticles()
+    resizeCanvas()
+    animate()
+
+    const handleResize = () => {
+      resizeCanvas()
+      particlesRef.current = initParticles()
+    }
+
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [count, color, size, speed, direction, shape, opacity])
+
+  return (
     <div
       ref={containerRef}
       className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}
@@ -262,147 +405,4 @@ export const SectionParticles: React.FC<{
   )
 }
 
-export default Particles particles;
-  }
-
-  // Get velocity based on direction
-  const getDirectionVelocity = () => {
-    switch (direction) {
-      case 'up':
-        return -Math.random() * 2 - 0.5
-      case 'down':
-        return Math.random() * 2 + 0.5
-      case 'left':
-        return -Math.random() * 2 - 0.5
-      case 'right':
-        return Math.random() * 2 + 0.5
-      case 'random':
-      default:
-        return (Math.random() - 0.5) * 2
-    }
-  }
-
-  // Update particles
-  const updateParticles = () => {
-    const container = containerRef.current
-    if (!container) return
-
-    const { width, height } = container.getBoundingClientRect()
-
-    particlesRef.current = particlesRef.current.map(particle => {
-      // Update position
-      particle.x += particle.vx
-      particle.y += particle.vy
-      particle.life += 16 // ~60fps
-
-      // Wrap around edges
-      if (particle.x < 0) particle.x = width
-      if (particle.x > width) particle.x = 0
-      if (particle.y < 0) particle.y = height
-      if (particle.y > height) particle.y = 0
-
-      // Reset particle if life exceeded
-      if (particle.life > particle.maxLife) {
-        particle.x = Math.random() * width
-        particle.y = direction === 'up' ? height : direction === 'down' ? 0 : Math.random() * height
-        particle.life = 0
-      }
-
-      return particle
-    })
-  }
-
-  // Draw particles
-  const drawParticles = () => {
-    const canvas = canvasRef.current
-    const ctx = canvas?.getContext('2d')
-    if (!canvas || !ctx) return
-
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-    // Set blur effect
-    if (blur) {
-      ctx.filter = 'blur(1px)'
-    }
-
-    // Draw each particle
-    particlesRef.current.forEach(particle => {
-      ctx.save()
-      
-      // Set opacity based on life
-      const lifeRatio = 1 - (particle.life / particle.maxLife)
-      ctx.globalAlpha = particle.opacity * lifeRatio
-
-      // Set color
-      ctx.fillStyle = particle.color
-
-      // Draw shape
-      switch (shape) {
-        case 'circle':
-          ctx.beginPath()
-          ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
-          ctx.fill()
-          break
-        case 'square':
-          ctx.fillRect(
-            particle.x - particle.size / 2,
-            particle.y - particle.size / 2,
-            particle.size,
-            particle.size
-          )
-          break
-        case 'triangle':
-          ctx.beginPath()
-          ctx.moveTo(particle.x, particle.y - particle.size)
-          ctx.lineTo(particle.x - particle.size, particle.y + particle.size)
-          ctx.lineTo(particle.x + particle.size, particle.y + particle.size)
-          ctx.closePath()
-          ctx.fill()
-          break
-      }
-
-      ctx.restore()
-    })
-  }
-
-  // Animation loop
-  const animate = () => {
-    updateParticles()
-    drawParticles()
-    animationRef.current = requestAnimationFrame(animate)
-  }
-
-  // Resize canvas
-  const resizeCanvas = () => {
-    const canvas = canvasRef.current
-    const container = containerRef.current
-    if (!canvas || !container) return
-
-    const { width, height } = container.getBoundingClientRect()
-    canvas.width = width
-    canvas.height = height
-  }
-
-  // Initialize
-  useEffect(() => {
-    particlesRef.current = initParticles()
-    resizeCanvas()
-    animate()
-
-    const handleResize = () => {
-      resizeCanvas()
-      particlesRef.current = initParticles()
-    }
-
-    window.addEventListener('resize', handleResize)
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
-      }
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [count, color, size, speed, direction, shape, opacity])
-
-  return
+export default Particles

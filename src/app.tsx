@@ -1,23 +1,21 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, Suspense, lazy, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-// Layout Components
+// Critical components - load immediately
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
-import MobileDock from './components/layout/MobileDock'
-
-// Section Components
 import HeroSection from './components/sections/HeroSection'
-import AboutSection from './components/sections/AboutSection'
-import BanchettoSection from './components/sections/Banchettosection'
-import ServicesSection from './components/sections/ServicesSection'
-import ProductsSection from './components/sections/ProductsSection'
-import WholesaleContact from './components/sections/Wholesalecontact'
-import ContactSection from './components/sections/ContactSection'
 
-// Legal Components
-import LegalDocuments from './components/legal/LegalDocuments'
-import CookieBanner from './components/legal/CookieBanner'
+// Non-critical components - lazy load
+const MobileDock = lazy(() => import('./components/layout/MobileDock'))
+const AboutSection = lazy(() => import('./components/sections/AboutSection'))
+const BanchettoSection = lazy(() => import('./components/sections/Banchettosection'))
+const ServicesSection = lazy(() => import('./components/sections/ServicesSection'))
+const ProductsSection = lazy(() => import('./components/sections/ProductsSection'))
+const WholesaleContact = lazy(() => import('./components/sections/Wholesalecontact'))
+const ContactSection = lazy(() => import('./components/sections/ContactSection'))
+const LegalDocuments = lazy(() => import('./components/legal/LegalDocuments'))
+const CookieBanner = lazy(() => import('./components/legal/CookieBanner'))
 
 // Types
 type Language = 'it' | 'de'
@@ -25,6 +23,61 @@ type Language = 'it' | 'de'
 interface SectionVisibility {
   [key: string]: boolean
 }
+
+// Optimized loading fallback
+const SectionSkeleton = memo(() => (
+  <div className="w-full h-64 bg-gray-100 animate-pulse rounded-lg flex items-center justify-center">
+    <div className="text-gray-400 text-sm">Caricamento...</div>
+  </div>
+))
+
+SectionSkeleton.displayName = 'SectionSkeleton'
+
+// Image loading optimization component
+const OptimizedImage = memo(({ src, alt, className, ...props }: any) => {
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [error, setError] = useState(false)
+
+  const handleLoad = useCallback(() => {
+    setIsLoaded(true)
+  }, [])
+
+  const handleError = useCallback(() => {
+    setError(true)
+    // Retry loading after 1 second
+    setTimeout(() => {
+      setError(false)
+      setIsLoaded(false)
+    }, 1000)
+  }, [])
+
+  if (error) {
+    return (
+      <div className={`bg-gray-200 flex items-center justify-center ${className}`}>
+        <span className="text-gray-400 text-xs">Caricamento...</span>
+      </div>
+    )
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      onLoad={handleLoad}
+      onError={handleError}
+      loading="lazy"
+      decoding="async"
+      style={{
+        opacity: isLoaded ? 1 : 0,
+        transition: 'opacity 0.3s ease'
+      }}
+      {...props}
+    />
+  )
+})
+
+OptimizedImage.displayName = 'OptimizedImage'
 
 function App() {
   // State Management
@@ -43,26 +96,44 @@ function App() {
   const [hideInFooter, setHideInFooter] = useState(false)
   const [isScrolling, setIsScrolling] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
 
-  // Mobile detection - improved
+  // Optimized mobile detection - FIXED LOGIC
   useEffect(() => {
     const checkMobile = () => {
-      const isMobileDevice = window.innerWidth <= 768
-      setIsMobile(isMobileDevice)
+      const width = window.innerWidth
+      const userAgent = navigator.userAgent
+      const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)
+      const isMobileWidth = width <= 768
       
-      // Force update of CSS classes for mobile detection
-      if (isMobileDevice) {
-        document.body.classList.add('mobile-device')
-        document.body.classList.remove('desktop-device')
-      } else {
-        document.body.classList.add('desktop-device')
-        document.body.classList.remove('mobile-device')
+      const shouldBeMobile = isMobileWidth || isMobileUA
+      
+      console.log('Mobile detection:', { width, isMobileUA, isMobileWidth, shouldBeMobile })
+      
+      setIsMobile(shouldBeMobile)
+      
+      // Force DOM updates immediately
+      document.body.classList.toggle('mobile-device', shouldBeMobile)
+      document.body.classList.toggle('desktop-device', !shouldBeMobile)
+      
+      // Force mobile dock visibility check
+      if (shouldBeMobile) {
+        const mobileDockElements = document.querySelectorAll('[class*="mobile"], [class*="Mobile"], .mobile-dock')
+        mobileDockElements.forEach(el => {
+          (el as HTMLElement).style.display = 'block'
+          ;(el as HTMLElement).style.visibility = 'visible'
+        })
+        
+        const headers = document.querySelectorAll('header')
+        headers.forEach(el => {
+          (el as HTMLElement).style.display = 'none'
+        })
       }
     }
     
     checkMobile()
-    window.addEventListener('resize', checkMobile)
-    window.addEventListener('orientationchange', checkMobile)
+    window.addEventListener('resize', checkMobile, { passive: true })
+    window.addEventListener('orientationchange', checkMobile, { passive: true })
     
     return () => {
       window.removeEventListener('resize', checkMobile)
@@ -70,7 +141,13 @@ function App() {
     }
   }, [])
 
-  // Language detection from browser/localStorage
+  // Initial load detection
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 100)
+    return () => clearTimeout(timer)
+  }, [])
+
+  // Language detection - optimized
   useEffect(() => {
     const savedLanguage = localStorage.getItem('bottamedi-language') as Language
     const browserLanguage = navigator.language.toLowerCase()
@@ -89,64 +166,66 @@ function App() {
     setLanguage(newLanguage)
     localStorage.setItem('bottamedi-language', newLanguage)
     
-    // Analytics tracking
+    // Non-blocking analytics
     if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'language_change', {
-        event_category: 'user_interaction',
-        event_label: newLanguage,
-        value: 1
-      })
+      setTimeout(() => {
+        window.gtag('event', 'language_change', {
+          event_category: 'user_interaction',
+          event_label: newLanguage,
+          value: 1
+        })
+      }, 0)
     }
   }, [])
 
-  // Section detection with Intersection Observer - OPTIMIZED FOR MOBILE
+  // Optimized Intersection Observer with better mobile handling
   useEffect(() => {
+    if (!isLoaded) return
+
     const observerOptions = {
-      // More sensitive threshold for mobile
-      threshold: isMobile ? 0.1 : 0.3,
-      // Adjusted root margin for mobile browsers
-      rootMargin: isMobile ? '-50px 0px -50px 0px' : '-80px 0px -80px 0px'
+      threshold: isMobile ? [0, 0.1, 0.25] : [0, 0.3, 0.5],
+      rootMargin: isMobile ? '-20px 0px -20px 0px' : '-80px 0px -80px 0px'
     }
 
     const observer = new IntersectionObserver((entries) => {
       const updates: SectionVisibility = {}
+      let newCurrentSection = currentSection
       
       entries.forEach((entry) => {
         const sectionId = entry.target.id
         updates[sectionId] = entry.isIntersecting
         
-        // Update current section for active navigation
-        if (entry.isIntersecting) {
-          setCurrentSection(sectionId)
+        if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
+          newCurrentSection = sectionId
         }
       })
       
+      // Batch updates
       setSectionsInView(prev => ({ ...prev, ...updates }))
+      if (newCurrentSection !== currentSection) {
+        setCurrentSection(newCurrentSection)
+      }
     }, observerOptions)
 
-    // Observe all sections with retry mechanism
     const sections = ['hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact']
     
-    // Use setTimeout to ensure DOM is ready
-    const observeTimeout = setTimeout(() => {
+    // Wait for DOM to be ready
+    requestAnimationFrame(() => {
       sections.forEach(id => {
         const element = document.getElementById(id)
         if (element) {
           observer.observe(element)
-        } else {
-          console.warn(`Section with id "${id}" not found`)
         }
       })
-    }, 100)
+    })
 
-    return () => {
-      clearTimeout(observeTimeout)
-      observer.disconnect()
-    }
-  }, [isMobile]) // Re-run when mobile state changes
+    return () => observer.disconnect()
+  }, [isMobile, currentSection, isLoaded])
 
-  // Footer detection for mobile dock
+  // Optimized footer detection
   useEffect(() => {
+    if (!isLoaded) return
+
     let timeoutId: NodeJS.Timeout
 
     const handleFooterDetection = () => {
@@ -159,18 +238,14 @@ function App() {
         const footer = document.querySelector('footer')
         const legalDocs = document.getElementById('legal-documents')
         
-        if (footer && legalDocs) {
+        if (footer) {
           const footerRect = footer.getBoundingClientRect()
-          const legalRect = legalDocs.getBoundingClientRect()
           const windowHeight = window.innerHeight
+          const footerVisible = footerRect.top < windowHeight + 100
           
-          // Hide dock when footer or legal docs are visible
-          const footerVisible = footerRect.top < windowHeight
-          const legalVisible = legalRect.top < windowHeight
-          
-          setHideInFooter(footerVisible || legalVisible)
+          setHideInFooter(footerVisible)
         }
-      }, 150)
+      }, 100)
     }
 
     window.addEventListener('scroll', handleFooterDetection, { passive: true })
@@ -178,122 +253,211 @@ function App() {
       window.removeEventListener('scroll', handleFooterDetection)
       clearTimeout(timeoutId)
     }
-  }, [])
+  }, [isLoaded])
 
-  // Menu toggle handler
+  // Menu handlers
   const handleToggleMenu = useCallback(() => {
     setIsMenuOpen(prev => !prev)
   }, [])
 
-  // Close menu on outside click
+  // Outside click handler
   useEffect(() => {
+    if (!isMenuOpen) return
+
     const handleClickOutside = (event: MouseEvent) => {
-      if (isMenuOpen && !(event.target as Element).closest('.mobile-menu')) {
+      if (!(event.target as Element).closest('.mobile-menu')) {
         setIsMenuOpen(false)
       }
     }
 
-    document.addEventListener('click', handleClickOutside)
+    document.addEventListener('click', handleClickOutside, { passive: true })
     return () => document.removeEventListener('click', handleClickOutside)
   }, [isMenuOpen])
 
-  // Prevent scroll when menu is open
+  // Scroll prevention
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
-    }
-
-    return () => {
-      document.body.style.overflow = 'unset'
+      return () => {
+        document.body.style.overflow = 'unset'
+      }
     }
   }, [isMenuOpen])
 
-  // Performance optimization: Debounced scroll handler
+  // Viewport fix for mobile
   useEffect(() => {
-    let ticking = false
+    if (!isMobile) return
 
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          // Trigger any scroll-related updates here if needed
-          ticking = false
-        })
-        ticking = true
-      }
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  // Mobile viewport fix - simplified to avoid hero issues
-  useEffect(() => {
     const setVH = () => {
-      // Only set if really needed and don't override existing height styles
       const vh = window.innerHeight * 0.01
       document.documentElement.style.setProperty('--vh', `${vh}px`)
     }
 
-    // Only apply on mobile and don't force it
-    if (window.innerWidth <= 768) {
-      setVH()
-      window.addEventListener('resize', setVH)
-      window.addEventListener('orientationchange', setVH)
-    }
+    setVH()
+    window.addEventListener('resize', setVH, { passive: true })
+    return () => window.removeEventListener('resize', setVH)
+  }, [isMobile])
 
-    return () => {
-      window.removeEventListener('resize', setVH)
-      window.removeEventListener('orientationchange', setVH)
-    }
-  }, [])
-
-  // SEO and Analytics
+  // SEO optimization - delayed
   useEffect(() => {
-    // Set page language for SEO
-    document.documentElement.lang = language
-    
-    // Update page title based on language
-    const titles = {
-      it: 'Bottamedi - Frutta e Verdura Fresca | Mezzolombardo, Trentino',
-      de: 'Bottamedi - Frisches Obst und Gemüse | Mezzolombardo, Südtirol'
-    }
-    document.title = titles[language]
+    setTimeout(() => {
+      document.documentElement.lang = language
+      document.title = language === 'it' 
+        ? 'Bottamedi - Frutta e Verdura Fresca | Mezzolombardo, Trentino'
+        : 'Bottamedi - Frisches Obst und Gemüse | Mezzolombardo, Südtirol'
 
-    // Update meta description
-    const descriptions = {
-      it: 'Bottamedi: 50 anni di tradizione familiare nella vendita di frutta e verdura fresca a Mezzolombardo. Servizio dettaglio e ingrosso HORECA.',
-      de: 'Bottamedi: 50 Jahre Familientradition im Verkauf von frischem Obst und Gemüse in Mezzolombardo. Einzelhandel und HORECA-Großhandel.'
-    }
-    
-    const metaDescription = document.querySelector('meta[name="description"]')
-    if (metaDescription) {
-      metaDescription.setAttribute('content', descriptions[language])
-    }
+      const metaDescription = document.querySelector('meta[name="description"]')
+      if (metaDescription) {
+        const description = language === 'it'
+          ? 'Bottamedi: 50 anni di tradizione familiare nella vendita di frutta e verdura fresca a Mezzolombardo. Servizio dettaglio e ingrosso HORECA.'
+          : 'Bottamedi: 50 Jahre Familientradition im Verkauf von frischem Obst und Gemüse in Mezzolombardo. Einzelhandel und HORECA-Großhandel.'
+        metaDescription.setAttribute('content', description)
+      }
 
-    // Ensure viewport meta tag is correct for mobile - minimal approach
-    let viewportMeta = document.querySelector('meta[name="viewport"]')
-    if (!viewportMeta) {
-      viewportMeta = document.createElement('meta')
-      viewportMeta.setAttribute('name', 'viewport')
-      document.head.appendChild(viewportMeta)
-    }
-    // Use standard viewport settings without forcing scale
-    viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0')
-
-    // Analytics page view
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'page_view', {
-        page_title: titles[language],
-        page_language: language
-      })
-    }
+      let viewportMeta = document.querySelector('meta[name="viewport"]')
+      if (!viewportMeta) {
+        viewportMeta = document.createElement('meta')
+        viewportMeta.setAttribute('name', 'viewport')
+        document.head.appendChild(viewportMeta)
+      }
+      viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0')
+    }, 500)
   }, [language])
+
+  // Memoized structured data
+  const structuredData = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Bottamedi Frutta e Verdura",
+    "description": language === 'it' 
+      ? "Vendita di frutta e verdura fresca, servizio dettaglio e ingrosso HORECA a Mezzolombardo"
+      : "Verkauf von frischem Obst und Gemüse, Einzelhandel und HORECA-Großhandel in Mezzolombardo",
+    "url": "https://www.bottamedi.eu",
+    "telephone": "+39 0461 602534",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Via A. de Gasperi, 47",
+      "addressLocality": "Mezzolombardo",
+      "addressRegion": "TN",
+      "postalCode": "38017",
+      "addressCountry": "IT"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "46.2147",
+      "longitude": "11.1094"
+    },
+    "openingHours": "Mo-Sa 07:00-19:30",
+    "priceRange": "€",
+    "servedCuisine": language === 'it' ? "Frutta e Verdura Fresca" : "Frisches Obst und Gemüse",
+    "founder": {
+      "@type": "Person",
+      "name": "Lorenzo Bottamedi"
+    },
+    "foundingDate": "1974",
+    "sameAs": [
+      "https://www.facebook.com/profile.php?id=100063456281899",
+      "https://instagram.com/banchetto.bottamedi"
+    ]
+  }), [language])
 
   return (
     <div className="App">
-      {/* Header */}
+      {/* Critical CSS first */}
+      <style jsx global>{`
+        /* Critical performance optimizations */
+        * {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        
+        html, body {
+          scroll-behavior: smooth;
+        }
+        
+        /* Force mobile dock visibility - AGGRESSIVE APPROACH */
+        @media (max-width: 768px) {
+          header {
+            display: none !important;
+            visibility: hidden !important;
+          }
+          
+          /* Target all possible mobile dock class variations */
+          [class*="mobile" i],
+          [class*="dock" i],
+          [class*="Mobile" i],
+          [class*="Dock" i],
+          .mobile-dock,
+          .MobileDock,
+          div[class*="mobile"],
+          div[class*="Mobile"] {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 999 !important;
+            pointer-events: auto !important;
+          }
+        }
+        
+        @media (min-width: 769px) {
+          header {
+            display: block !important;
+            visibility: visible !important;
+          }
+          
+          [class*="mobile" i],
+          [class*="dock" i],
+          [class*="Mobile" i],
+          [class*="Dock" i],
+          .mobile-dock,
+          .MobileDock {
+            display: none !important;
+          }
+        }
+        
+        /* Performance optimizations */
+        img {
+          content-visibility: auto;
+          max-width: 100%;
+          height: auto;
+        }
+        
+        section {
+          contain: layout style;
+        }
+        
+        /* Mobile specific */
+        .mobile-device header {
+          display: none !important;
+        }
+        
+        .mobile-device [class*="mobile" i],
+        .mobile-device [class*="Mobile" i] {
+          display: block !important;
+          visibility: visible !important;
+        }
+        
+        .desktop-device [class*="mobile" i],
+        .desktop-device [class*="Mobile" i] {
+          display: none !important;
+        }
+        
+        /* Loading optimizations */
+        .animate-pulse {
+          animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+          0%, 100% { opacity: 0.8; }
+          50% { opacity: 0.4; }
+        }
+      `}</style>
+
+      {/* Header - always rendered but hidden on mobile via CSS */}
       <Header 
         language={language} 
         onLanguageChange={handleLanguageChange}
@@ -301,67 +465,79 @@ function App() {
         onToggleMenu={handleToggleMenu}
       />
 
-      {/* Main Content with improved mobile styling - without z-index conflicts */}
+      {/* Main Content */}
       <main role="main">
-        {/* Hero Section */}
+        {/* Hero - Critical, no lazy loading */}
         <HeroSection 
           language={language} 
           inView={sectionsInView.hero} 
         />
 
-        {/* About Section */}
-        <AboutSection 
-          language={language} 
-          inView={sectionsInView.about} 
-        />
+        {/* Other sections - Lazy loaded with better fallbacks */}
+        <Suspense fallback={<SectionSkeleton />}>
+          <AboutSection 
+            language={language} 
+            inView={sectionsInView.about} 
+          />
+        </Suspense>
 
-        {/* Banchetto Section - Use normal inView logic */}
-        <BanchettoSection 
-          language={language} 
-          inView={sectionsInView.dettaglio} 
-        />
+        <Suspense fallback={<SectionSkeleton />}>
+          <BanchettoSection 
+            language={language} 
+            inView={sectionsInView.dettaglio} 
+          />
+        </Suspense>
 
-        {/* Services Section */}
-        <ServicesSection 
-          language={language} 
-          inView={sectionsInView.services} 
-        />
+        <Suspense fallback={<SectionSkeleton />}>
+          <ServicesSection 
+            language={language} 
+            inView={sectionsInView.services} 
+          />
+        </Suspense>
 
-        {/* Products Section */}
-        <ProductsSection 
-          language={language} 
-          inView={sectionsInView.products} 
-        />
+        <Suspense fallback={<SectionSkeleton />}>
+          <ProductsSection 
+            language={language} 
+            inView={sectionsInView.products} 
+          />
+        </Suspense>
 
-        {/* Wholesale Contact Section */}
-        <WholesaleContact 
-          language={language} 
-          inView={sectionsInView.wholesale} 
-        />
+        <Suspense fallback={<SectionSkeleton />}>
+          <WholesaleContact 
+            language={language} 
+            inView={sectionsInView.wholesale} 
+          />
+        </Suspense>
 
-        {/* Contact Section */}
-        <ContactSection 
-          language={language} 
-          inView={sectionsInView.contact} 
-        />
+        <Suspense fallback={<SectionSkeleton />}>
+          <ContactSection 
+            language={language} 
+            inView={sectionsInView.contact} 
+          />
+        </Suspense>
       </main>
 
-      {/* Footer */}
+      {/* Footer - Critical */}
       <Footer language={language} />
       
-      {/* Legal Documents Section */}
-      <LegalDocuments language={language} />
+      {/* Non-critical components */}
+      <Suspense fallback={null}>
+        <LegalDocuments language={language} />
+      </Suspense>
 
-      {/* Mobile Dock */}
-      <MobileDock 
-        language={language} 
-        hideInFooter={hideInFooter || isScrolling}
-      />
+      {/* Mobile Dock - ALWAYS RENDERED, hidden via CSS */}
+      <Suspense fallback={null}>
+        <MobileDock 
+          language={language} 
+          hideInFooter={hideInFooter || isScrolling}
+        />
+      </Suspense>
 
-      {/* Cookie Banner */}
-      <CookieBanner language={language} />
+      <Suspense fallback={null}>
+        <CookieBanner language={language} />
+      </Suspense>
 
-      {/* Loading States for Better UX */}
+      {/* Loading indicator */}
       <AnimatePresence>
         {isScrolling && (
           <motion.div
@@ -377,123 +553,22 @@ function App() {
         )}
       </AnimatePresence>
 
-      {/* Structured Data for SEO */}
+      {/* Structured Data - Non-blocking */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "LocalBusiness",
-            "name": "Bottamedi Frutta e Verdura",
-            "description": language === 'it' 
-              ? "Vendita di frutta e verdura fresca, servizio dettaglio e ingrosso HORECA a Mezzolombardo"
-              : "Verkauf von frischem Obst und Gemüse, Einzelhandel und HORECA-Großhandel in Mezzolombardo",
-            "url": "https://www.bottamedi.eu",
-            "telephone": "+39 0461 602534",
-            "address": {
-              "@type": "PostalAddress",
-              "streetAddress": "Via A. de Gasperi, 47",
-              "addressLocality": "Mezzolombardo",
-              "addressRegion": "TN",
-              "postalCode": "38017",
-              "addressCountry": "IT"
-            },
-            "geo": {
-              "@type": "GeoCoordinates",
-              "latitude": "46.2147",
-              "longitude": "11.1094"
-            },
-            "openingHours": "Mo-Sa 07:00-19:30",
-            "priceRange": "€",
-            "servedCuisine": language === 'it' ? "Frutta e Verdura Fresca" : "Frisches Obst und Gemüse",
-            "founder": {
-              "@type": "Person",
-              "name": "Lorenzo Bottamedi"
-            },
-            "foundingDate": "1974",
-            "sameAs": [
-              "https://www.facebook.com/profile.php?id=100063456281899",
-              "https://instagram.com/banchetto.bottamedi"
-            ]
-          })
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      {/* Mobile debugging info - enhanced */}
+      {/* Debug info */}
       {process.env.NODE_ENV === 'development' && (
-        <div className="fixed bottom-2 left-2 bg-black/80 text-white text-xs p-2 rounded font-mono z-50">
-          <div>Section: {currentSection}</div>
-          <div>Language: {language}</div>
-          <div>Mobile: {isMobile ? 'Yes' : 'No'}</div>
-          <div>Viewport: {typeof window !== 'undefined' ? `${window.innerWidth}x${window.innerHeight}` : 'Unknown'}</div>
+        <div className="fixed top-2 left-2 bg-black/80 text-white text-xs p-2 rounded font-mono z-50 max-w-xs">
+          <div>Mobile: {isMobile ? 'YES' : 'NO'}</div>
+          <div>Width: {typeof window !== 'undefined' ? window.innerWidth : 'Unknown'}</div>
+          <div>UA Mobile: {typeof navigator !== 'undefined' ? /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'YES' : 'NO' : 'Unknown'}</div>
           <div>Body Classes: {typeof document !== 'undefined' ? document.body.className : 'Unknown'}</div>
-          <div>Scrolling: {isScrolling ? 'Yes' : 'No'}</div>
+          <div>Current: {currentSection}</div>
         </div>
       )}
-
-      {/* Improved mobile CSS fix with proper responsive behavior */}
-      <style jsx global>{`
-        /* Essential mobile fixes */
-        * {
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-        }
-        
-        /* Force proper header/mobile dock visibility */
-        @media (max-width: 768px) {
-          /* Hide desktop header on mobile */
-          header {
-            display: none !important;
-          }
-          
-          /* Ensure mobile dock is visible */
-          .mobile-dock,
-          [class*="mobile-dock"],
-          [class*="MobileDock"] {
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            z-index: 50 !important;
-          }
-        }
-        
-        @media (min-width: 769px) {
-          /* Show desktop header */
-          header {
-            display: block !important;
-            position: relative !important;
-            z-index: 50 !important;
-          }
-          
-          /* Hide mobile dock on desktop */
-          .mobile-dock,
-          [class*="mobile-dock"],
-          [class*="MobileDock"] {
-            display: none !important;
-          }
-        }
-        
-        /* Ensure sections don't interfere */
-        section {
-          position: relative;
-          z-index: 1;
-        }
-        
-        /* Body classes for additional control */
-        .mobile-device header {
-          display: none !important;
-        }
-        
-        .desktop-device .mobile-dock,
-        .desktop-device [class*="mobile-dock"],
-        .desktop-device [class*="MobileDock"] {
-          display: none !important;
-        }
-      `}</style>
     </div>
   )
 }

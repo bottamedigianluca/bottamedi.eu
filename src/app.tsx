@@ -213,16 +213,20 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Mobile viewport fix
+  // Mobile viewport fix - simplified to avoid hero issues
   useEffect(() => {
     const setVH = () => {
+      // Only set if really needed and don't override existing height styles
       const vh = window.innerHeight * 0.01
       document.documentElement.style.setProperty('--vh', `${vh}px`)
     }
 
-    setVH()
-    window.addEventListener('resize', setVH)
-    window.addEventListener('orientationchange', setVH)
+    // Only apply on mobile and don't force it
+    if (window.innerWidth <= 768) {
+      setVH()
+      window.addEventListener('resize', setVH)
+      window.addEventListener('orientationchange', setVH)
+    }
 
     return () => {
       window.removeEventListener('resize', setVH)
@@ -253,14 +257,15 @@ function App() {
       metaDescription.setAttribute('content', descriptions[language])
     }
 
-    // Ensure viewport meta tag is correct for mobile
+    // Ensure viewport meta tag is correct for mobile - minimal approach
     let viewportMeta = document.querySelector('meta[name="viewport"]')
     if (!viewportMeta) {
       viewportMeta = document.createElement('meta')
       viewportMeta.setAttribute('name', 'viewport')
       document.head.appendChild(viewportMeta)
     }
-    viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes')
+    // Use standard viewport settings without forcing scale
+    viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0')
 
     // Analytics page view
     if (typeof window !== 'undefined' && window.gtag) {
@@ -410,46 +415,20 @@ function App() {
         </div>
       )}
 
-      {/* Add global mobile CSS fix */}
+      {/* Add minimal mobile CSS fix */}
       <style jsx global>{`
-        /* Mobile viewport fixes */
+        /* Only essential mobile fixes without interfering with hero */
         * {
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
         
-        html {
-          height: 100%;
-          height: calc(var(--vh, 1vh) * 100);
-        }
-        
-        body {
-          min-height: 100%;
-          min-height: calc(var(--vh, 1vh) * 100);
-          overscroll-behavior-y: none;
-        }
-        
-        /* Ensure sections are properly spaced on mobile */
+        /* Force visibility for problematic sections only */
         @media (max-width: 768px) {
-          section {
-            min-height: auto !important;
-            padding-top: 2rem !important;
-            padding-bottom: 2rem !important;
-          }
-          
-          /* Force visibility for problematic sections */
           #dettaglio, #services, #products, #wholesale {
             display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
-          }
-        }
-        
-        /* Fix for mobile browser viewport issues */
-        @media screen and (max-width: 768px) {
-          .container {
-            padding-left: 1rem;
-            padding-right: 1rem;
           }
         }
       `}</style>

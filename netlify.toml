@@ -1,6 +1,6 @@
 [build]
-  # Comando di build con pulizia forzata
-  command = "npm ci && npm run build"
+  # Comando di build senza npm ci
+  command = "npm install && npm run build"
   
   # Directory di output
   publish = "dist"

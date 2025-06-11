@@ -286,8 +286,8 @@ function App() {
         onToggleMenu={handleToggleMenu}
       />
 
-      {/* Main Content with improved mobile styling */}
-      <main role="main" className="relative z-0">
+      {/* Main Content with improved mobile styling - without z-index conflicts */}
+      <main role="main">
         {/* Hero Section */}
         <HeroSection 
           language={language} 
@@ -300,34 +300,34 @@ function App() {
           inView={sectionsInView.about} 
         />
 
-        {/* Banchetto Section - Force visibility check */}
+        {/* Banchetto Section - Use normal inView logic */}
         <BanchettoSection 
           language={language} 
-          inView={sectionsInView.dettaglio || isMobile} 
+          inView={sectionsInView.dettaglio} 
         />
 
         {/* Services Section */}
         <ServicesSection 
           language={language} 
-          inView={sectionsInView.services || isMobile} 
+          inView={sectionsInView.services} 
         />
 
         {/* Products Section */}
         <ProductsSection 
           language={language} 
-          inView={sectionsInView.products || isMobile} 
+          inView={sectionsInView.products} 
         />
 
         {/* Wholesale Contact Section */}
         <WholesaleContact 
           language={language} 
-          inView={sectionsInView.wholesale || isMobile} 
+          inView={sectionsInView.wholesale} 
         />
 
         {/* Contact Section */}
         <ContactSection 
           language={language} 
-          inView={sectionsInView.contact || isMobile} 
+          inView={sectionsInView.contact} 
         />
       </main>
 
@@ -415,21 +415,29 @@ function App() {
         </div>
       )}
 
-      {/* Add minimal mobile CSS fix */}
+      {/* Minimal mobile CSS fix - without forcing sections visibility */}
       <style jsx global>{`
-        /* Only essential mobile fixes without interfering with hero */
+        /* Only essential mobile fixes */
         * {
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
         
-        /* Force visibility for problematic sections only */
-        @media (max-width: 768px) {
-          #dettaglio, #services, #products, #wholesale {
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-          }
+        /* Ensure header has proper z-index hierarchy */
+        header {
+          position: relative;
+          z-index: 50;
+        }
+        
+        /* Mobile dock should be below header but above content */
+        .mobile-dock {
+          z-index: 40;
+        }
+        
+        /* Ensure sections don't interfere with header */
+        section {
+          position: relative;
+          z-index: 1;
         }
       `}</style>
     </div>

@@ -14,6 +14,7 @@ interface ScrollInfo {
   isScrolling: boolean
   scrollPercentage: number
   velocity: number
+  isNearTop?: boolean
 }
 
 // Basic scroll direction detection
@@ -64,7 +65,8 @@ export const useScrollInfo = (options: UseScrollDirectionOptions = {}): ScrollIn
     direction: null,
     isScrolling: false,
     scrollPercentage: 0,
-    velocity: 0
+    velocity: 0,
+    isNearTop: true
   })
 
   const lastScrollY = useRef(0)
@@ -91,12 +93,16 @@ export const useScrollInfo = (options: UseScrollDirectionOptions = {}): ScrollIn
       direction = deltaY > 0 ? 'down' : 'up'
     }
 
+    // Calculate isNearTop
+    const isNearTop = scrollY <= 100
+
     setScrollInfo({
       scrollY,
       direction,
       isScrolling: true,
       scrollPercentage: Math.min(100, Math.max(0, scrollPercentage)),
-      velocity
+      velocity,
+      isNearTop
     })
 
     // Clear existing timeout
@@ -208,7 +214,7 @@ export const useScrollHeader = (options: {
   const { isNearTop, scrollY } = useScrollInfo()
 
   useEffect(() => {
-    setIsTransparent(isNearTop)
+    setIsTransparent(isNearTop || false)
     
     if (scrollY < offset) {
       setIsVisible(true)

@@ -16,7 +16,7 @@ class UniversalHapticManager {
   private isAndroid: boolean = false;
   private audioContext: AudioContext | null = null;
   
-  private patterns: Record<string, HapticPattern> = {
+  public patterns: Record<string, HapticPattern> = {
     // Pattern ottimizzati per tutti i dispositivi
     tap: {
       pattern: [10],

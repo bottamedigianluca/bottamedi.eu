@@ -1,470 +1,99 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* Performance optimized CSS custom properties */
-:root {
-  --brand-primary: #22c55e;
-  --brand-secondary: #f59e0b;
-  --text-primary: #171717;
-  --text-secondary: #525252;
-  --surface-primary: #ffffff;
-  --surface-secondary: #fafafa;
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-  --radius-sm: 0.375rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --transition-fast: 150ms ease-out;
-  --transition-normal: 300ms ease-out;
-  --transition-slow: 500ms ease-out;
-  
-  /* iOS Safe Area Support */
-  --safe-area-inset-top: env(safe-area-inset-top);
-  --safe-area-inset-right: env(safe-area-inset-right);
-  --safe-area-inset-bottom: env(safe-area-inset-bottom);
-  --safe-area-inset-left: env(safe-area-inset-left);
-}
+/* Google Fonts */
+@import url(‘https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap’);
 
-/* Hardware acceleration for smooth animations */
-* {
-  box-sizing: border-box;
-}
-
+/* Base Styles */
+@layer base {
 html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 80px;
-  /* iOS Optimizations */
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
+scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  line-height: 1.6;
-  color: var(--text-primary);
-  background-color: var(--surface-primary);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  font-feature-settings: 'kern' 1;
-  
-  /* iOS Safe Area Support */
-  padding-top: var(--safe-area-inset-top);
-  padding-bottom: var(--safe-area-inset-bottom);
-  padding-left: var(--safe-area-inset-left);
-  padding-right: var(--safe-area-inset-right);
+font-family: ‘Inter’, system-ui, sans-serif;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
 }
 
-/* iOS Specific Optimizations */
-@supports (-webkit-touch-callout: none) {
-  body {
-    /* iPhone X+ support */
-    padding-bottom: max(var(--safe-area-inset-bottom), 20px);
-  }
-  
-  /* Fix iOS scroll bounce */
-  html, body {
-    overscroll-behavior: none;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  /* iOS bounce prevention */
-  .prevent-scroll {
-    position: fixed;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-  }
+h1, h2, h3, h4, h5, h6 {
+font-family: ‘Playfair Display’, serif;
+}
 }
 
-/* Optimized focus styles */
-*:focus {
-  outline: 2px solid var(--brand-primary);
-  outline-offset: 2px;
+/* Custom Components */
+@layer components {
+.btn-primary {
+@apply bg-gradient-to-r from-brand-500 to-brand-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300;
 }
 
-*:focus:not(:focus-visible) {
-  outline: none;
+.btn-secondary {
+@apply border-2 border-brand-500 text-brand-600 px-6 py-3 rounded-xl font-semibold hover:bg-brand-50 transition-all duration-300;
 }
 
-/* Smooth scrolling for reduced motion users */
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+.card {
+@apply bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-neutral-100;
 }
 
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  :root {
-    --brand-primary: #000000;
-    --text-primary: #000000;
-    --text-secondary: #000000;
-  }
+.gradient-text {
+@apply bg-gradient-to-r from-brand-600 to-accent-600 bg-clip-text text-transparent;
+}
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text-primary: #fafafa;
-    --text-secondary: #d4d4d4;
-    --surface-primary: #171717;
-    --surface-secondary: #262626;
-  }
+/* Custom Utilities */
+@layer utilities {
+.text-shadow {
+text-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
-/* Performance optimized utilities */
-.hardware-accelerated {
-  transform: translateZ(0);
-  will-change: transform;
+.backdrop-blur-custom {
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
 }
 
-.gpu-optimized {
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
-  perspective: 1000px;
+.will-change-transform {
+will-change: transform;
 }
 
-.smooth-edges {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.animation-delay-100 {
+animation-delay: 0.1s;
 }
 
-/* Custom scrollbar */
+.animation-delay-200 {
+animation-delay: 0.2s;
+}
+
+.animation-delay-300 {
+animation-delay: 0.3s;
+}
+}
+
+/* Scrollbar Styling */
 ::-webkit-scrollbar {
-  width: 8px;
+width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--surface-secondary);
+@apply bg-neutral-100;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--brand-primary);
-  border-radius: 4px;
+@apply bg-brand-400 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: color-mix(in srgb, var(--brand-primary) 80%, black);
+@apply bg-brand-500;
 }
 
-/* Optimized button base styles */
-.btn-base {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-  transition: all var(--transition-normal);
-  transform: translateZ(0);
-  will-change: transform, box-shadow;
+/* Focus Styles */
+.focus-visible:focus {
+@apply outline-none ring-2 ring-brand-500 ring-offset-2;
 }
 
-.btn-base:hover {
-  transform: translateY(-2px) translateZ(0);
-}
-
-.btn-base:active {
-  transform: translateY(0) translateZ(0);
-}
-
-/* Glass morphism utility */
-.glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Magnetic hover effect */
-.magnetic {
-  transition: transform var(--transition-normal) cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.magnetic:hover {
-  transform: scale(1.05) translateZ(0);
-}
-
-/* iOS-specific touch optimizations */
-@media (max-width: 1023px) {
-  * {
-    /* Disable iOS tap highlight */
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    user-select: none;
-    /* Eliminate 300ms tap delay */
-    touch-action: manipulation;
-  }
-
-  /* Re-enable text selection for inputs */
-  input, textarea, [contenteditable] {
-    -webkit-user-select: text;
-    user-select: text;
-    touch-action: auto;
-  }
-
-  /* Force touch-action for interactive elements */
-  button, a, [role="button"], [data-clickable] {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    /* Minimum tap target size for accessibility */
-    min-height: 44px;
-    min-width: 44px;
-  }
-
-  /* Mobile dock specific optimizations */
-  .mobile-dock-container {
-    /* Force positioning for iOS */
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    z-index: 9999 !important;
-    pointer-events: auto !important;
-    display: block !important;
-    
-    /* iOS Safe Area Support */
-    padding-bottom: var(--safe-area-inset-bottom);
-    padding-left: var(--safe-area-inset-left);
-    padding-right: var(--safe-area-inset-right);
-  }
-
-  /* iOS keyboard handling */
-  .mobile-dock-container.keyboard-open {
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
-  }
-}
-
-/* Desktop - hide mobile dock */
-@media (min-width: 1024px) {
-  .mobile-dock-container {
-    display: none !important;
-  }
-}
-
-/* Shimmer effect */
-.shimmer {
-  position: relative;
-  overflow: hidden;
-}
-
-.shimmer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  animation: shimmer 2s infinite;
-  z-index: 1;
-}
-
-@keyframes shimmer {
-  0% { left: -100%; }
-  100% { left: 100%; }
-}
-
-/* Blob animation */
-.blob {
-  border-radius: 50% 40% 30% 70% / 60% 30% 70% 40%;
-  animation: blob 7s ease-in-out infinite;
-}
-
-@keyframes blob {
-  0% { border-radius: 50% 40% 30% 70% / 60% 30% 70% 40%; }
-  25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
-  50% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-  75% { border-radius: 40% 60% 60% 40% / 60% 50% 40% 50%; }
-  100% { border-radius: 50% 40% 30% 70% / 60% 30% 70% 40%; }
-}
-
-/* Typography scale */
-.text-display-xl {
-  font-size: clamp(3rem, 8vw, 6rem);
-  line-height: 1.1;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-.text-display-lg {
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  line-height: 1.2;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-
-/* Performance hints */
-.will-change-transform {
-  will-change: transform;
-}
-
-.will-change-opacity {
-  will-change: opacity;
-}
-
-.will-change-auto {
-  will-change: auto;
-}
-
-/* iOS Safari specific fixes */
-@supports (-webkit-touch-callout: none) {
-  /* Fix iOS Safari viewport height */
-  .min-h-screen {
-    min-height: -webkit-fill-available;
-  }
-  
-  /* Fix iOS Safari bottom bar */
-  .h-screen {
-    height: -webkit-fill-available;
-  }
-  
-  /* Fix iOS font rendering */
-  body {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  
-  /* iOS input zoom prevention */
-  input, textarea, select {
-    font-size: 16px !important;
-  }
-  
-  /* iOS hover state fix */
-  @media (hover: none) and (pointer: coarse) {
-    .hover\:scale-105:hover {
-      transform: none;
-    }
-    
-    .hover\:shadow-xl:hover {
-      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
-    }
-  }
-}
-
-/* PWA display cutout support (iPhone X+) */
-@supports (padding: max(0px)) {
-  .safe-top {
-    padding-top: max(1rem, env(safe-area-inset-top));
-  }
-  
-  .safe-bottom {
-    padding-bottom: max(1rem, env(safe-area-inset-bottom));
-  }
-  
-  .safe-left {
-    padding-left: max(1rem, env(safe-area-inset-left));
-  }
-  
-  .safe-right {
-    padding-right: max(1rem, env(safe-area-inset-right));
-  }
-}
-
-/* Utility classes for haptic feedback states */
-.haptic-enabled {
-  cursor: pointer;
-  user-select: none;
-}
-
-.haptic-enabled:active {
-  transform: scale(0.98);
-  transition: transform 0.1s ease;
-}
-
-/* Loading states optimized */
-.skeleton {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 200% 100%;
-  animation: loading 1.5s infinite;
-}
-
-@keyframes loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* Print styles */
+/* Print Styles */
 @media print {
-  .mobile-dock-container {
-    display: none !important;
-  }
-  
-  .no-print {
-    display: none !important;
-  }
+.no-print {
+display: none !important;
 }
-
-/* Accessibility improvements */
-@media (prefers-reduced-motion: reduce) {
-  .blob {
-    animation: none;
-  }
-  
-  .shimmer::before {
-    animation: none;
-  }
-  
-  .skeleton {
-    animation: none;
-    background: #f0f0f0;
-  }
-}
-
-/* High contrast mode */
-@media (prefers-contrast: high) {
-  .glass {
-    background: rgba(255, 255, 255, 0.9);
-    border: 2px solid #000000;
-  }
-  
-  button, .btn-base {
-    border: 2px solid currentColor;
-  }
-}
-
-/* Custom properties for dynamic theming */
-.theme-green {
-  --brand-primary: #22c55e;
-  --brand-secondary: #16a34a;
-}
-
-.theme-blue {
-  --brand-primary: #3b82f6;
-  --brand-secondary: #1d4ed8;
-}
-
-/* Optimized animations for mobile */
-@media (max-width: 768px) {
-  .animate-pulse {
-    animation-duration: 1s;
-  }
-  
-  .animate-spin {
-    animation-duration: 0.8s;
-  }
-  
-  .animate-bounce {
-    animation-duration: 0.6s;
-  }
 }

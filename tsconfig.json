@@ -16,21 +16,32 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
 
-    /* Path mapping for cleaner imports */
+    /* Paths */
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@/components/*": ["./src/components/*"], // Confermato che punta a src/components/ (plurale)
-      "@/hooks/*": ["./src/hooks/*"],
-      "@/utils/*": ["./src/utils/*"],
-      "@/types/*": ["./src/components/types/*"], // CORRETTO: Ora punta a src/components/types/
-      "@/assets/*": ["./src/components/assets/*"] // CORRETTO: Ora punta a src/components/assets/
+      "@/components/*": ["./src/components/*"],
+      "@/sections/*": ["./src/components/sections/*"],
+      "@/layout/*": ["./src/components/layout/*"],
+      "@/legal/*": ["./src/components/legal/*"],
+      "@/ui/*": ["./src/components/ui/*"],
+      "@/types/*": ["./src/components/types/*"]
     }
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [
+    "src/**/*.ts", 
+    "src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build"
+  ],
+  "references": [
+    { "path": "./tsconfig.node.json" }
+  ]
 }

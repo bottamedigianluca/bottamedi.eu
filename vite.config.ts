@@ -34,6 +34,7 @@ export default defineConfig({
     minify: 'terser',
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
+      plugins: [],
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],

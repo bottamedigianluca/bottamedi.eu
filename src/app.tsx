@@ -42,6 +42,18 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [hideInFooter, setHideInFooter] = useState(false)
   const [isScrolling, setIsScrolling] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Language detection from browser/localStorage
   useEffect(() => {
@@ -72,11 +84,13 @@ function App() {
     }
   }, [])
 
-  // Section detection with Intersection Observer
+  // Section detection with Intersection Observer - OPTIMIZED FOR MOBILE
   useEffect(() => {
     const observerOptions = {
-      threshold: 0.3,
-      rootMargin: '-80px 0px -80px 0px'
+      // More sensitive threshold for mobile
+      threshold: isMobile ? 0.1 : 0.3,
+      // Adjusted root margin for mobile browsers
+      rootMargin: isMobile ? '-50px 0px -50px 0px' : '-80px 0px -80px 0px'
     }
 
     const observer = new IntersectionObserver((entries) => {
@@ -95,15 +109,26 @@ function App() {
       setSectionsInView(prev => ({ ...prev, ...updates }))
     }, observerOptions)
 
-    // Observe all sections
+    // Observe all sections with retry mechanism
     const sections = ['hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact']
-    sections.forEach(id => {
-      const element = document.getElementById(id)
-      if (element) observer.observe(element)
-    })
+    
+    // Use setTimeout to ensure DOM is ready
+    const observeTimeout = setTimeout(() => {
+      sections.forEach(id => {
+        const element = document.getElementById(id)
+        if (element) {
+          observer.observe(element)
+        } else {
+          console.warn(`Section with id "${id}" not found`)
+        }
+      })
+    }, 100)
 
-    return () => observer.disconnect()
-  }, [])
+    return () => {
+      clearTimeout(observeTimeout)
+      observer.disconnect()
+    }
+  }, [isMobile]) // Re-run when mobile state changes
 
   // Footer detection for mobile dock
   useEffect(() => {
@@ -188,6 +213,23 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Mobile viewport fix
+  useEffect(() => {
+    const setVH = () => {
+      const vh = window.innerHeight * 0.01
+      document.documentElement.style.setProperty('--vh', `${vh}px`)
+    }
+
+    setVH()
+    window.addEventListener('resize', setVH)
+    window.addEventListener('orientationchange', setVH)
+
+    return () => {
+      window.removeEventListener('resize', setVH)
+      window.removeEventListener('orientationchange', setVH)
+    }
+  }, [])
+
   // SEO and Analytics
   useEffect(() => {
     // Set page language for SEO
@@ -211,6 +253,15 @@ function App() {
       metaDescription.setAttribute('content', descriptions[language])
     }
 
+    // Ensure viewport meta tag is correct for mobile
+    let viewportMeta = document.querySelector('meta[name="viewport"]')
+    if (!viewportMeta) {
+      viewportMeta = document.createElement('meta')
+      viewportMeta.setAttribute('name', 'viewport')
+      document.head.appendChild(viewportMeta)
+    }
+    viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes')
+
     // Analytics page view
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', 'page_view', {
@@ -230,8 +281,8 @@ function App() {
         onToggleMenu={handleToggleMenu}
       />
 
-      {/* Main Content */}
-      <main role="main">
+      {/* Main Content with improved mobile styling */}
+      <main role="main" className="relative z-0">
         {/* Hero Section */}
         <HeroSection 
           language={language} 
@@ -244,34 +295,34 @@ function App() {
           inView={sectionsInView.about} 
         />
 
-        {/* Banchetto Section */}
+        {/* Banchetto Section - Force visibility check */}
         <BanchettoSection 
           language={language} 
-          inView={sectionsInView.dettaglio} 
+          inView={sectionsInView.dettaglio || isMobile} 
         />
 
         {/* Services Section */}
         <ServicesSection 
           language={language} 
-          inView={sectionsInView.services} 
+          inView={sectionsInView.services || isMobile} 
         />
 
         {/* Products Section */}
         <ProductsSection 
           language={language} 
-          inView={sectionsInView.products} 
+          inView={sectionsInView.products || isMobile} 
         />
 
         {/* Wholesale Contact Section */}
         <WholesaleContact 
           language={language} 
-          inView={sectionsInView.wholesale} 
+          inView={sectionsInView.wholesale || isMobile} 
         />
 
         {/* Contact Section */}
         <ContactSection 
           language={language} 
-          inView={sectionsInView.contact} 
+          inView={sectionsInView.contact || isMobile} 
         />
       </main>
 
@@ -348,14 +399,60 @@ function App() {
         }}
       />
 
-      {/* Performance monitoring */}
+      {/* Mobile debugging info - only in development */}
       {process.env.NODE_ENV === 'development' && (
         <div className="fixed bottom-2 left-2 bg-black/80 text-white text-xs p-2 rounded font-mono z-50">
           <div>Section: {currentSection}</div>
           <div>Language: {language}</div>
+          <div>Mobile: {isMobile ? 'Yes' : 'No'}</div>
+          <div>Viewport: {window.innerWidth}x{window.innerHeight}</div>
           <div>Scrolling: {isScrolling ? 'Yes' : 'No'}</div>
         </div>
       )}
+
+      {/* Add global mobile CSS fix */}
+      <style jsx global>{`
+        /* Mobile viewport fixes */
+        * {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        
+        html {
+          height: 100%;
+          height: calc(var(--vh, 1vh) * 100);
+        }
+        
+        body {
+          min-height: 100%;
+          min-height: calc(var(--vh, 1vh) * 100);
+          overscroll-behavior-y: none;
+        }
+        
+        /* Ensure sections are properly spaced on mobile */
+        @media (max-width: 768px) {
+          section {
+            min-height: auto !important;
+            padding-top: 2rem !important;
+            padding-bottom: 2rem !important;
+          }
+          
+          /* Force visibility for problematic sections */
+          #dettaglio, #services, #products, #wholesale {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+          }
+        }
+        
+        /* Fix for mobile browser viewport issues */
+        @media screen and (max-width: 768px) {
+          .container {
+            padding-left: 1rem;
+            padding-right: 1rem;
+          }
+        }
+      `}</style>
     </div>
   )
 }

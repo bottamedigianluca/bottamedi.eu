@@ -1,6 +1,6 @@
 [build]
-  # Comando di build
-  command = "npm run build"
+  # Comando di build con pulizia forzata
+  command = "npm ci && npm run build"
   
   # Directory di output
   publish = "dist"
@@ -9,7 +9,7 @@
   base = "."
 
 [build.environment]
-  # Forza l'uso di Node.js 20 LTS (versione supportata e stabile)
+  # Forza l'uso di Node.js 20 LTS
   NODE_VERSION = "20"
   
   # Usa NPM più recente
@@ -23,6 +23,13 @@
   
   # Ottimizzazioni Vite
   VITE_BUILD_TARGET = "es2020"
+  
+  # Forza pulizia cache
+  NPM_CONFIG_CACHE = "/opt/buildhome/.npm"
+
+# Cache per build più veloci
+[build.processing]
+  skip_processing = false
 
 # Headers per ottimizzazione
 [[headers]]

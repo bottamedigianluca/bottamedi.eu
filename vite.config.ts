@@ -79,7 +79,8 @@ export default defineConfig({
       'react',
       'react-dom',
       'framer-motion',
-      'react-intersection-observer'
+      'react-intersection-observer',
+      'core-js'
     ]
   },
 

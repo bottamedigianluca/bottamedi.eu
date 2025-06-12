@@ -1,0 +1,62 @@
+# ==============================================================================
+# .htaccess OTTIMIZZATO per React/Vite SPA su Apache (OVH)
+# ==============================================================================
+
+# Attiva il motore di riscrittura degli URL
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Imposta la base per le regole di riscrittura
+  RewriteBase /
+
+  # 1. GESTIONE ROUTING PER SINGLE PAGE APPLICATION (SPA)
+  # ----------------------------------------------------------------------
+  # Non riscrivere le richieste per file o cartelle che esistono già
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Riscrivi tutte le altre richieste verso index.html per gestire il routing lato client
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# ==============================================================================
+# 2. IMPOSTAZIONE CORRETTA DEI MIME TYPES
+# ==============================================================================
+<IfModule mod_headers.c>
+  # Imposta il Content-Type corretto per le sitemap XML
+  <FilesMatch "\.(xml)$">
+    Header set Content-Type "application/xml; charset=utf-8"
+  </FilesMatch>
+
+  # Imposta il Content-Type corretto per i fogli di stile XSL (per la visualizzazione della sitemap)
+  <FilesMatch "\.(xsl)$">
+    Header set Content-Type "text/xsl; charset=utf-8"
+  </FilesMatch>
+</IfModule>
+
+# ==============================================================================
+# 3. OTTIMIZZAZIONI PERFORMANCE (CACHE E COMPRESSIONE)
+# ==============================================================================
+
+# Attiva la compressione Gzip/Deflate per ridurre le dimensioni dei file
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/plain text/html text/xml text/css text/javascript
+  AddOutputFilterByType DEFLATE application/xml application/xhtml+xml application/rss+xml
+  AddOutputFilterByType DEFLATE application/javascript application/x-javascript application/json
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# Imposta le scadenze per la cache del browser (caching)
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault                              "access plus 1 month"
+  ExpiresByType text/css                        "access plus 1 year"
+  ExpiresByType application/javascript          "access plus 1 year"
+  ExpiresByType image/webp                      "access plus 1 year"
+  ExpiresByType image/jpeg                      "access plus 1 year"
+  ExpiresByType image/png                       "access plus 1 year"
+  ExpiresByType image/svg+xml                   "access plus 1 year"
+  ExpiresByType application/pdf                 "access plus 1 month"
+  ExpiresByType application/x-font-woff2        "access plus 1 year"
+</IfModule>

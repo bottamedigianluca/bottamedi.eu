@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Immagini principali del banchetto -->
+  <url>
+    <loc>https://www.bottamedi.eu/</loc>
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/banchetto.webp</image:loc>
+      <image:title>Banchetto Bottamedi Frutta e Verdura Mezzolombardo</image:title>
+      <image:caption>Il colorato banchetto di frutta e verdura fresca di Bottamedi nel centro di Mezzolombardo, Trentino Alto Adige. Oltre 150 varietà fresche selezionate ogni giorno.</image:caption>
+      <image:geo_location>Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/banco_varieta_autunno.webp</image:loc>
+      <image:title>Varietà Autunnali Banchetto Bottamedi</image:title>
+      <image:caption>Ricca esposizione di frutta fresca di stagione, verdure e prodotti tipici del Trentino al banchetto Bottamedi di Mezzolombardo</image:caption>
+      <image:geo_location>Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/melinda_golden.webp</image:loc>
+      <image:title>Mele Golden Melinda DOP Trentino</image:title>
+      <image:caption>Mele Golden Melinda DOP fresche e succose dalla Val di Non, certificate e selezionate da Bottamedi per qualità superiore</image:caption>
+      <image:geo_location>Val di Non, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/pomodori_cuore_bue.webp</image:loc>
+      <image:title>Pomodori Cuore di Bue Trentino</image:title>
+      <image:caption>Pomodori cuore di bue rossi freschi e profumati del Trentino, ideali per insalate e preparazioni gourmet, disponibili da Bottamedi</image:caption>
+      <image:geo_location>Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <!-- Prodotti stagionali -->
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/angurie.webp</image:loc>
+      <image:title>Angurie Fresche Estive</image:title>
+      <image:caption>Angurie fresche e succose, tagliate e intere, dolcezza estiva disponibile in stagione da Bottamedi Mezzolombardo</image:caption>
+      <image:geo_location>Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/meloni_sattin_dettaglio.webp</image:loc>
+      <image:title>Meloni Sattin Dolce Passione</image:title>
+      <image:caption>Meloni Sattin Dolce Passione profumati e dolci, specialità estiva di qualità superiore selezionata da Bottamedi</image:caption>
+      <image:geo_location>Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/arance_felici.webp</image:loc>
+      <image:title>Arance La Favorita Felici</image:title>
+      <image:caption>Arance fresche e succose La Favorita Felici, agrumi selezionati della migliore qualità disponibili da Bottamedi</image:caption>
+      <image:geo_location>Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/zucche_decorate_banco.webp</image:loc>
+      <image:title>Zucche Autunnali Banco Bottamedi</image:title>
+      <image:caption>Atmosfera accogliente e stagionale al banchetto Bottamedi con zucche decorate e prodotti autunnali del Trentino</image:caption>
+      <image:geo_location>Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <!-- Specialità Premium -->
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/bottamedi_mele_pink_lady_confezione.webp</image:loc>
+      <image:title>Mele Pink Lady Confezione Premium</image:title>
+      <image:caption>Confezione di Mele Pink Lady fresche e croccanti, varietà internazionale di qualità premium disponibile da Bottamedi</image:caption>
+      <image:geo_location>Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/bottamedi_ananas_fruitpoint_freschi.webp</image:loc>
+      <image:title>Ananas Fruitpoint Freschi</image:title>
+      <image:caption>Ananas freschi e maturi Fruitpoint, frutta esotica di qualità superiore per clienti esigenti, disponibile da Bottamedi</image:caption>
+      <image:geo_location>Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/bottamedi_mele_melinda_montagna_cassetta.webp</image:loc>
+      <image:title>Cassetta Mele Melinda Montagna DOP</image:title>
+      <image:caption>Cassetta di Mele Melinda 'Mela di Montagna' DOP, specialità certificata del Trentino Alto Adige selezionata da Bottamedi</image:caption>
+      <image:geo_location>Val di Non, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <!-- Frutta disidratata e specialità -->
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/bottamedi_sacchetti_frutta_disidratata_mista.webp</image:loc>
+      <image:title>Frutta Disidratata Mista Sacchetti</image:title>
+      <image:caption>Sacchetti di frutta disidratata mista colorata e gustosa, prodotti naturali senza conservanti disponibili da Bottamedi</image:caption>
+      <image:geo_location>Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/bottamedi_dettaglio_frutta_disidratata_vaschette.webp</image:loc>
+      <image:title>Vaschette Frutta Disidratata Dettaglio</image:title>
+      <image:caption>Dettaglio vaschette di frutta disidratata assortita, snack salutari e naturali proposti da Bottamedi per tutti i gusti</image:caption>
+      <image:geo_location>Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/banco_frigo_disidratata_specialita.webp</image:loc>
+      <image:title>Banco Frigo Specialità Trentine</image:title>
+      <image:caption>Ampia selezione di specialità del Trentino Alto Adige nel banco frigo di Bottamedi, prodotti tipici locali di qualità</image:caption>
+      <image:geo_location>Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <!-- Servizio Ingrosso HORECA -->
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/albicocche_ingrosso_magazzino.webp</image:loc>
+      <image:title>Magazzino Ingrosso HORECA Bottamedi</image:title>
+      <image:caption>Magazzino albicocche e frutta per il servizio ingrosso HORECA di Bottamedi, forniture professionali per ristoranti, hotel e pizzerie del Trentino</image:caption>
+      <image:geo_location>Via de Gasperi 47, Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <!-- Prodotti cuore -->
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/kiwi-cuore.webp</image:loc>
+      <image:title>Kiwi Cuore Specialità</image:title>
+      <image:caption>Kiwi freschi a forma di cuore, specialità unica e originale di Bottamedi per sorprendere e deliziare</image:caption>
+      <image:geo_location>Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/kiwi-gialli-bg.webp</image:loc>
+      <image:title>Kiwi Gialli Premium</image:title>
+      <image:caption>Kiwi gialli dolci e succosi, varietà premium con polpa dorata e sapore delicato, disponibili da Bottamedi</image:caption>
+      <image:geo_location>Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <!-- Mappe e Localizzazione -->
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/mappa-banchetto-bottamedi.webp</image:loc>
+      <image:title>Mappa Posizione Banchetto Bottamedi</image:title>
+      <image:caption>Mappa con la posizione esatta del banchetto Bottamedi in Via Cavalleggeri Udine nel centro di Mezzolombardo, Trentino Alto Adige</image:caption>
+      <image:geo_location>Via Cavalleggeri Udine, Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/mappa-ingrosso-bottamedi.webp</image:loc>
+      <image:title>Mappa Sede Ingrosso HORECA Bottamedi</image:title>
+      <image:caption>Mappa della sede dell'ingrosso HORECA Bottamedi in Via Alcide de Gasperi 47, Mezzolombardo, per forniture professionali</image:caption>
+      <image:geo_location>Via de Gasperi 47, Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <!-- Logo e Branding -->
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/logo-bottamedi.webp</image:loc>
+      <image:title>Logo Bottamedi Frutta e Verdura</image:title>
+      <image:caption>Logo ufficiale di Bottamedi, azienda familiare di frutta e verdura fresca attiva dal 1974 a Mezzolombardo, Trentino Alto Adige</image:caption>
+      <image:geo_location>Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/favicon.webp</image:loc>
+      <image:title>Favicon Bottamedi</image:title>
+      <image:caption>Icona simbolo di Bottamedi per identificazione rapida del brand online</image:caption>
+      <image:geo_location>Mezzolombardo, Trentino Alto Adige, Italia</image:geo_location>
+    </image:image>
+
+  </url>
+
+</urlset>

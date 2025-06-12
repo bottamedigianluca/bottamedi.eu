@@ -1,6 +1,18 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 
+// Declare tracking functions for TypeScript
+declare global {
+  interface Window {
+    trackNavigazione: (sezione: string, azione: string, dettaglio: string) => void;
+    trackStoriaTradizione: (elemento: string, interesse: string) => void;
+    trackQualitaProdotti: (aspetto: string, valutazione: string) => void;
+    trackPerformanceSito: (metrica: string, valore: number, soglia: number) => void;
+    updateCurrentSection: (sectionName: string) => void;
+    gtag: (...args: any[]) => void;
+  }
+}
+
 interface HeroSectionProps {
   language: 'it' | 'de'
   inView: boolean
@@ -71,11 +83,12 @@ const useOptimizedCounter = (endValue: number, inView: boolean, duration: number
   return count
 }
 
-// 🎬 PERFORMANCE: Memoized Video Component
+// 🎬 PERFORMANCE: Memoized Video Component con tracking
 const OptimizedVideoBackground: React.FC<{ inView: boolean }> = React.memo(({ inView }) => {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [videoLoaded, setVideoLoaded] = useState(false)
   const [videoError, setVideoError] = useState(false)
+  const [loadStartTime] = useState(Date.now())
 
   useEffect(() => {
     const video = videoRef.current
@@ -84,10 +97,38 @@ const OptimizedVideoBackground: React.FC<{ inView: boolean }> = React.memo(({ in
     const playVideo = async () => {
       try {
         await video.play()
-        console.log('📹 Video playing')
+        
+        // 🎯 TRACKING VIDEO PERFORMANCE
+        const loadTime = Date.now() - loadStartTime
+        if (typeof window !== 'undefined') {
+          window.trackPerformanceSito?.('caricamento_video_hero', loadTime, 3000)
+          
+          if (window.gtag) {
+            window.gtag('event', 'video_hero_caricato', {
+              event_category: 'Performance Video',
+              event_label: loadTime > 3000 ? 'caricamento_lento' : 'caricamento_veloce',
+              custom_parameter_1: 'video_verdure_rotanti',
+              custom_parameter_2: loadTime + 'ms',
+              custom_parameter_3: 'video_autoplay_riuscito',
+              value: Math.round(loadTime)
+            })
+          }
+        }
       } catch (error) {
         console.warn('📹 Video autoplay failed:', error)
         setVideoError(true)
+        
+        // 🎯 TRACKING VIDEO ERROR
+        if (typeof window !== 'undefined' && window.gtag) {
+          window.gtag('event', 'video_hero_errore', {
+            event_category: 'Errori Video',
+            event_label: 'autoplay_fallito',
+            custom_parameter_1: 'video_verdure_rotanti',
+            custom_parameter_2: 'fallback_immagine',
+            custom_parameter_3: 'esperienza_degradata',
+            value: 1
+          })
+        }
       }
     }
 
@@ -100,7 +141,7 @@ const OptimizedVideoBackground: React.FC<{ inView: boolean }> = React.memo(({ in
     return () => {
       video.removeEventListener('loadeddata', playVideo)
     }
-  }, [inView])
+  }, [inView, loadStartTime])
 
   const handleLoadedData = useCallback(() => {
     setVideoLoaded(true)
@@ -159,6 +200,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollY } = useScroll()
   const shouldReduceMotion = useReducedMotion()
+  const [sectionStartTime] = useState(Date.now())
   
   const t = useMemo(() => translations[language], [language])
   
@@ -169,8 +211,87 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
   // 📊 Counter animato ottimizzato
   const count = useOptimizedCounter(t.yearsCount, inView, 2000)
 
-  // 🎯 PERFORMANCE: Memoized click handlers
+  // 🎯 TRACKING SEZIONE HERO
+  useEffect(() => {
+    if (inView && typeof window !== 'undefined') {
+      // Aggiorna sezione corrente
+      window.updateCurrentSection?.('hero')
+      
+      // Track interesse per qualità e tradizione
+      window.trackQualitaProdotti?.('presentazione_iniziale', 'prima_impressione')
+      window.trackStoriaTradizione?.('50_anni_esperienza', 'visualizzazione_hero')
+      
+      // Analytics dettagliate hero
+      if (window.gtag) {
+        window.gtag('event', 'hero_visualizzato', {
+          event_category: 'Engagement Hero',
+          event_label: 'prima_impressione_sito',
+          custom_parameter_1: 'hero_section',
+          custom_parameter_2: 'landing_page',
+          custom_parameter_3: 'primo_impatto_brand',
+          value: 10
+        })
+      }
+    }
+
+    // Cleanup: track tempo nella sezione hero
+    return () => {
+      if (inView && typeof window !== 'undefined') {
+        const timeInHero = Math.round((Date.now() - sectionStartTime) / 1000)
+        if (timeInHero > 2) {
+          if (window.gtag) {
+            window.gtag('event', 'tempo_in_hero', {
+              event_category: 'Engagement Hero',
+              event_label: timeInHero > 10 ? 'alta_attenzione' : 'veloce_passaggio',
+              custom_parameter_1: timeInHero + '_secondi',
+              custom_parameter_2: timeInHero > 10 ? 'interessato' : 'esplorazione_veloce',
+              value: timeInHero
+            })
+          }
+        }
+      }
+    }
+  }, [inView, sectionStartTime])
+
+  // 🎯 PERFORMANCE: Memoized click handlers con tracking
   const handleCTAClick = useCallback((type: 'dettaglio' | 'services' | 'about') => {
+    // 🎯 TRACKING CTA CLICKS
+    if (typeof window !== 'undefined') {
+      const azioniMap = {
+        dettaglio: 'esplora_banchetto',
+        services: 'scopri_ingrosso', 
+        about: 'leggi_storia'
+      }
+      
+      const destinazioniMap = {
+        dettaglio: 'sezione_banchetto',
+        services: 'sezione_servizi',
+        about: 'sezione_storia'
+      }
+
+      // Track navigazione
+      window.trackNavigazione?.('hero', azioniMap[type], destinazioniMap[type])
+
+      // Track interessi specifici
+      if (type === 'about') {
+        window.trackStoriaTradizione?.('click_storia_da_hero', 'interesse_alto')
+      } else if (type === 'dettaglio') {
+        window.trackQualitaProdotti?.('interesse_banchetto', 'click_da_hero')
+      }
+
+      // Analytics dettagliate CTA
+      if (window.gtag) {
+        window.gtag('event', 'cta_hero_click', {
+          event_category: 'Conversioni Hero',
+          event_label: `cta_${type}`,
+          custom_parameter_1: type,
+          custom_parameter_2: azioniMap[type],
+          custom_parameter_3: 'navigazione_guidata',
+          value: type === 'services' ? 25 : (type === 'dettaglio' ? 20 : 15)
+        })
+      }
+    }
+
     const sectionMap = {
       dettaglio: 'dettaglio',
       services: 'services',
@@ -192,6 +313,24 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
     }
   }, [])
 
+  // 🎯 TRACKING COUNTER ANIMATION
+  useEffect(() => {
+    if (count === t.yearsCount && typeof window !== 'undefined') {
+      window.trackStoriaTradizione?.('animazione_50_anni_completata', 'alta')
+      
+      if (window.gtag) {
+        window.gtag('event', 'counter_50_anni_completato', {
+          event_category: 'Animazioni Hero',
+          event_label: 'counter_tradizione_finito',
+          custom_parameter_1: '50_anni_esperienza',
+          custom_parameter_2: 'animazione_vista_completa',
+          custom_parameter_3: 'impatto_tradizione',
+          value: 8
+        })
+      }
+    }
+  }, [count, t.yearsCount])
+
   // 🎨 PERFORMANCE: Memoized animation variants
   const animationVariants = useMemo(() => ({
     initial: { opacity: 0, y: shouldReduceMotion ? 0 : 40 },
@@ -211,11 +350,29 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
     transition: { delay: shouldReduceMotion ? 0 : 0.6, duration: shouldReduceMotion ? 0.1 : 0.5 }
   }), [shouldReduceMotion])
 
-  // 🎨 CTAs memoizzati per performance
+  // 🎨 CTAs memoizzati per performance con tracking migliorato
   const ctaButtons = useMemo(() => [
-    { type: 'dettaglio' as const, label: t.cta1, icon: '🛒', gradient: 'from-green-500 to-green-600' },
-    { type: 'services' as const, label: t.cta2, icon: '🚛', gradient: 'from-blue-500 to-blue-600' },
-    { type: 'about' as const, label: t.cta3, icon: '🌱', gradient: 'from-gray-500 to-gray-600' }
+    { 
+      type: 'dettaglio' as const, 
+      label: t.cta1, 
+      icon: '🛒', 
+      gradient: 'from-green-500 to-green-600',
+      trackingValue: 20
+    },
+    { 
+      type: 'services' as const, 
+      label: t.cta2, 
+      icon: '🚛', 
+      gradient: 'from-blue-500 to-blue-600',
+      trackingValue: 25
+    },
+    { 
+      type: 'about' as const, 
+      label: t.cta3, 
+      icon: '🌱', 
+      gradient: 'from-gray-500 to-gray-600',
+      trackingValue: 15
+    }
   ], [t])
 
   return (
@@ -343,7 +500,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
           </motion.div>
         </motion.div>
 
-        {/* 🎯 CTA Buttons Ottimizzati */}
+        {/* 🎯 CTA Buttons Ottimizzati con tracking */}
         <motion.div
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
           animate={{ opacity: 1, y: 0 }}

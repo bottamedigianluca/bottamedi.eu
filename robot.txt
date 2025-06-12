@@ -1,0 +1,71 @@
+# Robots.txt per Bottamedi Frutta e Verdura
+# Ottimizzato per posizionamento SEO su Google
+
+User-agent: *
+Allow: /
+
+# Consenti accesso completo ai principali motori di ricerca
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+# Blocca crawler dannosi o inutili
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# Consenti accesso alle cartelle critiche per SEO
+Allow: /images/
+Allow: /videos/
+Allow: /assets/
+Allow: /public/
+
+# Blocca file non necessari per l'indicizzazione
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: /*.json$
+Disallow: /*.ts$
+Disallow: /*.tsx$
+Disallow: /vite.config.ts
+Disallow: /package.json
+Disallow: /tsconfig.json
+
+# Consenti manifest PWA e service worker
+Allow: /manifest.json
+Allow: /service-worker.js
+
+# Riferimenti alle sitemap
+Sitemap: https://www.bottamedi.eu/sitemap.xml
+Sitemap: https://www.bottamedi.eu/sitemap-images.xml
+Sitemap: https://www.bottamedi.eu/sitemap-videos.xml
+
+# Crawl-delay per evitare sovraccarico server
+Crawl-delay: 1
+
+# Host preferito (canonico)
+Host: https://www.bottamedi.eu

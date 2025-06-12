@@ -595,4 +595,4 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
   )
 }
 
-export default React.memo(ContactSection)S
+export default React.memo(ContactSection)

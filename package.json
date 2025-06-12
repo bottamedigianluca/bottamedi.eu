@@ -14,7 +14,13 @@
     "ingrosso",
     "dettaglio",
     "biologico",
-    "locale"
+    "locale",
+    "melinda",
+    "dop",
+    "ortofrutta",
+    "trentino alto adige",
+    "frutta fresca",
+    "verdura fresca"
   ],
   "author": {
     "name": "Bottamedi Gianluca",
@@ -23,44 +29,46 @@
   },
   "license": "UNLICENSED",
   "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "framer-motion": "^10.16.16",
+    "react-helmet-async": "^2.0.5",
+    "react-intersection-observer": "^9.5.3",
+    "core-js": "^3.35.0",
+    "web-vitals": "^3.5.0"
+  },
+  "devDependencies": {
     "@types/node": "^20.10.0",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
-    "core-js": "^3.35.0",
-    "framer-motion": "^10.16.16",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-helmet-async": "^2.0.4",
-    "react-intersection-observer": "^9.5.3",
-    "typescript": "^5.3.3",
-    "web-vitals": "^3.5.0",
-    "vite": "^5.0.8"
-  },
-  "devDependencies": {
-    "@types/jest": "^29.5.8",
-    "@typescript-eslint/eslint-plugin": "^6.13.1",
-    "@typescript-eslint/parser": "^6.13.1",
     "@vitejs/plugin-react-swc": "^3.5.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.8",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.3.6",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
-    "autoprefixer": "^10.4.16",
+    "rollup": "^4.9.6",
+    "terser": "^5.24.0",
     "eslint": "^8.54.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "postcss": "^8.4.32",
-    "rollup": "^4.9.6",
-    "tailwindcss": "^3.3.6",
-    "terser": "^5.24.0"
+    "@types/jest": "^29.5.8"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "dev": "vite --host",
+    "build": "tsc && vite build",
+    "preview": "vite preview --host",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx --quiet",
     "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
     "type-check": "tsc --noEmit --skipLibCheck",
-    "clean": "rm -rf dist node_modules/.vite"
+    "clean": "rm -rf dist node_modules/.vite",
+    "build:prod": "npm run type-check && npm run build",
+    "serve": "npm run build && npm run preview"
   },
   "eslintConfig": {
     "extends": [
@@ -69,7 +77,8 @@
     ],
     "rules": {
       "no-unused-vars": "warn",
-      "@typescript-eslint/no-unused-vars": "warn"
+      "@typescript-eslint/no-unused-vars": "warn",
+      "react-hooks/exhaustive-deps": "warn"
     }
   },
   "browserslist": {
@@ -77,7 +86,10 @@
       ">0.2%",
       "not dead",
       "not op_mini all",
-      "not ie <= 11"
+      "not ie <= 11",
+      "not chrome < 61",
+      "not firefox < 60",
+      "not safari < 12"
     ],
     "development": [
       "last 1 chrome version",
@@ -86,7 +98,8 @@
     ]
   },
   "engines": {
-    "node": "20.x",
-    "npm": ">=10.0.0"
-  }
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "packageManager": "npm@10.2.4"
 }

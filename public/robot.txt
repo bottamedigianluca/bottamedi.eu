@@ -7,65 +7,42 @@ Allow: /
 # Consenti accesso completo ai principali motori di ricerca
 User-agent: Googlebot
 Allow: /
-
 User-agent: Bingbot
 Allow: /
-
 User-agent: Slurp
 Allow: /
-
 User-agent: DuckDuckBot
 Allow: /
 
-User-agent: Baiduspider
-Allow: /
-
-User-agent: YandexBot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
-# Blocca crawler dannosi o inutili
+# Blocca crawler SEO non essenziali
 User-agent: SemrushBot
 Disallow: /
-
 User-agent: AhrefsBot
 Disallow: /
-
 User-agent: MJ12bot
 Disallow: /
-
 User-agent: DotBot
 Disallow: /
 
-# Consenti accesso alle cartelle critiche per SEO
-Allow: /images/
-Allow: /videos/
-Allow: /assets/
-Allow: /public/
-
-# Blocca file non necessari per l'indicizzazione
+# Blocca file di sviluppo e configurazione
 Disallow: /src/
 Disallow: /node_modules/
-Disallow: /*.json$
-Disallow: /*.ts$
-Disallow: /*.tsx$
 Disallow: /vite.config.ts
 Disallow: /package.json
 Disallow: /tsconfig.json
 
-# Consenti manifest PWA e service worker
+# Consenti file importanti per la PWA e SEO
 Allow: /manifest.json
 Allow: /service-worker.js
+Allow: /sitemap.xml
+Allow: /sitemap-images.xml
+Allow: /images/
+Allow: /videos/
+Allow: /assets/
 
-# Riferimenti alle sitemap
+# Riferimenti ai sitemap corretti
 Sitemap: https://www.bottamedi.eu/sitemap.xml
 Sitemap: https://www.bottamedi.eu/sitemap-images.xml
-Sitemap: https://www.bottamedi.eu/sitemap-videos.xml
-
-# Crawl-delay per evitare sovraccarico server
-Crawl-delay: 1
 
 # Host preferito (canonico)
 Host: https://www.bottamedi.eu

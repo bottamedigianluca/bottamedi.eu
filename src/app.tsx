@@ -1,282 +1,208 @@
-import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react'
+import React, { useState, useEffect, useCallback, Suspense } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 
-// 🚀 LAZY IMPORTS OTTIMIZZATI con error boundaries
-const Header = React.lazy(() => 
-  import('./components/layout/Header').then(module => ({ default: module.default }))
-  .catch(() => import('./components/layout/Header'))
-)
+// 🚀 IMPORT DIRETTI (no lazy) per componenti critici
+import Header from './components/layout/Header'
+import Footer from './components/layout/Footer'
 
+// 📱 LAZY LOADING solo per componenti NON critici
+const MobileDock = React.lazy(() => import('./components/layout/MobileDock'))
+const CookieBanner = React.lazy(() => import('./components/legal/CookieBanner'))
+const LegalDocuments = React.lazy(() => import('./components/legal/LegalDocuments'))
+
+// 🎯 SEZIONI con lazy loading ROBUSTO
 const HeroSection = React.lazy(() => 
-  import('./components/sections/HeroSection').then(module => ({ default: module.default }))
-  .catch(() => ({ default: () => <div className="h-screen bg-green-50 flex items-center justify-center">
-    <h1 className="text-4xl font-bold text-green-600">BOTTAMEDI</h1>
-  </div> }))
+  import('./components/sections/HeroSection')
+    .catch(() => ({
+      default: () => (
+        <section className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-6xl font-bold text-green-600 mb-4">BOTTAMEDI</h1>
+            <p className="text-xl text-green-700">Frutta e Verdura dal 1974</p>
+          </div>
+        </section>
+      )
+    }))
 )
 
 const AboutSection = React.lazy(() => 
-  import('./components/sections/AboutSection').then(module => ({ default: module.default }))
-  .catch(() => ({ default: () => <div className="h-96 bg-gray-50" /> }))
+  import('./components/sections/AboutSection')
+    .catch(() => ({
+      default: () => (
+        <section className="py-20 bg-gray-50">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">La Nostra Storia</h2>
+            <p className="text-lg text-gray-600">50 anni di tradizione familiare</p>
+          </div>
+        </section>
+      )
+    }))
 )
 
 const BanchettoSection = React.lazy(() => 
-  import('./components/sections/Banchettosection').then(module => ({ default: module.default }))
-  .catch(() => ({ default: () => <div className="h-96 bg-green-50" /> }))
+  import('./components/sections/Banchettosection')
+    .catch(() => ({
+      default: () => (
+        <section className="py-20 bg-green-50">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Al Banchetto</h2>
+            <p className="text-lg text-gray-600">Freschezza quotidiana</p>
+          </div>
+        </section>
+      )
+    }))
 )
 
 const ServicesSection = React.lazy(() => 
-  import('./components/sections/ServicesSection').then(module => ({ default: module.default }))
-  .catch(() => ({ default: () => <div className="h-96 bg-blue-50" /> }))
+  import('./components/sections/ServicesSection')
+    .catch(() => ({
+      default: () => (
+        <section className="py-20 bg-blue-50">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">I Nostri Servizi</h2>
+            <p className="text-lg text-gray-600">Dettaglio e HORECA</p>
+          </div>
+        </section>
+      )
+    }))
 )
 
 const ProductsSection = React.lazy(() => 
-  import('./components/sections/ProductsSection').then(module => ({ default: module.default }))
-  .catch(() => ({ default: () => <div className="h-96 bg-emerald-50" /> }))
+  import('./components/sections/ProductsSection')
+    .catch(() => ({
+      default: () => (
+        <section className="py-20 bg-emerald-50">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">I Nostri Prodotti</h2>
+            <p className="text-lg text-gray-600">Oltre 150 varietà</p>
+          </div>
+        </section>
+      )
+    }))
 )
 
 const WholesaleContact = React.lazy(() => 
-  import('./components/sections/Wholesalecontact').then(module => ({ default: module.default }))
-  .catch(() => ({ default: () => <div className="h-96 bg-orange-50" /> }))
+  import('./components/sections/Wholesalecontact')
+    .catch(() => ({
+      default: () => (
+        <section className="py-20 bg-orange-50">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Richiedi Listino</h2>
+            <p className="text-lg text-gray-600">Servizio HORECA</p>
+          </div>
+        </section>
+      )
+    }))
 )
 
 const ContactSection = React.lazy(() => 
-  import('./components/sections/ContactSection').then(module => ({ default: module.default }))
-  .catch(() => ({ default: () => <div className="h-96 bg-purple-50" /> }))
+  import('./components/sections/ContactSection')
+    .catch(() => ({
+      default: () => (
+        <section className="py-20 bg-purple-50">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Contattaci</h2>
+            <p className="text-lg text-gray-600">Siamo qui per te</p>
+          </div>
+        </section>
+      )
+    }))
 )
 
-const Footer = React.lazy(() => 
-  import('./components/layout/Footer').then(module => ({ default: module.default }))
-  .catch(() => ({ default: () => <div className="h-64 bg-neutral-900" /> }))
-)
-
-const MobileDock = React.lazy(() => 
-  import('./components/layout/MobileDock').then(module => ({ default: module.default }))
-  .catch(() => ({ default: () => null }))
-)
-
-const CookieBanner = React.lazy(() => 
-  import('./components/legal/CookieBanner').then(module => ({ default: module.default }))
-  .catch(() => ({ default: () => null }))
-)
-
-const LegalDocuments = React.lazy(() => 
-  import('./components/legal/LegalDocuments').then(module => ({ default: module.default }))
-  .catch(() => ({ default: () => <div className="h-64 bg-gray-50" /> }))
-)
-
-// 🎯 PERFORMANCE: Fallback components ottimizzati
-const ComponentLoader = ({ height = "h-96" }: { height?: string }) => (
-  <div className={`${height} flex items-center justify-center`}>
-    <div className="flex flex-col items-center space-y-3">
-      <div className="w-8 h-8 border-2 border-green-200 border-t-green-600 rounded-full animate-spin" />
-      <div className="text-sm text-green-600 font-medium">Caricamento...</div>
+// 🎯 FALLBACK ottimizzato senza schermata bianca
+const SectionFallback = ({ title }: { title: string }) => (
+  <div className="min-h-[400px] flex items-center justify-center">
+    <div className="text-center space-y-4">
+      <div className="w-8 h-8 border-2 border-green-200 border-t-green-600 rounded-full animate-spin mx-auto" />
+      <p className="text-sm text-green-600 font-medium">Caricamento {title}...</p>
     </div>
   </div>
 )
-
-const HeaderLoader = () => (
-  <div className="h-20 bg-white/90 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-4">
-    <div className="w-32 h-8 bg-gray-200 rounded animate-pulse" />
-    <div className="flex space-x-4">
-      <div className="w-8 h-8 bg-gray-200 rounded animate-pulse" />
-      <div className="w-8 h-8 bg-gray-200 rounded animate-pulse" />
-    </div>
-  </div>
-)
-
-// 🎨 PERFORMANCE: Stili inline ottimizzati
-const inlineStyles = `
-  .mobile-dock-container {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    pointer-events: none !important;
-    z-index: 1000 !important;
-  }
-  @media (min-width: 1024px) {
-    .mobile-dock-container { display: none !important; }
-  }
-  .smooth-scroll {
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-  }
-`
-
-// 🎯 HOOK OTTIMIZZATO per sezioni in vista
-const useOptimizedInView = (threshold = 0.1) => {
-  return useInView({
-    threshold,
-    triggerOnce: false, // Manteniamo per il dock
-    rootMargin: '50px'
-  })
-}
-
-// 🎯 HOOK per visibilità mobile dock
-const useMobileDockVisibility = (currentSection: string, isFooterInView: boolean) => {
-  const [isVisible, setIsVisible] = useState(false)
-  const [isScrollingDown, setIsScrollingDown] = useState(false)
-  const [lastScrollY, setLastScrollY] = useState(0)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY
-      const isScrollingDown = currentScrollY > lastScrollY
-      
-      setIsScrollingDown(isScrollingDown)
-      setLastScrollY(currentScrollY)
-
-      // Logica visibilità dock
-      const shouldShow = currentSection !== 'hero' && 
-                        !isFooterInView && 
-                        currentScrollY > 200 &&
-                        !isScrollingDown
-
-      setIsVisible(shouldShow)
-    }
-
-    const throttledScroll = () => {
-      requestAnimationFrame(handleScroll)
-    }
-
-    window.addEventListener('scroll', throttledScroll, { passive: true })
-    return () => window.removeEventListener('scroll', throttledScroll)
-  }, [currentSection, isFooterInView, lastScrollY])
-
-  return isVisible
-}
 
 // 🎯 MAIN APP COMPONENT
 const App: React.FC = () => {
-  // 📊 STATE MANAGEMENT ottimizzato
-  const [appState, setAppState] = useState({
-    language: 'it' as 'it' | 'de',
-    currentSection: 'hero',
-    showLegalDocs: false,
-    isMenuOpen: false,
-    componentsLoaded: new Set<string>()
-  })
+  // 📊 STATE semplificato
+  const [language, setLanguage] = useState<'it' | 'de'>('it')
+  const [currentSection, setCurrentSection] = useState('hero')
+  const [showLegalDocs, setShowLegalDocs] = useState(false)
+  const [isReady, setIsReady] = useState(false)
 
-  // 🚀 PERFORMANCE: Scroll progress ottimizzato
+  // 🚀 Progress bar
   const { scrollYProgress } = useScroll()
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  })
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 })
 
-  // 🎯 INTERSECTION OBSERVERS ottimizzati
-  const [heroRef, heroInView] = useOptimizedInView(0.3)
-  const [aboutRef, aboutInView] = useOptimizedInView(0.2)
-  const [dettaglioRef, dettaglioInView] = useOptimizedInView(0.2)
-  const [servicesRef, servicesInView] = useOptimizedInView(0.2)
-  const [productsRef, productsInView] = useOptimizedInView(0.2)
-  const [wholesaleRef, wholesaleInView] = useOptimizedInView(0.2)
-  const [contactRef, contactInView] = useOptimizedInView(0.2)
-  const [footerRef, footerInView] = useOptimizedInView(0.5)
+  // 🎯 INTERSECTION OBSERVERS semplificati
+  const [heroRef, heroInView] = useInView({ threshold: 0.3 })
+  const [aboutRef, aboutInView] = useInView({ threshold: 0.2 })
+  const [dettaglioRef, dettaglioInView] = useInView({ threshold: 0.2 })
+  const [servicesRef, servicesInView] = useInView({ threshold: 0.2 })
+  const [productsRef, productsInView] = useInView({ threshold: 0.2 })
+  const [wholesaleRef, wholesaleInView] = useInView({ threshold: 0.2 })
+  const [contactRef, contactInView] = useInView({ threshold: 0.2 })
+  const [footerRef, footerInView] = useInView({ threshold: 0.3 })
 
-  // 🎯 MOBILE DOCK VISIBILITY
-  const isDockVisible = useMobileDockVisibility(appState.currentSection, footerInView)
-
-  // 🎯 MEMOIZED VALUES
-  const sectionVisibility = useMemo(() => ({
-    hero: heroInView,
-    about: aboutInView,
-    dettaglio: dettaglioInView,
-    services: servicesInView,
-    products: productsInView,
-    wholesale: wholesaleInView,
-    contact: contactInView,
-    footer: footerInView
-  }), [heroInView, aboutInView, dettaglioInView, servicesInView, productsInView, wholesaleInView, contactInView, footerInView])
-
-  // 🎯 CURRENT SECTION DETECTION ottimizzato
+  // 🎯 Detect current section
   useEffect(() => {
-    const currentSection = Object.entries(sectionVisibility)
-      .reverse() // Check from bottom to top
-      .find(([, isVisible]) => isVisible)?.[0] || 'hero'
+    let section = 'hero'
+    if (contactInView) section = 'contact'
+    else if (wholesaleInView) section = 'wholesale'
+    else if (productsInView) section = 'products'
+    else if (servicesInView) section = 'services'
+    else if (dettaglioInView) section = 'dettaglio'
+    else if (aboutInView) section = 'about'
+    else if (heroInView) section = 'hero'
 
-    if (currentSection !== appState.currentSection) {
-      setAppState(prev => ({ ...prev, currentSection }))
-      
-      // Analytics tracking ottimizzato
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'section_view', {
-          event_category: 'navigation',
-          event_label: currentSection,
-          value: 1
-        })
+    if (section !== currentSection) {
+      setCurrentSection(section)
+    }
+  }, [heroInView, aboutInView, dettaglioInView, servicesInView, productsInView, wholesaleInView, contactInView])
+
+  // 🎯 Initialize app
+  useEffect(() => {
+    // Load saved language
+    const savedLanguage = localStorage.getItem('bottamedi-language') as 'it' | 'de'
+    if (savedLanguage) {
+      setLanguage(savedLanguage)
+    }
+
+    // Mark app as ready after a small delay
+    const timer = setTimeout(() => setIsReady(true), 100)
+    return () => clearTimeout(timer)
+  }, [])
+
+  // 🎯 Mobile dock visibility (semplificato)
+  const shouldShowDock = currentSection !== 'hero' && !footerInView && isReady
+
+  // 🎯 Language handler
+  const updateLanguage = useCallback((lang: 'it' | 'de') => {
+    setLanguage(lang)
+    localStorage.setItem('bottamedi-language', lang)
+    document.documentElement.lang = lang
+  }, [])
+
+  // 🎯 Legal docs handler
+  useEffect(() => {
+    const handleLegalEvent = (event: CustomEvent) => {
+      const { docType, language: eventLang } = event.detail
+      if (eventLang === language) {
+        setShowLegalDocs(true)
+        setTimeout(() => {
+          const element = document.getElementById('legal-documents')
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' })
+          }
+        }, 200)
       }
     }
-  }, [sectionVisibility, appState.currentSection])
 
-  // 🎯 LANGUAGE MANAGEMENT
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem('bottamedi-language') as 'it' | 'de'
-    if (savedLanguage && savedLanguage !== appState.language) {
-      setAppState(prev => ({ ...prev, language: savedLanguage }))
-    }
-  }, [])
-
-  // 🎯 HANDLERS ottimizzati con useCallback
-  const updateLanguage = useCallback((language: 'it' | 'de') => {
-    setAppState(prev => ({ ...prev, language }))
-    localStorage.setItem('bottamedi-language', language)
-    document.documentElement.lang = language
-    
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'language_change', {
-        event_category: 'user_interaction',
-        event_label: language,
-        value: 1
-      })
-    }
-  }, [])
-
-  const toggleMenu = useCallback(() => {
-    setAppState(prev => ({ 
-      ...prev, 
-      isMenuOpen: !prev.isMenuOpen 
-    }))
-  }, [])
-
-  // 🎯 LEGAL DOCUMENTS HANDLER ottimizzato
-  const handleLegalDocumentOpen = useCallback((event: CustomEvent) => {
-    const { docType, language: eventLang } = event.detail
-    
-    if (eventLang === appState.language) {
-      console.log('📋 Opening legal document:', docType)
-      setAppState(prev => ({ ...prev, showLegalDocs: true }))
-      
-      // Smooth scroll to legal section
-      setTimeout(() => {
-        const element = document.getElementById('legal-documents')
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' })
-        }
-      }, 100)
-    }
-  }, [appState.language])
-
-  // Event listeners per documenti legali
-  useEffect(() => {
-    const handleEvent = (e: any) => handleLegalDocumentOpen(e)
-    
-    window.addEventListener('openLegalDocument', handleEvent)
-    document.addEventListener('openLegalDocument', handleEvent)
-    
-    return () => {
-      window.removeEventListener('openLegalDocument', handleEvent)
-      document.removeEventListener('openLegalDocument', handleEvent)
-    }
-  }, [handleLegalDocumentOpen])
+    window.addEventListener('openLegalDocument', handleLegalEvent as EventListener)
+    return () => window.removeEventListener('openLegalDocument', handleLegalEvent as EventListener)
+  }, [language])
 
   const closeLegalDocs = useCallback(() => {
-    setAppState(prev => ({ ...prev, showLegalDocs: false }))
-    
-    // Scroll back to footer
+    setShowLegalDocs(false)
     setTimeout(() => {
       const footer = document.querySelector('footer')
       if (footer) {
@@ -285,150 +211,106 @@ const App: React.FC = () => {
     }, 100)
   }, [])
 
-  // 🎯 ANIMATION VARIANTS ottimizzate
-  const pageVariants = useMemo(() => ({
-    initial: { opacity: 0, y: 20 },
-    in: { opacity: 1, y: 0 },
-    out: { opacity: 0, y: -20 }
-  }), [])
+  // 🎯 Don't render until ready
+  if (!isReady) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-3 border-green-200 border-t-green-600 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-green-600 font-medium">Caricamento...</p>
+        </div>
+      </div>
+    )
+  }
 
-  const pageTransition = useMemo(() => ({
-    type: 'tween' as const,
-    ease: 'easeOut' as const,
-    duration: 0.4
-  }), [])
-
-  // 🎯 RENDER
   return (
     <>
-      {/* 🎨 INLINE STYLES */}
-      <style>{inlineStyles}</style>
-
       {/* 📊 SEO HEAD */}
       <Helmet>
         <title>Bottamedi Frutta e Verdura | Eccellenza Trentina dal 1974</title>
         <meta name="description" content="Scopri 50 anni di tradizione familiare nell'ortofrutta. Freschezza quotidiana e qualità superiore per retail e HORECA a Mezzolombardo, Trentino." />
-        <meta name="keywords" content="frutta verdura, mezzolombardo, trentino, ingrosso ortofrutta, HORECA, freschezza, qualità" />
         <link rel="canonical" href="https://www.bottamedi.eu" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
       </Helmet>
 
-      {/* 📊 PROGRESS BAR */}
+      {/* 📊 Progress bar */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-green-600 transform-gpu z-50"
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-green-600 z-50"
         style={{ scaleX, transformOrigin: '0%' }}
       />
 
-      {/* 🎨 BACKGROUND ELEMENTS */}
-      <div className="fixed inset-0 opacity-10 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-300 rounded-full mix-blend-multiply filter blur-5xl animate-pulse" />
-        <div className="absolute top-3/4 right-1/4 w-96 h-96 bg-green-400 rounded-full mix-blend-multiply filter blur-5xl animate-pulse" style={{ animationDelay: '2s' }} />
-      </div>
-
       {/* 🎯 MAIN CONTAINER */}
-      <motion.div
-        initial="initial"
-        animate="in"
-        exit="out"
-        variants={pageVariants}
-        transition={pageTransition}
-        className="relative min-h-screen bg-white smooth-scroll"
-      >
-        {/* 🎯 HEADER */}
-        <Suspense fallback={<HeaderLoader />}>
-          <Header
-            language={appState.language}
-            onLanguageChange={updateLanguage}
-            isMenuOpen={appState.isMenuOpen}
-            onToggleMenu={toggleMenu}
-          />
-        </Suspense>
+      <div className="relative min-h-screen bg-white">
+        
+        {/* 🎯 HEADER (no lazy) */}
+        <Header
+          language={language}
+          onLanguageChange={updateLanguage}
+          isMenuOpen={false}
+          onToggleMenu={() => {}}
+        />
 
         {/* 🎯 MAIN CONTENT */}
         <main className="relative">
           
           {/* HERO SECTION */}
           <div ref={heroRef} id="hero">
-            <Suspense fallback={<ComponentLoader height="h-screen" />}>
-              <HeroSection 
-                language={appState.language} 
-                inView={sectionVisibility.hero} 
-              />
+            <Suspense fallback={<SectionFallback title="Hero" />}>
+              <HeroSection language={language} inView={heroInView} />
             </Suspense>
           </div>
 
           {/* ABOUT SECTION */}
           <div ref={aboutRef} id="about">
-            <Suspense fallback={<ComponentLoader />}>
-              <AboutSection 
-                language={appState.language} 
-                inView={sectionVisibility.about} 
-              />
+            <Suspense fallback={<SectionFallback title="Storia" />}>
+              <AboutSection language={language} inView={aboutInView} />
             </Suspense>
           </div>
 
           {/* BANCHETTO SECTION */}
           <div ref={dettaglioRef} id="dettaglio">
-            <Suspense fallback={<ComponentLoader />}>
-              <BanchettoSection 
-                language={appState.language} 
-                inView={sectionVisibility.dettaglio} 
-              />
+            <Suspense fallback={<SectionFallback title="Banchetto" />}>
+              <BanchettoSection language={language} inView={dettaglioInView} />
             </Suspense>
           </div>
 
           {/* SERVICES SECTION */}
           <div ref={servicesRef} id="services">
-            <Suspense fallback={<ComponentLoader />}>
-              <ServicesSection 
-                language={appState.language} 
-                inView={sectionVisibility.services} 
-              />
+            <Suspense fallback={<SectionFallback title="Servizi" />}>
+              <ServicesSection language={language} inView={servicesInView} />
             </Suspense>
           </div>
 
           {/* PRODUCTS SECTION */}
           <div ref={productsRef} id="products">
-            <Suspense fallback={<ComponentLoader />}>
-              <ProductsSection 
-                language={appState.language} 
-                inView={sectionVisibility.products} 
-              />
+            <Suspense fallback={<SectionFallback title="Prodotti" />}>
+              <ProductsSection language={language} inView={productsInView} />
             </Suspense>
           </div>
 
           {/* WHOLESALE SECTION */}
           <div ref={wholesaleRef} id="wholesale">
-            <Suspense fallback={<ComponentLoader />}>
-              <WholesaleContact 
-                language={appState.language} 
-                inView={sectionVisibility.wholesale} 
-              />
+            <Suspense fallback={<SectionFallback title="Listino" />}>
+              <WholesaleContact language={language} inView={wholesaleInView} />
             </Suspense>
           </div>
 
           {/* CONTACT SECTION */}
           <div ref={contactRef} id="contact">
-            <Suspense fallback={<ComponentLoader />}>
-              <ContactSection 
-                language={appState.language} 
-                inView={sectionVisibility.contact} 
-              />
+            <Suspense fallback={<SectionFallback title="Contatti" />}>
+              <ContactSection language={language} inView={contactInView} />
             </Suspense>
           </div>
 
         </main>
 
-        {/* 🎯 FOOTER */}
+        {/* 🎯 FOOTER (no lazy) */}
         <div ref={footerRef}>
-          <Suspense fallback={<ComponentLoader height="h-64" />}>
-            <Footer language={appState.language} />
-          </Suspense>
+          <Footer language={language} />
         </div>
 
-        {/* 🎯 LEGAL DOCUMENTS SECTION */}
+        {/* 🎯 LEGAL DOCUMENTS */}
         <AnimatePresence>
-          {appState.showLegalDocs && (
+          {showLegalDocs && (
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
@@ -436,8 +318,8 @@ const App: React.FC = () => {
               transition={{ duration: 0.3 }}
               id="legal-documents"
             >
-              <Suspense fallback={<ComponentLoader height="h-64" />}>
-                <LegalDocuments language={appState.language} />
+              <Suspense fallback={<SectionFallback title="Documenti Legali" />}>
+                <LegalDocuments language={language} />
               </Suspense>
               
               {/* Close button */}
@@ -457,51 +339,30 @@ const App: React.FC = () => {
           )}
         </AnimatePresence>
 
-        {/* 🎯 MOBILE MENU OVERLAY */}
-        <AnimatePresence>
-          {appState.isMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
-              onClick={toggleMenu}
-            />
-          )}
-        </AnimatePresence>
-
-      </motion.div>
-
-      {/* 🎯 MOBILE DOCK - OTTIMIZZATO */}
-      <div className="mobile-dock-container">
-        <AnimatePresence>
-          {isDockVisible && (
-            <motion.div
-              initial={{ y: 100, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 100, opacity: 0 }}
-              transition={{ 
-                type: 'spring', 
-                damping: 25, 
-                stiffness: 300,
-                duration: 0.3
-              }}
-            >
-              <Suspense fallback={null}>
-                <MobileDock 
-                  language={appState.language}
-                  hideInFooter={false} // Gestito dal hook
-                />
-              </Suspense>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
 
-      {/* 🍪 COOKIE BANNER - LAZY */}
+      {/* 🎯 MOBILE DOCK */}
+      <AnimatePresence>
+        {shouldShowDock && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="fixed bottom-0 left-0 right-0 z-50 lg:hidden pointer-events-none"
+          >
+            <div className="pointer-events-auto">
+              <Suspense fallback={null}>
+                <MobileDock language={language} hideInFooter={false} />
+              </Suspense>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 🍪 COOKIE BANNER */}
       <Suspense fallback={null}>
-        <CookieBanner language={appState.language} />
+        <CookieBanner language={language} />
       </Suspense>
 
     </>

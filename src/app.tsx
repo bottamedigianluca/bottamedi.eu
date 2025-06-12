@@ -43,8 +43,8 @@ const MOBILE_DOCK_IDLE_TIME = 500 // Ridotto a 500ms per reattività
 const SCROLL_DETECTION_DELAY = 16 // 60fps = 16ms per frame
 const HEADER_FADE_SPEED = 150 // Scomparsa più veloce header
 
-// Mappa colori per status bar dinamica
-const SECTION_COLORS = {
+// Mappa colori per status bar dinamica - FIX: Tipo più flessibile
+const SECTION_COLORS: Record<string, string> = {
   hero: '#22c55e', // Green-500
   about: '#16a34a', // Green-600
   dettaglio: '#15803d', // Green-700
@@ -149,16 +149,19 @@ const useMobileHeaderVisibility = (sectionsInView: Record<string, boolean>) => {
   return isVisible
 }
 
-// Hook per colore dinamico status bar
+// Hook per colore dinamico status bar - FIX: Tipo più flessibile
 const useStatusBarColor = (sectionsInView: Record<string, boolean>) => {
-  const [currentColor, setCurrentColor] = useState(SECTION_COLORS.hero)
+  const [currentColor, setCurrentColor] = useState<string>('#22c55e')
   
   useEffect(() => {
     // Trova la sezione attualmente visibile (priorità in ordine)
     for (const section of SECTIONS) {
       if (sectionsInView[section.id]) {
-        setCurrentColor(SECTION_COLORS[section.id as keyof typeof SECTION_COLORS])
-        break
+        const color = SECTION_COLORS[section.id]
+        if (color) {
+          setCurrentColor(color)
+          break
+        }
       }
     }
   }, [sectionsInView])
@@ -270,8 +273,8 @@ const App: React.FC = () => {
     setLanguage(newLanguage)
     
     // Track language change
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'language_change', {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'language_change', {
         event_category: 'user_preference',
         event_label: newLanguage,
         value: 1
@@ -289,7 +292,7 @@ const App: React.FC = () => {
   const seoDescription = useMemo(() => 
     language === 'it'
       ? '🍎 Bottamedi: 50 anni di tradizione familiare nella vendita di frutta e verdura fresca a Mezzolombardo. Banchetto dettaglio e servizio ingrosso HORECA per ristoranti nel Trentino Alto Adige. Qualità garantita dal 1974.'
-      : '🍎 Bottamedi: 50 Jahre Familientradition im Verkauf von frischem Obst und Gemüse in Mezzolombardo. Einzelhandel Marktstand und HORECA Großhandelsservice für Restaurants in Südtirol. Qualität garantiert seit 1974.'
+      : '🍎 Bottamedi: 50 Jahre Familientradition im Verkauf von frischem Obst und Gemüse in Mezzolombardo. Einzelhandel Marktstand und HORECA Großhandelsservice für Restaurants in Südtirol. Qualità garantiert seit 1974.'
   , [language])
 
   // Animation variants per l'app - Ottimizzati
@@ -385,9 +388,9 @@ const App: React.FC = () => {
                   duration: shouldReduceMotion ? 0.05 : HEADER_FADE_SPEED / 1000,
                   ease: [0.25, 0.46, 0.45, 0.94]
                 }}
-                className="relative z-40"
+                className="relative z-40 mobile-header-transparent"
                 style={{
-                  background: 'transparent', // Sempre trasparente
+                  background: 'transparent',
                   backdropFilter: 'none'
                 }}
               >
@@ -396,7 +399,6 @@ const App: React.FC = () => {
                   onLanguageChange={handleLanguageChange}
                   isMenuOpen={false}
                   onToggleMenu={() => {}}
-                  className="bg-transparent backdrop-blur-none" // Classe aggiuntiva per trasparenza
                 />
               </motion.div>
             )}
@@ -419,13 +421,10 @@ const App: React.FC = () => {
         {/* Footer */}
         <Footer language={language} />
 
-        {/* Legal Documents con scroll fix */}
-        <LegalDocuments 
-          language={language} 
-          scrollBehavior="smooth" // Evita salti casuali
-        />
+        {/* Legal Documents - FIX: Rimossa prop non esistente */}
+        <LegalDocuments language={language} />
 
-        {/* Mobile Dock - Logica ottimizzata per comparire in ogni sezione tranne hero e contact */}
+        {/* Mobile Dock - FIX: Rimossa prop non esistente */}
         {isMobileDevice && (
           <AnimatePresence>
             {mobileDockVisible && (
@@ -437,19 +436,20 @@ const App: React.FC = () => {
                   type: 'spring',
                   damping: 30,
                   stiffness: 400,
-                  duration: shouldReduceMotion ? 0.05 : 0.15 // Animazione più veloce
+                  duration: shouldReduceMotion ? 0.05 : 0.15
                 }}
                 className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none"
                 style={{
                   willChange: 'transform, opacity',
-                  touchAction: 'none' // Evita conflitti touch
+                  touchAction: 'none'
                 }}
               >
-                <MobileDock 
-                  language={language} 
-                  hideInFooter={false}
-                  touchDelay={60} // Reattività 60ms come richiesto
-                />
+                <div className="mobile-dock-fast">
+                  <MobileDock 
+                    language={language} 
+                    hideInFooter={false}
+                  />
+                </div>
               </motion.div>
             )}
           </AnimatePresence>

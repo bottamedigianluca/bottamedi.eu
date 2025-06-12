@@ -1,6 +1,18 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+
+// Declare tracking functions for TypeScript
+declare global {
+  interface Window {
+    trackStoriaTradizione: (elemento: string, interesse: string) => void;
+    trackQualitaProdotti: (aspetto: string, valutazione: string) => void;
+    trackTempoSezione: (sezione: string, secondi: number) => void;
+    trackNavigazione: (sezione: string, azione: string, dettaglio: string) => void;
+    updateCurrentSection: (sectionName: string) => void;
+    gtag: (...args: any[]) => void;
+  }
+}
 
 interface AboutSectionProps {
   language: 'it' | 'de'
@@ -129,7 +141,8 @@ const LazyImage: React.FC<{
   alt: string
   className?: string
   style?: React.CSSProperties
-}> = React.memo(({ src, alt, className = '', style = {} }) => {
+  onLoadComplete?: () => void
+}> = React.memo(({ src, alt, className = '', style = {}, onLoadComplete }) => {
   const [imageState, setImageState] = useState<'loading' | 'loaded' | 'error'>('loading')
   const [ref, inView] = useInView({
     threshold: 0.1,
@@ -139,7 +152,8 @@ const LazyImage: React.FC<{
 
   const handleLoad = useCallback(() => {
     setImageState('loaded')
-  }, [])
+    onLoadComplete?.()
+  }, [onLoadComplete])
 
   const handleError = useCallback(() => {
     setImageState('error')
@@ -237,6 +251,45 @@ const TimelineItem: React.FC<{
   })
   
   const shouldReduceMotion = useReducedMotion()
+  const [imageLoaded, setImageLoaded] = useState(false)
+
+  // 🎯 TRACKING INTERESSE TIMELINE
+  useEffect(() => {
+    if (inView && typeof window !== 'undefined') {
+      const periodoMap: Record<string, string> = {
+        '1974': 'fondazione_lorenzo',
+        '2013': 'evoluzione_pierluigi', 
+        'OGGI': 'futuro_famiglia',
+        'HEUTE': 'futuro_famiglia'
+      }
+      
+      const elementoStoria = periodoMap[item.year] || 'periodo_sconosciuto'
+      
+      // Track storia e tradizione
+      window.trackStoriaTradizione?.(elementoStoria, 'visualizzazione_timeline')
+      
+      // Track qualità percepita nel tempo
+      if (item.year === '1974') {
+        window.trackQualitaProdotti?.('tradizione_familiare', 'interesse_origini')
+      } else if (item.year === '2013') {
+        window.trackQualitaProdotti?.('evoluzione_professionale', 'interesse_crescita')
+      } else if (item.year === 'OGGI' || item.year === 'HEUTE') {
+        window.trackQualitaProdotti?.('innovazione_moderna', 'interesse_futuro')
+      }
+
+      // Analytics dettagliate timeline
+      if (window.gtag) {
+        window.gtag('event', 'timeline_visualizzata', {
+          event_category: 'Storia e Tradizione',
+          event_label: `timeline_${item.year}`,
+          custom_parameter_1: elementoStoria,
+          custom_parameter_2: `posizione_${index + 1}`,
+          custom_parameter_3: 'interesse_storia_aziendale',
+          value: 5
+        })
+      }
+    }
+  }, [inView, item.year, index])
 
   const itemVariants = useMemo(() => ({
     hidden: { 
@@ -320,6 +373,7 @@ const TimelineItem: React.FC<{
             src={item.image}
             alt={item.title}
             className="w-full h-64 lg:h-72 transition-transform duration-500 group-hover:scale-105"
+            onLoadComplete={() => setImageLoaded(true)}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
@@ -347,6 +401,44 @@ const ValueCard: React.FC<{
   )
   
   const shouldReduceMotion = useReducedMotion()
+
+  // 🎯 TRACKING VALORI AZIENDALI
+  useEffect(() => {
+    if (inView && typeof window !== 'undefined') {
+      const valoriMap: Record<string, string> = {
+        'Freschezza': 'freschezza_quotidiana',
+        'Frische': 'freschezza_quotidiana',
+        'Eccellenza': 'standard_elevati',
+        'Exzellenz': 'standard_elevati',
+        'Passione': 'passione_familiare',
+        'Leidenschaft': 'passione_familiare',
+        'Territorio': 'valorizzazione_territorio',
+        'Territorium': 'valorizzazione_territorio'
+      }
+      
+      const valoreSpecifico = valoriMap[item.title] || 'valore_generico'
+      
+      // Track qualità prodotti attraverso valori
+      window.trackQualitaProdotti?.(valoreSpecifico, 'visualizzazione_valore')
+      
+      // Track storia e tradizione per valori legati alla famiglia
+      if (['passione_familiare', 'freschezza_quotidiana'].includes(valoreSpecifico)) {
+        window.trackStoriaTradizione?.(valoreSpecifico, 'comprensione_valori')
+      }
+
+      // Analytics dettagliate valori
+      if (window.gtag) {
+        window.gtag('event', 'valore_aziendale_visualizzato', {
+          event_category: 'Valori e Qualità',
+          event_label: `valore_${valoreSpecifico}`,
+          custom_parameter_1: valoreSpecifico,
+          custom_parameter_2: `numero_${item.number}`,
+          custom_parameter_3: 'comprensione_brand',
+          value: 3
+        })
+      }
+    }
+  }, [inView, item.title, item.number])
 
   const cardVariants = useMemo(() => ({
     hidden: { 
@@ -425,8 +517,50 @@ const AboutSection: React.FC<AboutSectionProps> = ({ language, inView }) => {
   const { scrollYProgress } = useScroll()
   const y = useTransform(scrollYProgress, [0, 1], [0, -30])
   const shouldReduceMotion = useReducedMotion()
+  const [sectionStartTime] = useState(Date.now())
   
   const t = useMemo(() => translations[language], [language])
+
+  // 🎯 TRACKING SEZIONE ABOUT
+  useEffect(() => {
+    if (inView && typeof window !== 'undefined') {
+      // Aggiorna sezione corrente
+      window.updateCurrentSection?.('about')
+      
+      // Track storia e tradizione - interesse generale
+      window.trackStoriaTradizione?.('sezione_storia_visualizzata', 'interesse_iniziale')
+      
+      // Track qualità - comprensione brand
+      window.trackQualitaProdotti?.('presentazione_aziendale', 'prima_conoscenza')
+
+      // Analytics ingresso sezione
+      if (window.gtag) {
+        window.gtag('event', 'sezione_about_visualizzata', {
+          event_category: 'Navigazione Sezioni',
+          event_label: 'ingresso_storia',
+          custom_parameter_1: 'about',
+          custom_parameter_2: 'comprensione_brand',
+          custom_parameter_3: 'interesse_storia_aziendale',
+          value: 8
+        })
+      }
+    }
+
+    // Cleanup: track tempo nella sezione
+    return () => {
+      if (inView && typeof window !== 'undefined') {
+        const timeInSection = Math.round((Date.now() - sectionStartTime) / 1000)
+        if (timeInSection > 5) {
+          window.trackTempoSezione?.('about', timeInSection)
+          
+          // Se ha passato molto tempo, è molto interessato alla storia
+          if (timeInSection > 30) {
+            window.trackStoriaTradizione?.('lettura_approfondita_storia', 'interesse_molto_alto')
+          }
+        }
+      }
+    }
+  }, [inView, sectionStartTime])
 
   const headerVariants = useMemo(() => ({
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },

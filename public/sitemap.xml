@@ -1,0 +1,10 @@
+<?php
+// Imposta l'header corretto per dire al browser che questo è un file XML.
+header("Content-Type: application/xml; charset=utf-8");
+
+// Legge e mostra il contenuto del tuo vero file sitemap.
+readfile("sitemap-data.xml");
+
+// Termina lo script.
+exit();
+?>

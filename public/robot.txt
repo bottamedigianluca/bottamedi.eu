@@ -7,14 +7,11 @@ Allow: /
 # Consenti accesso completo ai principali motori di ricerca
 User-agent: Googlebot
 Allow: /
+
 User-agent: Bingbot
 Allow: /
-User-agent: Slurp
-Allow: /
-User-agent: DuckDuckBot
-Allow: /
 
-# Blocca crawler SEO non essenziali
+# Blocca crawler dannosi o inutili
 User-agent: SemrushBot
 Disallow: /
 User-agent: AhrefsBot
@@ -24,25 +21,23 @@ Disallow: /
 User-agent: DotBot
 Disallow: /
 
-# Blocca file di sviluppo e configurazione
+# Blocca file di sviluppo non necessari per l'indicizzazione
 Disallow: /src/
 Disallow: /node_modules/
+# Rimosse le regole problematiche per .json, .ts, .tsx
 Disallow: /vite.config.ts
 Disallow: /package.json
 Disallow: /tsconfig.json
 
-# Consenti file importanti per la PWA e SEO
+# Consenti manifest PWA e service worker
 Allow: /manifest.json
 Allow: /service-worker.js
-Allow: /sitemap.xml
-Allow: /sitemap-images.xml
-Allow: /images/
-Allow: /videos/
-Allow: /assets/
 
-# Riferimenti ai sitemap corretti
+# Riferimenti alle sitemap
 Sitemap: https://www.bottamedi.eu/sitemap.xml
 Sitemap: https://www.bottamedi.eu/sitemap-images.xml
+# Aggiunta sitemap video (se ne crei una)
+# Sitemap: https://www.bottamedi.eu/sitemap-videos.xml
 
-# Host preferito (canonico)
-Host: https://www.bottamedi.eu
+# Crawl-delay
+Crawl-delay: 1

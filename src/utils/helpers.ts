@@ -26,6 +26,7 @@ export const truncateText = (text: string, maxLength: number, suffix = '...'): s
 }
 
 export const stripHtml = (html: string): string => {
+  if (typeof document === 'undefined') return html // SSR safety
   const div = document.createElement('div')
   div.innerHTML = html
   return div.textContent || div.innerText || ''
@@ -127,7 +128,8 @@ export const isValidUrl = (url: string): boolean => {
   }
 }
 
-export const getUrlParams = (url = window.location.href): URLSearchParams => {
+export const getUrlParams = (url = window?.location?.href || ''): URLSearchParams => {
+  if (typeof window === 'undefined') return new URLSearchParams()
   return new URL(url).searchParams
 }
 
@@ -149,6 +151,7 @@ export const getBaseDomain = (url: string): string => {
 
 // Local Storage utilities
 export const setLocalStorage = (key: string, value: any): void => {
+  if (typeof window === 'undefined') return
   try {
     localStorage.setItem(key, JSON.stringify(value))
   } catch (error) {
@@ -157,6 +160,7 @@ export const setLocalStorage = (key: string, value: any): void => {
 }
 
 export const getLocalStorage = <T>(key: string, defaultValue: T): T => {
+  if (typeof window === 'undefined') return defaultValue
   try {
     const item = localStorage.getItem(key)
     return item ? JSON.parse(item) : defaultValue
@@ -167,6 +171,7 @@ export const getLocalStorage = <T>(key: string, defaultValue: T): T => {
 }
 
 export const removeLocalStorage = (key: string): void => {
+  if (typeof window === 'undefined') return
   try {
     localStorage.removeItem(key)
   } catch (error) {
@@ -175,6 +180,7 @@ export const removeLocalStorage = (key: string): void => {
 }
 
 export const clearLocalStorage = (): void => {
+  if (typeof window === 'undefined') return
   try {
     localStorage.clear()
   } catch (error) {
@@ -184,6 +190,7 @@ export const clearLocalStorage = (): void => {
 
 // Session Storage utilities
 export const setSessionStorage = (key: string, value: any): void => {
+  if (typeof window === 'undefined') return
   try {
     sessionStorage.setItem(key, JSON.stringify(value))
   } catch (error) {
@@ -192,6 +199,7 @@ export const setSessionStorage = (key: string, value: any): void => {
 }
 
 export const getSessionStorage = <T>(key: string, defaultValue: T): T => {
+  if (typeof window === 'undefined') return defaultValue
   try {
     const item = sessionStorage.getItem(key)
     return item ? JSON.parse(item) : defaultValue
@@ -203,12 +211,14 @@ export const getSessionStorage = <T>(key: string, defaultValue: T): T => {
 
 // Cookie utilities
 export const setCookie = (name: string, value: string, days: number): void => {
+  if (typeof document === 'undefined') return
   const expires = new Date()
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000)
   document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Strict`
 }
 
 export const getCookie = (name: string): string | null => {
+  if (typeof document === 'undefined') return null
   const nameEQ = name + '='
   const ca = document.cookie.split(';')
   for (let i = 0; i < ca.length; i++) {
@@ -308,6 +318,7 @@ export const isEmpty = (value: any): boolean => {
 
 // DOM utilities
 export const scrollToElement = (elementId: string, offset = 0): void => {
+  if (typeof document === 'undefined') return
   const element = document.getElementById(elementId)
   if (element) {
     const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
@@ -319,6 +330,7 @@ export const scrollToElement = (elementId: string, offset = 0): void => {
 }
 
 export const scrollToTop = (): void => {
+  if (typeof window === 'undefined') return
   window.scrollTo({
     top: 0,
     behavior: 'smooth'
@@ -344,6 +356,7 @@ export const isElementInViewport = (element: HTMLElement): boolean => {
 }
 
 export const getScrollPercentage = (): number => {
+  if (typeof window === 'undefined') return 0
   const scrollTop = window.pageYOffset || document.documentElement.scrollTop
   const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight
   return (scrollTop / scrollHeight) * 100
@@ -379,32 +392,41 @@ export const throttle = <T extends (...args: any[]) => any>(
 
 // Device detection
 export const isMobile = (): boolean => {
+  if (typeof navigator === 'undefined') return false
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 }
 
 export const isIOS = (): boolean => {
+  if (typeof navigator === 'undefined') return false
   return /iPad|iPhone|iPod/.test(navigator.userAgent)
 }
 
 export const isAndroid = (): boolean => {
+  if (typeof navigator === 'undefined') return false
   return /Android/.test(navigator.userAgent)
 }
 
 export const isSafari = (): boolean => {
+  if (typeof navigator === 'undefined') return false
   return /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
 }
 
 export const getTouchSupport = (): boolean => {
+  if (typeof window === 'undefined') return false
   return 'ontouchstart' in window || navigator.maxTouchPoints > 0
 }
 
 // Browser utilities
 export const copyToClipboard = async (text: string): Promise<boolean> => {
+  if (typeof navigator === 'undefined') return false
+  
   try {
     await navigator.clipboard.writeText(text)
     return true
   } catch (error) {
     // Fallback for older browsers
+    if (typeof document === 'undefined') return false
+    
     const textArea = document.createElement('textarea')
     textArea.value = text
     document.body.appendChild(textArea)
@@ -450,6 +472,7 @@ export const setLanguageToStorage = (language: 'it' | 'de'): void => {
 }
 
 export const getBrowserLanguage = (): 'it' | 'de' => {
+  if (typeof navigator === 'undefined') return 'it'
   const lang = navigator.language.toLowerCase()
   if (lang.startsWith('de')) return 'de'
   return 'it' // Default to Italian

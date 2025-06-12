@@ -297,7 +297,7 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
                   }}
                 >
                   <img
-                    src="/favicon.svg"
+                    src="/favicon.webp"
                     alt="Bottamedi Favicon"
                     className="w-12 h-12 object-contain"
                     onError={(e) => {

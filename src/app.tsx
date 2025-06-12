@@ -73,12 +73,12 @@ const OptimizedSectionLoader: React.FC<{ name: string }> = React.memo(({ name })
 OptimizedSectionLoader.displayName = 'OptimizedSectionLoader'
 
 // Hook personalizzato per gestione mobile dock intelligente
-const useMobileDockVisibility = () => {
+const useMobileDockVisibility = (sectionsInView: Record<string, boolean>) => {
   const [isVisible, setIsVisible] = useState(false)
   const [isIdle, setIsIdle] = useState(false)
   const [lastScrollTime, setLastScrollTime] = useState(Date.now())
   
-  const scrollDirection = useScrollDirection({ threshold: 10, throttleDelay: SCROLL_DETECTION_DELAY })
+  const scrollDirection = useScrollDirection({ threshold: 5, throttleDelay: SCROLL_DETECTION_DELAY })
   const { scrollY, isScrolling } = useScrollInfo({ throttleDelay: SCROLL_DETECTION_DELAY })
   
   // Gestione idle timer
@@ -90,23 +90,48 @@ const useMobileDockVisibility = () => {
 
     const idleTimer = setTimeout(() => {
       const now = Date.now()
-      if (now - lastScrollTime > MOBILE_DOCK_IDLE_TIME && !isScrolling) {
+      if (now - lastScrollTime > 800 && !isScrolling) { // Ridotto a 800ms per essere più veloce
         setIsIdle(true)
       }
-    }, MOBILE_DOCK_IDLE_TIME)
+    }, 800)
 
     return () => clearTimeout(idleTimer)
   }, [isScrolling, lastScrollTime])
 
-  // Logica intelligente di visibilità
+  // Logica intelligente di visibilità - NON in hero e footer
   useEffect(() => {
+    const isInHero = sectionsInView.hero || scrollY < 50
+    const isInFooter = sectionsInView.contact && scrollY > window.innerHeight * 4 // Footer detection migliorata
+    
+    // Nascondi in hero e footer
+    if (isInHero || isInFooter) {
+      setIsVisible(false)
+      return
+    }
+
+    // Mostra in tutte le altre sezioni con logica più veloce
     const shouldShow = 
-      (scrollDirection === 'up' && scrollY > 100) || // Scroll up dopo 100px
-      (isIdle && scrollY > 200) || // Idle dopo 200px
-      (scrollY > 50 && scrollY < 200) // Zona iniziale
+      scrollY > 50 && ( // Dopo hero
+        scrollDirection === 'up' || // Scroll inverso
+        isIdle || // Idle state
+        (!isScrolling && scrollY > 100) // Quando fermo dopo un po' di scroll
+      )
 
     setIsVisible(shouldShow)
-  }, [scrollDirection, scrollY, isIdle])
+  }, [scrollDirection, scrollY, isIdle, isScrolling, sectionsInView])
+
+  return isVisible
+}
+
+// Hook per header mobile solo in hero
+const useMobileHeaderVisibility = (sectionsInView: Record<string, boolean>) => {
+  const [isVisible, setIsVisible] = useState(true)
+  const { scrollY } = useScrollInfo({ throttleDelay: 50 })
+  
+  useEffect(() => {
+    const isInHero = sectionsInView.hero || scrollY < 100
+    setIsVisible(isInHero)
+  }, [sectionsInView.hero, scrollY])
 
   return isVisible
 }
@@ -184,7 +209,8 @@ const App: React.FC = () => {
   
   // Hooks personalizzati
   const { sectionsInView, updateSectionInView } = useSectionsInView()
-  const mobileDockVisible = useMobileDockVisibility()
+  const mobileDockVisible = useMobileDockVisibility(sectionsInView)
+  const mobileHeaderVisible = useMobileHeaderVisibility(sectionsInView)
   const shouldReduceMotion = useReducedMotion()
 
   // Inizializzazione app
@@ -225,7 +251,10 @@ const App: React.FC = () => {
   // Gestione footer in mobile per nascondere dock
   const isInFooter = useMemo(() => {
     if (!isMobileDevice) return false
-    return sectionsInView.contact || false
+    // Footer detection più precisa
+    const contactInView = sectionsInView.contact
+    const isNearBottom = document.documentElement.scrollHeight - window.scrollY - window.innerHeight < 200
+    return contactInView && isNearBottom
   }, [sectionsInView.contact, isMobileDevice])
 
   // SEO Meta tags dinamici
@@ -311,14 +340,38 @@ const App: React.FC = () => {
           <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         </Helmet>
 
-        {/* Header - Solo Desktop */}
-        {!isMobileDevice && (
+        {/* Header - Desktop sempre, Mobile solo in Hero */}
+        {!isMobileDevice ? (
           <Header
             language={language}
             onLanguageChange={handleLanguageChange}
             isMenuOpen={false}
             onToggleMenu={() => {}}
           />
+        ) : (
+          <AnimatePresence>
+            {mobileHeaderVisible && (
+              <motion.div
+                initial={{ y: -100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -100, opacity: 0 }}
+                transition={{
+                  type: 'spring',
+                  damping: 30,
+                  stiffness: 400,
+                  duration: shouldReduceMotion ? 0.1 : 0.3
+                }}
+                className="relative z-40"
+              >
+                <Header
+                  language={language}
+                  onLanguageChange={handleLanguageChange}
+                  isMenuOpen={false}
+                  onToggleMenu={() => {}}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         )}
 
         {/* Main Content */}
@@ -340,10 +393,10 @@ const App: React.FC = () => {
         {/* Legal Documents */}
         <LegalDocuments language={language} />
 
-        {/* Mobile Dock - Solo Mobile con logica intelligente */}
+        {/* Mobile Dock - Solo Mobile con logica intelligente migliorata */}
         {isMobileDevice && (
           <AnimatePresence>
-            {mobileDockVisible && !isInFooter && (
+            {mobileDockVisible && (
               <motion.div
                 initial={{ y: 100, opacity: 0, scale: 0.8 }}
                 animate={{ y: 0, opacity: 1, scale: 1 }}
@@ -351,12 +404,12 @@ const App: React.FC = () => {
                 transition={{ 
                   type: 'spring',
                   damping: 25,
-                  stiffness: 300,
-                  duration: shouldReduceMotion ? 0.1 : 0.3
+                  stiffness: 350, // Più veloce
+                  duration: shouldReduceMotion ? 0.1 : 0.25 // Più veloce
                 }}
                 className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none"
               >
-                <MobileDock language={language} hideInFooter={isInFooter} />
+                <MobileDock language={language} hideInFooter={false} />
               </motion.div>
             )}
           </AnimatePresence>

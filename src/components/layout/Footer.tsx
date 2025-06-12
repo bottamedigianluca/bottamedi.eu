@@ -1,4 +1,4 @@
-// Footer.tsx - VERSIONE CORRETTA CON LINK CHE FUNZIONANO
+// Footer.tsx - VERSIONE CORRETTA CON ANIMAZIONI FLUIDE E SCROLL PRECISO
 import React from 'react'
 import { motion } from 'framer-motion'
 
@@ -18,7 +18,6 @@ const translations = {
       banchetto: 'Al Banchetto',
       services: 'Servizi Ingrosso',
       contact: 'Contatti',
-      // 📝 NOMI CORRETTI E STANDARD
       privacy: 'Informativa Privacy',
       terms: 'Termini e Condizioni',
       cookies: 'Cookie Policy'
@@ -110,12 +109,23 @@ const SocialIcon: React.FC<{
     aria-label={label}
     whileHover={{ scale: 1.1, y: -2 }}
     whileTap={{ scale: 0.9 }}
+    transition={{ 
+      type: "spring", 
+      stiffness: 400, 
+      damping: 17,
+      duration: 0.15 
+    }}
     className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center text-white hover:bg-white/20 transition-all duration-300 group"
   >
     <motion.div
       className="w-6 h-6"
       whileHover={{ rotate: 10 }}
-      transition={{ duration: 0.2 }}
+      transition={{ 
+        type: "spring", 
+        stiffness: 300, 
+        damping: 15,
+        duration: 0.2 
+      }}
     >
       {icon}
     </motion.div>
@@ -129,41 +139,61 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      })
     }
   }
 
-  // 🔧 FUNZIONE CORRETTA PER APRIRE I DOCUMENTI LEGALI
+  // 🎯 FUNZIONE MIGLIORATA PER DOCUMENTI LEGALI
   const handleLegalDocumentClick = (docType: 'privacy' | 'terms' | 'cookies') => {
-    console.log('🔓 Tentativo di aprire documento:', docType, 'lingua:', language)
+    console.log('🔓 Apertura documento:', docType, 'lingua:', language)
     
-    // Dispatch evento con i parametri corretti
+    // Previeni il flash dell'animazione
     const event = new CustomEvent('openLegalDocument', { 
       detail: { docType, language },
       bubbles: true,
       cancelable: true
     })
     
-    // Dispatch sia su window che su document per sicurezza
+    // Dispatch sui due target
     window.dispatchEvent(event)
     document.dispatchEvent(event)
     
-    console.log('📤 Evento dispatched:', event.detail)
+    console.log('📤 Evento inviato:', event.detail)
     
-    // Debug: controlla se il componente LegalDocuments esiste
-    const legalElement = document.getElementById('legal-documents')
-    console.log('📋 Elemento legal-documents trovato:', !!legalElement)
-    
-    // Scroll to legal section se esiste
+    // 🎯 SCROLL MIGLIORATO - Attendi che il componente si apra
     setTimeout(() => {
-      const element = document.getElementById('legal-documents')
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' })
-        console.log('📍 Scroll verso legal-documents')
+      const legalElement = document.getElementById('legal-documents')
+      if (legalElement) {
+        // Scroll più preciso con offset
+        const elementRect = legalElement.getBoundingClientRect()
+        const absoluteElementTop = elementRect.top + window.pageYOffset
+        const middle = absoluteElementTop - (window.innerHeight / 2) + (elementRect.height / 2)
+        
+        window.scrollTo({
+          top: Math.max(0, middle - 100), // -100px di offset per breathing room
+          behavior: 'smooth'
+        })
+        
+        console.log('📍 Scroll preciso verso legal-documents')
       } else {
-        console.warn('⚠️ Elemento legal-documents non trovato!')
+        console.warn('⚠️ Elemento legal-documents non trovato, retry...')
+        
+        // Retry dopo ulteriore delay
+        setTimeout(() => {
+          const retryElement = document.getElementById('legal-documents')
+          if (retryElement) {
+            retryElement.scrollIntoView({ 
+              behavior: 'smooth',
+              block: 'center'
+            })
+            console.log('📍 Retry scroll riuscito')
+          }
+        }, 200)
       }
-    }, 100)
+    }, 150) // Tempo per permettere al componente di aprirsi
     
     // Analytics tracking
     if (typeof window !== 'undefined' && (window as any).gtag) {
@@ -175,28 +205,97 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
     }
   }
 
+  // 🎨 VARIANTI ANIMATE OTTIMIZZATE
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 30,
+      scale: 0.9
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+        duration: 0.6
+      }
+    }
+  }
+
   return (
     <footer className="relative bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 text-white overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-green-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-green-400/10 rounded-full blur-3xl"></div>
+        <motion.div 
+          className="absolute top-0 left-1/4 w-96 h-96 bg-green-500/10 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.1, 0.15, 0.1]
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        <motion.div 
+          className="absolute bottom-0 right-1/4 w-96 h-96 bg-green-400/10 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.1, 0.2, 0.1]
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2
+          }}
+        />
       </div>
 
       {/* Main Footer Content */}
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
+      <motion.div 
+        className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+      >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           
           {/* Company Info */}
           <div className="lg:col-span-2">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
+            <motion.div variants={itemVariants}>
               <div className="flex items-center space-x-4 mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center overflow-hidden">
+                <motion.div 
+                  className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center overflow-hidden"
+                  whileHover={{ 
+                    scale: 1.05,
+                    rotate: 5,
+                    boxShadow: "0 10px 30px rgba(34, 197, 94, 0.3)"
+                  }}
+                  transition={{ 
+                    type: "spring", 
+                    stiffness: 300, 
+                    damping: 20 
+                  }}
+                >
                   <img
                     src="/favicon.svg"
                     alt="Bottamedi Favicon"
@@ -207,7 +306,7 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
                       target.parentElement!.innerHTML = '<span class="text-white font-bold text-2xl">B</span>'
                     }}
                   />
-                </div>
+                </motion.div>
                 <div>
                   <h2 className="text-3xl font-bold tracking-tight">
                     {t.company.name}
@@ -261,12 +360,7 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
           </div>
 
           {/* Quick Links */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            viewport={{ once: true }}
-          >
+          <motion.div variants={itemVariants}>
             <h3 className="text-lg font-semibold mb-6">{t.quickLinks}</h3>
             <ul className="space-y-3">
               {[
@@ -276,12 +370,32 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
                 { label: t.links.contact, id: 'contact' }
               ].map((link) => (
                 <li key={link.id}>
-                  <button
+                  <motion.button
                     onClick={() => scrollToSection(link.id)}
-                    className="text-white/80 hover:text-white transition-colors duration-300 text-left hover:translate-x-1 transform transition-transform"
+                    className="text-white/80 hover:text-white transition-colors duration-300 text-left group flex items-center"
+                    whileHover={{ x: 4 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ 
+                      type: "spring", 
+                      stiffness: 400, 
+                      damping: 17 
+                    }}
                   >
-                    {link.label}
-                  </button>
+                    <span className="group-hover:text-green-400 transition-colors">
+                      {link.label}
+                    </span>
+                    <motion.svg
+                      className="w-4 h-4 ml-2 opacity-0 group-hover:opacity-100"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      initial={{ x: -10, opacity: 0 }}
+                      whileHover={{ x: 0, opacity: 1 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </motion.svg>
+                  </motion.button>
                 </li>
               ))}
             </ul>
@@ -290,14 +404,15 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
 
         {/* Contact Info Grid */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          viewport={{ once: true }}
+          variants={itemVariants}
           className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-16 pt-12 border-t border-white/20"
         >
           {/* Retail Contact */}
-          <div className="space-y-4">
+          <motion.div 
+            className="space-y-4"
+            whileHover={{ scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          >
             <h4 className="text-lg font-semibold text-green-400">
               {t.contact.retail.title}
             </h4>
@@ -324,10 +439,14 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
                 <span>{t.contact.retail.hours}</span>
               </p>
             </div>
-          </div>
+          </motion.div>
 
           {/* HORECA Contact */}
-          <div className="space-y-4">
+          <motion.div 
+            className="space-y-4"
+            whileHover={{ scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          >
             <h4 className="text-lg font-semibold text-blue-400">
               {t.contact.horeca.title}
             </h4>
@@ -356,15 +475,12 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
                 </a>
               </p>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
 
-        {/* 📝 BOTTOM BAR CON LINK LEGALI PICCOLI CHE FUNZIONANO */}
+        {/* 🎯 BOTTOM BAR CON LINK LEGALI OTTIMIZZATI */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          viewport={{ once: true }}
+          variants={itemVariants}
           className="mt-12 pt-8 border-t border-white/20"
         >
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
@@ -379,32 +495,62 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
               </p>
             </div>
             
-            {/* 🔗 LINK LEGALI PICCOLI STANDARD */}
+            {/* 🔗 LINK LEGALI CON ANIMAZIONI FLUIDE */}
             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6">
               <div className="flex flex-wrap items-center justify-center space-x-1 text-xs text-white/60">
                 <motion.button 
                   onClick={() => handleLegalDocumentClick('privacy')}
-                  whileHover={{ scale: 1.05, color: 'rgba(255,255,255,0.9)' }}
+                  whileHover={{ 
+                    scale: 1.05, 
+                    color: 'rgba(255,255,255,0.9)',
+                    y: -2
+                  }}
                   whileTap={{ scale: 0.95 }}
-                  className="hover:text-white transition-colors hover:underline px-2 py-1 rounded"
+                  transition={{ 
+                    type: "spring", 
+                    stiffness: 400, 
+                    damping: 17,
+                    duration: 0.15
+                  }}
+                  className="hover:text-white transition-all duration-200 hover:underline px-3 py-2 rounded-lg hover:bg-white/10 backdrop-blur-sm"
                 >
                   {t.links.privacy}
                 </motion.button>
                 <span className="text-white/40 px-1">•</span>
                 <motion.button 
                   onClick={() => handleLegalDocumentClick('terms')}
-                  whileHover={{ scale: 1.05, color: 'rgba(255,255,255,0.9)' }}
+                  whileHover={{ 
+                    scale: 1.05, 
+                    color: 'rgba(255,255,255,0.9)',
+                    y: -2
+                  }}
                   whileTap={{ scale: 0.95 }}
-                  className="hover:text-white transition-colors hover:underline px-2 py-1 rounded"
+                  transition={{ 
+                    type: "spring", 
+                    stiffness: 400, 
+                    damping: 17,
+                    duration: 0.15
+                  }}
+                  className="hover:text-white transition-all duration-200 hover:underline px-3 py-2 rounded-lg hover:bg-white/10 backdrop-blur-sm"
                 >
                   {t.links.terms}
                 </motion.button>
                 <span className="text-white/40 px-1">•</span>
                 <motion.button 
                   onClick={() => handleLegalDocumentClick('cookies')}
-                  whileHover={{ scale: 1.05, color: 'rgba(255,255,255,0.9)' }}
+                  whileHover={{ 
+                    scale: 1.05, 
+                    color: 'rgba(255,255,255,0.9)',
+                    y: -2
+                  }}
                   whileTap={{ scale: 0.95 }}
-                  className="hover:text-white transition-colors hover:underline px-2 py-1 rounded"
+                  transition={{ 
+                    type: "spring", 
+                    stiffness: 400, 
+                    damping: 17,
+                    duration: 0.15
+                  }}
+                  className="hover:text-white transition-all duration-200 hover:underline px-3 py-2 rounded-lg hover:bg-white/10 backdrop-blur-sm"
                 >
                   {t.links.cookies}
                 </motion.button>
@@ -416,7 +562,7 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
             </div>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
     </footer>
   )
 }

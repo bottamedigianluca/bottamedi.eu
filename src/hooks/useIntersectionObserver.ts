@@ -1,18 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-
-// Define types locally instead of importing from '../types'
-export interface UseIntersectionObserverOptions {
-  threshold?: number | number[]
-  rootMargin?: string
-  root?: Element | Document | null
-  triggerOnce?: boolean
-}
-
-export interface UseIntersectionObserverReturn {
-  ref: (node?: Element | null) => void
-  inView: boolean
-  entry?: IntersectionObserverEntry
-}
+import type { UseIntersectionObserverOptions, UseIntersectionObserverReturn } from '../types'
 
 export const useIntersectionObserver = (
   options: UseIntersectionObserverOptions = {}

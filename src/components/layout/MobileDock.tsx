@@ -57,29 +57,23 @@ const translations = {
   }
 }
 
-// Icone SVG
+// 🎨 ICONE SVG CON DESIGN MODERNO
 const MenuIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-7 h-7">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-6 h-6">
     <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 )
 
 const PhoneIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-7 h-7">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-6 h-6">
     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
   </svg>
 )
 
 const MapIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-7 h-7">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-6 h-6">
     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
     <circle cx="12" cy="10" r="3"/>
-  </svg>
-)
-
-const WhatsAppIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.097"/>
   </svg>
 )
 
@@ -96,70 +90,57 @@ const ClockIcon = () => (
   </svg>
 )
 
+// 🚀 HOOK OTTIMIZZATO PER SCROLL DETECTION
 const useScrollDetection = (hideInFooter: boolean) => {
   const [isVisible, setIsVisible] = useState(false)
   const [currentSection, setCurrentSection] = useState('hero')
   const [isScrolling, setIsScrolling] = useState(false)
 
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout
-    let scrollTimeoutId: NodeJS.Timeout
+    let scrollTimeout: NodeJS.Timeout
+    let animationFrame: number
     
-    const detectSection = () => {
-      // Indica che stiamo scrollando
-      setIsScrolling(true)
+    const handleScroll = () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame)
+      }
       
-      // Cancella il timeout precedente
-      clearTimeout(scrollTimeoutId)
-      
-      // Imposta un nuovo timeout per indicare che lo scroll è finito
-      scrollTimeoutId = setTimeout(() => {
-        setIsScrolling(false)
-      }, 800) // Aumentato a 800ms per evitare apparizioni durante la navigazione
+      animationFrame = requestAnimationFrame(() => {
+        setIsScrolling(true)
+        
+        const sections = ['hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact']
+        const scrollPosition = window.scrollY + window.innerHeight / 2
 
-      const sections = ['hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact']
-      const scrollPosition = window.scrollY + window.innerHeight / 2
-
-      for (const sectionId of sections) {
-        const element = document.getElementById(sectionId)
-        if (element) {
-          const { offsetTop, offsetHeight } = element
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setCurrentSection(sectionId)
-            break
+        for (const sectionId of sections) {
+          const element = document.getElementById(sectionId)
+          if (element) {
+            const { offsetTop, offsetHeight } = element
+            if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+              setCurrentSection(sectionId)
+              break
+            }
           }
         }
-      }
+        
+        clearTimeout(scrollTimeout)
+        scrollTimeout = setTimeout(() => {
+          setIsScrolling(false)
+        }, 300)
+      })
     }
 
-    // Funzione separata per controllare la visibilità
-    const updateVisibility = () => {
-      const isInHero = currentSection === 'hero'
-      
-      // Nascondi il dock se:
-      // - Siamo nella hero section
-      // - Siamo nel footer (hideInFooter è true)
-      // - Stiamo attualmente scrollando
-      const shouldHide = isInHero || hideInFooter || isScrolling
-      setIsVisible(!shouldHide)
-    }
-
-    const handleScroll = () => {
-      clearTimeout(timeoutId)
-      timeoutId = setTimeout(detectSection, 10)
-    }
-
-    detectSection()
+    handleScroll()
     window.addEventListener('scroll', handleScroll, { passive: true })
     
     return () => {
       window.removeEventListener('scroll', handleScroll)
-      clearTimeout(timeoutId)
-      clearTimeout(scrollTimeoutId)
+      clearTimeout(scrollTimeout)
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame)
+      }
     }
-  }, [hideInFooter])
+  }, [])
 
-  // Aggiorna la visibilità quando cambiano le condizioni
   useEffect(() => {
     const isInHero = currentSection === 'hero'
     const shouldHide = isInHero || hideInFooter || isScrolling
@@ -215,20 +196,6 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
     }
   }, [])
 
-  const handleWhatsApp = useCallback((phone: string) => {
-    const message = encodeURIComponent(
-      language === 'it' 
-        ? 'Ciao! Sono interessato ai vostri prodotti.' 
-        : 'Hallo! Ich interessiere mich für Ihre Produkte.'
-    )
-    window.open(`https://wa.me/39${phone.replace(/\s/g, '')}?text=${message}`, '_blank')
-    setActiveMenu('none')
-    
-    if ('vibrate' in navigator) {
-      navigator.vibrate(25)
-    }
-  }, [language])
-
   const handleDirections = useCallback((type: 'banchetto' | 'ingrosso') => {
     const urls = {
       banchetto: 'https://www.google.com/maps/search/?api=1&query=Banchetto+Frutta+e+Verdura+Bottamedi+Via+Cavalleggeri+Udine+Mezzolombardo+TN',
@@ -256,212 +223,369 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
 
   if (!isMobile) return null
 
+  // 🎯 VARIANTI ANIMATE FLUIDE
+  const popupVariants = {
+    hidden: { 
+      y: 60, 
+      opacity: 0, 
+      scale: 0.95
+    },
+    visible: {
+      y: 0,
+      opacity: 1,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+        mass: 0.8,
+        duration: 0.4
+      }
+    },
+    exit: {
+      y: 40,
+      opacity: 0,
+      scale: 0.95,
+      transition: {
+        duration: 0.25,
+        ease: "easeInOut"
+      }
+    }
+  }
+
+  const backdropVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { duration: 0.3, ease: "easeOut" }
+    },
+    exit: { 
+      opacity: 0,
+      transition: { duration: 0.2, ease: "easeIn" }
+    }
+  }
+
+  const dockVariants = {
+    hidden: { 
+      y: 120, 
+      opacity: 0, 
+      scale: 0.8
+    },
+    visible: {
+      y: 0,
+      opacity: 1,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 250,
+        damping: 25,
+        mass: 0.9,
+        duration: 0.6
+      }
+    },
+    exit: {
+      y: 100,
+      opacity: 0,
+      scale: 0.8,
+      transition: {
+        duration: 0.4,
+        ease: "easeInOut"
+      }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (index: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: index * 0.05,
+        duration: 0.3,
+        type: "spring",
+        stiffness: 300,
+        damping: 20
+      }
+    })
+  }
+
   return (
     <div className="lg:hidden pointer-events-none">
-      {/* Backdrop */}
+      {/* 🌟 BACKDROP CON SUPERCERCHI */}
       <AnimatePresence>
         {activeMenu !== 'none' && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[999] pointer-events-auto"
+            variants={backdropVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="fixed inset-0 z-[999] pointer-events-auto overflow-hidden"
             onClick={closeAllMenus}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Menu Popup */}
-      <AnimatePresence>
-        {activeMenu === 'menu' && isVisible && (
-          <motion.div
-            initial={{ y: 100, opacity: 0, scale: 0.9 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 100, opacity: 0, scale: 0.9 }}
-            transition={{ type: 'spring', damping: 30, stiffness: 400 }}
-            className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
+            style={{ 
+              background: 'radial-gradient(circle at 30% 20%, rgba(59,130,246,0.15) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(34,197,94,0.15) 0%, transparent 50%), rgba(0,0,0,0.4)',
+              backdropFilter: 'blur(8px)'
+            }}
           >
-            <div 
-              className="relative overflow-hidden"
+            {/* Supercerchi animati */}
+            <motion.div
+              className="absolute w-96 h-96 rounded-full"
               style={{
-                background: 'linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%)',
-                backdropFilter: 'blur(25px)',
-                WebkitBackdropFilter: 'blur(25px)',
-                borderRadius: '28px',
-                boxShadow: '0 25px 50px -12px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.2), inset 0 1px 0 rgba(255,255,255,0.9)',
-                border: '1px solid rgba(255,255,255,0.3)'
+                background: 'radial-gradient(circle, rgba(59,130,246,0.2) 0%, transparent 70%)',
+                top: '10%',
+                left: '20%'
               }}
-            >
-              <div 
-                className="px-6 py-5 border-b border-white/30"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(34,197,94,0.08) 100%)'
-                }}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div 
-                      className="w-10 h-10 rounded-2xl flex items-center justify-center text-white"
-                      style={{
-                        background: 'linear-gradient(135deg, #3b82f6 0%, #10b981 100%)',
-                        boxShadow: '0 4px 12px -2px rgba(59,130,246,0.4)'
-                      }}
-                    >
-                      <MenuIcon />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900">{t.menu}</h3>
-                      <p className="text-sm text-gray-600">Naviga il sito</p>
-                    </div>
-                  </div>
-                  <motion.button
-                    whileHover={{ scale: 1.1, rotate: 90 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={closeAllMenus}
-                    className="w-11 h-11 flex items-center justify-center rounded-2xl bg-white/90 backdrop-blur-sm shadow-lg text-gray-600 hover:text-red-500 transition-colors border border-white/40"
-                  >
-                    <CloseIcon />
-                  </motion.button>
-                </div>
-              </div>
-              
-              <div className="p-6">
-                <div className="grid grid-cols-2 gap-4">
-                  {t.sections.map((item, index) => (
-                    <motion.button
-                      key={item.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.04, duration: 0.3, type: 'spring' }}
-                      whileHover={{ 
-                        scale: 1.03, 
-                        y: -2,
-                        transition: { duration: 0.2 }
-                      }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => scrollToSection(item.id)}
-                      className={`
-                        relative flex items-center p-4 rounded-2xl transition-all duration-300 min-h-[70px] group
-                        ${currentSection === item.id 
-                          ? 'text-white' 
-                          : 'text-gray-700 hover:text-gray-900'
-                        }
-                      `}
-                      style={{
-                        background: currentSection === item.id 
-                          ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
-                          : 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%)',
-                        boxShadow: currentSection === item.id
-                          ? '0 8px 25px -8px rgba(16,185,129,0.5), inset 0 1px 0 rgba(255,255,255,0.3)'
-                          : '0 4px 15px -4px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.9)',
-                        border: currentSection === item.id 
-                          ? '1px solid rgba(255,255,255,0.3)'
-                          : '1px solid rgba(255,255,255,0.4)'
-                      }}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className="text-2xl">{item.icon}</div>
-                        <span className="text-sm font-bold leading-tight">
-                          {item.label}
-                        </span>
-                      </div>
-                      
-                      {currentSection === item.id && (
-                        <motion.div
-                          className="absolute right-3 w-2 h-2 bg-white rounded-full"
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ delay: 0.2 }}
-                        />
-                      )}
-                    </motion.button>
-                  ))}
-                </div>
-              </div>
-            </div>
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.3, 0.6, 0.3],
+                x: [0, 50, 0],
+                y: [0, -30, 0]
+              }}
+              transition={{
+                duration: 8,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+            <motion.div
+              className="absolute w-80 h-80 rounded-full"
+              style={{
+                background: 'radial-gradient(circle, rgba(34,197,94,0.25) 0%, transparent 70%)',
+                bottom: '20%',
+                right: '15%'
+              }}
+              animate={{
+                scale: [1, 1.3, 1],
+                opacity: [0.2, 0.5, 0.2],
+                x: [0, -40, 0],
+                y: [0, 20, 0]
+              }}
+              transition={{
+                duration: 10,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 2
+              }}
+            />
+            <motion.div
+              className="absolute w-64 h-64 rounded-full"
+              style={{
+                background: 'radial-gradient(circle, rgba(147,51,234,0.2) 0%, transparent 70%)',
+                top: '60%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)'
+              }}
+              animate={{
+                scale: [1, 1.1, 1],
+                opacity: [0.4, 0.7, 0.4],
+                rotate: [0, 180, 360]
+              }}
+              transition={{
+                duration: 15,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+            />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Call Popup */}
+      {/* 📱 MENU POPUP CON SUPERCERCHI */}
       <AnimatePresence>
-        {activeMenu === 'call' && isVisible && (
+        {activeMenu === 'menu' && isVisible && (
           <motion.div
-            initial={{ y: 100, opacity: 0, scale: 0.9 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 100, opacity: 0, scale: 0.9 }}
-            transition={{ type: 'spring', damping: 30, stiffness: 400 }}
+            variants={popupVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
             className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
+            style={{ willChange: 'transform, opacity' }}
           >
-            <div 
-              className="relative overflow-hidden"
-              style={{
-                background: 'linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%)',
-                backdropFilter: 'blur(25px)',
-                WebkitBackdropFilter: 'blur(25px)',
-                borderRadius: '28px',
-                boxShadow: '0 25px 50px -12px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.9)',
-                border: '1px solid rgba(255,255,255,0.3)'
-              }}
-            >
-              <div 
-                className="px-6 py-5 border-b border-white/30"
+            <div className="relative overflow-hidden bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50">
+              {/* Supercerchi nel background */}
+              <div className="absolute inset-0 overflow-hidden rounded-3xl">
+                <motion.div
+                  className="absolute w-32 h-32 rounded-full"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)',
+                    top: '-10%',
+                    right: '-10%'
+                  }}
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    rotate: [0, 180, 360]
+                  }}
+                  transition={{
+                    duration: 20,
+                    repeat: Infinity,
+                    ease: "linear"
+                  }}
+                />
+                <motion.div
+                  className="absolute w-24 h-24 rounded-full"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(34,197,94,0.15) 0%, transparent 70%)',
+                    bottom: '-5%',
+                    left: '-5%'
+                  }}
+                  animate={{
+                    scale: [1, 1.3, 1],
+                    x: [0, 20, 0],
+                    y: [0, -20, 0]
+                  }}
+                  transition={{
+                    duration: 12,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+              </div>
+
+              {/* Header con gradiente dinamico */}
+              <motion.div 
+                className="relative px-6 py-4 border-b border-white/30"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(147,51,234,0.08) 100%)'
+                  background: 'linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(34,197,94,0.1) 100%)'
+                }}
+                animate={{
+                  background: [
+                    'linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(34,197,94,0.1) 100%)',
+                    'linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(59,130,246,0.1) 100%)',
+                    'linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(34,197,94,0.1) 100%)'
+                  ]
+                }}
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "easeInOut"
                 }}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div 
-                      className="w-10 h-10 rounded-2xl flex items-center justify-center text-white"
-                      style={{
-                        background: 'linear-gradient(135deg, #3b82f6 0%, #9333ea 100%)',
-                        boxShadow: '0 4px 12px -2px rgba(59,130,246,0.4)'
+                    <motion.div 
+                      className="relative w-10 h-10 rounded-2xl flex items-center justify-center text-white shadow-lg overflow-hidden"
+                      animate={{
+                        background: [
+                          'linear-gradient(135deg, #3b82f6 0%, #10b981 100%)',
+                          'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
+                          'linear-gradient(135deg, #3b82f6 0%, #10b981 100%)'
+                        ]
+                      }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "easeInOut"
                       }}
                     >
-                      <PhoneIcon />
-                    </div>
+                      {/* Supercerchio nell'icona */}
+                      <motion.div
+                        className="absolute inset-0 rounded-2xl"
+                        style={{
+                          background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 50%)'
+                        }}
+                        animate={{
+                          scale: [1, 1.2, 1],
+                          opacity: [0.5, 0.8, 0.5]
+                        }}
+                        transition={{
+                          duration: 3,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }}
+                      />
+                      <MenuIcon />
+                    </motion.div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900">{t.call}</h3>
-                      <p className="text-sm text-gray-600">Contattaci direttamente</p>
+                      <h3 className="text-lg font-bold text-gray-900">{t.menu}</h3>
+                      <p className="text-sm text-gray-600">Naviga il sito</p>
                     </div>
                   </div>
-                  <motion.button
+                                      <motion.button
                     whileHover={{ scale: 1.1, rotate: 90 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={closeAllMenus}
-                    className="w-11 h-11 flex items-center justify-center rounded-2xl bg-white/90 shadow-lg text-gray-600 hover:text-red-500 transition-colors"
+                    className="relative w-10 h-10 flex items-center justify-center rounded-2xl bg-white/90 shadow-md text-gray-600 hover:text-red-500 transition-colors overflow-hidden"
                   >
+                    <motion.div
+                      className="absolute inset-0 rounded-2xl"
+                      style={{
+                        background: 'radial-gradient(circle at center, rgba(239,68,68,0.1) 0%, transparent 70%)'
+                      }}
+                      initial={{ scale: 0, opacity: 0 }}
+                      whileHover={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.2 }}
+                    />
                     <CloseIcon />
                   </motion.button>
                 </div>
-              </div>
+              </motion.div>
               
-              <div className="p-6 space-y-4">
+              {/* Contact Cards con supercerchi */}
+              <div className="relative p-6 space-y-4">
                 <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className="relative p-5 rounded-3xl overflow-hidden"
+                  variants={itemVariants}
+                  custom={0}
+                  initial="hidden"
+                  animate="visible"
+                  className="relative p-4 rounded-2xl border border-green-200 overflow-hidden"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(5,150,105,0.1) 100%)',
-                    border: '1px solid rgba(16,185,129,0.2)',
-                    boxShadow: '0 8px 25px -8px rgba(16,185,129,0.2)'
+                    background: 'linear-gradient(135deg, rgba(16,185,129,0.05) 0%, rgba(5,150,105,0.1) 100%)'
                   }}
                 >
-                  <div className="flex items-start space-x-4 mb-4">
-                    <div 
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg"
-                      style={{
-                        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+                  {/* Supercerchio per banchetto */}
+                  <motion.div
+                    className="absolute w-16 h-16 rounded-full"
+                    style={{
+                      background: 'radial-gradient(circle, rgba(16,185,129,0.2) 0%, transparent 70%)',
+                      top: '-20%',
+                      right: '-10%'
+                    }}
+                    animate={{
+                      scale: [1, 1.3, 1],
+                      rotate: [0, 360, 0]
+                    }}
+                    transition={{
+                      duration: 12,
+                      repeat: Infinity,
+                      ease: "linear"
+                    }}
+                  />
+                  
+                  <div className="relative flex items-start space-x-4 mb-3">
+                    <motion.div 
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center text-white text-lg shadow-lg overflow-hidden"
+                      animate={{
+                        background: [
+                          'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                          'linear-gradient(135deg, #059669 0%, #10b981 100%)',
+                          'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+                        ]
+                      }}
+                      transition={{
+                        duration: 5,
+                        repeat: Infinity,
+                        ease: "easeInOut"
                       }}
                     >
+                      <motion.div
+                        className="absolute inset-0 rounded-2xl"
+                        style={{
+                          background: 'radial-gradient(circle at 20% 20%, rgba(255,255,255,0.4) 0%, transparent 60%)'
+                        }}
+                        animate={{
+                          scale: [1, 1.1, 1],
+                          opacity: [0.4, 0.7, 0.4]
+                        }}
+                        transition={{
+                          duration: 3,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }}
+                      />
                       🛒
-                    </div>
+                    </motion.div>
                     <div className="flex-1">
-                      <h4 className="font-bold text-green-900 text-lg mb-1">{t.contacts.banchetto}</h4>
-                      <p className="text-green-600 text-sm mb-2">{t.contacts.banchettoAddress}</p>
+                      <h4 className="font-bold text-green-900 mb-1">{t.contacts.banchetto}</h4>
+                      <p className="text-green-700 text-sm mb-2">{t.contacts.banchettoAddress}</p>
                       <div className="flex items-center text-green-600 text-sm">
                         <ClockIcon />
                         <span className="ml-2">{t.contacts.banchettoHours}</span>
@@ -469,56 +593,149 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-1 gap-3">
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => handleCall(t.contacts.banchettoPhone)}
-                      className="flex items-center justify-center p-3 rounded-xl bg-green-500 text-white font-semibold shadow-md hover:shadow-lg transition-all"
-                    >
-                      <PhoneIcon />
-                      <span className="ml-2 text-sm">Chiama</span>
-                    </motion.button>
-                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.02, y: -1 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleCall(t.contacts.banchettoPhone)}
+                    className="relative w-full flex items-center justify-center p-3 rounded-xl text-white font-semibold shadow-md hover:shadow-lg transition-all overflow-hidden"
+                    animate={{
+                      background: [
+                        'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                        'linear-gradient(135deg, #059669 0%, #10b981 100%)',
+                        'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+                      ]
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    <motion.div
+                      className="absolute inset-0 rounded-xl"
+                      style={{
+                        background: 'radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, transparent 70%)'
+                      }}
+                      animate={{
+                        scale: [0, 2, 0],
+                        opacity: [0, 0.5, 0]
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    />
+                    <PhoneIcon />
+                    <span className="ml-2">Chiama {t.contacts.banchettoPhone}</span>
+                  </motion.button>
                 </motion.div>
 
                 <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="relative p-5 rounded-3xl overflow-hidden"
+                  variants={itemVariants}
+                  custom={1}
+                  initial="hidden"
+                  animate="visible"
+                  className="relative p-4 rounded-2xl border border-blue-200 overflow-hidden"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(37,99,235,0.1) 100%)',
-                    border: '1px solid rgba(59,130,246,0.2)',
-                    boxShadow: '0 8px 25px -8px rgba(59,130,246,0.2)'
+                    background: 'linear-gradient(135deg, rgba(59,130,246,0.05) 0%, rgba(37,99,235,0.1) 100%)'
                   }}
                 >
-                  <div className="flex items-start space-x-4 mb-4">
-                    <div 
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg"
-                      style={{
-                        background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)'
+                  {/* Supercerchio per ingrosso */}
+                  <motion.div
+                    className="absolute w-14 h-14 rounded-full"
+                    style={{
+                      background: 'radial-gradient(circle, rgba(59,130,246,0.25) 0%, transparent 70%)',
+                      bottom: '-10%',
+                      left: '-5%'
+                    }}
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      x: [0, 10, 0],
+                      y: [0, -10, 0]
+                    }}
+                    transition={{
+                      duration: 10,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  />
+                  
+                  <div className="relative flex items-start space-x-4 mb-3">
+                    <motion.div 
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center text-white text-lg shadow-lg overflow-hidden"
+                      animate={{
+                        background: [
+                          'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                          'linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%)',
+                          'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)'
+                        ]
+                      }}
+                      transition={{
+                        duration: 5,
+                        repeat: Infinity,
+                        ease: "easeInOut"
                       }}
                     >
+                      <motion.div
+                        className="absolute inset-0 rounded-2xl"
+                        style={{
+                          background: 'radial-gradient(circle at 20% 20%, rgba(255,255,255,0.4) 0%, transparent 60%)'
+                        }}
+                        animate={{
+                          scale: [1, 1.1, 1],
+                          opacity: [0.4, 0.7, 0.4]
+                        }}
+                        transition={{
+                          duration: 3,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }}
+                      />
                       🚛
-                    </div>
+                    </motion.div>
                     <div className="flex-1">
-                      <h4 className="font-bold text-blue-900 text-lg mb-1">{t.contacts.ingrosso}</h4>
-                      <p className="text-blue-600 text-sm">{t.contacts.ingrossoAddress}</p>
+                      <h4 className="font-bold text-blue-900 mb-1">{t.contacts.ingrosso}</h4>
+                      <p className="text-blue-700 text-sm">{t.contacts.ingrossoAddress}</p>
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-1 gap-3">
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => handleCall(t.contacts.ingrossoPhone)}
-                      className="flex items-center justify-center p-3 rounded-xl bg-blue-500 text-white font-semibold shadow-md hover:shadow-lg transition-all"
-                    >
-                      <PhoneIcon />
-                      <span className="ml-2 text-sm">Chiama</span>
-                    </motion.button>
-                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.02, y: -1 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleCall(t.contacts.ingrossoPhone)}
+                    className="relative w-full flex items-center justify-center p-3 rounded-xl text-white font-semibold shadow-md hover:shadow-lg transition-all overflow-hidden"
+                    animate={{
+                      background: [
+                        'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                        'linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%)',
+                        'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)'
+                      ]
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    <motion.div
+                      className="absolute inset-0 rounded-xl"
+                      style={{
+                        background: 'radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, transparent 70%)'
+                      }}
+                      animate={{
+                        scale: [0, 2, 0],
+                        opacity: [0, 0.5, 0]
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    />
+                    <PhoneIcon />
+                    <span className="ml-2">Chiama {t.contacts.ingrossoPhone}</span>
+                  </motion.button>
                 </motion.div>
               </div>
             </div>
@@ -526,46 +743,109 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
         )}
       </AnimatePresence>
 
-      {/* Directions Popup */}
+      {/* 🗺️ DIRECTIONS POPUP CON SUPERCERCHI */}
       <AnimatePresence>
         {activeMenu === 'directions' && isVisible && (
           <motion.div
-            initial={{ y: 100, opacity: 0, scale: 0.9 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 100, opacity: 0, scale: 0.9 }}
-            transition={{ type: 'spring', damping: 30, stiffness: 400 }}
+            variants={popupVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
             className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
+            style={{ willChange: 'transform, opacity' }}
           >
-            <div 
-              className="relative overflow-hidden"
-              style={{
-                background: 'linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%)',
-                backdropFilter: 'blur(25px)',
-                WebkitBackdropFilter: 'blur(25px)',
-                borderRadius: '28px',
-                boxShadow: '0 25px 50px -12px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.2), inset 0 1px 0 rgba(255,255,255,0.9)',
-                border: '1px solid rgba(255,255,255,0.3)'
-              }}
-            >
-              <div 
-                className="px-6 py-5 border-b border-white/30"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(34,197,94,0.08) 100%)'
+            <div className="relative overflow-hidden bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50">
+              {/* Supercerchi per directions */}
+              <div className="absolute inset-0 overflow-hidden rounded-3xl">
+                <motion.div
+                  className="absolute w-32 h-32 rounded-full"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(147,51,234,0.12) 0%, transparent 70%)',
+                    top: '-15%',
+                    left: '-10%'
+                  }}
+                  animate={{
+                    scale: [1, 1.3, 1],
+                    rotate: [0, 180, 360]
+                  }}
+                  transition={{
+                    duration: 18,
+                    repeat: Infinity,
+                    ease: "linear"
+                  }}
+                />
+                <motion.div
+                  className="absolute w-24 h-24 rounded-full"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(236,72,153,0.15) 0%, transparent 70%)',
+                    bottom: '-10%',
+                    right: '-10%'
+                  }}
+                  animate={{
+                    scale: [1, 1.4, 1],
+                    x: [0, -20, 0],
+                    y: [0, 20, 0]
+                  }}
+                  transition={{
+                    duration: 14,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+              </div>
+
+              {/* Header */}
+              <motion.div 
+                className="relative px-6 py-4 border-b border-white/30"
+                animate={{
+                  background: [
+                    'linear-gradient(135deg, rgba(147,51,234,0.1) 0%, rgba(236,72,153,0.1) 100%)',
+                    'linear-gradient(135deg, rgba(236,72,153,0.1) 0%, rgba(147,51,234,0.1) 100%)',
+                    'linear-gradient(135deg, rgba(147,51,234,0.1) 0%, rgba(236,72,153,0.1) 100%)'
+                  ]
+                }}
+                transition={{
+                  duration: 7,
+                  repeat: Infinity,
+                  ease: "easeInOut"
                 }}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div 
-                      className="w-10 h-10 rounded-2xl flex items-center justify-center text-white"
-                      style={{
-                        background: 'linear-gradient(135deg, #9333ea 0%, #a855f7 100%)',
-                        boxShadow: '0 4px 12px -2px rgba(147,51,234,0.4)'
+                    <motion.div 
+                      className="relative w-10 h-10 rounded-2xl flex items-center justify-center text-white shadow-lg overflow-hidden"
+                      animate={{
+                        background: [
+                          'linear-gradient(135deg, #9333ea 0%, #ec4899 100%)',
+                          'linear-gradient(135deg, #ec4899 0%, #9333ea 100%)',
+                          'linear-gradient(135deg, #9333ea 0%, #ec4899 100%)'
+                        ]
+                      }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "easeInOut"
                       }}
                     >
+                      <motion.div
+                        className="absolute inset-0 rounded-2xl"
+                        style={{
+                          background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 50%)'
+                        }}
+                        animate={{
+                          scale: [1, 1.2, 1],
+                          opacity: [0.5, 0.8, 0.5]
+                        }}
+                        transition={{
+                          duration: 3,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }}
+                      />
                       <MapIcon />
-                    </div>
+                    </motion.div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900">{t.directions}</h3>
+                      <h3 className="text-lg font-bold text-gray-900">{t.directions}</h3>
                       <p className="text-sm text-gray-600">Come raggiungerci</p>
                     </div>
                   </div>
@@ -573,40 +853,92 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     whileHover={{ scale: 1.1, rotate: 90 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={closeAllMenus}
-                    className="w-11 h-11 flex items-center justify-center rounded-2xl bg-white/90 shadow-lg text-gray-600 hover:text-red-500 transition-colors"
+                    className="relative w-10 h-10 flex items-center justify-center rounded-2xl bg-white/90 shadow-md text-gray-600 hover:text-red-500 transition-colors overflow-hidden"
                   >
+                    <motion.div
+                      className="absolute inset-0 rounded-2xl"
+                      style={{
+                        background: 'radial-gradient(circle at center, rgba(239,68,68,0.1) 0%, transparent 70%)'
+                      }}
+                      initial={{ scale: 0, opacity: 0 }}
+                      whileHover={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.2 }}
+                    />
                     <CloseIcon />
                   </motion.button>
                 </div>
-              </div>
+              </motion.div>
               
-              <div className="p-6 space-y-4">
+              {/* Location Cards */}
+              <div className="relative p-6 space-y-4">
                 <motion.button
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
+                  variants={itemVariants}
+                  custom={0}
+                  initial="hidden"
+                  animate="visible"
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleDirections('banchetto')}
-                  className="w-full p-5 rounded-3xl text-left transition-all duration-300"
+                  className="relative w-full p-4 rounded-2xl border border-green-200 text-left overflow-hidden"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(5,150,105,0.1) 100%)',
-                    border: '1px solid rgba(16,185,129,0.2)',
-                    boxShadow: '0 8px 25px -8px rgba(16,185,129,0.2)'
+                    background: 'linear-gradient(135deg, rgba(16,185,129,0.05) 0%, rgba(5,150,105,0.1) 100%)'
                   }}
                 >
-                  <div className="flex items-center space-x-4">
-                    <div 
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg"
-                      style={{
-                        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+                  {/* Supercerchio location 1 */}
+                  <motion.div
+                    className="absolute w-20 h-20 rounded-full"
+                    style={{
+                      background: 'radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%)',
+                      top: '-25%',
+                      right: '-15%'
+                    }}
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      rotate: [0, -360, 0]
+                    }}
+                    transition={{
+                      duration: 20,
+                      repeat: Infinity,
+                      ease: "linear"
+                    }}
+                  />
+                  
+                  <div className="relative flex items-center space-x-4">
+                    <motion.div 
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg overflow-hidden"
+                      animate={{
+                        background: [
+                          'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                          'linear-gradient(135deg, #059669 0%, #10b981 100%)',
+                          'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+                        ]
+                      }}
+                      transition={{
+                        duration: 6,
+                        repeat: Infinity,
+                        ease: "easeInOut"
                       }}
                     >
+                      <motion.div
+                        className="absolute inset-0 rounded-2xl"
+                        style={{
+                          background: 'radial-gradient(circle at 25% 25%, rgba(255,255,255,0.4) 0%, transparent 60%)'
+                        }}
+                        animate={{
+                          scale: [1, 1.1, 1],
+                          opacity: [0.4, 0.7, 0.4]
+                        }}
+                        transition={{
+                          duration: 4,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }}
+                      />
                       <MapIcon />
-                    </div>
+                    </motion.div>
                     <div className="flex-1">
-                      <h4 className="font-bold text-green-900 text-lg mb-1">{t.contacts.banchetto}</h4>
-                      <p className="text-green-600 text-sm leading-relaxed">{t.contacts.banchettoAddress}</p>
+                      <h4 className="font-bold text-green-900 mb-1">{t.contacts.banchetto}</h4>
+                      <p className="text-green-700 text-sm leading-relaxed">{t.contacts.banchettoAddress}</p>
                       <div className="flex items-center text-green-500 text-sm mt-2 font-semibold">
                         <span>📍 Apri in Google Maps</span>
                       </div>
@@ -615,31 +947,74 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                 </motion.button>
 
                 <motion.button
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
+                  variants={itemVariants}
+                  custom={1}
+                  initial="hidden"
+                  animate="visible"
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleDirections('ingrosso')}
-                  className="w-full p-5 rounded-3xl text-left transition-all duration-300"
+                  className="relative w-full p-4 rounded-2xl border border-blue-200 text-left overflow-hidden"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(37,99,235,0.1) 100%)',
-                    border: '1px solid rgba(59,130,246,0.2)',
-                    boxShadow: '0 8px 25px -8px rgba(59,130,246,0.2)'
+                    background: 'linear-gradient(135deg, rgba(59,130,246,0.05) 0%, rgba(37,99,235,0.1) 100%)'
                   }}
                 >
-                  <div className="flex items-center space-x-4">
-                    <div 
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg"
-                      style={{
-                        background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)'
+                  {/* Supercerchio location 2 */}
+                  <motion.div
+                    className="absolute w-18 h-18 rounded-full"
+                    style={{
+                      background: 'radial-gradient(circle, rgba(59,130,246,0.2) 0%, transparent 70%)',
+                      bottom: '-20%',
+                      left: '-10%'
+                    }}
+                    animate={{
+                      scale: [1, 1.3, 1],
+                      x: [0, 15, 0],
+                      y: [0, -15, 0]
+                    }}
+                    transition={{
+                      duration: 16,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  />
+                  
+                  <div className="relative flex items-center space-x-4">
+                    <motion.div 
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg overflow-hidden"
+                      animate={{
+                        background: [
+                          'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                          'linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%)',
+                          'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)'
+                        ]
+                      }}
+                      transition={{
+                        duration: 6,
+                        repeat: Infinity,
+                        ease: "easeInOut"
                       }}
                     >
+                      <motion.div
+                        className="absolute inset-0 rounded-2xl"
+                        style={{
+                          background: 'radial-gradient(circle at 25% 25%, rgba(255,255,255,0.4) 0%, transparent 60%)'
+                        }}
+                        animate={{
+                          scale: [1, 1.1, 1],
+                          opacity: [0.4, 0.7, 0.4]
+                        }}
+                        transition={{
+                          duration: 4,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }}
+                      />
                       <MapIcon />
-                    </div>
+                    </motion.div>
                     <div className="flex-1">
-                      <h4 className="font-bold text-blue-900 text-lg mb-1">{t.contacts.ingrosso}</h4>
-                      <p className="text-blue-600 text-sm leading-relaxed">{t.contacts.ingrossoAddress}</p>
+                      <h4 className="font-bold text-blue-900 mb-1">{t.contacts.ingrosso}</h4>
+                      <p className="text-blue-700 text-sm leading-relaxed">{t.contacts.ingrossoAddress}</p>
                       <div className="flex items-center text-blue-500 text-sm mt-2 font-semibold">
                         <span>📍 Apri in Google Maps</span>
                       </div>
@@ -652,217 +1027,264 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
         )}
       </AnimatePresence>
 
-      {/* DOCK PRINCIPALE */}
+      {/* 🚀 DOCK PRINCIPALE CON SUPERCERCHI E COLORI DINAMICI */}
       <AnimatePresence>
         {isVisible && (
           <motion.div
-            initial={{ y: 100, opacity: 0, scale: 0.8 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 100, opacity: 0, scale: 0.8 }}
-            transition={{ 
-              type: 'spring', 
-              damping: 25, 
-              stiffness: 350,
-              opacity: { duration: 0.3 }
-            }}
+            variants={dockVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
             className="fixed bottom-0 left-0 right-0 z-[1001] pointer-events-none"
             style={{
               paddingBottom: 'max(20px, env(safe-area-inset-bottom))',
               paddingLeft: 'env(safe-area-inset-left)',
-              paddingRight: 'env(safe-area-inset-right)'
+              paddingRight: 'env(safe-area-inset-right)',
+              willChange: 'transform, opacity'
             }}
           >
             <div className="flex justify-center px-4">
-              <div 
-                className="relative pointer-events-auto"
+              <motion.div 
+                className="relative pointer-events-auto rounded-3xl p-3 shadow-2xl border border-white/30 overflow-hidden"
                 style={{
                   background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.08) 100%)',
-                  backdropFilter: 'blur(25px)',
-                  WebkitBackdropFilter: 'blur(25px)',
-                  borderRadius: '32px',
-                  padding: '12px',
-                  boxShadow: '0 30px 60px -12px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.15), inset 0 1px 0 rgba(255,255,255,0.25)',
-                  border: '1px solid rgba(255,255,255,0.15)'
+                  backdropFilter: 'blur(25px)'
+                }}
+                animate={{
+                  background: [
+                    'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.08) 100%)',
+                    'linear-gradient(135deg, rgba(59,130,246,0.15) 0%, rgba(34,197,94,0.1) 100%)',
+                    'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.08) 100%)'
+                  ]
+                }}
+                transition={{
+                  duration: 10,
+                  repeat: Infinity,
+                  ease: "easeInOut"
                 }}
               >
-                <div 
-                  className="absolute inset-3 rounded-3xl"
+                {/* Supercerchi nel dock */}
+                <motion.div
+                  className="absolute w-24 h-24 rounded-full"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.04) 100%)',
-                    boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)'
+                    background: 'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)',
+                    top: '-50%',
+                    left: '10%'
+                  }}
+                  animate={{
+                    scale: [1, 1.5, 1],
+                    x: [0, 30, 0],
+                    opacity: [0.3, 0.6, 0.3]
+                  }}
+                  transition={{
+                    duration: 12,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+                <motion.div
+                  className="absolute w-20 h-20 rounded-full"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(34,197,94,0.15) 0%, transparent 70%)',
+                    bottom: '-40%',
+                    right: '15%'
+                  }}
+                  animate={{
+                    scale: [1, 1.3, 1],
+                    x: [0, -20, 0],
+                    opacity: [0.2, 0.5, 0.2]
+                  }}
+                  transition={{
+                    duration: 15,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 3
                   }}
                 />
                 
-                <div className="relative flex items-center space-x-4">
+                <div className="relative flex items-center space-x-3">
                   {/* Menu Button */}
                   <motion.button
                     whileHover={{ 
-                      scale: 1.12, 
-                      y: -6,
-                      rotateY: 12,
+                      scale: 1.15, 
+                      y: -4,
+                      rotateY: 10,
                       transition: { duration: 0.2, type: 'spring', stiffness: 400 }
                     }}
-                    whileTap={{ 
-                      scale: 0.95, 
-                      y: 0,
-                      transition: { duration: 0.1 }
-                    }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => toggleMenu('menu')}
                     className={`
-                      relative flex flex-col items-center justify-center rounded-3xl
-                      transition-all duration-300 group overflow-hidden
-                      ${activeMenu === 'menu' ? 'text-white' : 'text-gray-700'}
+                      relative w-16 h-16 rounded-2xl flex flex-col items-center justify-center
+                      transition-all duration-300 overflow-hidden
+                      ${activeMenu === 'menu' ? 'text-white shadow-2xl' : 'bg-white/90 text-gray-700 shadow-lg hover:shadow-xl'}
                     `}
-                    style={{
-                      background: activeMenu === 'menu' 
-                        ? 'linear-gradient(135deg, #3b82f6 0%, #10b981 100%)'
-                        : 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%)',
-                      boxShadow: activeMenu === 'menu'
-                        ? '0 15px 35px -8px rgba(59,130,246,0.6), inset 0 1px 0 rgba(255,255,255,0.4), 0 0 0 1px rgba(255,255,255,0.15)'
-                        : '0 10px 30px -8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.9), 0 0 0 1px rgba(255,255,255,0.25)',
-                      transform: 'perspective(500px) translateZ(6px)',
-                      width: '72px',
-                      height: '72px'
+                    style={{ willChange: 'transform' }}
+                    animate={activeMenu === 'menu' ? {
+                      background: [
+                        'linear-gradient(135deg, #3b82f6 0%, #10b981 100%)',
+                        'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
+                        'linear-gradient(135deg, #3b82f6 0%, #10b981 100%)'
+                      ]
+                    } : {}}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut"
                     }}
                   >
+                    {/* Supercerchio nel button */}
+                    {activeMenu === 'menu' && (
+                      <motion.div
+                        className="absolute inset-0 rounded-2xl"
+                        style={{
+                          background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 70%)'
+                        }}
+                        animate={{
+                          scale: [1, 1.5, 1],
+                          opacity: [0.3, 0.6, 0.3],
+                          rotate: [0, 180, 360]
+                        }}
+                        transition={{
+                          duration: 6,
+                          repeat: Infinity,
+                          ease: "linear"
+                        }}
+                      />
+                    )}
                     <motion.div 
-                      animate={activeMenu === 'menu' ? { rotate: 180, scale: 1.1 } : { rotate: 0, scale: 1 }}
                       className="mb-1"
+                      animate={activeMenu === 'menu' ? { rotate: [0, 180, 0] } : { rotate: 0 }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                     >
                       <MenuIcon />
                     </motion.div>
-                    <span className="text-xs font-bold opacity-90">{t.menu}</span>
-                    
-                    <AnimatePresence>
-                      {activeMenu === 'menu' && (
-                        <motion.div
-                          className="absolute inset-0 rounded-3xl"
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1.2 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          style={{
-                            background: 'linear-gradient(135deg, rgba(59,130,246,0.4) 0%, rgba(16,185,129,0.4) 100%)',
-                            filter: 'blur(12px)',
-                            zIndex: -1
-                          }}
-                        />
-                      )}
-                    </AnimatePresence>
+                    <span className="text-xs font-bold relative z-10">{t.menu}</span>
                   </motion.button>
 
                   {/* Call Button */}
                   <motion.button
                     whileHover={{ 
-                      scale: 1.12, 
-                      y: -6,
-                      rotateY: -12,
+                      scale: 1.15, 
+                      y: -4,
+                      rotateY: -10,
                       transition: { duration: 0.2, type: 'spring', stiffness: 400 }
                     }}
-                    whileTap={{ 
-                      scale: 0.95, 
-                      y: 0,
-                      transition: { duration: 0.1 }
-                    }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => toggleMenu('call')}
                     className={`
-                      relative flex flex-col items-center justify-center rounded-3xl
-                      transition-all duration-300 group overflow-hidden
-                      ${activeMenu === 'call' ? 'text-white' : 'text-gray-700'}
+                      relative w-16 h-16 rounded-2xl flex flex-col items-center justify-center
+                      transition-all duration-300 overflow-hidden
+                      ${activeMenu === 'call' ? 'text-white shadow-2xl' : 'bg-white/90 text-gray-700 shadow-lg hover:shadow-xl'}
                     `}
-                    style={{
-                      background: activeMenu === 'call' 
-                        ? 'linear-gradient(135deg, #f59e0b 0%, #dc2626 100%)'
-                        : 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%)',
-                      boxShadow: activeMenu === 'call'
-                        ? '0 15px 35px -8px rgba(245,158,11,0.6), inset 0 1px 0 rgba(255,255,255,0.4), 0 0 0 1px rgba(255,255,255,0.15)'
-                        : '0 10px 30px -8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.9), 0 0 0 1px rgba(255,255,255,0.25)',
-                      transform: 'perspective(500px) translateZ(6px)',
-                      width: '72px',
-                      height: '72px'
+                    style={{ willChange: 'transform' }}
+                    animate={activeMenu === 'call' ? {
+                      background: [
+                        'linear-gradient(135deg, #f59e0b 0%, #dc2626 100%)',
+                        'linear-gradient(135deg, #dc2626 0%, #f59e0b 100%)',
+                        'linear-gradient(135deg, #f59e0b 0%, #dc2626 100%)'
+                      ]
+                    } : {}}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut"
                     }}
                   >
+                    {/* Supercerchio nel call button */}
+                    {activeMenu === 'call' && (
+                      <motion.div
+                        className="absolute inset-0 rounded-2xl"
+                        style={{
+                          background: 'radial-gradient(circle at 70% 30%, rgba(255,255,255,0.4) 0%, transparent 60%)'
+                        }}
+                        animate={{
+                          scale: [0.8, 1.4, 0.8],
+                          opacity: [0.2, 0.7, 0.2],
+                          x: [0, 5, 0],
+                          y: [0, -5, 0]
+                        }}
+                        transition={{
+                          duration: 4,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }}
+                      />
+                    )}
                     <motion.div 
-                      animate={activeMenu === 'call' ? { rotate: 8, scale: 1.1 } : { rotate: 0, scale: 1 }}
                       className="mb-1"
+                      animate={activeMenu === 'call' ? { 
+                        rotate: [0, 8, -8, 0],
+                        scale: [1, 1.1, 1]
+                      } : { rotate: 0, scale: 1 }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                     >
                       <PhoneIcon />
                     </motion.div>
-                    <span className="text-xs font-bold opacity-90">{t.call}</span>
-                    
-                    <AnimatePresence>
-                      {activeMenu === 'call' && (
-                        <motion.div
-                          className="absolute inset-0 rounded-3xl"
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1.2 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          style={{
-                            background: 'linear-gradient(135deg, rgba(245,158,11,0.4) 0%, rgba(220,38,38,0.4) 100%)',
-                            filter: 'blur(12px)',
-                            zIndex: -1
-                          }}
-                        />
-                      )}
-                    </AnimatePresence>
+                    <span className="text-xs font-bold relative z-10">{t.call}</span>
                   </motion.button>
 
                   {/* Directions Button */}
                   <motion.button
                     whileHover={{ 
-                      scale: 1.12, 
-                      y: -6,
-                      rotateY: 12,
+                      scale: 1.15, 
+                      y: -4,
+                      rotateY: 10,
                       transition: { duration: 0.2, type: 'spring', stiffness: 400 }
                     }}
-                    whileTap={{ 
-                      scale: 0.95, 
-                      y: 0,
-                      transition: { duration: 0.1 }
-                    }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => toggleMenu('directions')}
                     className={`
-                      relative flex flex-col items-center justify-center rounded-3xl
-                      transition-all duration-300 group overflow-hidden
-                      ${activeMenu === 'directions' ? 'text-white' : 'text-gray-700'}
+                      relative w-16 h-16 rounded-2xl flex flex-col items-center justify-center
+                      transition-all duration-300 overflow-hidden
+                      ${activeMenu === 'directions' ? 'text-white shadow-2xl' : 'bg-white/90 text-gray-700 shadow-lg hover:shadow-xl'}
                     `}
-                    style={{
-                      background: activeMenu === 'directions' 
-                        ? 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)'
-                        : 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%)',
-                      boxShadow: activeMenu === 'directions'
-                        ? '0 15px 35px -8px rgba(139,92,246,0.6), inset 0 1px 0 rgba(255,255,255,0.4), 0 0 0 1px rgba(255,255,255,0.15)'
-                        : '0 10px 30px -8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.9), 0 0 0 1px rgba(255,255,255,0.25)',
-                      transform: 'perspective(500px) translateZ(6px)',
-                      width: '72px',
-                      height: '72px'
+                    style={{ willChange: 'transform' }}
+                    animate={activeMenu === 'directions' ? {
+                      background: [
+                        'linear-gradient(135deg, #9333ea 0%, #ec4899 100%)',
+                        'linear-gradient(135deg, #ec4899 0%, #9333ea 100%)',
+                        'linear-gradient(135deg, #9333ea 0%, #ec4899 100%)'
+                      ]
+                    } : {}}
+                    transition={{
+                      duration: 5,
+                      repeat: Infinity,
+                      ease: "easeInOut"
                     }}
                   >
+                    {/* Supercerchio nel directions button */}
+                    {activeMenu === 'directions' && (
+                      <motion.div
+                        className="absolute inset-0 rounded-2xl"
+                        style={{
+                          background: 'radial-gradient(circle at 50% 20%, rgba(255,255,255,0.35) 0%, transparent 65%)'
+                        }}
+                        animate={{
+                          scale: [1, 1.3, 1],
+                          opacity: [0.4, 0.8, 0.4],
+                          rotate: [0, 90, 180, 270, 360]
+                        }}
+                        transition={{
+                          duration: 8,
+                          repeat: Infinity,
+                          ease: "linear"
+                        }}
+                      />
+                    )}
                     <motion.div 
-                      animate={activeMenu === 'directions' ? { rotate: -8, scale: 1.1 } : { rotate: 0, scale: 1 }}
                       className="mb-1"
+                      animate={activeMenu === 'directions' ? { 
+                        y: [0, -2, 0],
+                        scale: [1, 1.1, 1]
+                      } : { y: 0, scale: 1 }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
                     >
                       <MapIcon />
                     </motion.div>
-                    <span className="text-xs font-bold opacity-90">{t.directions}</span>
-                    
-                    <AnimatePresence>
-                      {activeMenu === 'directions' && (
-                        <motion.div
-                          className="absolute inset-0 rounded-3xl"
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1.2 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          style={{
-                            background: 'linear-gradient(135deg, rgba(139,92,246,0.4) 0%, rgba(236,72,153,0.4) 100%)',
-                            filter: 'blur(12px)',
-                            zIndex: -1
-                          }}
-                        />
-                      )}
-                    </AnimatePresence>
+                    <span className="text-xs font-bold relative z-10">{t.directions}</span>
                   </motion.button>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </motion.div>
         )}
@@ -871,4 +1293,209 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
   )
 }
 
-export default PremiumMobileDock
+export default PremiumMobileDock>
+                </div>
+              </motion.div>
+              
+              {/* Menu Items con supercerchi */}
+              <div className="relative p-6">
+                <div className="grid grid-cols-2 gap-3">
+                  {t.sections.map((item, index) => (
+                    <motion.button
+                      key={item.id}
+                      custom={index}
+                      variants={itemVariants}
+                      initial="hidden"
+                      animate="visible"
+                      whileHover={{ scale: 1.02, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => scrollToSection(item.id)}
+                      className={`
+                        relative flex items-center p-4 rounded-2xl transition-all duration-300 min-h-[60px] overflow-hidden
+                        ${currentSection === item.id 
+                          ? 'text-white shadow-xl' 
+                          : 'bg-white/70 text-gray-700 hover:bg-white/90 shadow-md hover:shadow-lg'
+                        }
+                      `}
+                      style={{
+                        background: currentSection === item.id 
+                          ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+                          : undefined
+                      }}
+                      animate={currentSection === item.id ? {
+                        background: [
+                          'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                          'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                          'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+                        ]
+                      } : {}}
+                      transition={{
+                        duration: 6,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    >
+                      {/* Supercerchio per item attivo */}
+                      {currentSection === item.id && (
+                        <motion.div
+                          className="absolute inset-0 rounded-2xl"
+                          style={{
+                            background: 'radial-gradient(circle at 70% 30%, rgba(255,255,255,0.2) 0%, transparent 60%)'
+                          }}
+                          animate={{
+                            scale: [1, 1.3, 1],
+                            opacity: [0.3, 0.6, 0.3]
+                          }}
+                          transition={{
+                            duration: 4,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          }}
+                        />
+                      )}
+                      
+                      <div className="relative flex items-center space-x-3">
+                        <div className="text-xl">{item.icon}</div>
+                        <span className="text-sm font-semibold">{item.label}</span>
+                      </div>
+                      
+                      {currentSection === item.id && (
+                        <motion.div
+                          className="absolute right-3 w-2 h-2 bg-white rounded-full"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: 0.1 }}
+                        />
+                      )}
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 📞 CALL POPUP CON SUPERCERCHI */}
+      <AnimatePresence>
+        {activeMenu === 'call' && isVisible && (
+          <motion.div
+            variants={popupVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
+            style={{ willChange: 'transform, opacity' }}
+          >
+            <div className="relative overflow-hidden bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50">
+              {/* Supercerchi per call */}
+              <div className="absolute inset-0 overflow-hidden rounded-3xl">
+                <motion.div
+                  className="absolute w-28 h-28 rounded-full"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%)',
+                    top: '-5%',
+                    right: '-5%'
+                  }}
+                  animate={{
+                    scale: [1, 1.4, 1],
+                    rotate: [0, -180, -360]
+                  }}
+                  transition={{
+                    duration: 15,
+                    repeat: Infinity,
+                    ease: "linear"
+                  }}
+                />
+                <motion.div
+                  className="absolute w-20 h-20 rounded-full"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(220,38,38,0.2) 0%, transparent 70%)',
+                    bottom: '10%',
+                    left: '10%'
+                  }}
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    x: [0, 15, 0],
+                    y: [0, -15, 0]
+                  }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+              </div>
+
+              {/* Header con gradiente dinamico */}
+              <motion.div 
+                className="relative px-6 py-4 border-b border-white/30"
+                animate={{
+                  background: [
+                    'linear-gradient(135deg, rgba(245,158,11,0.1) 0%, rgba(220,38,38,0.1) 100%)',
+                    'linear-gradient(135deg, rgba(220,38,38,0.1) 0%, rgba(245,158,11,0.1) 100%)',
+                    'linear-gradient(135deg, rgba(245,158,11,0.1) 0%, rgba(220,38,38,0.1) 100%)'
+                  ]
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <motion.div 
+                      className="relative w-10 h-10 rounded-2xl flex items-center justify-center text-white shadow-lg overflow-hidden"
+                      animate={{
+                        background: [
+                          'linear-gradient(135deg, #f59e0b 0%, #dc2626 100%)',
+                          'linear-gradient(135deg, #dc2626 0%, #f59e0b 100%)',
+                          'linear-gradient(135deg, #f59e0b 0%, #dc2626 100%)'
+                        ]
+                      }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    >
+                      <motion.div
+                        className="absolute inset-0 rounded-2xl"
+                        style={{
+                          background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 50%)'
+                        }}
+                        animate={{
+                          scale: [1, 1.2, 1],
+                          opacity: [0.5, 0.8, 0.5]
+                        }}
+                        transition={{
+                          duration: 3,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }}
+                      />
+                      <PhoneIcon />
+                    </motion.div>
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900">{t.call}</h3>
+                      <p className="text-sm text-gray-600">Contattaci direttamente</p>
+                    </div>
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.1, rotate: 90 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={closeAllMenus}
+                    className="relative w-10 h-10 flex items-center justify-center rounded-2xl bg-white/90 shadow-md text-gray-600 hover:text-red-500 transition-colors overflow-hidden"
+                  >
+                    <motion.div
+                      className="absolute inset-0 rounded-2xl"
+                      style={{
+                        background: 'radial-gradient(circle at center, rgba(239,68,68,0.1) 0%, transparent 70%)'
+                      }}
+                      initial={{ scale: 0, opacity: 0 }}
+                      whileHover={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.2 }}
+                    />
+                    <CloseIcon />
+                  </motion.button

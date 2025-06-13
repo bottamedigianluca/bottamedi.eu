@@ -387,57 +387,46 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                   {t.sections.map((item, index) => (
                     <motion.button
                       key={item.id}
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 15 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ 
-                        delay: index * 0.05, 
-                        duration: 0.3, 
-                        type: "spring", 
-                        stiffness: 300, 
-                        damping: 20 
+                        delay: index * 0.03, 
+                        duration: 0.2,
+                        ease: "easeOut"
                       }}
-                      whileHover={{ scale: 1.02, y: -2 }}
-                      whileTap={{ scale: 0.98 }}
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.99 }}
                       onClick={() => scrollToSection(item.id)}
                       className={`
-                        relative flex items-center p-4 rounded-2xl transition-all duration-300 min-h-[60px] overflow-hidden
+                        relative flex items-center p-4 rounded-2xl min-h-[60px] overflow-hidden
+                        transition-all duration-200 ease-out
                         ${currentSection === item.id 
-                          ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg' 
-                          : 'bg-white/70 text-gray-700 hover:bg-white/90 shadow-md hover:shadow-lg'
+                          ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg transform-gpu' 
+                          : 'bg-white/80 text-gray-700 hover:bg-white/95 shadow-md hover:shadow-lg transform-gpu'
                         }
                       `}
+                      style={{
+                        backfaceVisibility: 'hidden',
+                        WebkitBackfaceVisibility: 'hidden'
+                      }}
                     >
-                      {/* Supercerchio per item attivo */}
+                      {/* Supercerchio statico per item attivo */}
                       {currentSection === item.id && (
-                        <motion.div
-                          className="absolute inset-0 rounded-2xl"
+                        <div
+                          className="absolute inset-0 rounded-2xl opacity-20"
                           style={{
-                            background: 'radial-gradient(circle at 70% 30%, rgba(255,255,255,0.2) 0%, transparent 60%)'
-                          }}
-                          animate={{
-                            scale: [1, 1.3, 1],
-                            opacity: [0.3, 0.6, 0.3]
-                          }}
-                          transition={{
-                            duration: 4,
-                            repeat: Infinity,
-                            ease: "easeInOut"
+                            background: 'radial-gradient(circle at 70% 30%, rgba(255,255,255,0.6) 0%, transparent 60%)'
                           }}
                         />
                       )}
                       
-                      <div className="relative flex items-center space-x-3">
+                      <div className="relative flex items-center space-x-3 z-10">
                         <div className="text-xl">{item.icon}</div>
                         <span className="text-sm font-semibold">{item.label}</span>
                       </div>
                       
                       {currentSection === item.id && (
-                        <motion.div
-                          className="absolute right-3 w-2 h-2 bg-white rounded-full"
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ delay: 0.1 }}
-                        />
+                        <div className="absolute right-3 w-2 h-2 bg-white rounded-full opacity-90" />
                       )}
                     </motion.button>
                   ))}
@@ -489,11 +478,12 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
               
               {/* Contact Cards */}
               <div className="p-6 space-y-4">
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200"
+                <div
+                  className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200 transform-gpu"
+                  style={{
+                    backfaceVisibility: 'hidden',
+                    WebkitBackfaceVisibility: 'hidden'
+                  }}
                 >
                   <div className="flex items-start space-x-4 mb-3">
                     <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white text-lg shadow-lg">
@@ -510,21 +500,26 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                   </div>
                   
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
                     onClick={() => handleCall(t.contacts.banchettoPhone)}
-                    className="w-full flex items-center justify-center p-3 bg-green-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+                    className="w-full flex items-center justify-center p-3 bg-green-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+                    style={{
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden'
+                    }}
                   >
                     <PhoneIcon />
                     <span className="ml-2">Chiama {t.contacts.banchettoPhone}</span>
                   </motion.button>
-                </motion.div>
+                </div>
 
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200"
+                <div
+                  className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200 transform-gpu"
+                  style={{
+                    backfaceVisibility: 'hidden',
+                    WebkitBackfaceVisibility: 'hidden'
+                  }}
                 >
                   <div className="flex items-start space-x-4 mb-3">
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white text-lg shadow-lg">
@@ -537,15 +532,19 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                   </div>
                   
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
                     onClick={() => handleCall(t.contacts.ingrossoPhone)}
-                    className="w-full flex items-center justify-center p-3 bg-blue-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+                    className="w-full flex items-center justify-center p-3 bg-blue-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+                    style={{
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden'
+                    }}
                   >
                     <PhoneIcon />
                     <span className="ml-2">Chiama {t.contacts.ingrossoPhone}</span>
                   </motion.button>
-                </motion.div>
+                </div>
               </div>
             </div>
           </motion.div>

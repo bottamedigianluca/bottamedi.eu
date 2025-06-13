@@ -223,42 +223,132 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
 
   if (!isMobile) return null
 
+  // 🎯 VARIANTI ANIMATE UNIFICATE E SMOOTH
+  const backdropVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { 
+        duration: 0.25,
+        ease: [0.4, 0.0, 0.2, 1] // easeOutCubic
+      }
+    },
+    exit: { 
+      opacity: 0,
+      transition: { 
+        duration: 0.2,
+        ease: [0.4, 0.0, 0.2, 1]
+      }
+    }
+  }
+
+  const popupVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 40,
+      scale: 0.96
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.35,
+        ease: [0.4, 0.0, 0.2, 1], // easeOutCubic
+        staggerChildren: 0.08,
+        delayChildren: 0.1
+      }
+    },
+    exit: {
+      opacity: 0,
+      y: 30,
+      scale: 0.97,
+      transition: {
+        duration: 0.25,
+        ease: [0.4, 0.0, 0.6, 1] // easeInCubic
+      }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 20,
+      scale: 0.95
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.3,
+        ease: [0.4, 0.0, 0.2, 1]
+      }
+    }
+  }
+
+  const dockVariants = {
+    hidden: { 
+      y: 100, 
+      opacity: 0,
+      scale: 0.9
+    },
+    visible: {
+      y: 0,
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        ease: [0.4, 0.0, 0.2, 1],
+        type: "spring",
+        stiffness: 300,
+        damping: 30
+      }
+    },
+    exit: {
+      y: 80,
+      opacity: 0,
+      scale: 0.95,
+      transition: {
+        duration: 0.3,
+        ease: [0.4, 0.0, 0.6, 1]
+      }
+    }
+  }
+
   return (
     <div className="lg:hidden pointer-events-none">
-      {/* 🌅 BACKDROP SEMPLICE E SMOOTH */}
+      {/* 🌅 BACKDROP UNIFORME */}
       <AnimatePresence>
         {activeMenu !== 'none' && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            variants={backdropVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
             className="fixed inset-0 z-[999] pointer-events-auto"
             onClick={closeAllMenus}
             style={{ 
-              background: 'rgba(0,0,0,0.5)',
+              background: 'rgba(0,0,0,0.4)',
               backdropFilter: 'blur(8px)'
             }}
           />
         )}
       </AnimatePresence>
 
-      {/* 📱 MENU POPUP - ANIMAZIONE SUPER SMOOTH */}
+      {/* 📱 MENU POPUP */}
       <AnimatePresence>
         {activeMenu === 'menu' && isVisible && (
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ 
-              duration: 0.3,
-              ease: [0.25, 0.46, 0.45, 0.94] // easeOutQuart
-            }}
+            variants={popupVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
             className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
           >
-            <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50">
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
               {/* Header */}
-              <div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-green-50 border-b border-gray-200/50 rounded-t-3xl">
+              <div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-green-50 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-green-500 rounded-2xl flex items-center justify-center text-white shadow-lg">
@@ -273,39 +363,37 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={closeAllMenus}
-                    className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white/90 shadow-md text-gray-600 hover:text-red-500 transition-colors duration-200"
+                    className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white shadow-md text-gray-600 hover:text-red-500 transition-colors duration-200"
                   >
                     <CloseIcon />
                   </motion.button>
                 </div>
               </div>
               
-              {/* Menu Items - ZERO FLASH, ANIMAZIONE RITARDATA */}
-              <motion.div 
-                className="p-6"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.1, duration: 0.2 }}
-              >
-                <div className="grid grid-cols-2 gap-3">
+              {/* Menu Items */}
+              <div className="p-6">
+                <motion.div 
+                  className="grid grid-cols-2 gap-3"
+                  variants={{
+                    visible: {
+                      transition: {
+                        staggerChildren: 0.06
+                      }
+                    }
+                  }}
+                >
                   {t.sections.map((item, index) => (
                     <motion.button
                       key={item.id}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ 
-                        delay: 0.15 + (index * 0.03), // Stagger più lento
-                        duration: 0.2,
-                        ease: "easeOut"
-                      }}
-                      whileHover={{ scale: 1.02 }}
+                      variants={itemVariants}
+                      whileHover={{ scale: 1.02, y: -1 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => scrollToSection(item.id)}
                       className={`
                         flex items-center p-4 rounded-2xl transition-all duration-200 min-h-[60px]
                         ${currentSection === item.id 
                           ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg' 
-                          : 'bg-white/80 text-gray-700 hover:bg-white shadow-md hover:shadow-lg'
+                          : 'bg-gray-50 text-gray-700 hover:bg-gray-100 shadow-sm hover:shadow-md'
                         }
                       `}
                     >
@@ -319,34 +407,31 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                           className="absolute right-3 w-2 h-2 bg-white rounded-full"
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
-                          transition={{ delay: 0.2, duration: 0.15 }}
+                          transition={{ delay: 0.2, duration: 0.2 }}
                         />
                       )}
                     </motion.button>
                   ))}
-                </div>
-              </motion.div>
+                </motion.div>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 📞 CALL POPUP - ANIMAZIONE SMOOTH */}
+      {/* 📞 CALL POPUP */}
       <AnimatePresence>
         {activeMenu === 'call' && isVisible && (
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ 
-              duration: 0.3,
-              ease: [0.25, 0.46, 0.45, 0.94]
-            }}
+            variants={popupVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
             className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
           >
-            <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50">
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
               {/* Header */}
-              <div className="px-6 py-4 bg-gradient-to-r from-orange-50 to-red-50 border-b border-gray-200/50 rounded-t-3xl">
+              <div className="px-6 py-4 bg-gradient-to-r from-orange-50 to-red-50 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center text-white shadow-lg">
@@ -361,99 +446,98 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={closeAllMenus}
-                    className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white/90 shadow-md text-gray-600 hover:text-red-500 transition-colors duration-200"
+                    className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white shadow-md text-gray-600 hover:text-red-500 transition-colors duration-200"
                   >
                     <CloseIcon />
                   </motion.button>
                 </div>
               </div>
               
-              {/* Contact Cards - ANIMAZIONE RITARDATA SMOOTH */}
-              <motion.div 
-                className="p-6 space-y-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.1, duration: 0.2 }}
-              >
-                <motion.div
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.15, duration: 0.2, ease: "easeOut" }}
-                  className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200"
+              {/* Contact Cards */}
+              <div className="p-6">
+                <motion.div 
+                  className="space-y-4"
+                  variants={{
+                    visible: {
+                      transition: {
+                        staggerChildren: 0.1
+                      }
+                    }
+                  }}
                 >
-                  <div className="flex items-start space-x-4 mb-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white text-lg shadow-lg">
-                      🛒
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-bold text-green-900 mb-1">{t.contacts.banchetto}</h4>
-                      <p className="text-green-700 text-sm mb-2">{t.contacts.banchettoAddress}</p>
-                      <div className="flex items-center text-green-600 text-sm">
-                        <ClockIcon />
-                        <span className="ml-2">{t.contacts.banchettoHours}</span>
+                  <motion.div
+                    variants={itemVariants}
+                    className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200"
+                  >
+                    <div className="flex items-start space-x-4 mb-3">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white text-lg shadow-lg">
+                        🛒
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-bold text-green-900 mb-1">{t.contacts.banchetto}</h4>
+                        <p className="text-green-700 text-sm mb-2">{t.contacts.banchettoAddress}</p>
+                        <div className="flex items-center text-green-600 text-sm">
+                          <ClockIcon />
+                          <span className="ml-2">{t.contacts.banchettoHours}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleCall(t.contacts.banchettoPhone)}
-                    className="w-full flex items-center justify-center p-3 bg-green-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
-                  >
-                    <PhoneIcon />
-                    <span className="ml-2">Chiama {t.contacts.banchettoPhone}</span>
-                  </motion.button>
-                </motion.div>
+                    
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleCall(t.contacts.banchettoPhone)}
+                      className="w-full flex items-center justify-center p-3 bg-green-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+                    >
+                      <PhoneIcon />
+                      <span className="ml-2">Chiama {t.contacts.banchettoPhone}</span>
+                    </motion.button>
+                  </motion.div>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, duration: 0.2, ease: "easeOut" }}
-                  className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200"
-                >
-                  <div className="flex items-start space-x-4 mb-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white text-lg shadow-lg">
-                      🚛
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-bold text-blue-900 mb-1">{t.contacts.ingrosso}</h4>
-                      <p className="text-blue-700 text-sm">{t.contacts.ingrossoAddress}</p>
-                    </div>
-                  </div>
-                  
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleCall(t.contacts.ingrossoPhone)}
-                    className="w-full flex items-center justify-center p-3 bg-blue-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+                  <motion.div
+                    variants={itemVariants}
+                    className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200"
                   >
-                    <PhoneIcon />
-                    <span className="ml-2">Chiama {t.contacts.ingrossoPhone}</span>
-                  </motion.button>
+                    <div className="flex items-start space-x-4 mb-3">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white text-lg shadow-lg">
+                        🚛
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-bold text-blue-900 mb-1">{t.contacts.ingrosso}</h4>
+                        <p className="text-blue-700 text-sm">{t.contacts.ingrossoAddress}</p>
+                      </div>
+                    </div>
+                    
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleCall(t.contacts.ingrossoPhone)}
+                      className="w-full flex items-center justify-center p-3 bg-blue-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+                    >
+                      <PhoneIcon />
+                      <span className="ml-2">Chiama {t.contacts.ingrossoPhone}</span>
+                    </motion.button>
+                  </motion.div>
                 </motion.div>
-              </motion.div>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 🗺️ DIRECTIONS POPUP - ANIMAZIONE SMOOTH */}
+      {/* 🗺️ DIRECTIONS POPUP */}
       <AnimatePresence>
         {activeMenu === 'directions' && isVisible && (
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ 
-              duration: 0.3,
-              ease: [0.25, 0.46, 0.45, 0.94]
-            }}
+            variants={popupVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
             className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
           >
-            <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50">
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
               {/* Header */}
-              <div className="px-6 py-4 bg-gradient-to-r from-purple-50 to-pink-50 border-b border-gray-200/50 rounded-t-3xl">
+              <div className="px-6 py-4 bg-gradient-to-r from-purple-50 to-pink-50 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-white shadow-lg">
@@ -468,82 +552,81 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={closeAllMenus}
-                    className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white/90 shadow-md text-gray-600 hover:text-red-500 transition-colors duration-200"
+                    className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white shadow-md text-gray-600 hover:text-red-500 transition-colors duration-200"
                   >
                     <CloseIcon />
                   </motion.button>
                 </div>
               </div>
               
-              {/* Location Cards - ANIMAZIONE RITARDATA SMOOTH */}
-              <motion.div 
-                className="p-6 space-y-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.1, duration: 0.2 }}
-              >
-                <motion.button
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.15, duration: 0.2, ease: "easeOut" }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => handleDirections('banchetto')}
-                  className="w-full p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200 text-left transition-all duration-200"
+              {/* Location Cards */}
+              <div className="p-6">
+                <motion.div 
+                  className="space-y-4"
+                  variants={{
+                    visible: {
+                      transition: {
+                        staggerChildren: 0.1
+                      }
+                    }
+                  }}
                 >
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
-                      <MapIcon />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-bold text-green-900 mb-1">{t.contacts.banchetto}</h4>
-                      <p className="text-green-700 text-sm leading-relaxed">{t.contacts.banchettoAddress}</p>
-                      <div className="flex items-center text-green-500 text-sm mt-2 font-semibold">
-                        <span>📍 Apri in Google Maps</span>
+                  <motion.button
+                    variants={itemVariants}
+                    whileHover={{ scale: 1.02, y: -1 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleDirections('banchetto')}
+                    className="w-full p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200 text-left transition-all duration-200 hover:shadow-md"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                        <MapIcon />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-bold text-green-900 mb-1">{t.contacts.banchetto}</h4>
+                        <p className="text-green-700 text-sm leading-relaxed">{t.contacts.banchettoAddress}</p>
+                        <div className="flex items-center text-green-500 text-sm mt-2 font-semibold">
+                          <span>📍 Apri in Google Maps</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </motion.button>
+                  </motion.button>
 
-                <motion.button
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, duration: 0.2, ease: "easeOut" }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => handleDirections('ingrosso')}
-                  className="w-full p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200 text-left transition-all duration-200"
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
-                      <MapIcon />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-bold text-blue-900 mb-1">{t.contacts.ingrosso}</h4>
-                      <p className="text-blue-700 text-sm leading-relaxed">{t.contacts.ingrossoAddress}</p>
-                      <div className="flex items-center text-blue-500 text-sm mt-2 font-semibold">
-                        <span>📍 Apri in Google Maps</span>
+                  <motion.button
+                    variants={itemVariants}
+                    whileHover={{ scale: 1.02, y: -1 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleDirections('ingrosso')}
+                    className="w-full p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200 text-left transition-all duration-200 hover:shadow-md"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                        <MapIcon />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-bold text-blue-900 mb-1">{t.contacts.ingrosso}</h4>
+                        <p className="text-blue-700 text-sm leading-relaxed">{t.contacts.ingrossoAddress}</p>
+                        <div className="flex items-center text-blue-500 text-sm mt-2 font-semibold">
+                          <span>📍 Apri in Google Maps</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </motion.button>
-              </motion.div>
+                  </motion.button>
+                </motion.div>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 🚀 DOCK PRINCIPALE SEMPLICE E PULITO */}
+      {/* 🚀 DOCK PRINCIPALE */}
       <AnimatePresence>
         {isVisible && (
           <motion.div
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 80, opacity: 0 }}
-            transition={{
-              duration: 0.4,
-              ease: [0.25, 0.46, 0.45, 0.94]
-            }}
+            variants={dockVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
             className="fixed bottom-0 left-0 right-0 z-[1001] pointer-events-none"
             style={{
               paddingBottom: 'max(20px, env(safe-area-inset-bottom))',
@@ -552,11 +635,15 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
             }}
           >
             <div className="flex justify-center px-4">
-              <div className="pointer-events-auto bg-white/20 backdrop-blur-xl rounded-3xl p-3 shadow-2xl border border-white/30">
+              <div className="pointer-events-auto bg-white/90 backdrop-blur-xl rounded-3xl p-3 shadow-2xl border border-white/50">
                 <div className="flex items-center space-x-3">
                   {/* Menu Button */}
                   <motion.button
-                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileHover={{ 
+                      scale: 1.08, 
+                      y: -3,
+                      transition: { duration: 0.2, ease: [0.4, 0.0, 0.2, 1] }
+                    }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => toggleMenu('menu')}
                     className={`
@@ -564,19 +651,30 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                       transition-all duration-200
                       ${activeMenu === 'menu' 
                         ? 'bg-gradient-to-br from-blue-500 to-green-500 text-white shadow-xl' 
-                        : 'bg-white/90 text-gray-700 shadow-lg hover:shadow-xl'
+                        : 'bg-white text-gray-700 shadow-lg hover:shadow-xl'
                       }
                     `}
                   >
-                    <div className="mb-1">
+                    <motion.div 
+                      className="mb-1"
+                      animate={activeMenu === 'menu' ? { 
+                        rotate: [0, 90, 0],
+                        scale: [1, 1.1, 1]
+                      } : { rotate: 0, scale: 1 }}
+                      transition={{ duration: 0.8, ease: [0.4, 0.0, 0.2, 1] }}
+                    >
                       <MenuIcon />
-                    </div>
+                    </motion.div>
                     <span className="text-xs font-bold">{t.menu}</span>
                   </motion.button>
 
                   {/* Call Button */}
                   <motion.button
-                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileHover={{ 
+                      scale: 1.08, 
+                      y: -3,
+                      transition: { duration: 0.2, ease: [0.4, 0.0, 0.2, 1] }
+                    }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => toggleMenu('call')}
                     className={`
@@ -584,19 +682,30 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                       transition-all duration-200
                       ${activeMenu === 'call' 
                         ? 'bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-xl' 
-                        : 'bg-white/90 text-gray-700 shadow-lg hover:shadow-xl'
+                        : 'bg-white text-gray-700 shadow-lg hover:shadow-xl'
                       }
                     `}
                   >
-                    <div className="mb-1">
+                    <motion.div 
+                      className="mb-1"
+                      animate={activeMenu === 'call' ? { 
+                        rotate: [0, 15, -15, 0],
+                        scale: [1, 1.1, 1]
+                      } : { rotate: 0, scale: 1 }}
+                      transition={{ duration: 0.6, ease: [0.4, 0.0, 0.2, 1] }}
+                    >
                       <PhoneIcon />
-                    </div>
+                    </motion.div>
                     <span className="text-xs font-bold">{t.call}</span>
                   </motion.button>
 
                   {/* Directions Button */}
                   <motion.button
-                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileHover={{ 
+                      scale: 1.08, 
+                      y: -3,
+                      transition: { duration: 0.2, ease: [0.4, 0.0, 0.2, 1] }
+                    }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => toggleMenu('directions')}
                     className={`
@@ -604,13 +713,20 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                       transition-all duration-200
                       ${activeMenu === 'directions' 
                         ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-xl' 
-                        : 'bg-white/90 text-gray-700 shadow-lg hover:shadow-xl'
+                        : 'bg-white text-gray-700 shadow-lg hover:shadow-xl'
                       }
                     `}
                   >
-                    <div className="mb-1">
+                    <motion.div 
+                      className="mb-1"
+                      animate={activeMenu === 'directions' ? { 
+                        y: [0, -3, 0],
+                        scale: [1, 1.1, 1]
+                      } : { y: 0, scale: 1 }}
+                      transition={{ duration: 0.8, ease: [0.4, 0.0, 0.2, 1] }}
+                    >
                       <MapIcon />
-                    </div>
+                    </motion.div>
                     <span className="text-xs font-bold">{t.directions}</span>
                   </motion.button>
                 </div>

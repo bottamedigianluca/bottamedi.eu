@@ -57,7 +57,7 @@ const translations = {
   }
 }
 
-// 🎨 ICONE SVG SEMPLICI
+// 🎨 ICONE SVG PULITE
 const MenuIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-6 h-6">
     <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" strokeLinejoin="round"/>
@@ -90,7 +90,7 @@ const ClockIcon = () => (
   </svg>
 )
 
-// 🚀 HOOK SCROLL DETECTION OTTIMIZZATO
+// 🚀 HOOK SCROLL DETECTION
 const useScrollDetection = (hideInFooter: boolean) => {
   const [isVisible, setIsVisible] = useState(false)
   const [currentSection, setCurrentSection] = useState('hero')
@@ -225,141 +225,40 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
 
   return (
     <div className="lg:hidden pointer-events-none">
-      {/* 🌟 BACKDROP CON SUPERCERCHI */}
+      {/* 🌅 BACKDROP SEMPLICE E SMOOTH */}
       <AnimatePresence>
         {activeMenu !== 'none' && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-[999] pointer-events-auto overflow-hidden"
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="fixed inset-0 z-[999] pointer-events-auto"
             onClick={closeAllMenus}
             style={{ 
-              background: 'radial-gradient(circle at 30% 20%, rgba(59,130,246,0.15) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(34,197,94,0.15) 0%, transparent 50%), rgba(0,0,0,0.4)',
+              background: 'rgba(0,0,0,0.5)',
               backdropFilter: 'blur(8px)'
             }}
-          >
-            {/* Supercerchi animati */}
-            <motion.div
-              className="absolute w-96 h-96 rounded-full"
-              style={{
-                background: 'radial-gradient(circle, rgba(59,130,246,0.2) 0%, transparent 70%)',
-                top: '10%',
-                left: '20%'
-              }}
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.3, 0.6, 0.3],
-                x: [0, 50, 0],
-                y: [0, -30, 0]
-              }}
-              transition={{
-                duration: 8,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-            <motion.div
-              className="absolute w-80 h-80 rounded-full"
-              style={{
-                background: 'radial-gradient(circle, rgba(34,197,94,0.25) 0%, transparent 70%)',
-                bottom: '20%',
-                right: '15%'
-              }}
-              animate={{
-                scale: [1, 1.3, 1],
-                opacity: [0.2, 0.5, 0.2],
-                x: [0, -40, 0],
-                y: [0, 20, 0]
-              }}
-              transition={{
-                duration: 10,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 2
-              }}
-            />
-            <motion.div
-              className="absolute w-64 h-64 rounded-full"
-              style={{
-                background: 'radial-gradient(circle, rgba(147,51,234,0.2) 0%, transparent 70%)',
-                top: '60%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)'
-              }}
-              animate={{
-                scale: [1, 1.1, 1],
-                opacity: [0.4, 0.7, 0.4],
-                rotate: [0, 180, 360]
-              }}
-              transition={{
-                duration: 15,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-            />
-          </motion.div>
+          />
         )}
       </AnimatePresence>
 
-      {/* 📱 MENU POPUP */}
+      {/* 📱 MENU POPUP - ANIMAZIONE SUPER SMOOTH */}
       <AnimatePresence>
         {activeMenu === 'menu' && isVisible && (
           <motion.div
-            initial={{ y: 60, opacity: 0, scale: 0.95 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 40, opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
             transition={{ 
-              type: "spring",
-              stiffness: 300,
-              damping: 30,
-              duration: 0.4
+              duration: 0.3,
+              ease: [0.25, 0.46, 0.45, 0.94] // easeOutQuart
             }}
             className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
           >
-            <div className="relative overflow-hidden bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50">
-              {/* Supercerchi nel background */}
-              <div className="absolute inset-0 overflow-hidden rounded-3xl">
-                <motion.div
-                  className="absolute w-32 h-32 rounded-full"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)',
-                    top: '-10%',
-                    right: '-10%'
-                  }}
-                  animate={{
-                    scale: [1, 1.2, 1],
-                    rotate: [0, 180, 360]
-                  }}
-                  transition={{
-                    duration: 20,
-                    repeat: Infinity,
-                    ease: "linear"
-                  }}
-                />
-                <motion.div
-                  className="absolute w-24 h-24 rounded-full"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(34,197,94,0.15) 0%, transparent 70%)',
-                    bottom: '-5%',
-                    left: '-5%'
-                  }}
-                  animate={{
-                    scale: [1, 1.3, 1],
-                    x: [0, 20, 0],
-                    y: [0, -20, 0]
-                  }}
-                  transition={{
-                    duration: 12,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                />
-              </div>
-
+            <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50">
               {/* Header */}
-              <div className="relative px-6 py-4 bg-gradient-to-r from-blue-50 to-green-50 border-b border-white/30">
+              <div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-green-50 border-b border-gray-200/50 rounded-t-3xl">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-green-500 rounded-2xl flex items-center justify-center text-white shadow-lg">
@@ -371,117 +270,83 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     </div>
                   </div>
                   <motion.button
-                    whileHover={{ scale: 1.1, rotate: 90 }}
-                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={closeAllMenus}
-                    className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white/90 shadow-md text-gray-600 hover:text-red-500 transition-colors"
+                    className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white/90 shadow-md text-gray-600 hover:text-red-500 transition-colors duration-200"
                   >
                     <CloseIcon />
                   </motion.button>
                 </div>
               </div>
               
-              {/* Menu Items CON ANIMAZIONE FLUIDA */}
+              {/* Menu Items - ZERO FLASH, ANIMAZIONE RITARDATA */}
               <motion.div 
-                className="relative p-6"
+                className="p-6"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.15, duration: 0.3 }}
+                transition={{ delay: 0.1, duration: 0.2 }}
               >
-                <motion.div 
-                  className="grid grid-cols-2 gap-3"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, duration: 0.4, ease: "easeOut" }}
-                >
+                <div className="grid grid-cols-2 gap-3">
                   {t.sections.map((item, index) => (
                     <motion.button
                       key={item.id}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
                       transition={{ 
-                        delay: 0.3 + (index * 0.02), // Ridotto il delay tra items
-                        duration: 0.2, // Durata più breve
+                        delay: 0.15 + (index * 0.03), // Stagger più lento
+                        duration: 0.2,
                         ease: "easeOut"
                       }}
-                      whileHover={{ scale: 1.02, y: -1 }}
+                      whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => scrollToSection(item.id)}
                       className={`
-                        relative flex items-center p-4 rounded-2xl transition-all duration-200 min-h-[60px] overflow-hidden
+                        flex items-center p-4 rounded-2xl transition-all duration-200 min-h-[60px]
                         ${currentSection === item.id 
                           ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg' 
-                          : 'bg-white/70 text-gray-700 hover:bg-white/90 shadow-md hover:shadow-lg'
+                          : 'bg-white/80 text-gray-700 hover:bg-white shadow-md hover:shadow-lg'
                         }
                       `}
                     >
-                      {/* Supercerchio per item attivo - SENZA FLASH */}
-                      <AnimatePresence>
-                        {currentSection === item.id && (
-                          <motion.div
-                            className="absolute inset-0 rounded-2xl"
-                            style={{
-                              background: 'radial-gradient(circle at 70% 30%, rgba(255,255,255,0.2) 0%, transparent 60%)'
-                            }}
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ 
-                              opacity: [0.3, 0.6, 0.3],
-                              scale: [1, 1.1, 1]
-                            }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                            transition={{
-                              duration: 3,
-                              repeat: Infinity,
-                              ease: "easeInOut"
-                            }}
-                          />
-                        )}
-                      </AnimatePresence>
-                      
-                      <div className="relative flex items-center space-x-3">
+                      <div className="flex items-center space-x-3">
                         <div className="text-xl">{item.icon}</div>
                         <span className="text-sm font-semibold">{item.label}</span>
                       </div>
                       
-                      {/* Indicatore attivo - SENZA FLASH */}
-                      <AnimatePresence>
-                        {currentSection === item.id && (
-                          <motion.div
-                            className="absolute right-3 w-2 h-2 bg-white rounded-full"
-                            initial={{ scale: 0, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0, opacity: 0 }}
-                            transition={{ duration: 0.2, ease: "easeOut" }}
-                          />
-                        )}
-                      </AnimatePresence>
+                      {currentSection === item.id && (
+                        <motion.div
+                          className="absolute right-3 w-2 h-2 bg-white rounded-full"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: 0.2, duration: 0.15 }}
+                        />
+                      )}
                     </motion.button>
                   ))}
-                </motion.div>
+                </div>
               </motion.div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 📞 CALL POPUP */}
+      {/* 📞 CALL POPUP - ANIMAZIONE SMOOTH */}
       <AnimatePresence>
         {activeMenu === 'call' && isVisible && (
           <motion.div
-            initial={{ y: 60, opacity: 0, scale: 0.95 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 40, opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
             transition={{ 
-              type: "spring",
-              stiffness: 300,
-              damping: 30,
-              duration: 0.4
+              duration: 0.3,
+              ease: [0.25, 0.46, 0.45, 0.94]
             }}
             className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
           >
-            <div className="relative overflow-hidden bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50">
+            <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50">
               {/* Header */}
-              <div className="px-6 py-4 bg-gradient-to-r from-orange-50 to-red-50 border-b border-white/30">
+              <div className="px-6 py-4 bg-gradient-to-r from-orange-50 to-red-50 border-b border-gray-200/50 rounded-t-3xl">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center text-white shadow-lg">
@@ -493,27 +358,27 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     </div>
                   </div>
                   <motion.button
-                    whileHover={{ scale: 1.1, rotate: 90 }}
-                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={closeAllMenus}
-                    className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white/90 shadow-md text-gray-600 hover:text-red-500 transition-colors"
+                    className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white/90 shadow-md text-gray-600 hover:text-red-500 transition-colors duration-200"
                   >
                     <CloseIcon />
                   </motion.button>
                 </div>
               </div>
               
-              {/* Contact Cards SENZA FLASH */}
+              {/* Contact Cards - ANIMAZIONE RITARDATA SMOOTH */}
               <motion.div 
                 className="p-6 space-y-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.15, duration: 0.3 }}
+                transition={{ delay: 0.1, duration: 0.2 }}
               >
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, duration: 0.3, ease: "easeOut" }}
+                  transition={{ delay: 0.15, duration: 0.2, ease: "easeOut" }}
                   className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200"
                 >
                   <div className="flex items-start space-x-4 mb-3">
@@ -534,7 +399,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => handleCall(t.contacts.banchettoPhone)}
-                    className="w-full flex items-center justify-center p-3 bg-green-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+                    className="w-full flex items-center justify-center p-3 bg-green-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
                   >
                     <PhoneIcon />
                     <span className="ml-2">Chiama {t.contacts.banchettoPhone}</span>
@@ -542,9 +407,9 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                 </motion.div>
 
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.25, duration: 0.3, ease: "easeOut" }}
+                  transition={{ delay: 0.2, duration: 0.2, ease: "easeOut" }}
                   className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200"
                 >
                   <div className="flex items-start space-x-4 mb-3">
@@ -561,7 +426,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => handleCall(t.contacts.ingrossoPhone)}
-                    className="w-full flex items-center justify-center p-3 bg-blue-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+                    className="w-full flex items-center justify-center p-3 bg-blue-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
                   >
                     <PhoneIcon />
                     <span className="ml-2">Chiama {t.contacts.ingrossoPhone}</span>
@@ -573,24 +438,22 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
         )}
       </AnimatePresence>
 
-      {/* 🗺️ DIRECTIONS POPUP */}
+      {/* 🗺️ DIRECTIONS POPUP - ANIMAZIONE SMOOTH */}
       <AnimatePresence>
         {activeMenu === 'directions' && isVisible && (
           <motion.div
-            initial={{ y: 60, opacity: 0, scale: 0.95 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 40, opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
             transition={{ 
-              type: "spring",
-              stiffness: 300,
-              damping: 30,
-              duration: 0.4
+              duration: 0.3,
+              ease: [0.25, 0.46, 0.45, 0.94]
             }}
             className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
           >
-            <div className="relative overflow-hidden bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50">
+            <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50">
               {/* Header */}
-              <div className="px-6 py-4 bg-gradient-to-r from-purple-50 to-pink-50 border-b border-white/30">
+              <div className="px-6 py-4 bg-gradient-to-r from-purple-50 to-pink-50 border-b border-gray-200/50 rounded-t-3xl">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-white shadow-lg">
@@ -602,26 +465,54 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     </div>
                   </div>
                   <motion.button
-                    whileHover={{ scale: 1.1, rotate: 90 }}
-                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={closeAllMenus}
-                    className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white/90 shadow-md text-gray-600 hover:text-red-500 transition-colors"
+                    className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white/90 shadow-md text-gray-600 hover:text-red-500 transition-colors duration-200"
                   >
                     <CloseIcon />
                   </motion.button>
                 </div>
               </div>
               
-              {/* Location Cards */}
-              <div className="p-6 space-y-4">
+              {/* Location Cards - ANIMAZIONE RITARDATA SMOOTH */}
+              <motion.div 
+                className="p-6 space-y-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.1, duration: 0.2 }}
+              >
                 <motion.button
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  whileHover={{ scale: 1.02, y: -2 }}
+                  transition={{ delay: 0.15, duration: 0.2, ease: "easeOut" }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => handleDirections('banchetto')}
+                  className="w-full p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200 text-left transition-all duration-200"
+                >
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                      <MapIcon />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-bold text-green-900 mb-1">{t.contacts.banchetto}</h4>
+                      <p className="text-green-700 text-sm leading-relaxed">{t.contacts.banchettoAddress}</p>
+                      <div className="flex items-center text-green-500 text-sm mt-2 font-semibold">
+                        <span>📍 Apri in Google Maps</span>
+                      </div>
+                    </div>
+                  </div>
+                </motion.button>
+
+                <motion.button
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.2, ease: "easeOut" }}
+                  whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleDirections('ingrosso')}
-                  className="w-full p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200 text-left"
+                  className="w-full p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200 text-left transition-all duration-200"
                 >
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
@@ -636,25 +527,22 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     </div>
                   </div>
                 </motion.button>
-              </div>
+              </motion.div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 🚀 DOCK PRINCIPALE CON SUPERCERCHI */}
+      {/* 🚀 DOCK PRINCIPALE SEMPLICE E PULITO */}
       <AnimatePresence>
         {isVisible && (
           <motion.div
-            initial={{ y: 120, opacity: 0, scale: 0.8 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 100, opacity: 0, scale: 0.8 }}
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 80, opacity: 0 }}
             transition={{
-              type: "spring",
-              stiffness: 250,
-              damping: 25,
-              mass: 0.9,
-              duration: 0.6
+              duration: 0.4,
+              ease: [0.25, 0.46, 0.45, 0.94]
             }}
             className="fixed bottom-0 left-0 right-0 z-[1001] pointer-events-none"
             style={{
@@ -664,193 +552,66 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
             }}
           >
             <div className="flex justify-center px-4">
-              <div className="relative pointer-events-auto bg-white/20 backdrop-blur-xl rounded-3xl p-3 shadow-2xl border border-white/30 overflow-hidden">
-                {/* Supercerchi nel dock */}
-                <motion.div
-                  className="absolute w-24 h-24 rounded-full"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)',
-                    top: '-50%',
-                    left: '10%'
-                  }}
-                  animate={{
-                    scale: [1, 1.5, 1],
-                    x: [0, 30, 0],
-                    opacity: [0.3, 0.6, 0.3]
-                  }}
-                  transition={{
-                    duration: 12,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                />
-                <motion.div
-                  className="absolute w-20 h-20 rounded-full"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(34,197,94,0.15) 0%, transparent 70%)',
-                    bottom: '-40%',
-                    right: '15%'
-                  }}
-                  animate={{
-                    scale: [1, 1.3, 1],
-                    x: [0, -20, 0],
-                    opacity: [0.2, 0.5, 0.2]
-                  }}
-                  transition={{
-                    duration: 15,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 3
-                  }}
-                />
-                
-                <div className="relative flex items-center space-x-3">
+              <div className="pointer-events-auto bg-white/20 backdrop-blur-xl rounded-3xl p-3 shadow-2xl border border-white/30">
+                <div className="flex items-center space-x-3">
                   {/* Menu Button */}
                   <motion.button
-                    whileHover={{ 
-                      scale: 1.15, 
-                      y: -4,
-                      transition: { duration: 0.2, type: 'spring', stiffness: 400 }
-                    }}
+                    whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => toggleMenu('menu')}
                     className={`
-                      relative w-16 h-16 rounded-2xl flex flex-col items-center justify-center
-                      transition-all duration-300 overflow-hidden
+                      w-16 h-16 rounded-2xl flex flex-col items-center justify-center
+                      transition-all duration-200
                       ${activeMenu === 'menu' 
-                        ? 'bg-gradient-to-br from-blue-500 to-green-500 text-white shadow-2xl' 
+                        ? 'bg-gradient-to-br from-blue-500 to-green-500 text-white shadow-xl' 
                         : 'bg-white/90 text-gray-700 shadow-lg hover:shadow-xl'
                       }
                     `}
                   >
-                    {/* Supercerchio nel button */}
-                    {activeMenu === 'menu' && (
-                      <motion.div
-                        className="absolute inset-0 rounded-2xl"
-                        style={{
-                          background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 70%)'
-                        }}
-                        animate={{
-                          scale: [1, 1.5, 1],
-                          opacity: [0.3, 0.6, 0.3],
-                          rotate: [0, 180, 360]
-                        }}
-                        transition={{
-                          duration: 6,
-                          repeat: Infinity,
-                          ease: "linear"
-                        }}
-                      />
-                    )}
-                    <motion.div 
-                      className="mb-1 relative z-10"
-                      animate={activeMenu === 'menu' ? { rotate: [0, 180, 0] } : { rotate: 0 }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    >
+                    <div className="mb-1">
                       <MenuIcon />
-                    </motion.div>
-                    <span className="text-xs font-bold relative z-10">{t.menu}</span>
+                    </div>
+                    <span className="text-xs font-bold">{t.menu}</span>
                   </motion.button>
 
                   {/* Call Button */}
                   <motion.button
-                    whileHover={{ 
-                      scale: 1.15, 
-                      y: -4,
-                      transition: { duration: 0.2, type: 'spring', stiffness: 400 }
-                    }}
+                    whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => toggleMenu('call')}
                     className={`
-                      relative w-16 h-16 rounded-2xl flex flex-col items-center justify-center
-                      transition-all duration-300 overflow-hidden
+                      w-16 h-16 rounded-2xl flex flex-col items-center justify-center
+                      transition-all duration-200
                       ${activeMenu === 'call' 
-                        ? 'bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-2xl' 
+                        ? 'bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-xl' 
                         : 'bg-white/90 text-gray-700 shadow-lg hover:shadow-xl'
                       }
                     `}
                   >
-                    {/* Supercerchio nel call button */}
-                    {activeMenu === 'call' && (
-                      <motion.div
-                        className="absolute inset-0 rounded-2xl"
-                        style={{
-                          background: 'radial-gradient(circle at 70% 30%, rgba(255,255,255,0.4) 0%, transparent 60%)'
-                        }}
-                        animate={{
-                          scale: [0.8, 1.4, 0.8],
-                          opacity: [0.2, 0.7, 0.2],
-                          x: [0, 5, 0],
-                          y: [0, -5, 0]
-                        }}
-                        transition={{
-                          duration: 4,
-                          repeat: Infinity,
-                          ease: "easeInOut"
-                        }}
-                      />
-                    )}
-                    <motion.div 
-                      className="mb-1 relative z-10"
-                      animate={activeMenu === 'call' ? { 
-                        rotate: [0, 8, -8, 0],
-                        scale: [1, 1.1, 1]
-                      } : { rotate: 0, scale: 1 }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    >
+                    <div className="mb-1">
                       <PhoneIcon />
-                    </motion.div>
-                    <span className="text-xs font-bold relative z-10">{t.call}</span>
+                    </div>
+                    <span className="text-xs font-bold">{t.call}</span>
                   </motion.button>
 
                   {/* Directions Button */}
                   <motion.button
-                    whileHover={{ 
-                      scale: 1.15, 
-                      y: -4,
-                      transition: { duration: 0.2, type: 'spring', stiffness: 400 }
-                    }}
+                    whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => toggleMenu('directions')}
                     className={`
-                      relative w-16 h-16 rounded-2xl flex flex-col items-center justify-center
-                      transition-all duration-300 overflow-hidden
+                      w-16 h-16 rounded-2xl flex flex-col items-center justify-center
+                      transition-all duration-200
                       ${activeMenu === 'directions' 
-                        ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-2xl' 
+                        ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-xl' 
                         : 'bg-white/90 text-gray-700 shadow-lg hover:shadow-xl'
                       }
                     `}
                   >
-                    {/* Supercerchio nel directions button */}
-                    {activeMenu === 'directions' && (
-                      <motion.div
-                        className="absolute inset-0 rounded-2xl"
-                        style={{
-                          background: 'radial-gradient(circle at 50% 20%, rgba(255,255,255,0.35) 0%, transparent 65%)'
-                        }}
-                        animate={{
-                          scale: [1, 1.3, 1],
-                          opacity: [0.4, 0.8, 0.4],
-                          rotate: [0, 90, 180, 270, 360]
-                        }}
-                        transition={{
-                          duration: 8,
-                          repeat: Infinity,
-                          ease: "linear"
-                        }}
-                      />
-                    )}
-                    <motion.div 
-                      className="mb-1 relative z-10"
-                      animate={activeMenu === 'directions' ? { 
-                        y: [0, -2, 0],
-                        scale: [1, 1.1, 1]
-                      } : { y: 0, scale: 1 }}
-                      transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                    >
+                    <div className="mb-1">
                       <MapIcon />
-                    </motion.div>
-                    <span className="text-xs font-bold relative z-10">{t.directions}</span>
+                    </div>
+                    <span className="text-xs font-bold">{t.directions}</span>
                   </motion.button>
                 </div>
               </div>

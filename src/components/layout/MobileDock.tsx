@@ -381,57 +381,84 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                 </div>
               </div>
               
-              {/* Menu Items */}
-              <div className="relative p-6">
-                <div className="grid grid-cols-2 gap-3">
+              {/* Menu Items CON ANIMAZIONE FLUIDA */}
+              <motion.div 
+                className="relative p-6"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.15, duration: 0.3 }}
+              >
+                <motion.div 
+                  className="grid grid-cols-2 gap-3"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.4, ease: "easeOut" }}
+                >
                   {t.sections.map((item, index) => (
                     <motion.button
                       key={item.id}
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
                       transition={{ 
-                        delay: index * 0.03, 
-                        duration: 0.2,
+                        delay: 0.3 + (index * 0.02), // Ridotto il delay tra items
+                        duration: 0.2, // Durata più breve
                         ease: "easeOut"
                       }}
-                      whileHover={{ scale: 1.01 }}
-                      whileTap={{ scale: 0.99 }}
+                      whileHover={{ scale: 1.02, y: -1 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => scrollToSection(item.id)}
                       className={`
-                        relative flex items-center p-4 rounded-2xl min-h-[60px] overflow-hidden
-                        transition-all duration-200 ease-out
+                        relative flex items-center p-4 rounded-2xl transition-all duration-200 min-h-[60px] overflow-hidden
                         ${currentSection === item.id 
-                          ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg transform-gpu' 
-                          : 'bg-white/80 text-gray-700 hover:bg-white/95 shadow-md hover:shadow-lg transform-gpu'
+                          ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg' 
+                          : 'bg-white/70 text-gray-700 hover:bg-white/90 shadow-md hover:shadow-lg'
                         }
                       `}
-                      style={{
-                        backfaceVisibility: 'hidden',
-                        WebkitBackfaceVisibility: 'hidden'
-                      }}
                     >
-                      {/* Supercerchio statico per item attivo */}
-                      {currentSection === item.id && (
-                        <div
-                          className="absolute inset-0 rounded-2xl opacity-20"
-                          style={{
-                            background: 'radial-gradient(circle at 70% 30%, rgba(255,255,255,0.6) 0%, transparent 60%)'
-                          }}
-                        />
-                      )}
+                      {/* Supercerchio per item attivo - SENZA FLASH */}
+                      <AnimatePresence>
+                        {currentSection === item.id && (
+                          <motion.div
+                            className="absolute inset-0 rounded-2xl"
+                            style={{
+                              background: 'radial-gradient(circle at 70% 30%, rgba(255,255,255,0.2) 0%, transparent 60%)'
+                            }}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ 
+                              opacity: [0.3, 0.6, 0.3],
+                              scale: [1, 1.1, 1]
+                            }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            transition={{
+                              duration: 3,
+                              repeat: Infinity,
+                              ease: "easeInOut"
+                            }}
+                          />
+                        )}
+                      </AnimatePresence>
                       
-                      <div className="relative flex items-center space-x-3 z-10">
+                      <div className="relative flex items-center space-x-3">
                         <div className="text-xl">{item.icon}</div>
                         <span className="text-sm font-semibold">{item.label}</span>
                       </div>
                       
-                      {currentSection === item.id && (
-                        <div className="absolute right-3 w-2 h-2 bg-white rounded-full opacity-90" />
-                      )}
+                      {/* Indicatore attivo - SENZA FLASH */}
+                      <AnimatePresence>
+                        {currentSection === item.id && (
+                          <motion.div
+                            className="absolute right-3 w-2 h-2 bg-white rounded-full"
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0, opacity: 0 }}
+                            transition={{ duration: 0.2, ease: "easeOut" }}
+                          />
+                        )}
+                      </AnimatePresence>
                     </motion.button>
                   ))}
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             </div>
           </motion.div>
         )}
@@ -476,14 +503,18 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                 </div>
               </div>
               
-              {/* Contact Cards */}
-              <div className="p-6 space-y-4">
-                <div
-                  className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200 transform-gpu"
-                  style={{
-                    backfaceVisibility: 'hidden',
-                    WebkitBackfaceVisibility: 'hidden'
-                  }}
+              {/* Contact Cards SENZA FLASH */}
+              <motion.div 
+                className="p-6 space-y-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.15, duration: 0.3 }}
+              >
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.3, ease: "easeOut" }}
+                  className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200"
                 >
                   <div className="flex items-start space-x-4 mb-3">
                     <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white text-lg shadow-lg">
@@ -500,26 +531,21 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                   </div>
                   
                   <motion.button
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => handleCall(t.contacts.banchettoPhone)}
-                    className="w-full flex items-center justify-center p-3 bg-green-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
-                    style={{
-                      backfaceVisibility: 'hidden',
-                      WebkitBackfaceVisibility: 'hidden'
-                    }}
+                    className="w-full flex items-center justify-center p-3 bg-green-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
                   >
                     <PhoneIcon />
                     <span className="ml-2">Chiama {t.contacts.banchettoPhone}</span>
                   </motion.button>
-                </div>
+                </motion.div>
 
-                <div
-                  className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200 transform-gpu"
-                  style={{
-                    backfaceVisibility: 'hidden',
-                    WebkitBackfaceVisibility: 'hidden'
-                  }}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25, duration: 0.3, ease: "easeOut" }}
+                  className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200"
                 >
                   <div className="flex items-start space-x-4 mb-3">
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white text-lg shadow-lg">
@@ -532,20 +558,16 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                   </div>
                   
                   <motion.button
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => handleCall(t.contacts.ingrossoPhone)}
-                    className="w-full flex items-center justify-center p-3 bg-blue-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
-                    style={{
-                      backfaceVisibility: 'hidden',
-                      WebkitBackfaceVisibility: 'hidden'
-                    }}
+                    className="w-full flex items-center justify-center p-3 bg-blue-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
                   >
                     <PhoneIcon />
                     <span className="ml-2">Chiama {t.contacts.ingrossoPhone}</span>
                   </motion.button>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             </div>
           </motion.div>
         )}

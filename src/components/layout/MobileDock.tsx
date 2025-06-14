@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
 
 interface MobileDockProps {
   language: 'it' | 'de'
@@ -90,14 +90,12 @@ const ClockIcon = () => (
   </svg>
 )
 
-// 🚀 HOOK SCROLL DETECTION
+// 🚀 HOOK SCROLL DETECTION OTTIMIZZATO
 const useScrollDetection = (hideInFooter: boolean) => {
-  const [isVisible, setIsVisible] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
   const [currentSection, setCurrentSection] = useState('hero')
-  const [isScrolling, setIsScrolling] = useState(false)
 
   useEffect(() => {
-    let scrollTimeout: NodeJS.Timeout
     let animationFrame: number
     
     const handleScroll = () => {
@@ -106,8 +104,6 @@ const useScrollDetection = (hideInFooter: boolean) => {
       }
       
       animationFrame = requestAnimationFrame(() => {
-        setIsScrolling(true)
-        
         const sections = ['hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact']
         const scrollPosition = window.scrollY + window.innerHeight / 2
 
@@ -121,11 +117,6 @@ const useScrollDetection = (hideInFooter: boolean) => {
             }
           }
         }
-        
-        clearTimeout(scrollTimeout)
-        scrollTimeout = setTimeout(() => {
-          setIsScrolling(false)
-        }, 300)
       })
     }
 
@@ -134,7 +125,6 @@ const useScrollDetection = (hideInFooter: boolean) => {
     
     return () => {
       window.removeEventListener('scroll', handleScroll)
-      clearTimeout(scrollTimeout)
       if (animationFrame) {
         cancelAnimationFrame(animationFrame)
       }
@@ -142,10 +132,10 @@ const useScrollDetection = (hideInFooter: boolean) => {
   }, [])
 
   useEffect(() => {
-    const isInHero = currentSection === 'hero'
-    const shouldHide = isInHero || hideInFooter || isScrolling
+    // Show dock in all sections except hero and when hideInFooter is true
+    const shouldHide = hideInFooter
     setIsVisible(!shouldHide)
-  }, [currentSection, hideInFooter, isScrolling])
+  }, [hideInFooter])
 
   return { isVisible, currentSection }
 }
@@ -223,54 +213,26 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
 
   if (!isMobile) return null
 
-  // 🎯 VARIANTI ANIMATE UNIFICATE E SMOOTH
+  // 🎯 VARIANTI ANIMATE STABILI
   const backdropVariants = {
     hidden: { opacity: 0 },
     visible: { 
       opacity: 1,
       transition: { 
-        duration: 0.25,
-        ease: [0.4, 0.0, 0.2, 1] // easeOutCubic
+        duration: 0.2,
+        ease: "easeOut"
       }
     },
     exit: { 
       opacity: 0,
       transition: { 
-        duration: 0.2,
-        ease: [0.4, 0.0, 0.2, 1]
+        duration: 0.15,
+        ease: "easeIn"
       }
     }
   }
 
   const popupVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 40,
-      scale: 0.96
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.35,
-        ease: [0.4, 0.0, 0.2, 1], // easeOutCubic
-        staggerChildren: 0.08,
-        delayChildren: 0.1
-      }
-    },
-    exit: {
-      opacity: 0,
-      y: 30,
-      scale: 0.97,
-      transition: {
-        duration: 0.25,
-        ease: [0.4, 0.0, 0.6, 1] // easeInCubic
-      }
-    }
-  }
-
-  const itemVariants = {
     hidden: { 
       opacity: 0, 
       y: 20,
@@ -281,8 +243,19 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
       y: 0,
       scale: 1,
       transition: {
-        duration: 0.3,
-        ease: [0.4, 0.0, 0.2, 1]
+        type: "spring",
+        damping: 25,
+        stiffness: 300,
+        duration: 0.3
+      }
+    },
+    exit: {
+      opacity: 0,
+      y: 20,
+      scale: 0.95,
+      transition: {
+        duration: 0.2,
+        ease: "easeIn"
       }
     }
   }
@@ -290,453 +263,291 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
   const dockVariants = {
     hidden: { 
       y: 100, 
-      opacity: 0,
-      scale: 0.9
+      opacity: 0
     },
     visible: {
       y: 0,
       opacity: 1,
-      scale: 1,
       transition: {
-        duration: 0.5,
-        ease: [0.4, 0.0, 0.2, 1],
         type: "spring",
+        damping: 20,
         stiffness: 300,
-        damping: 30
+        duration: 0.4
       }
     },
     exit: {
-      y: 80,
+      y: 100,
       opacity: 0,
-      scale: 0.95,
       transition: {
-        duration: 0.3,
-        ease: [0.4, 0.0, 0.6, 1]
+        duration: 0.2,
+        ease: "easeIn"
       }
     }
   }
 
   return (
-    <div className="lg:hidden pointer-events-none">
-      {/* 🌅 BACKDROP UNIFORME */}
-      <AnimatePresence>
-        {activeMenu !== 'none' && (
-          <motion.div
-            variants={backdropVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="fixed inset-0 z-[999] pointer-events-auto"
-            onClick={closeAllMenus}
-            style={{ 
-              background: 'rgba(0,0,0,0.4)',
-              backdropFilter: 'blur(8px)'
-            }}
-          />
-        )}
-      </AnimatePresence>
+    <LayoutGroup>
+      <div className="lg:hidden pointer-events-none">
+        {/* 🌅 BACKDROP */}
+        <AnimatePresence>
+          {activeMenu !== 'none' && (
+            <motion.div
+              key="backdrop"
+              variants={backdropVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="fixed inset-0 z-[999] pointer-events-auto"
+              onClick={closeAllMenus}
+              style={{ 
+                background: 'rgba(0,0,0,0.4)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)'
+              }}
+            />
+          )}
+        </AnimatePresence>
 
-      {/* 📱 MENU POPUP */}
-      <AnimatePresence>
-        {activeMenu === 'menu' && isVisible && (
-          <motion.div
-            variants={popupVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
-          >
-            <div className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
-              {/* Header */}
-              <div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-green-50 border-b border-gray-100">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-green-500 rounded-2xl flex items-center justify-center text-white shadow-lg">
-                      <MenuIcon />
+        {/* 📱 MENU POPUP */}
+        <AnimatePresence mode="wait">
+          {activeMenu === 'menu' && isVisible && (
+            <motion.div
+              key="menu-popup"
+              variants={popupVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
+              style={{ willChange: 'transform, opacity' }}
+            >
+              <div className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
+                {/* Header */}
+                <div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-green-50 border-b border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-green-500 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                        <MenuIcon />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900">{t.menu}</h3>
+                        <p className="text-sm text-gray-600">Naviga il sito</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900">{t.menu}</h3>
-                      <p className="text-sm text-gray-600">Naviga il sito</p>
-                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={closeAllMenus}
+                      className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white shadow-md text-gray-600 hover:text-red-500 transition-colors duration-200"
+                    >
+                      <CloseIcon />
+                    </motion.button>
                   </div>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={closeAllMenus}
-                    className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white shadow-md text-gray-600 hover:text-red-500 transition-colors duration-200"
-                  >
-                    <CloseIcon />
-                  </motion.button>
+                </div>
+                
+                {/* Menu Items */}
+                <div className="p-6">
+                  <div className="grid grid-cols-2 gap-3">
+                    {t.sections.map((item) => (
+                      <motion.button
+                        key={item.id}
+                        layoutId={`menu-item-${item.id}`}
+                        onClick={() => scrollToSection(item.id)}
+                        className={`
+                          flex items-center p-4 rounded-2xl transition-all duration-200 min-h-[60px]
+                          ${currentSection === item.id 
+                            ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg' 
+                            : 'bg-gray-50 text-gray-700 hover:bg-gray-100 shadow-sm hover:shadow-md'
+                          }
+                        `}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div className="text-xl">{item.icon}</div>
+                          <span className="text-sm font-semibold">{item.label}</span>
+                        </div>
+                        
+                        {currentSection === item.id && (
+                          <motion.div
+                            layoutId="active-indicator"
+                            className="absolute right-3 w-2 h-2 bg-white rounded-full"
+                            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+                          />
+                        )}
+                      </motion.button>
+                    ))}
+                  </div>
                 </div>
               </div>
-              
-              {/* Menu Items */}
-              <div className="p-6">
-                <motion.div 
-                  className="grid grid-cols-2 gap-3"
-                  variants={{
-                    visible: {
-                      transition: {
-                        staggerChildren: 0.06
-                      }
-                    }
-                  }}
-                >
-                  {t.sections.map((item, index) => (
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* 📞 CALL POPUP */}
+        <AnimatePresence mode="wait">
+          {activeMenu === 'call' && isVisible && (
+            <motion.div
+              key="call-popup"
+              variants={popupVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
+              style={{ willChange: 'transform, opacity' }}
+            >
+              <div className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
+                {/* Header */}
+                <div className="px-6 py-4 bg-gradient-to-r from-orange-50 to-red-50 border-b border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                        <PhoneIcon />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900">{t.call}</h3>
+                        <p className="text-sm text-gray-600">Contattaci direttamente</p>
+                      </div>
+                    </div>
                     <motion.button
-                      key={item.id}
-                      variants={itemVariants}
-                      whileHover={{ scale: 1.02, y: -1 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => scrollToSection(item.id)}
-                      className={`
-                        flex items-center p-4 rounded-2xl transition-all duration-200 min-h-[60px]
-                        ${currentSection === item.id 
-                          ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg' 
-                          : 'bg-gray-50 text-gray-700 hover:bg-gray-100 shadow-sm hover:shadow-md'
-                        }
-                      `}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={closeAllMenus}
+                      className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white shadow-md text-gray-600 hover:text-red-500 transition-colors duration-200"
                     >
-                      <div className="flex items-center space-x-3">
-                        <div className="text-xl">{item.icon}</div>
-                        <span className="text-sm font-semibold">{item.label}</span>
+                      <CloseIcon />
+                    </motion.button>
+                  </div>
+                </div>
+                
+                {/* Contact Cards */}
+                <div className="p-6">
+                  <div className="space-y-4">
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 }}
+                      className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200"
+                    >
+                      <div className="flex items-start space-x-4 mb-3">
+                        <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white text-lg shadow-lg">
+                          🛒
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-bold text-green-900 mb-1">{t.contacts.banchetto}</h4>
+                          <p className="text-green-700 text-sm mb-2">{t.contacts.banchettoAddress}</p>
+                          <div className="flex items-center text-green-600 text-sm">
+                            <ClockIcon />
+                            <span className="ml-2">{t.contacts.banchettoHours}</span>
+                          </div>
+                        </div>
                       </div>
                       
-                      {currentSection === item.id && (
-                        <motion.div
-                          className="absolute right-3 w-2 h-2 bg-white rounded-full"
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ delay: 0.2, duration: 0.2 }}
-                        />
-                      )}
-                    </motion.button>
-                  ))}
-                </motion.div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => handleCall(t.contacts.banchettoPhone)}
+                        className="w-full flex items-center justify-center p-3 bg-green-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+                      >
+                        <PhoneIcon />
+                        <span className="ml-2">Chiama {t.contacts.banchettoPhone}</span>
+                      </motion.button>
+                    </motion.div>
 
-      {/* 📞 CALL POPUP */}
-      <AnimatePresence>
-        {activeMenu === 'call' && isVisible && (
-          <motion.div
-            variants={popupVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
-          >
-            <div className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
-              {/* Header */}
-              <div className="px-6 py-4 bg-gradient-to-r from-orange-50 to-red-50 border-b border-gray-100">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center text-white shadow-lg">
-                      <PhoneIcon />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900">{t.call}</h3>
-                      <p className="text-sm text-gray-600">Contattaci direttamente</p>
-                    </div>
-                  </div>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={closeAllMenus}
-                    className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white shadow-md text-gray-600 hover:text-red-500 transition-colors duration-200"
-                  >
-                    <CloseIcon />
-                  </motion.button>
-                </div>
-              </div>
-              
-              {/* Contact Cards */}
-              <div className="p-6">
-                <motion.div 
-                  className="space-y-4"
-                  variants={{
-                    visible: {
-                      transition: {
-                        staggerChildren: 0.1
-                      }
-                    }
-                  }}
-                >
-                  <motion.div
-                    variants={itemVariants}
-                    className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200"
-                  >
-                    <div className="flex items-start space-x-4 mb-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white text-lg shadow-lg">
-                        🛒
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-bold text-green-900 mb-1">{t.contacts.banchetto}</h4>
-                        <p className="text-green-700 text-sm mb-2">{t.contacts.banchettoAddress}</p>
-                        <div className="flex items-center text-green-600 text-sm">
-                          <ClockIcon />
-                          <span className="ml-2">{t.contacts.banchettoHours}</span>
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200"
+                    >
+                      <div className="flex items-start space-x-4 mb-3">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white text-lg shadow-lg">
+                          🚛
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-bold text-blue-900 mb-1">{t.contacts.ingrosso}</h4>
+                          <p className="text-blue-700 text-sm">{t.contacts.ingrossoAddress}</p>
                         </div>
                       </div>
-                    </div>
-                    
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => handleCall(t.contacts.banchettoPhone)}
-                      className="w-full flex items-center justify-center p-3 bg-green-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
-                    >
-                      <PhoneIcon />
-                      <span className="ml-2">Chiama {t.contacts.banchettoPhone}</span>
-                    </motion.button>
-                  </motion.div>
-
-                  <motion.div
-                    variants={itemVariants}
-                    className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200"
-                  >
-                    <div className="flex items-start space-x-4 mb-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white text-lg shadow-lg">
-                        🚛
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-bold text-blue-900 mb-1">{t.contacts.ingrosso}</h4>
-                        <p className="text-blue-700 text-sm">{t.contacts.ingrossoAddress}</p>
-                      </div>
-                    </div>
-                    
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => handleCall(t.contacts.ingrossoPhone)}
-                      className="w-full flex items-center justify-center p-3 bg-blue-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
-                    >
-                      <PhoneIcon />
-                      <span className="ml-2">Chiama {t.contacts.ingrossoPhone}</span>
-                    </motion.button>
-                  </motion.div>
-                </motion.div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* 🗺️ DIRECTIONS POPUP */}
-      <AnimatePresence>
-        {activeMenu === 'directions' && isVisible && (
-          <motion.div
-            variants={popupVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
-          >
-            <div className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
-              {/* Header */}
-              <div className="px-6 py-4 bg-gradient-to-r from-purple-50 to-pink-50 border-b border-gray-100">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-white shadow-lg">
-                      <MapIcon />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900">{t.directions}</h3>
-                      <p className="text-sm text-gray-600">Come raggiungerci</p>
-                    </div>
+                      
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => handleCall(t.contacts.ingrossoPhone)}
+                        className="w-full flex items-center justify-center p-3 bg-blue-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+                      >
+                        <PhoneIcon />
+                        <span className="ml-2">Chiama {t.contacts.ingrossoPhone}</span>
+                      </motion.button>
+                    </motion.div>
                   </div>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={closeAllMenus}
-                    className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white shadow-md text-gray-600 hover:text-red-500 transition-colors duration-200"
-                  >
-                    <CloseIcon />
-                  </motion.button>
                 </div>
               </div>
-              
-              {/* Location Cards */}
-              <div className="p-6">
-                <motion.div 
-                  className="space-y-4"
-                  variants={{
-                    visible: {
-                      transition: {
-                        staggerChildren: 0.1
-                      }
-                    }
-                  }}
-                >
-                  <motion.button
-                    variants={itemVariants}
-                    whileHover={{ scale: 1.02, y: -1 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleDirections('banchetto')}
-                    className="w-full p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200 text-left transition-all duration-200 hover:shadow-md"
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* 🗺️ DIRECTIONS POPUP */}
+        <AnimatePresence mode="wait">
+          {activeMenu === 'directions' && isVisible && (
+            <motion.div
+              key="directions-popup"
+              variants={popupVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
+              style={{ willChange: 'transform, opacity' }}
+            >
+              <div className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
+                {/* Header */}
+                <div className="px-6 py-4 bg-gradient-to-r from-purple-50 to-pink-50 border-b border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-white shadow-lg">
                         <MapIcon />
                       </div>
-                      <div className="flex-1">
-                        <h4 className="font-bold text-green-900 mb-1">{t.contacts.banchetto}</h4>
-                        <p className="text-green-700 text-sm leading-relaxed">{t.contacts.banchettoAddress}</p>
-                        <div className="flex items-center text-green-500 text-sm mt-2 font-semibold">
-                          <span>📍 Apri in Google Maps</span>
-                        </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900">{t.directions}</h3>
+                        <p className="text-sm text-gray-600">Come raggiungerci</p>
                       </div>
                     </div>
-                  </motion.button>
-
-                  <motion.button
-                    variants={itemVariants}
-                    whileHover={{ scale: 1.02, y: -1 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleDirections('ingrosso')}
-                    className="w-full p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200 text-left transition-all duration-200 hover:shadow-md"
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
-                        <MapIcon />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-bold text-blue-900 mb-1">{t.contacts.ingrosso}</h4>
-                        <p className="text-blue-700 text-sm leading-relaxed">{t.contacts.ingrossoAddress}</p>
-                        <div className="flex items-center text-blue-500 text-sm mt-2 font-semibold">
-                          <span>📍 Apri in Google Maps</span>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.button>
-                </motion.div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* 🚀 DOCK PRINCIPALE */}
-      <AnimatePresence>
-        {isVisible && (
-          <motion.div
-            variants={dockVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="fixed bottom-0 left-0 right-0 z-[1001] pointer-events-none"
-            style={{
-              paddingBottom: 'max(20px, env(safe-area-inset-bottom))',
-              paddingLeft: 'env(safe-area-inset-left)',
-              paddingRight: 'env(safe-area-inset-right)'
-            }}
-          >
-            <div className="flex justify-center px-4">
-              <div className="pointer-events-auto bg-white/90 backdrop-blur-xl rounded-3xl p-3 shadow-2xl border border-white/50">
-                <div className="flex items-center space-x-3">
-                  {/* Menu Button */}
-                  <motion.button
-                    whileHover={{ 
-                      scale: 1.08, 
-                      y: -3,
-                      transition: { duration: 0.2, ease: [0.4, 0.0, 0.2, 1] }
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => toggleMenu('menu')}
-                    className={`
-                      w-16 h-16 rounded-2xl flex flex-col items-center justify-center
-                      transition-all duration-200
-                      ${activeMenu === 'menu' 
-                        ? 'bg-gradient-to-br from-blue-500 to-green-500 text-white shadow-xl' 
-                        : 'bg-white text-gray-700 shadow-lg hover:shadow-xl'
-                      }
-                    `}
-                  >
-                    <motion.div 
-                      className="mb-1"
-                      animate={activeMenu === 'menu' ? { 
-                        rotate: [0, 90, 0],
-                        scale: [1, 1.1, 1]
-                      } : { rotate: 0, scale: 1 }}
-                      transition={{ duration: 0.8, ease: [0.4, 0.0, 0.2, 1] }}
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={closeAllMenus}
+                      className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white shadow-md text-gray-600 hover:text-red-500 transition-colors duration-200"
                     >
-                      <MenuIcon />
-                    </motion.div>
-                    <span className="text-xs font-bold">{t.menu}</span>
-                  </motion.button>
-
-                  {/* Call Button */}
-                  <motion.button
-                    whileHover={{ 
-                      scale: 1.08, 
-                      y: -3,
-                      transition: { duration: 0.2, ease: [0.4, 0.0, 0.2, 1] }
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => toggleMenu('call')}
-                    className={`
-                      w-16 h-16 rounded-2xl flex flex-col items-center justify-center
-                      transition-all duration-200
-                      ${activeMenu === 'call' 
-                        ? 'bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-xl' 
-                        : 'bg-white text-gray-700 shadow-lg hover:shadow-xl'
-                      }
-                    `}
-                  >
-                    <motion.div 
-                      className="mb-1"
-                      animate={activeMenu === 'call' ? { 
-                        rotate: [0, 15, -15, 0],
-                        scale: [1, 1.1, 1]
-                      } : { rotate: 0, scale: 1 }}
-                      transition={{ duration: 0.6, ease: [0.4, 0.0, 0.2, 1] }}
-                    >
-                      <PhoneIcon />
-                    </motion.div>
-                    <span className="text-xs font-bold">{t.call}</span>
-                  </motion.button>
-
-                  {/* Directions Button */}
-                  <motion.button
-                    whileHover={{ 
-                      scale: 1.08, 
-                      y: -3,
-                      transition: { duration: 0.2, ease: [0.4, 0.0, 0.2, 1] }
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => toggleMenu('directions')}
-                    className={`
-                      w-16 h-16 rounded-2xl flex flex-col items-center justify-center
-                      transition-all duration-200
-                      ${activeMenu === 'directions' 
-                        ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-xl' 
-                        : 'bg-white text-gray-700 shadow-lg hover:shadow-xl'
-                      }
-                    `}
-                  >
-                    <motion.div 
-                      className="mb-1"
-                      animate={activeMenu === 'directions' ? { 
-                        y: [0, -3, 0],
-                        scale: [1, 1.1, 1]
-                      } : { y: 0, scale: 1 }}
-                      transition={{ duration: 0.8, ease: [0.4, 0.0, 0.2, 1] }}
-                    >
-                      <MapIcon />
-                    </motion.div>
-                    <span className="text-xs font-bold">{t.directions}</span>
-                  </motion.button>
+                      <CloseIcon />
+                    </motion.button>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-}
+                
+                {/* Location Cards */}
+                <div className="p-6">
+                  <div className="space-y-4">
+                    <motion.button
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleDirections('banchetto')}
+                      className="w-full p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200 text-left transition-all duration-200 hover:shadow-md"
+                    >
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                          <MapIcon />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-bold text-green-900 mb-1">{t.contacts.banchetto}</h4>
+                          <p className="text-green-700 text-sm leading-relaxed">{t.contacts.banchettoAddress}</p>
+                          <div className="flex items-center text-green-500 text-sm mt-2 font-semibold">
+                            <span>📍 Apri in Google Maps</span>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.button>
 
-export default PremiumMobileDock
+                    <motion.button
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y:

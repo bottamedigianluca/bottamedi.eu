@@ -132,9 +132,8 @@ const useScrollDetection = (hideInFooter: boolean) => {
   }, [])
 
   useEffect(() => {
-    // Show dock in all sections except hero and when hideInFooter is true
-    const shouldHide = hideInFooter
-    setIsVisible(!shouldHide)
+    // La visibilità è controllata solo dalla prop `hideInFooter`
+    setIsVisible(!hideInFooter)
   }, [hideInFooter])
 
   return { isVisible, currentSection }
@@ -353,7 +352,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                         layoutId={`menu-item-${item.id}`}
                         onClick={() => scrollToSection(item.id)}
                         className={`
-                          flex items-center p-4 rounded-2xl transition-all duration-200 min-h-[60px]
+                          relative flex items-center p-4 rounded-2xl transition-all duration-200 min-h-[60px]
                           ${currentSection === item.id 
                             ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg' 
                             : 'bg-gray-50 text-gray-700 hover:bg-gray-100 shadow-sm hover:shadow-md'
@@ -550,4 +549,118 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
 
                     <motion.button
                       initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y:
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleDirections('ingrosso')}
+                      className="w-full p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200 text-left transition-all duration-200 hover:shadow-md"
+                    >
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                          <MapIcon />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-bold text-blue-900 mb-1">{t.contacts.ingrosso}</h4>
+                          <p className="text-blue-700 text-sm leading-relaxed">{t.contacts.ingrossoAddress}</p>
+                          <div className="flex items-center text-blue-500 text-sm mt-2 font-semibold">
+                            <span>📍 Apri in Google Maps</span>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* 🚀 DOCK PRINCIPALE */}
+        <AnimatePresence>
+          {isVisible && (
+            <motion.div
+              key="main-dock"
+              variants={dockVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="fixed bottom-0 left-0 right-0 z-[1001] pointer-events-none"
+              style={{
+                paddingBottom: 'max(20px, env(safe-area-inset-bottom))',
+                paddingLeft: 'env(safe-area-inset-left)',
+                paddingRight: 'env(safe-area-inset-right)',
+                willChange: 'transform, opacity'
+              }}
+            >
+              <div className="flex justify-center px-4">
+                <div className="pointer-events-auto bg-white/90 backdrop-blur-xl rounded-3xl p-3 shadow-2xl border border-white/50">
+                  <div className="flex items-center space-x-3">
+                    {/* Menu Button */}
+                    <motion.button
+                      layoutId="dock-menu-button"
+                      whileHover={{ scale: 1.08, y: -3 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => toggleMenu('menu')}
+                      className={`
+                        w-16 h-16 rounded-2xl flex flex-col items-center justify-center
+                        transition-all duration-200
+                        ${activeMenu === 'menu' 
+                          ? 'bg-gradient-to-br from-blue-500 to-green-500 text-white shadow-xl' 
+                          : 'bg-white text-gray-700 shadow-lg hover:shadow-xl'
+                        }
+                      `}
+                    >
+                      <MenuIcon />
+                      <span className="text-xs font-bold mt-1">{t.menu}</span>
+                    </motion.button>
+
+                    {/* Call Button */}
+                    <motion.button
+                      layoutId="dock-call-button"
+                      whileHover={{ scale: 1.08, y: -3 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => toggleMenu('call')}
+                      className={`
+                        w-16 h-16 rounded-2xl flex flex-col items-center justify-center
+                        transition-all duration-200
+                        ${activeMenu === 'call' 
+                          ? 'bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-xl' 
+                          : 'bg-white text-gray-700 shadow-lg hover:shadow-xl'
+                        }
+                      `}
+                    >
+                      <PhoneIcon />
+                      <span className="text-xs font-bold mt-1">{t.call}</span>
+                    </motion.button>
+
+                    {/* Directions Button */}
+                    <motion.button
+                      layoutId="dock-directions-button"
+                      whileHover={{ scale: 1.08, y: -3 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => toggleMenu('directions')}
+                      className={`
+                        w-16 h-16 rounded-2xl flex flex-col items-center justify-center
+                        transition-all duration-200
+                        ${activeMenu === 'directions' 
+                          ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-xl' 
+                          : 'bg-white text-gray-700 shadow-lg hover:shadow-xl'
+                        }
+                      `}
+                    >
+                      <MapIcon />
+                      <span className="text-xs font-bold mt-1">{t.directions}</span>
+                    </motion.button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </LayoutGroup>
+  )
+}
+
+export default PremiumMobileDock

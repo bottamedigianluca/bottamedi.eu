@@ -56,66 +56,78 @@ const translations = {
   }
 }
 
-// Icone SVG ottimizzate
-const MenuIcon = () => (
+// 🎯 ICONE SVG OTTIMIZZATE
+const MenuIcon = React.memo(() => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-6 h-6">
     <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
-)
+))
 
-const PhoneIcon = () => (
+const PhoneIcon = React.memo(() => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-6 h-6">
     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
   </svg>
-)
+))
 
-const MapIcon = () => (
+const MapIcon = React.memo(() => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-6 h-6">
     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
     <circle cx="12" cy="10" r="3"/>
   </svg>
-)
+))
 
-const CloseIcon = () => (
+const CloseIcon = React.memo(() => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5">
     <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
-)
+))
 
-const ClockIcon = () => (
+const ClockIcon = React.memo(() => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
     <circle cx="12" cy="12" r="10"/>
     <polyline points="12,6 12,12 16,14"/>
   </svg>
-)
+))
 
-// Hook per il rilevamento dello scroll - SEMPLIFICATO E STABILE
+// 🚀 HOOK PER RILEVAMENTO SCROLL - COMPLETAMENTE RISCRITTO E STABILE
 const useScrollDetection = () => {
   const [isVisible, setIsVisible] = useState(false)
   const [currentSection, setCurrentSection] = useState('hero')
-  const [lastScrollY, setLastScrollY] = useState(0)
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('down')
+  const [lastScrollY, setLastScrollY] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
 
+  // 📱 Rileva se è mobile
   useEffect(() => {
-    let animationFrame: number
-    let inactivityTimer: NodeJS.Timeout
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 1024
+      setIsMobile(mobile)
+      console.log('📱 Mobile check:', mobile, 'width:', window.innerWidth)
+    }
     
-    const handleScroll = () => {
+    checkMobile()
+    window.addEventListener('resize', checkMobile, { passive: true })
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // 📍 Rileva sezione corrente
+  useEffect(() => {
+    if (!isMobile) return
+
+    let animationFrame: number
+
+    const detectCurrentSection = () => {
       if (animationFrame) {
         cancelAnimationFrame(animationFrame)
       }
-      
+
       animationFrame = requestAnimationFrame(() => {
-        const scrollY = window.scrollY
-        const direction = scrollY > lastScrollY ? 'down' : 'up'
-        setScrollDirection(direction)
-        setLastScrollY(scrollY)
-        
-        // Determina sezione corrente
         const sections = ['hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact']
         const scrollPosition = window.scrollY + window.innerHeight / 2
         let foundSection = 'hero'
 
+        // Trova sezione attuale
         for (const sectionId of sections) {
           const element = document.getElementById(sectionId)
           if (element) {
@@ -129,78 +141,126 @@ const useScrollDetection = () => {
             }
           }
         }
-        
+
         setCurrentSection(foundSection)
-        
-        // Logica di visibilità MIGLIORATA
-        const isInHero = foundSection === 'hero'
-        const isInContact = foundSection === 'contact'
-        
-        // Controlla se i documenti legali sono aperti
-        const legalElement = document.getElementById('legal-documents')
-        const isLegalOpen = legalElement && 
-                          !legalElement.classList.contains('hidden') &&
-                          legalElement.getBoundingClientRect().height > 10
-        
-        if (isInHero || isInContact || isLegalOpen) {
-          setIsVisible(false)
-          clearTimeout(inactivityTimer)
-        } else {
-          // Nelle sezioni intermedie
-          if (direction === 'up') {
-            setIsVisible(true) // Mostra subito se scroll up
-            clearTimeout(inactivityTimer)
-          } else {
-            setIsVisible(false) // Nascondi se scroll down
-            // Mostra di nuovo dopo 1 secondo di inattività
-            clearTimeout(inactivityTimer)
-            inactivityTimer = setTimeout(() => {
-              // Ricontrolla la sezione prima di mostrare
-              if (foundSection !== 'hero' && foundSection !== 'contact' && !isLegalOpen) {
-                setIsVisible(true)
-              }
-            }, 1000)
-          }
-        }
+        console.log('📍 Sezione corrente:', foundSection)
       })
     }
 
-    // Avvia subito la logica
-    handleScroll()
+    const handleScroll = () => detectCurrentSection()
+    
+    detectCurrentSection() // Rileva subito
     window.addEventListener('scroll', handleScroll, { passive: true })
     
     return () => {
       window.removeEventListener('scroll', handleScroll)
-      if (animationFrame) cancelAnimationFrame(animationFrame)
-      if (inactivityTimer) clearTimeout(inactivityTimer)
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame)
+      }
     }
-  }, [lastScrollY])
+  }, [isMobile])
 
-  return { isVisible, currentSection }
+  // 🎯 LOGICA DI VISIBILITÀ PRINCIPALE - SEMPLIFICATA E STABILE
+  useEffect(() => {
+    if (!isMobile) {
+      setIsVisible(false)
+      return
+    }
+
+    let scrollTimeout: NodeJS.Timeout
+    let inactivityTimeout: NodeJS.Timeout
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      const scrollDelta = currentScrollY - lastScrollY
+      
+      // Aggiorna direzione scroll solo se c'è movimento significativo
+      if (Math.abs(scrollDelta) > 10) {
+        const newDirection = scrollDelta > 0 ? 'down' : 'up'
+        setScrollDirection(newDirection)
+        setLastScrollY(currentScrollY)
+      }
+
+      // Clear timeout precedenti
+      clearTimeout(inactivityTimeout)
+      clearTimeout(scrollTimeout)
+
+      // 🔍 CONTROLLI DI VISIBILITÀ
+      const isInHero = currentSection === 'hero'
+      const isInContact = currentSection === 'contact'
+      
+      // Controlla se documenti legali sono aperti
+      const legalElement = document.getElementById('legal-documents')
+      const isLegalOpen = legalElement && 
+                        !legalElement.classList.contains('hidden') &&
+                        legalElement.getBoundingClientRect().height > 50
+
+      console.log('🔍 Controlli:', {
+        isInHero,
+        isInContact,
+        isLegalOpen,
+        currentSection,
+        scrollDirection
+      })
+
+      // ❌ NASCONDI in questi casi
+      if (isInHero || isInContact || isLegalOpen) {
+        console.log('❌ Nascondo dock: hero/contact/legal')
+        setIsVisible(false)
+        return
+      }
+
+      // ✅ MOSTRA nelle sezioni intermedie
+      scrollTimeout = setTimeout(() => {
+        if (scrollDirection === 'up') {
+          console.log('✅ Mostro dock: scroll up')
+          setIsVisible(true)
+        } else {
+          console.log('⏳ Nascondo dock temporaneamente: scroll down')
+          setIsVisible(false)
+          
+          // Mostra dopo 1 secondo di inattività
+          inactivityTimeout = setTimeout(() => {
+            // Ricontrolla le condizioni
+            const currentIsInHero = currentSection === 'hero'
+            const currentIsInContact = currentSection === 'contact'
+            const currentIsLegalOpen = legalElement && 
+                                    !legalElement.classList.contains('hidden') &&
+                                    legalElement.getBoundingClientRect().height > 50
+
+            if (!currentIsInHero && !currentIsInContact && !currentIsLegalOpen) {
+              console.log('✅ Mostro dock: inattività')
+              setIsVisible(true)
+            }
+          }, 1000)
+        }
+      }, 50) // Debounce ridotto
+    }
+
+    handleScroll() // Esegui subito
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      clearTimeout(scrollTimeout)
+      clearTimeout(inactivityTimeout)
+    }
+  }, [lastScrollY, currentSection, scrollDirection, isMobile])
+
+  return { isVisible: isMobile && isVisible, currentSection }
 }
 
-const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
+// 📱 COMPONENTE PRINCIPALE
+const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
   const [activeMenu, setActiveMenu] = useState<'none' | 'menu' | 'call' | 'directions'>('none')
-  const [isMobile, setIsMobile] = useState(false)
   const { isVisible, currentSection } = useScrollDetection()
   const t = translations[language]
 
-  // Rileva se è mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      const mobile = window.innerWidth < 1024
-      setIsMobile(mobile)
-      if (!mobile) {
-        setActiveMenu('none')
-      }
-    }
-    
-    checkMobile()
-    window.addEventListener('resize', checkMobile, { passive: true })
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
+  console.log('🔄 MobileDock render:', { isVisible, activeMenu, currentSection })
 
+  // 📍 Navigazione sezioni
   const scrollToSection = useCallback((sectionId: string) => {
+    console.log('📍 Navigating to:', sectionId)
     const element = document.getElementById(sectionId)
     if (element) {
       const offset = sectionId === 'hero' ? 0 : 80
@@ -211,22 +271,36 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
       })
       setActiveMenu('none')
       
+      // Haptic feedback
       if ('vibrate' in navigator) {
-        navigator.vibrate(25)
+        try {
+          navigator.vibrate(25)
+        } catch (e) {
+          console.log('Vibration not supported')
+        }
       }
     }
   }, [])
 
+  // 📞 Gestione chiamate
   const handleCall = useCallback((phone: string) => {
-    window.open(`tel:${phone.replace(/\s/g, '')}`, '_self')
+    console.log('📞 Calling:', phone)
+    const cleanPhone = phone.replace(/\s/g, '')
+    window.open(`tel:+39${cleanPhone}`, '_self')
     setActiveMenu('none')
     
     if ('vibrate' in navigator) {
-      navigator.vibrate(50)
+      try {
+        navigator.vibrate(50)
+      } catch (e) {
+        console.log('Vibration not supported')
+      }
     }
   }, [])
 
+  // 🗺️ Gestione mappe
   const handleDirections = useCallback((type: 'banchetto' | 'ingrosso') => {
+    console.log('🗺️ Opening map for:', type)
     const urls = {
       banchetto: 'https://www.google.com/maps/search/?api=1&query=Banchetto+Frutta+e+Verdura+Bottamedi+Via+Cavalleggeri+Udine+Mezzolombardo+TN',
       ingrosso: 'https://maps.app.goo.gl/TFV4cgnEvcFjBHfD6'
@@ -235,33 +309,34 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
     setActiveMenu('none')
     
     if ('vibrate' in navigator) {
-      navigator.vibrate(30)
+      try {
+        navigator.vibrate(30)
+      } catch (e) {
+        console.log('Vibration not supported')
+      }
     }
   }, [])
 
+  // 🎛️ Toggle menu
   const toggleMenu = useCallback((menu: 'menu' | 'call' | 'directions') => {
+    console.log('🎛️ Toggle menu:', menu, 'current:', activeMenu)
     setActiveMenu(prev => prev === menu ? 'none' : menu)
     
     if ('vibrate' in navigator) {
-      navigator.vibrate(25)
+      try {
+        navigator.vibrate(25)
+      } catch (e) {
+        console.log('Vibration not supported')
+      }
     }
-  }, [])
+  }, [activeMenu])
 
   const closeAllMenus = useCallback(() => {
+    console.log('❌ Closing all menus')
     setActiveMenu('none')
   }, [])
 
-  // Non renderizzare se non è mobile
-  if (!isMobile) return null
-
-  // VARIANTI ANIMATE FLUIDE - SENZA FLASH
-  const sharedTransition = {
-    type: "spring" as const,
-    damping: 25,
-    stiffness: 400,
-    mass: 0.8
-  }
-
+  // 🎨 VARIANTI ANIMATE OTTIMIZZATE
   const backdropVariants = {
     hidden: { opacity: 0 },
     visible: { 
@@ -278,21 +353,23 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
     hidden: { 
       opacity: 0, 
       y: 20,
-      scale: 0.95,
-      filter: "blur(4px)"
+      scale: 0.95
     },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
-      filter: "blur(0px)",
-      transition: sharedTransition
+      transition: {
+        type: "spring",
+        damping: 25,
+        stiffness: 400,
+        duration: 0.3
+      }
     },
     exit: {
       opacity: 0,
       y: 20,
       scale: 0.95,
-      filter: "blur(4px)",
       transition: { duration: 0.2, ease: "easeIn" }
     }
   }
@@ -322,10 +399,18 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
     }
   }
 
+  // ❌ NON RENDERIZZARE SE NON VISIBILE
+  if (!isVisible) {
+    console.log('❌ MobileDock: non visibile, non rendering')
+    return null
+  }
+
+  console.log('✅ MobileDock: rendering completo')
+
   return (
     <LayoutGroup>
-      <div className="lg:hidden pointer-events-none">
-        {/* Backdrop */}
+      <div className="lg:hidden">
+        {/* 🎭 Backdrop */}
         <AnimatePresence>
           {activeMenu !== 'none' && (
             <motion.div
@@ -334,27 +419,22 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="fixed inset-0 z-[999] pointer-events-auto"
+              className="fixed inset-0 z-[999] bg-black/40 backdrop-blur-sm"
               onClick={closeAllMenus}
-              style={{ 
-                background: 'rgba(0,0,0,0.4)',
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)'
-              }}
             />
           )}
         </AnimatePresence>
 
-        {/* Menu Popup */}
+        {/* 📱 Menu Popup */}
         <AnimatePresence mode="wait">
-          {activeMenu === 'menu' && isVisible && (
+          {activeMenu === 'menu' && (
             <motion.div
               key="menu-popup"
               variants={popupVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
+              className="fixed bottom-32 left-4 right-4 z-[1000]"
             >
               <div className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
                 <div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-green-50 border-b border-gray-100">
@@ -369,6 +449,112 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
                       </div>
                     </div>
                     <motion.button
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleDirections('ingrosso')}
+                      className="w-full p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200 text-left transition-all duration-200 hover:shadow-md"
+                    >
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                          <MapIcon />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-bold text-blue-900 mb-1">{t.contacts.ingrosso}</h4>
+                          <p className="text-blue-700 text-sm leading-relaxed">{t.contacts.ingrossoAddress}</p>
+                          <div className="flex items-center text-blue-500 text-sm mt-2 font-semibold">
+                            <span>📍 Apri in Google Maps</span>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* 🏠 Main Dock */}
+        <AnimatePresence>
+          {isVisible && (
+            <motion.div
+              key="main-dock"
+              variants={dockVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="fixed bottom-0 left-0 right-0 z-[9999]"
+              style={{
+                paddingBottom: 'max(20px, env(safe-area-inset-bottom))',
+                paddingLeft: 'env(safe-area-inset-left)',
+                paddingRight: 'env(safe-area-inset-right)'
+              }}
+            >
+              <div className="flex justify-center px-4">
+                <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-3 shadow-2xl border border-white/20 ring-1 ring-black/5">
+                  <div className="flex items-center space-x-3">
+                    <motion.button
+                      whileHover={{ scale: 1.08, y: -3 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => toggleMenu('menu')}
+                      className={
+                        activeMenu === 'menu' 
+                          ? 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-gradient-to-br from-blue-500 to-green-500 text-white shadow-xl' 
+                          : 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-white text-gray-700 shadow-lg hover:shadow-xl'
+                      }
+                    >
+                      <MenuIcon />
+                      <span className="text-xs font-bold mt-1">{t.menu}</span>
+                    </motion.button>
+
+                    <motion.button
+                      whileHover={{ scale: 1.08, y: -3 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => toggleMenu('call')}
+                      className={
+                        activeMenu === 'call' 
+                          ? 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-xl' 
+                          : 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-white text-gray-700 shadow-lg hover:shadow-xl'
+                      }
+                    >
+                      <PhoneIcon />
+                      <span className="text-xs font-bold mt-1">{t.call}</span>
+                    </motion.button>
+
+                    <motion.button
+                      whileHover={{ scale: 1.08, y: -3 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => toggleMenu('directions')}
+                      className={
+                        activeMenu === 'directions' 
+                          ? 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-xl' 
+                          : 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-white text-gray-700 shadow-lg hover:shadow-xl'
+                      }
+                    >
+                      <MapIcon />
+                      <span className="text-xs font-bold mt-1">{t.directions}</span>
+                    </motion.button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </LayoutGroup>
+  )
+}
+
+MenuIcon.displayName = 'MenuIcon'
+PhoneIcon.displayName = 'PhoneIcon'
+MapIcon.displayName = 'MapIcon'
+CloseIcon.displayName = 'CloseIcon'
+ClockIcon.displayName = 'ClockIcon'
+
+export default React.memo(MobileDock)
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={closeAllMenus}
@@ -384,11 +570,10 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
                     {t.sections.map((item, index) => (
                       <motion.button
                         key={item.id}
-                        layoutId={`menu-item-${item.id}`}
                         onClick={() => scrollToSection(item.id)}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.05, ...sharedTransition }}
+                        transition={{ delay: index * 0.05 }}
                         className={
                           currentSection === item.id 
                             ? 'relative flex items-center p-4 rounded-2xl transition-all duration-200 min-h-[60px] bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg' 
@@ -406,7 +591,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
                           <motion.div
                             layoutId="active-indicator"
                             className="absolute right-3 w-2 h-2 bg-white rounded-full"
-                            transition={sharedTransition}
+                            transition={{ type: "spring", damping: 25, stiffness: 400 }}
                           />
                         )}
                       </motion.button>
@@ -418,16 +603,16 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
           )}
         </AnimatePresence>
 
-        {/* Call Popup */}
+        {/* 📞 Call Popup */}
         <AnimatePresence mode="wait">
-          {activeMenu === 'call' && isVisible && (
+          {activeMenu === 'call' && (
             <motion.div
               key="call-popup"
               variants={popupVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
+              className="fixed bottom-32 left-4 right-4 z-[1000]"
             >
               <div className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
                 <div className="px-6 py-4 bg-gradient-to-r from-orange-50 to-red-50 border-b border-gray-100">
@@ -457,7 +642,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1, ...sharedTransition }}
+                      transition={{ delay: 0.1 }}
                       className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200"
                     >
                       <div className="flex items-start space-x-4 mb-3">
@@ -488,7 +673,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2, ...sharedTransition }}
+                      transition={{ delay: 0.2 }}
                       className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200"
                     >
                       <div className="flex items-start space-x-4 mb-3">
@@ -518,16 +703,16 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
           )}
         </AnimatePresence>
 
-        {/* Directions Popup - SISTEMATO IL FLASH */}
+        {/* 🗺️ Directions Popup */}
         <AnimatePresence mode="wait">
-          {activeMenu === 'directions' && isVisible && (
+          {activeMenu === 'directions' && (
             <motion.div
               key="directions-popup"
               variants={popupVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
+              className="fixed bottom-32 left-4 right-4 z-[1000]"
             >
               <div className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
                 <div className="px-6 py-4 bg-gradient-to-r from-purple-50 to-pink-50 border-b border-gray-100">
@@ -557,7 +742,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
                     <motion.button
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1, ...sharedTransition }}
+                      transition={{ delay: 0.1 }}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => handleDirections('banchetto')}
@@ -578,106 +763,3 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
                     </motion.button>
 
                     <motion.button
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2, ...sharedTransition }}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => handleDirections('ingrosso')}
-                      className="w-full p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200 text-left transition-all duration-200 hover:shadow-md"
-                    >
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
-                          <MapIcon />
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="font-bold text-blue-900 mb-1">{t.contacts.ingrosso}</h4>
-                          <p className="text-blue-700 text-sm leading-relaxed">{t.contacts.ingrossoAddress}</p>
-                          <div className="flex items-center text-blue-500 text-sm mt-2 font-semibold">
-                            <span>📍 Apri in Google Maps</span>
-                          </div>
-                        </div>
-                      </div>
-                    </motion.button>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Main Dock */}
-        <AnimatePresence>
-          {isVisible && (
-            <motion.div
-              key="main-dock"
-              variants={dockVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="fixed bottom-0 left-0 right-0 z-[9999] pointer-events-none"
-              style={{
-                paddingBottom: 'max(20px, env(safe-area-inset-bottom))',
-                paddingLeft: 'env(safe-area-inset-left)',
-                paddingRight: 'env(safe-area-inset-right)'
-              }}
-            >
-              <div className="flex justify-center px-4">
-                <div className="pointer-events-auto bg-white/95 backdrop-blur-xl rounded-3xl p-3 shadow-2xl border border-white/20 ring-1 ring-black/5">
-                  <div className="flex items-center space-x-3">
-                    <motion.button
-                      layoutId="dock-menu-button"
-                      whileHover={{ scale: 1.08, y: -3 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => toggleMenu('menu')}
-                      className={
-                        activeMenu === 'menu' 
-                          ? 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-gradient-to-br from-blue-500 to-green-500 text-white shadow-xl' 
-                          : 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-white text-gray-700 shadow-lg hover:shadow-xl'
-                      }
-                    >
-                      <MenuIcon />
-                      <span className="text-xs font-bold mt-1">{t.menu}</span>
-                    </motion.button>
-
-                    <motion.button
-                      layoutId="dock-call-button"
-                      whileHover={{ scale: 1.08, y: -3 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => toggleMenu('call')}
-                      className={
-                        activeMenu === 'call' 
-                          ? 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-xl' 
-                          : 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-white text-gray-700 shadow-lg hover:shadow-xl'
-                      }
-                    >
-                      <PhoneIcon />
-                      <span className="text-xs font-bold mt-1">{t.call}</span>
-                    </motion.button>
-
-                    <motion.button
-                      layoutId="dock-directions-button"
-                      whileHover={{ scale: 1.08, y: -3 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => toggleMenu('directions')}
-                      className={
-                        activeMenu === 'directions' 
-                          ? 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-xl' 
-                          : 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-white text-gray-700 shadow-lg hover:shadow-xl'
-                      }
-                    >
-                      <MapIcon />
-                      <span className="text-xs font-bold mt-1">{t.directions}</span>
-                    </motion.button>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </LayoutGroup>
-  )
-}
-
-export default PremiumMobileDock

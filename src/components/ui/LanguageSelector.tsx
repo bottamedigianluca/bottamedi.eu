@@ -78,38 +78,23 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           >
             <motion.span 
               className="text-lg"
-              key={language} // Force re-render per animazione flag
-              initial={{ scale: 0.8, opacity: 0.7 }}
+              key={`flag-${language}`} // Force re-render per animazione flag
+              initial={{ scale: 0.9, opacity: 0.8 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.2 }}
             >
               {currentLanguage?.flag}
             </motion.span>
             <motion.span 
-              className="font-semibold text-gray-800 text-sm"
-              key={`${language}-label`}
-              initial={{ x: -5, opacity: 0.7 }}
-              animate={{ x: 0, opacity: 1 }}
+              className="font-semibold text-sm"
+              key={`label-${language}`}
+              initial={{ opacity: 0.8 }}
+              animate={{ opacity: 1 }}
               transition={{ duration: 0.2, delay: 0.05 }}
+              style={{ color: 'inherit' }}
             >
               {currentLanguage?.label}
             </motion.span>
-            
-            {/* Switch indicator */}
-            <motion.div
-              className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 ml-1"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <motion.span 
-                className="text-xs text-white/80"
-                animate={{ rotate: 180 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                key={language}
-              >
-                ⇄
-              </motion.span>
-            </motion.div>
           </motion.button>
         </div>
 

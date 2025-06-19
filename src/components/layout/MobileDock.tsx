@@ -571,7 +571,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, isVisible }) =
           )}
         </AnimatePresence>
 
-        {/* 🚀 DOCK PRINCIPALE */}
+        {/* 🚀 DOCK PRINCIPALE - Z-INDEX MASSIMO */}
         <AnimatePresence>
           <motion.div
             key="main-dock"
@@ -579,7 +579,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, isVisible }) =
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="fixed bottom-0 left-0 right-0 z-[1001] pointer-events-none"
+            className="fixed bottom-0 left-0 right-0 z-[9999] pointer-events-none"
             style={{
               paddingBottom: 'max(20px, env(safe-area-inset-bottom))',
               paddingLeft: 'env(safe-area-inset-left)',
@@ -588,7 +588,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, isVisible }) =
             }}
           >
             <div className="flex justify-center px-4">
-              <div className="pointer-events-auto bg-white/90 backdrop-blur-xl rounded-3xl p-3 shadow-2xl border border-white/50">
+              <div className="pointer-events-auto bg-white/95 backdrop-blur-xl rounded-3xl p-3 shadow-2xl border border-white/20 ring-1 ring-black/5">
                 <div className="flex items-center space-x-3">
                   {/* Menu Button */}
                   <motion.button

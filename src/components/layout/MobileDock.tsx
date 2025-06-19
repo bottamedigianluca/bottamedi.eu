@@ -477,7 +477,7 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
           )}
         </AnimatePresence>
 
-        {/* 🏠 Main Dock */}
+        {/* 🏠 MAIN DOCK - DOCK PRINCIPALE */}
         <AnimatePresence>
           {isVisible && (
             <motion.div
@@ -496,6 +496,7 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
               <div className="flex justify-center px-4">
                 <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-3 shadow-2xl border border-white/20 ring-1 ring-black/5">
                   <div className="flex items-center space-x-3">
+                    {/* 📱 Menu Button */}
                     <motion.button
                       whileHover={{ scale: 1.08, y: -3 }}
                       whileTap={{ scale: 0.95 }}
@@ -505,11 +506,16 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
                           ? 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-gradient-to-br from-blue-500 to-green-500 text-white shadow-xl' 
                           : 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-white text-gray-700 shadow-lg hover:shadow-xl'
                       }
+                      style={{ 
+                        WebkitTapHighlightColor: 'transparent',
+                        touchAction: 'manipulation'
+                      }}
                     >
                       <MenuIcon />
                       <span className="text-xs font-bold mt-1">{t.menu}</span>
                     </motion.button>
 
+                    {/* 📞 Call Button */}
                     <motion.button
                       whileHover={{ scale: 1.08, y: -3 }}
                       whileTap={{ scale: 0.95 }}
@@ -519,11 +525,16 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
                           ? 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-xl' 
                           : 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-white text-gray-700 shadow-lg hover:shadow-xl'
                       }
+                      style={{ 
+                        WebkitTapHighlightColor: 'transparent',
+                        touchAction: 'manipulation'
+                      }}
                     >
                       <PhoneIcon />
                       <span className="text-xs font-bold mt-1">{t.call}</span>
                     </motion.button>
 
+                    {/* 🗺️ Directions Button */}
                     <motion.button
                       whileHover={{ scale: 1.08, y: -3 }}
                       whileTap={{ scale: 0.95 }}
@@ -533,6 +544,10 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
                           ? 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-xl' 
                           : 'w-16 h-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 bg-white text-gray-700 shadow-lg hover:shadow-xl'
                       }
+                      style={{ 
+                        WebkitTapHighlightColor: 'transparent',
+                        touchAction: 'manipulation'
+                      }}
                     >
                       <MapIcon />
                       <span className="text-xs font-bold mt-1">{t.directions}</span>
@@ -548,6 +563,7 @@ const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
   )
 }
 
+// 🎯 DISPLAY NAMES PER DEBUG
 MenuIcon.displayName = 'MenuIcon'
 PhoneIcon.displayName = 'PhoneIcon'
 MapIcon.displayName = 'MapIcon'

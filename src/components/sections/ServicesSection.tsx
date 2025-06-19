@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+import OptimizedImage from '../ui/OptimizedImage'
 
 interface ServicesSectionProps {
   language: 'it' | 'de'
@@ -194,8 +195,6 @@ const ServiceCard: React.FC<{
     triggerOnce: true
   })
 
-  const [imageLoaded, setImageLoaded] = useState(false)
-
   const cardVariants = useMemo(() => ({
     hidden: { opacity: 0, y: 20, scale: 0.98 },
     visible: { 
@@ -233,22 +232,14 @@ const ServiceCard: React.FC<{
         style={{ willChange: 'transform' }}
       >
         <div className={`relative overflow-hidden ${isMobile ? 'h-56' : 'h-64'}`}>
-          {!imageLoaded && (
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
-          )}
-          
-          <motion.img
+          <OptimizedImage
             src={service.image}
             alt={service.title}
-            className="w-full h-full object-cover"
-            loading="lazy"
-            onLoad={() => setImageLoaded(true)}
-            initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ 
-              opacity: imageLoaded ? 1 : 0,
-              scale: imageLoaded ? 1 : 1.05
-            }}
-            transition={{ duration: 0.4 }}
+            className="w-full h-full"
+            priority={index === 0}
+            placeholder="blur"
+            aspectRatio="16/9"
+            objectFit="cover"
             style={{ willChange: 'transform, opacity' }}
           />
           <div className={`absolute inset-0 bg-gradient-to-t ${service.color} opacity-70`} />
@@ -304,8 +295,6 @@ const MobileServiceCard: React.FC<{
     triggerOnce: true
   })
 
-  const [imageLoaded, setImageLoaded] = useState(false)
-
   const cardVariants = useMemo(() => ({
     hidden: { opacity: 0, y: 30, scale: 0.97 },
     visible: { 
@@ -329,20 +318,14 @@ const MobileServiceCard: React.FC<{
       className="bg-white rounded-2xl shadow-lg overflow-hidden mb-6"
     >
       <div className="relative h-56 overflow-hidden">
-        {!imageLoaded && (
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
-        )}
-        
-        <img
+        <OptimizedImage
           src={service.image}
           alt={service.title}
-          className="w-full h-full object-cover"
-          loading="lazy"
-          onLoad={() => setImageLoaded(true)}
-          style={{ 
-            opacity: imageLoaded ? 1 : 0,
-            transition: 'opacity 0.3s ease'
-          }}
+          className="w-full h-full"
+          priority={index === 0}
+          placeholder="blur"
+          aspectRatio="16/9"
+          objectFit="cover"
         />
         <div className={`absolute inset-0 bg-gradient-to-t ${service.color} opacity-70`} />
         

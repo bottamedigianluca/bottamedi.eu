@@ -1,6 +1,7 @@
 // Footer.tsx - VERSIONE CORRETTA CON ANIMAZIONI FLUIDE E SCROLL PRECISO
 import React from 'react'
 import { motion } from 'framer-motion'
+import OptimizedImage from '../ui/OptimizedImage'
 
 interface FooterProps {
   language: 'it' | 'de'
@@ -296,14 +297,14 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
                     damping: 20 
                   }}
                 >
-                  <img
+                  <OptimizedImage
                     src="/favicon.webp"
                     alt="Bottamedi Favicon"
                     className="w-12 h-12 object-contain"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement
-                      target.style.display = 'none'
-                      target.parentElement!.innerHTML = '<span class="text-white font-bold text-2xl">B</span>'
+                    priority={true}
+                    placeholder="empty"
+                    onError={() => {
+                      console.warn('Favicon failed to load, using fallback')
                     }}
                   />
                 </motion.div>

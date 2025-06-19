@@ -1,170 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
-        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
-  <!-- Homepage principale -->
+  <!-- 
+    Sitemap Unificato per Bottamedi.eu
+    Ottimizzato per una Single Page Application (SPA) con Vite e React.
+    Questo file definisce l'URL canonico principale e le sue sezioni interne come ancore.
+    Include anche le immagini più importanti associate alla pagina principale.
+  -->
+
+  <!-- Homepage Principale (URL Canonico) -->
   <url>
     <loc>https://www.bottamedi.eu/</loc>
-    <lastmod>2024-12-20</lastmod>
+    <lastmod>2024-05-21</lastmod> <!-- Modifica questa data ogni volta che fai un aggiornamento importante -->
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+
+    <!-- Indicazioni per versioni in altre lingue -->
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.bottamedi.eu/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.bottamedi.eu/" /> <!-- Lascia questo anche se /de non esiste, indica che la lingua è gestita dinamicamente -->
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.bottamedi.eu/" />
+
+    <!-- Immagini rappresentative della pagina principale -->
     <image:image>
       <image:loc>https://www.bottamedi.eu/images/banchetto.webp</image:loc>
-      <image:title>Banchetto Bottamedi Frutta e Verdura Mezzolombardo</image:title>
-      <image:caption>Banchetto di frutta e verdura fresca di Bottamedi nel centro di Mezzolombardo, Trentino Alto Adige</image:caption>
+      <image:title>Banchetto di Frutta e Verdura Bottamedi a Mezzolombardo</image:title>
+      <image:caption>Il colorato banchetto Bottamedi, con una vasta selezione di frutta e verdura fresca di stagione, nel centro di Mezzolombardo (Trentino).</image:caption>
+      <image:geo_location>Mezzolombardo, Italia</image:geo_location>
     </image:image>
-    <video:video>
-      <video:thumbnail_loc>https://www.bottamedi.eu/images/poster.webp</video:thumbnail_loc>
-      <video:title>Bottamedi - Frutta e Verdura Fresca dal 1974</video:title>
-      <video:description>Video presentazione di Bottamedi, azienda familiare specializzata nella vendita di frutta e verdura fresca a Mezzolombardo</video:description>
-      <video:content_loc>https://www.bottamedi.eu/videos/hero-video-verdure-rotanti.mp4</video:content_loc>
-      <video:duration>30</video:duration>
-    </video:video>
-    <xhtml:link rel="alternate" hreflang="it" href="https://www.bottamedi.eu/" />
-    <xhtml:link rel="alternate" hreflang="de" href="https://www.bottamedi.eu/de" />
-  </url>
-
-  <!-- Sezione Chi Siamo / Storia -->
-  <url>
-    <loc>https://www.bottamedi.eu/#about</loc>
-    <lastmod>2024-12-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-    <image:image>
-      <image:loc>https://www.bottamedi.eu/images/melinda_golden.webp</image:loc>
-      <image:title>Mele Melinda Golden DOP - Bottamedi</image:title>
-      <image:caption>Mele Golden Melinda DOP fresche dalla Val di Non, selezionate da Bottamedi per qualità superiore</image:caption>
-    </image:image>
-  </url>
-
-  <!-- Banchetto Dettaglio -->
-  <url>
-    <loc>https://www.bottamedi.eu/#dettaglio</loc>
-    <lastmod>2024-12-20</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.95</priority>
-    <image:image>
-      <image:loc>https://www.bottamedi.eu/images/banco_varieta_autunno.webp</image:loc>
-      <image:title>Banchetto Bottamedi - Varietà Autunnali</image:title>
-      <image:caption>Ricca esposizione di frutta e verdura fresca di stagione al banchetto Bottamedi di Mezzolombardo</image:caption>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.bottamedi.eu/images/pomodori_cuore_bue.webp</image:loc>
-      <image:title>Pomodori Cuore di Bue Freschi</image:title>
-      <image:caption>Pomodori cuore di bue rossi freschi e profumati del Trentino disponibili al banchetto Bottamedi</image:caption>
-    </image:image>
-  </url>
-
-  <!-- Servizi Ingrosso HORECA -->
-  <url>
-    <loc>https://www.bottamedi.eu/#services</loc>
-    <lastmod>2024-12-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
     <image:image>
       <image:loc>https://www.bottamedi.eu/images/albicocche_ingrosso_magazzino.webp</image:loc>
       <image:title>Servizio Ingrosso HORECA Bottamedi</image:title>
-      <image:caption>Magazzino frutta per servizio ingrosso HORECA di Bottamedi, forniture per ristoranti e hotel nel Trentino</image:caption>
+      <image:caption>Magazzino di frutta fresca per il servizio di fornitura all'ingrosso per ristoranti e hotel (HORECA) in Trentino Alto Adige.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/images/melinda_golden.webp</image:loc>
+      <image:title>Mele Melinda Golden DOP del Trentino</image:title>
+      <image:caption>Mele Golden Melinda DOP fresche, simbolo della qualità e dei prodotti tipici del Trentino selezionati da Bottamedi.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.bottamedi.eu/logo-bottamedi.webp</image:loc>
+      <image:title>Logo Bottamedi Frutta e Verdura</image:title>
+      <image:caption>Il logo ufficiale di Bottamedi, azienda familiare attiva nel settore ortofrutticolo dal 1974.</image:caption>
     </image:image>
   </url>
 
-  <!-- Prodotti -->
+  <!-- 
+    Sezioni Principali della Pagina
+    Questi URL con ancora (#) aiutano Google a comprendere la struttura della pagina, 
+    anche se non vengono indicizzati come pagine separate.
+    Hanno una priorità leggermente inferiore rispetto alla homepage.
+  -->
+  <url>
+    <loc>https://www.bottamedi.eu/#about</loc>
+    <lastmod>2024-05-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.bottamedi.eu/#dettaglio</loc>
+    <lastmod>2024-05-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.bottamedi.eu/#services</loc>
+    <lastmod>2024-05-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
   <url>
     <loc>https://www.bottamedi.eu/#products</loc>
-    <lastmod>2024-12-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-    <image:image>
-      <image:loc>https://www.bottamedi.eu/images/angurie.webp</image:loc>
-      <image:title>Angurie Fresche Estive</image:title>
-      <image:caption>Angurie fresche e succose, tagliate e intere, disponibili in stagione da Bottamedi Mezzolombardo</image:caption>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.bottamedi.eu/images/arance_felici.webp</image:loc>
-      <image:title>Arance La Favorita Felici</image:title>
-      <image:caption>Arance fresche e succose La Favorita Felici, agrumi selezionati da Bottamedi</image:caption>
-    </image:image>
+    <lastmod>2024-05-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
-
-  <!-- Richiesta Listino Ingrosso -->
   <url>
     <loc>https://www.bottamedi.eu/#wholesale</loc>
-    <lastmod>2024-12-20</lastmod>
+    <lastmod>2024-05-21</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
-
-  <!-- Contatti -->
   <url>
     <loc>https://www.bottamedi.eu/#contact</loc>
-    <lastmod>2024-12-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-    <image:image>
-      <image:loc>https://www.bottamedi.eu/images/mappa-banchetto-bottamedi.webp</image:loc>
-      <image:title>Mappa Banchetto Bottamedi Mezzolombardo</image:title>
-      <image:caption>Posizione del banchetto Bottamedi in Via Cavalleggeri Udine, Mezzolombardo, Trentino Alto Adige</image:caption>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.bottamedi.eu/images/mappa-ingrosso-bottamedi.webp</image:loc>
-      <image:title>Mappa Sede Ingrosso Bottamedi</image:title>
-      <image:caption>Sede dell'ingrosso HORECA Bottamedi in Via Alcide de Gasperi 47, Mezzolombardo</image:caption>
-    </image:image>
-  </url>
-
-  <!-- Pagine prodotti specifici -->
-  <url>
-    <loc>https://www.bottamedi.eu/prodotti/mele-melinda-dop</loc>
-    <lastmod>2024-12-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-    <image:image>
-      <image:loc>https://www.bottamedi.eu/images/bottamedi_mele_melinda_montagna_cassetta.webp</image:loc>
-      <image:title>Mele Melinda DOP Montagna - Cassetta</image:title>
-      <image:caption>Cassetta di Mele Melinda DOP Mela di Montagna, specialità del Trentino disponibile da Bottamedi</image:caption>
-    </image:image>
-  </url>
-
-  <!-- Servizi Specifici -->
-  <url>
-    <loc>https://www.bottamedi.eu/servizi/ingrosso-horeca-trentino</loc>
-    <lastmod>2024-12-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-
-  <url>
-    <loc>https://www.bottamedi.eu/servizi/banchetto-frutta-verdura-mezzolombardo</loc>
-    <lastmod>2024-12-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Landing page per ricerche locali -->
-  <url>
-    <loc>https://www.bottamedi.eu/mezzolombardo</loc>
-    <lastmod>2024-12-20</lastmod>
+    <lastmod>2024-05-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.bottamedi.eu/trentino-alto-adige</loc>
-    <lastmod>2024-12-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Versione tedesca -->
-  <url>
-    <loc>https://www.bottamedi.eu/de</loc>
-    <lastmod>2024-12-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="de" href="https://www.bottamedi.eu/de" />
-    <xhtml:link rel="alternate" hreflang="it" href="https://www.bottamedi.eu/" />
   </url>
 
 </urlset>

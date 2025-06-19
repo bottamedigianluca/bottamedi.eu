@@ -152,88 +152,108 @@ const ContactCard: React.FC<{
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: shouldReduceMotion ? 0.2 : 0.4, delay: shouldReduceMotion ? 0 : index * 0.1 }}
       whileHover={shouldReduceMotion ? {} : { y: -2, scale: 1.01 }}
-      className="relative group"
+      className="contact-card"
     >
-      <div className="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-neutral-100 h-full">
-        {/* Icon Header */}
-        <div className="relative mb-6">
-          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center text-xl mb-3 group-hover:scale-105 transition-transform duration-200`}>
-            {icon}
-          </div>
-          <h3 className="text-lg font-bold text-neutral-900">
+      {/* Header con icona e titolo */}
+      <div className="contact-card-header">
+        <div className={`contact-card-icon bg-gradient-to-br ${gradient}`}>
+          {icon}
+        </div>
+        <div>
+          <h3 className="text-lg font-bold text-neutral-900 mb-1">
             {contact.title}
           </h3>
+          <p className="text-sm text-gray-500">
+            {isIngrosso ? 'Servizio professionale' : 'Vendita al dettaglio'}
+          </p>
         </div>
+      </div>
 
-        {/* Contact Info */}
-        <div className="space-y-3 mb-5">
-          <div className="flex items-start space-x-3">
-            <svg className="w-4 h-4 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            <p className="text-neutral-600 leading-relaxed text-sm">
-              {contact.address}
-            </p>
-          </div>
-
-          <div className="flex items-center space-x-3">
-            <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-            </svg>
-            <button 
-              onClick={callPhone}
-              className="text-neutral-600 hover:text-green-600 transition-colors text-sm text-left"
-            >
-              {contact.phone}
-            </button>
-          </div>
-
-          <div className="flex items-center space-x-3">
-            <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-            <button 
-              onClick={sendEmail}
-              className="text-neutral-600 hover:text-green-600 transition-colors text-sm text-left"
-            >
-              {contact.email}
-            </button>
-          </div>
-
-          {contact.hours && (
-            <div className="flex items-center space-x-3">
-              <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      {/* Informazioni di contatto */}
+      <div className="contact-card-content">
+        <div className="contact-card-info">
+          <div className="space-y-3 mb-5">
+            <div className="flex items-start space-x-3">
+              <svg className="w-4 h-4 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-              <p className="text-neutral-600 text-sm">
-                {contact.hours}
+              <p className="text-neutral-600 leading-relaxed text-sm">
+                {contact.address}
               </p>
             </div>
-          )}
+
+            <div className="flex items-center space-x-3">
+              <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              <button 
+                onClick={callPhone}
+                className="text-neutral-600 hover:text-green-600 transition-colors text-sm text-left font-medium"
+              >
+                {contact.phone}
+              </button>
+            </div>
+
+            <div className="flex items-center space-x-3">
+              <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <button 
+                onClick={sendEmail}
+                className="text-neutral-600 hover:text-green-600 transition-colors text-sm text-left break-all"
+              >
+                {contact.email}
+              </button>
+            </div>
+
+            {contact.hours && (
+              <div className="flex items-center space-x-3">
+                <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p className="text-neutral-600 text-sm font-medium">
+                  {contact.hours}
+                </p>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="space-y-2">
-          <h4 className="text-xs font-semibold text-neutral-700 mb-2">{quickActions.title}</h4>
+        {/* Azioni rapide - LAYOUT SIMMETRICO */}
+        <div className="contact-card-actions">
+          <h4 className="text-xs font-semibold text-neutral-700 mb-3 uppercase tracking-wide">
+            {quickActions.title}
+          </h4>
           
-          <div className="grid grid-cols-1 gap-2">
+          <div className="btn-grid">
+            {/* Bottone principale - full width */}
             <motion.button
               onClick={callPhone}
-              whileHover={shouldReduceMotion ? {} : { scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
-              className={`w-full py-2 px-3 bg-gradient-to-r ${gradient} text-white rounded-lg font-medium text-xs transition-all duration-200 hover:shadow-md flex items-center justify-center space-x-2`}
+              whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className={`contact-card-btn contact-card-btn-primary`}
+              style={{ 
+                background: `linear-gradient(135deg, ${gradient.split(' ')[1]}, ${gradient.split(' ')[3]})`,
+                WebkitTapHighlightColor: 'transparent',
+                touchAction: 'manipulation'
+              }}
             >
               <span>📞</span>
               <span>{quickActions.call}</span>
             </motion.button>
 
-            <div className="grid grid-cols-2 gap-2">
+            {/* Row con due bottoni affiancati */}
+            <div className="btn-grid-row">
               <motion.button
                 onClick={sendWhatsApp}
-                whileHover={shouldReduceMotion ? {} : { scale: 1.01 }}
-                whileTap={{ scale: 0.99 }}
-                className="py-2 px-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium text-xs transition-all duration-200 flex items-center justify-center space-x-1"
+                whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="contact-card-btn contact-card-btn-whatsapp"
+                style={{ 
+                  WebkitTapHighlightColor: 'transparent',
+                  touchAction: 'manipulation'
+                }}
               >
                 <span>💬</span>
                 <span>{quickActions.whatsapp}</span>
@@ -241,9 +261,13 @@ const ContactCard: React.FC<{
 
               <motion.button
                 onClick={openMap}
-                whileHover={shouldReduceMotion ? {} : { scale: 1.01 }}
-                whileTap={{ scale: 0.99 }}
-                className="py-2 px-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium text-xs transition-all duration-200 flex items-center justify-center space-x-1"
+                whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="contact-card-btn contact-card-btn-map"
+                style={{ 
+                  WebkitTapHighlightColor: 'transparent',
+                  touchAction: 'manipulation'
+                }}
               >
                 <span>🗺️</span>
                 <span>{quickActions.directions}</span>
@@ -251,13 +275,13 @@ const ContactCard: React.FC<{
             </div>
           </div>
         </div>
-
-        {/* Hover Effect */}
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-blue-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-          initial={false}
-        />
       </div>
+
+      {/* Hover Effect */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-blue-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+        initial={false}
+      />
     </motion.div>
   )
 })
@@ -506,8 +530,8 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
           </motion.div>
         </motion.div>
 
-        {/* Contact Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-16">
+        {/* Contact Cards - LAYOUT SIMMETRICO */}
+        <div className="contact-cards-container mb-16">
           <ContactCard
             contact={t.contact.retail}
             icon="🛒"
@@ -530,69 +554,4 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
         <motion.div
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: shouldReduceMotion ? 0.2 : 0.5, delay: shouldReduceMotion ? 0 : 0.4 }}
-          className="mt-16"
-        >
-          <div className="text-center mb-10">
-            <h3 className="text-2xl lg:text-3xl font-bold text-neutral-900 mb-3">
-              {t.mapSection.title}
-            </h3>
-            <p className="text-lg lg:text-xl text-neutral-600">
-              {t.mapSection.subtitle}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Banchetto Map */}
-            <motion.div
-              whileHover={shouldReduceMotion ? {} : { scale: 1.01 }}
-              className="relative group cursor-pointer"
-              onClick={() => handleMapClick('banchetto')}
-            >
-              <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
-                <div className="h-48 bg-gradient-to-br from-green-100 to-green-200 relative overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl mb-3 mx-auto">
-                        📍
-                      </div>
-                      <h4 className="text-lg font-bold text-neutral-900">
-                        {language === 'it' ? 'Banchetto' : 'Marktstand'}
-                      </h4>
-                      <p className="text-neutral-600 text-sm">Via Cavalleggeri Udine</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* HORECA Map */}
-            <motion.div
-              whileHover={shouldReduceMotion ? {} : { scale: 1.01 }}
-              className="relative group cursor-pointer"
-              onClick={() => handleMapClick('ingrosso')}
-            >
-              <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
-                <div className="h-48 bg-gradient-to-br from-blue-100 to-blue-200 relative overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white text-xl mb-3 mx-auto">
-                        📍
-                      </div>
-                      <h4 className="text-lg font-bold text-neutral-900">
-                        {language === 'it' ? 'Ingrosso HORECA' : 'Großhandel HORECA'}
-                      </h4>
-                      <p className="text-neutral-600 text-sm">Via A. de Gasperi, 47</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  )
-}
-
-export default React.memo(ContactSection)
+          transition={{ duration:

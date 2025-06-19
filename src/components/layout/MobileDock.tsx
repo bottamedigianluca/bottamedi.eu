@@ -222,11 +222,6 @@ return () => {
   if (scrollTimeout.current) clearTimeout(scrollTimeout.current)
   if (inactivityTimeout.current) clearTimeout(inactivityTimeout.current)
 }
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-IGNORE_WHEN_COPYING_END
 
 }, [isMobile, currentSection])
 
@@ -290,12 +285,6 @@ setActiveMenu('none')
     }
   }
 }
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-IGNORE_WHEN_COPYING_END
-
 }, [])
 
 // 📞 Gestione chiamate
@@ -311,11 +300,6 @@ if ('vibrate' in navigator) {
     // Silent fail
   }
 }
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-IGNORE_WHEN_COPYING_END
 
 }, [])
 
@@ -335,12 +319,6 @@ if ('vibrate' in navigator) {
     // Silent fail
   }
 }
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-IGNORE_WHEN_COPYING_END
-
 }, [])
 
 // 🎛️ Toggle menu
@@ -354,11 +332,6 @@ if ('vibrate' in navigator) {
     // Silent fail
   }
 }
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-IGNORE_WHEN_COPYING_END
 
 }, [activeMenu])
 
@@ -793,11 +766,6 @@ onClick={closeAllMenus}
     </AnimatePresence>
   </div>
 </LayoutGroup>
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-IGNORE_WHEN_COPYING_END
 
 )
 }

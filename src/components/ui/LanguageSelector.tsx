@@ -18,178 +18,175 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   ]
 
   const currentLanguage = languages.find(lang => lang.code === language)
-  const otherLanguage = languages.find(lang => lang.code !== language)
 
-  const handleLanguageChange = useCallback((newLanguage: 'it' | 'de') => {
+  // 🎯 SWITCH RAPIDO - Cambia lingua direttamente
+  const handleQuickSwitch = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    const newLanguage = language === 'it' ? 'de' : 'it'
     onLanguageChange(newLanguage)
     setIsOpen(false)
     
-    // Haptic feedback su mobile
+    // Haptic feedback
     if ('vibrate' in navigator) {
       try {
         navigator.vibrate(25)
       } catch (e) {
-        // Silently fail if vibration not supported
+        // Silently fail
       }
     }
-  }, [onLanguageChange])
+  }, [language, onLanguageChange])
 
-  const toggleOpen = useCallback(() => {
+  const toggleOpen = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
     setIsOpen(prev => !prev)
   }, [])
 
-  // Chiudi quando si clicca fuori (solo se aperto)
+  // Chiudi quando si clicca fuori
   const handleBackdropClick = useCallback(() => {
-    if (isOpen) {
-      setIsOpen(false)
-    }
-  }, [isOpen])
+    setIsOpen(false)
+  }, [])
 
   return (
     <>
-      {/* Backdrop per mobile - chiude il menu quando si clicca fuori */}
+      {/* Backdrop invisibile per mobile */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/10 backdrop-blur-sm md:hidden"
+            className="fixed inset-0 z-40 md:hidden"
             onClick={handleBackdropClick}
           />
         )}
       </AnimatePresence>
 
-      <div className="fixed top-4 right-4 z-50">
-        <div className="relative">
-          
-          {/* MOBILE: Bottone che apre/chiude */}
-          <div className="block md:hidden">
-            <motion.button
-              onClick={toggleOpen}
-              className="bg-white/90 backdrop-blur-md rounded-xl shadow-lg border border-white/30 p-3 active:scale-95 transition-transform"
-              whileTap={{ scale: 0.95 }}
-              style={{ 
-                WebkitTapHighlightColor: 'transparent',
-                touchAction: 'manipulation'
-              }}
+      <div className="language-selector">
+        
+        {/* MOBILE: Switch rapido con glass effect */}
+        <div className="block md:hidden">
+          <motion.button
+            onClick={handleQuickSwitch}
+            className="language-selector-button"
+            whileTap={{ scale: 0.95 }}
+            style={{ 
+              WebkitTapHighlightColor: 'transparent',
+              touchAction: 'manipulation'
+            }}
+          >
+            <motion.span 
+              className="text-lg"
+              key={language} // Force re-render per animazione flag
+              initial={{ scale: 0.8, opacity: 0.7 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.2 }}
             >
-              <div className="flex items-center space-x-2">
-                <span className="text-lg">{currentLanguage?.flag}</span>
-                <span className="font-medium text-gray-800 text-sm">
-                  {currentLanguage?.label}
-                </span>
-                <motion.span
-                  animate={{ rotate: isOpen ? 180 : 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="text-gray-600 text-xs"
-                >
-                  ▼
-                </motion.span>
-              </div>
-            </motion.button>
+              {currentLanguage?.flag}
+            </motion.span>
+            <motion.span 
+              className="font-semibold text-gray-800 text-sm"
+              key={`${language}-label`}
+              initial={{ x: -5, opacity: 0.7 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.2, delay: 0.05 }}
+            >
+              {currentLanguage?.label}
+            </motion.span>
+            
+            {/* Switch indicator */}
+            <motion.div
+              className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 ml-1"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <motion.span 
+                className="text-xs text-white/80"
+                animate={{ rotate: 180 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                key={language}
+              >
+                ⇄
+              </motion.span>
+            </motion.div>
+          </motion.button>
+        </div>
 
-            {/* Menu dropdown mobile */}
-            <AnimatePresence>
-              {isOpen && otherLanguage && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                  transition={{ duration: 0.2, ease: "easeOut" }}
-                  className="absolute top-full mt-2 left-0 right-0 min-w-[120px]"
-                >
-                  <motion.button
-                    onClick={() => handleLanguageChange(otherLanguage.code)}
-                    className="w-full bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-white/40 p-3 text-left active:scale-95 transition-all duration-200"
-                    whileTap={{ scale: 0.95 }}
-                    style={{ 
-                      WebkitTapHighlightColor: 'transparent',
-                      touchAction: 'manipulation'
-                    }}
-                  >
-                    <div className="flex items-center space-x-2">
-                      <span className="text-lg">{otherLanguage.flag}</span>
-                      <span className="font-medium text-gray-800 text-sm">
-                        {otherLanguage.label}
-                      </span>
-                      <span className="text-xs text-gray-500">
-                        {otherLanguage.name}
-                      </span>
-                    </div>
-                  </motion.button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* DESKTOP: Hover behavior originale */}
+        {/* DESKTOP: Menu dropdown con hover */}
+        <div className="hidden md:block">
           <motion.div
-            className="hidden md:block relative"
+            className="relative"
             onHoverStart={() => setIsOpen(true)}
             onHoverEnd={() => setIsOpen(false)}
           >
-            {/* Lingua corrente sempre visibile */}
-            <motion.div
-              className="bg-white/20 backdrop-blur-md rounded-xl shadow-lg border border-white/30 p-3 cursor-pointer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            {/* Current language button */}
+            <motion.button
+              onClick={handleQuickSwitch}
+              className="language-selector-button"
+              whileHover={{ scale: 1.02, y: -1 }}
+              whileTap={{ scale: 0.98 }}
               animate={{
-                opacity: isOpen ? 0.7 : 1,
-                y: isOpen ? -5 : 0
+                opacity: isOpen ? 0.8 : 1,
+                y: isOpen ? -2 : 0
               }}
               transition={{ duration: 0.2 }}
             >
-              <div className="flex items-center space-x-2">
-                <span className="text-lg">{currentLanguage?.flag}</span>
-                <span className="font-medium text-gray-800 text-sm">
-                  {currentLanguage?.label}
-                </span>
-              </div>
-            </motion.div>
+              <span className="text-lg">{currentLanguage?.flag}</span>
+              <span className="font-semibold text-gray-800 text-sm">
+                {currentLanguage?.label}
+              </span>
+            </motion.button>
 
-            {/* Opzione per cambiare lingua - hover */}
+            {/* Dropdown menu */}
             <AnimatePresence>
-              {isOpen && otherLanguage && (
+              {isOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: -10, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -10, scale: 0.9 }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
-                  className="absolute top-0 left-0 right-0"
+                  initial={{ 
+                    opacity: 0, 
+                    y: -10, 
+                    scale: 0.95,
+                    filter: 'blur(5px)'
+                  }}
+                  animate={{ 
+                    opacity: 1, 
+                    y: 0, 
+                    scale: 1,
+                    filter: 'blur(0px)'
+                  }}
+                  exit={{ 
+                    opacity: 0, 
+                    y: -10, 
+                    scale: 0.95,
+                    filter: 'blur(5px)'
+                  }}
+                  transition={{ 
+                    duration: 0.25, 
+                    ease: [0.25, 0.46, 0.45, 0.94] 
+                  }}
+                  className="language-selector-dropdown"
                 >
-                  <motion.button
-                    onClick={() => handleLanguageChange(otherLanguage.code)}
-                    className="w-full bg-white/90 backdrop-blur-md rounded-xl shadow-xl border border-white/40 p-3 text-left hover:bg-white/95 transition-all duration-200"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="flex items-center space-x-2">
-                      <span className="text-lg">{otherLanguage.flag}</span>
-                      <span className="font-medium text-gray-800 text-sm">
-                        {otherLanguage.label}
-                      </span>
-                    </div>
-                  </motion.button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Indicatore hover sottile */}
-            <motion.div
-              className="absolute -bottom-1 left-1/2 w-2 h-2 bg-green-500 rounded-full opacity-0"
-              animate={{
-                opacity: isOpen ? 1 : 0,
-                scale: isOpen ? 1 : 0.5
-              }}
-              style={{ x: '-50%' }}
-              transition={{ duration: 0.2 }}
-            />
-          </motion.div>
-        </div>
-      </div>
-    </>
-  )
-}
-
-export default LanguageSelector
+                  {languages.map((lang) => (
+                    <motion.button
+                      key={lang.code}
+                      onClick={() => {
+                        onLanguageChange(lang.code)
+                        setIsOpen(false)
+                      }}
+                      className={`language-selector-option ${
+                        lang.code === language ? 'opacity-50' : ''
+                      }`}
+                      disabled={lang.code === language}
+                      whileHover={lang.code !== language ? { 
+                        x: 2, 
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)' 
+                      } : {}}
+                      whileTap={lang.code !== language ? { scale: 0.98 } : {}}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ 
+                        duration: 0.2, 
+                        delay: lang.code === 'it' ? 0 : 0.05 
+                      }}
+                    >

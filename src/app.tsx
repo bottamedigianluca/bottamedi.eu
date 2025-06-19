@@ -310,11 +310,8 @@ const App: React.FC = () => {
       {/* Legal Documents */}
       <LegalDocuments language={language} />
 
-      {/* Mobile Dock - FIXED VISIBILITY LOGIC */}
-      <MobileDock 
-        language={language} 
-        isVisible={isDockVisible} 
-      />
+      {/* Mobile Dock - LOGICA INTERNA RIPRISTINATA */}
+      <MobileDock language={language} />
     </div>
   )
 }

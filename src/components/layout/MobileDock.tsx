@@ -696,6 +696,15 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language }) => {
         {/* 📞 CALL POPUP */}
         <AnimatePresence mode="wait">
           {activeMenu === 'call' && isVisible && (
+            <motion.div
+              key="call-popup"
+              variants={popupVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="fixed bottom-32 left-4 right-4 z-[1000] pointer-events-auto"
+              style={{ willChange: 'transform, opacity' }}
+            >
 
 const translations = {
   it: {

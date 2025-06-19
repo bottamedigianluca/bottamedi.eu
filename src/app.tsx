@@ -129,15 +129,16 @@ const useMobileDockVisibility = () => {
     }
   }, [heroInView, contactInView, footerInView, scrollDirection, isScrolling])
 
-  return { 
-    isVisible, 
-    contactRef, 
-    heroRef, 
-    footerRef, // NUOVO: ref per footer
-    currentSection,
-    scrollDirection,
-    isScrolling
-  }
+  // 🎯 DEBUG: Log per verificare lo stato della dock
+  useEffect(() => {
+    console.log('🎯 DOCK STATUS:', {
+      heroInView,
+      contactInView, 
+      footerInView,
+      currentSection,
+      isDockVisible: isVisible
+    })
+  }, [heroInView, contactInView, footerInView, currentSection, isVisible])
 }
 
 const App: React.FC = () => {

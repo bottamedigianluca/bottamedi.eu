@@ -2,6 +2,7 @@
   "name": "bottamedi-website",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "description": "Bottamedi - Frutta e Verdura Fresca dal 1974. Servizio dettaglio e ingrosso HORECA a Mezzolombardo, Trentino.",
   "homepage": "https://www.bottamedi.eu",
   "keywords": [

@@ -145,45 +145,40 @@ const App: React.FC = () => {
   const [language, setLanguage] = useState<'it' | 'de'>('it')
   const { isVisible: isDockVisible, contactRef, heroRef, footerRef } = useMobileDockVisibility()
 
-  // Section observers con soglie ottimizzate per mobile - MOLTO RIDOTTE
+  // Section observers NORMALI - torniamo ai valori che funzionavano
   const [aboutRef, aboutInView] = useInView({ 
-    threshold: 0.05, // Ridotto drasticamente da 0.15
-    triggerOnce: false,
-    rootMargin: '0px 0px 0px 0px' // Margine neutro
+    threshold: 0.2,
+    triggerOnce: false
   })
   
   const [banchettoRef, banchettoInView] = useInView({ 
-    threshold: 0.05,
-    triggerOnce: false,
-    rootMargin: '0px 0px 0px 0px'
+    threshold: 0.2,
+    triggerOnce: false
   })
   
   const [servicesRef, servicesInView] = useInView({ 
-    threshold: 0.05,
-    triggerOnce: false,
-    rootMargin: '0px 0px 0px 0px'
+    threshold: 0.2,
+    triggerOnce: false
   })
   
   const [productsRef, productsInView] = useInView({ 
-    threshold: 0.05,
-    triggerOnce: false,
-    rootMargin: '0px 0px 0px 0px'
+    threshold: 0.2,
+    triggerOnce: false
   })
   
   const [wholesaleRef, wholesaleInView] = useInView({ 
-    threshold: 0.05,
-    triggerOnce: false,
-    rootMargin: '0px 0px 0px 0px'
+    threshold: 0.2,
+    triggerOnce: false
   })
 
-  // Observers separati per hero e contact gestiti dal hook - RIDOTTI
+  // Observers separati per hero e contact 
   const [heroInView] = useInView({ 
-    threshold: 0.2, // Ridotto da 0.2
+    threshold: 0.3,
     triggerOnce: false
   })
   
   const [contactInView] = useInView({ 
-    threshold: 0.05, // Ridotto da 0.1
+    threshold: 0.2,
     triggerOnce: false
   })
 

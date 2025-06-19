@@ -65,7 +65,6 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       </AnimatePresence>
 
       <div className="language-selector">
-        
         {/* MOBILE: Switch rapido con glass effect */}
         <div className="block md:hidden">
           <motion.button
@@ -194,3 +193,26 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                       <span className="font-medium">{lang.label}</span>
                       <span className="text-xs text-gray-500">{lang.name}</span>
                     </motion.button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Hover indicator */}
+            <motion.div
+              className="absolute -bottom-1 left-1/2 w-2 h-2 bg-green-500 rounded-full"
+              animate={{
+                opacity: isOpen ? 1 : 0,
+                scale: isOpen ? 1 : 0.5
+              }}
+              style={{ x: '-50%' }}
+              transition={{ duration: 0.2 }}
+            />
+          </motion.div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default LanguageSelector

@@ -147,23 +147,35 @@ const translations = {
   }
 }
 
-const AdvancedLazyImage: React.FC<{
+// 🎯 MOBILE-FIRST IMAGE COMPONENT
+const MobileOptimizedImage: React.FC<{
   item: any
   index: number
   priority?: boolean
 }> = React.memo(({ item, index, priority = false }) => {
   const shouldReduceMotion = useReducedMotion()
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageError, setImageError] = useState(false)
   
   const [ref, inView] = useInView({
-    threshold: 0.1,
+    threshold: 0.05, // Ridotto per mobile
     triggerOnce: true,
-    rootMargin: priority ? '200px' : '100px'
+    rootMargin: priority ? '300px' : '150px' // Aumentato margine per mobile
   })
+
+  const handleImageLoad = useCallback(() => {
+    setImageLoaded(true)
+  }, [])
+
+  const handleImageError = useCallback(() => {
+    setImageError(true)
+    console.warn(`Errore caricamento immagine: ${item.src}`)
+  }, [item.src])
 
   const itemVariants = useMemo(() => ({
     hidden: { 
       opacity: 0, 
-      y: shouldReduceMotion ? 0 : 20, 
+      y: shouldReduceMotion ? 0 : 15, 
       scale: shouldReduceMotion ? 1 : 0.98 
     },
     visible: { 
@@ -172,11 +184,33 @@ const AdvancedLazyImage: React.FC<{
       scale: 1,
       transition: {
         duration: shouldReduceMotion ? 0.2 : 0.4,
-        delay: shouldReduceMotion ? 0 : Math.min(index * 0.05, 0.3),
+        delay: shouldReduceMotion ? 0 : Math.min(index * 0.03, 0.15), // Ridotto delay
         ease: [0.25, 0.46, 0.45, 0.94]
       }
     }
   }), [index, shouldReduceMotion])
+
+  // Fallback per errori immagine
+  if (imageError) {
+    return (
+      <motion.div
+        ref={ref}
+        initial="hidden"
+        animate={inView ? "visible" : "hidden"}
+        variants={itemVariants}
+        className="group relative bg-gray-100 rounded-2xl overflow-hidden shadow-md h-48 md:h-56"
+      >
+        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100">
+          <div className="text-center text-gray-500">
+            <div className="w-8 h-8 mx-auto mb-2 bg-gray-200 rounded-lg flex items-center justify-center">
+              <span className="text-sm">🖼️</span>
+            </div>
+            <p className="text-xs font-medium">{item.title}</p>
+          </div>
+        </div>
+      </motion.div>
+    )
+  }
 
   return (
     <motion.div
@@ -184,69 +218,117 @@ const AdvancedLazyImage: React.FC<{
       initial="hidden"
       animate={inView ? "visible" : "hidden"}
       variants={itemVariants}
-      whileHover={shouldReduceMotion ? {} : { y: -3 }}
-      className="group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
-      style={{ willChange: 'transform' }}
+      whileHover={shouldReduceMotion ? {} : { y: -2 }}
+      className="group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300"
+      style={{ 
+        willChange: 'transform',
+        touchAction: 'manipulation' // Migliora il touch su mobile
+      }}
     >
-      <div className="relative h-56 overflow-hidden bg-gradient-to-br from-green-50 to-green-100">
+      <div className="relative h-48 md:h-56 overflow-hidden bg-gradient-to-br from-green-50 to-green-100">
+        {/* Placeholder durante caricamento */}
+        {!imageLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-60 animate-pulse" />
+          </div>
+        )}
+        
+        {/* Immagine principale */}
         <OptimizedImage
           src={item.src}
           alt={item.description}
-          className="w-full h-full transition-transform duration-500 group-hover:scale-105"
+          className={`w-full h-full transition-all duration-500 ${
+            imageLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
           priority={priority}
-          placeholder="blur"
+          placeholder="skeleton"
           aspectRatio="16/9"
           objectFit="cover"
-          style={{ willChange: 'transform, opacity' }}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
+          style={{ 
+            willChange: 'transform, opacity',
+            backfaceVisibility: 'hidden' // Performance mobile
+          }}
         />
         
+        {/* Overlay gradiente */}
         <div 
-          className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300"
+          className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300"
           style={{ willChange: 'opacity' }}
         />
 
-        <div className="absolute bottom-3 left-3 right-3">
+        {/* Contenuto overlay */}
+        <div className="absolute bottom-0 left-0 right-0 p-4">
           <motion.h3 
-            className="text-white font-semibold text-sm mb-1 drop-shadow-lg leading-tight"
+            className="text-white font-semibold text-sm sm:text-base mb-1 drop-shadow-lg leading-tight"
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 5 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: shouldReduceMotion ? 0 : 0.2, duration: shouldReduceMotion ? 0.1 : 0.3 }}
           >
             {item.title}
           </motion.h3>
+          
+          {/* Descrizione solo su tablet e desktop */}
+          <motion.p
+            className="hidden sm:block text-white/90 text-xs leading-relaxed drop-shadow"
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : {}}
+            transition={{ delay: shouldReduceMotion ? 0 : 0.3, duration: shouldReduceMotion ? 0.1 : 0.3 }}
+          >
+            {item.description}
+          </motion.p>
         </div>
       </div>
 
+      {/* Indicatore caricamento */}
+      {priority && !imageLoaded && !imageError && (
+        <div className="absolute top-2 right-2 w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-lg" />
+      )}
+
+      {/* Hover effect overlay */}
       <div
-        className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+        className="absolute inset-0 bg-gradient-to-br from-green-500/0 to-green-600/0 group-hover:from-green-500/5 group-hover:to-green-600/5 transition-all duration-300 pointer-events-none"
         style={{ willChange: 'opacity' }}
       />
     </motion.div>
   )
 })
 
-AdvancedLazyImage.displayName = 'AdvancedLazyImage'
+MobileOptimizedImage.displayName = 'MobileOptimizedImage'
 
+// 🎬 HERO IMAGE OTTIMIZZATA PER MOBILE
 const HeroImage: React.FC<{ inView: boolean }> = React.memo(({ inView }) => {
   const shouldReduceMotion = useReducedMotion()
+  const [imageLoaded, setImageLoaded] = useState(false)
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 40 }}
+      initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: shouldReduceMotion ? 0.2 : 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="mb-14"
+      className="mb-12 lg:mb-14"
     >
-      <div className="relative h-80 lg:h-96 rounded-2xl overflow-hidden shadow-xl">
+      <div className="relative h-64 sm:h-80 lg:h-96 rounded-2xl overflow-hidden shadow-xl">
+        {!imageLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-br from-green-200 via-green-100 to-green-200 animate-pulse">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-60" />
+          </div>
+        )}
+        
         <OptimizedImage
           src="/images/banchetto.webp"
           alt="Il Banchetto Bottamedi a Mezzolombardo ricco di frutta e verdura fresca"
-          className="w-full h-full"
+          className={`w-full h-full transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
           priority={true}
-          placeholder="blur"
+          placeholder="skeleton"
           aspectRatio="16/9"
           objectFit="cover"
-          style={{ willChange: 'opacity' }}
+          onLoad={() => setImageLoaded(true)}
+          style={{ 
+            willChange: 'opacity',
+            backfaceVisibility: 'hidden'
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
       </div>
@@ -271,11 +353,12 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
       })
     }
 
+    // Haptic feedback ottimizzato
     if ('vibrate' in navigator) {
       try {
         navigator.vibrate(25)
       } catch (e) {
-        console.log('Haptic non disponibile')
+        // Silently fail
       }
     }
   }, [])
@@ -285,32 +368,32 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: shouldReduceMotion ? 0 : 0.03,
-        delayChildren: shouldReduceMotion ? 0 : 0.1
+        staggerChildren: shouldReduceMotion ? 0 : 0.02, // Ridotto stagger
+        delayChildren: shouldReduceMotion ? 0 : 0.05
       }
     }
   }), [shouldReduceMotion])
 
   const headerVariants = useMemo(() => ({
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
     visible: { 
       opacity: 1, 
       y: 0,
       transition: {
-        duration: shouldReduceMotion ? 0.2 : 0.6,
+        duration: shouldReduceMotion ? 0.2 : 0.5,
         ease: [0.25, 0.46, 0.45, 0.94]
       }
     }
   }), [shouldReduceMotion])
 
   const ctaVariants = useMemo(() => ({
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
     visible: { 
       opacity: 1, 
       y: 0,
       transition: {
-        duration: shouldReduceMotion ? 0.2 : 0.6,
-        delay: shouldReduceMotion ? 0 : 0.4,
+        duration: shouldReduceMotion ? 0.2 : 0.5,
+        delay: shouldReduceMotion ? 0 : 0.3,
         ease: [0.25, 0.46, 0.45, 0.94]
       }
     }
@@ -319,11 +402,15 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
   const priorityImages = useMemo(() => new Set([0, 1, 2, 3]), [])
 
   return (
-    <section id="dettaglio" className="py-20 lg:py-28 bg-gradient-to-br from-green-50 to-white relative overflow-hidden">
+    <section 
+      id="dettaglio" 
+      className="py-16 sm:py-20 lg:py-28 bg-gradient-to-br from-green-50 to-white relative overflow-hidden"
+    >
+      {/* Background ottimizzato */}
       {!shouldReduceMotion && (
         <>
-          <div className="absolute top-1/4 left-0 w-80 h-80 bg-green-200/15 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-green-300/15 rounded-full blur-3xl" />
+          <div className="absolute top-1/4 left-0 w-64 sm:w-80 h-64 sm:h-80 bg-green-200/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-0 w-64 sm:w-80 h-64 sm:h-80 bg-green-300/10 rounded-full blur-3xl" />
         </>
       )}
 
@@ -334,27 +421,28 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
           variants={headerVariants}
-          className="text-center mb-16"
+          className="text-center mb-12 lg:mb-16"
         >
-          <h2 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-neutral-900 mb-5 leading-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-neutral-900 mb-4 sm:mb-5 leading-tight px-2">
             {t.title}
           </h2>
-          <p className="text-lg lg:text-xl text-green-600 font-semibold mb-3">
+          <p className="text-base sm:text-lg lg:text-xl text-green-600 font-semibold mb-2 sm:mb-3 px-2">
             {t.subtitle}
           </p>
-          <p className="text-base lg:text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base lg:text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed px-4">
             {t.description}
           </p>
         </motion.div>
 
+        {/* Gallery con layout responsivo ottimizzato */}
         <motion.div
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
           variants={containerVariants}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-14"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-12 lg:mb-14"
         >
           {t.gallery.map((item, index) => (
-            <AdvancedLazyImage 
+            <MobileOptimizedImage 
               key={`gallery-${index}`} 
               item={item} 
               index={index}
@@ -363,20 +451,28 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
           ))}
         </motion.div>
 
+        {/* CTA ottimizzato per mobile */}
         <motion.div
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
           variants={ctaVariants}
-          className="text-center"
+          className="text-center px-4"
         >
           <motion.button
             onClick={scrollToContact}
-            whileHover={shouldReduceMotion ? {} : { scale: 1.03, y: -2 }}
-            whileTap={{ scale: 0.97 }}
-            className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 lg:px-8 lg:py-4 rounded-xl font-semibold text-base lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300"
-            style={{ willChange: 'transform' }}
+            whileHover={shouldReduceMotion ? {} : { scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-semibold text-base lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300 min-w-[240px] sm:min-w-[280px]"
+            style={{ 
+              willChange: 'transform',
+              WebkitTapHighlightColor: 'transparent',
+              touchAction: 'manipulation'
+            }}
           >
-            {t.cta}
+            <span className="flex items-center justify-center space-x-2">
+              <span>🛒</span>
+              <span>{t.cta}</span>
+            </span>
           </motion.button>
         </motion.div>
       </div>

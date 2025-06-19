@@ -260,6 +260,7 @@ const CloseIcon = React.memo(() => (
 
 // 📱 COMPONENTE PRINCIPALE
 const MobileDock: React.FC<MobileDockProps> = ({ language }) => {
+    if (true) return null; 
 const [activeMenu, setActiveMenu] = useState<'none' | 'menu' | 'call' | 'directions'>('none')
 const { isVisible, currentSection } = useIntelligentDockVisibility()
 const t = translations[language]

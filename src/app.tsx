@@ -136,9 +136,21 @@ const useMobileDockVisibility = () => {
       contactInView, 
       footerInView,
       currentSection,
+      scrollDirection,
+      isScrolling,
       isDockVisible: isVisible
     })
-  }, [heroInView, contactInView, footerInView, currentSection, isVisible])
+  }, [heroInView, contactInView, footerInView, currentSection, scrollDirection, isScrolling, isVisible])
+
+  return { 
+    isVisible, 
+    contactRef, 
+    heroRef, 
+    footerRef,
+    currentSection,
+    scrollDirection,
+    isScrolling
+  }
 }
 
 const App: React.FC = () => {

@@ -36,20 +36,20 @@ const useMobileDockVisibility = () => {
   const [isScrolling, setIsScrolling] = useState(false)
   const [currentSection, setCurrentSection] = useState('hero')
   
-  // Section observers con soglie ottimizzate per mobile
+  // Section observers con soglie ottimizzate per mobile - RIDOTTE ULTERIORMENTE
   const [contactRef, contactInView] = useInView({
-    threshold: 0.1, // Ridotto per mobile
-    rootMargin: '-20px 0px 0px 0px' // Ridotto margine
+    threshold: 0.05, // Ridotto drasticamente 
+    rootMargin: '0px 0px -10px 0px' // Margine quasi zero
   })
 
   const [heroRef, heroInView] = useInView({
-    threshold: 0.5 // Ridotto da 0.7
+    threshold: 0.3 // Ridotto da 0.5
   })
 
-  // NUOVO: Observer per Footer - NASCONDE DOCK
+  // NUOVO: Observer per Footer - NASCONDE DOCK - PIÙ SENSIBILE
   const [footerRef, footerInView] = useInView({
-    threshold: 0.05, // Molto sensibile
-    rootMargin: '0px 0px -10px 0px'
+    threshold: 0.01, // Molto sensibile
+    rootMargin: '0px 0px 50px 0px' // Margine positivo per anticipare
   })
 
   // Scroll behavior logic ottimizzato
@@ -144,45 +144,45 @@ const App: React.FC = () => {
   const [language, setLanguage] = useState<'it' | 'de'>('it')
   const { isVisible: isDockVisible, contactRef, heroRef, footerRef } = useMobileDockVisibility()
 
-  // Section observers con soglie ottimizzate per mobile
+  // Section observers con soglie ottimizzate per mobile - MOLTO RIDOTTE
   const [aboutRef, aboutInView] = useInView({ 
-    threshold: 0.15, // Ridotto da 0.3
+    threshold: 0.05, // Ridotto drasticamente da 0.15
     triggerOnce: false,
-    rootMargin: '0px 0px -20% 0px' // Margine ottimizzato
+    rootMargin: '0px 0px 0px 0px' // Margine neutro
   })
   
   const [banchettoRef, banchettoInView] = useInView({ 
-    threshold: 0.15,
+    threshold: 0.05,
     triggerOnce: false,
-    rootMargin: '0px 0px -20% 0px'
+    rootMargin: '0px 0px 0px 0px'
   })
   
   const [servicesRef, servicesInView] = useInView({ 
-    threshold: 0.15,
+    threshold: 0.05,
     triggerOnce: false,
-    rootMargin: '0px 0px -20% 0px'
+    rootMargin: '0px 0px 0px 0px'
   })
   
   const [productsRef, productsInView] = useInView({ 
-    threshold: 0.15,
+    threshold: 0.05,
     triggerOnce: false,
-    rootMargin: '0px 0px -20% 0px'
+    rootMargin: '0px 0px 0px 0px'
   })
   
   const [wholesaleRef, wholesaleInView] = useInView({ 
-    threshold: 0.15,
+    threshold: 0.05,
     triggerOnce: false,
-    rootMargin: '0px 0px -20% 0px'
+    rootMargin: '0px 0px 0px 0px'
   })
 
-  // Observers separati per hero e contact gestiti dal hook
+  // Observers separati per hero e contact gestiti dal hook - RIDOTTI
   const [heroInView] = useInView({ 
-    threshold: 0.2,
+    threshold: 0.2, // Ridotto da 0.2
     triggerOnce: false
   })
   
   const [contactInView] = useInView({ 
-    threshold: 0.1,
+    threshold: 0.05, // Ridotto da 0.1
     triggerOnce: false
   })
 

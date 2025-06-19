@@ -554,4 +554,69 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
         <motion.div
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration:
+          transition={{ duration: shouldReduceMotion ? 0.2 : 0.5, delay: shouldReduceMotion ? 0 : 0.4 }}
+          className="mt-16"
+        >
+          <div className="text-center mb-10">
+            <h3 className="text-2xl lg:text-3xl font-bold text-neutral-900 mb-3">
+              {t.mapSection.title}
+            </h3>
+            <p className="text-lg lg:text-xl text-neutral-600">
+              {t.mapSection.subtitle}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Banchetto Map */}
+            <motion.div
+              whileHover={shouldReduceMotion ? {} : { scale: 1.01 }}
+              className="relative group cursor-pointer"
+              onClick={() => handleMapClick('banchetto')}
+            >
+              <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                <div className="h-48 bg-gradient-to-br from-green-100 to-green-200 relative overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl mb-3 mx-auto">
+                        📍
+                      </div>
+                      <h4 className="text-lg font-bold text-neutral-900">
+                        {language === 'it' ? 'Banchetto' : 'Marktstand'}
+                      </h4>
+                      <p className="text-neutral-600 text-sm">Via Cavalleggeri Udine</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* HORECA Map */}
+            <motion.div
+              whileHover={shouldReduceMotion ? {} : { scale: 1.01 }}
+              className="relative group cursor-pointer"
+              onClick={() => handleMapClick('ingrosso')}
+            >
+              <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                <div className="h-48 bg-gradient-to-br from-blue-100 to-blue-200 relative overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white text-xl mb-3 mx-auto">
+                        📍
+                      </div>
+                      <h4 className="text-lg font-bold text-neutral-900">
+                        {language === 'it' ? 'Ingrosso HORECA' : 'Großhandel HORECA'}
+                      </h4>
+                      <p className="text-neutral-600 text-sm">Via A. de Gasperi, 47</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+export default React.memo(ContactSection)

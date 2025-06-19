@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+import OptimizedImage from '../ui/OptimizedImage'
 
 // Declare tracking functions for TypeScript
 declare global {
@@ -136,67 +137,6 @@ const translations = {
   }
 }
 
-const LazyImage: React.FC<{
-  src: string
-  alt: string
-  className?: string
-  style?: React.CSSProperties
-  onLoadComplete?: () => void
-}> = React.memo(({ src, alt, className = '', style = {}, onLoadComplete }) => {
-  const [imageState, setImageState] = useState<'loading' | 'loaded' | 'error'>('loading')
-  const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-    rootMargin: '50px'
-  })
-
-  const handleLoad = useCallback(() => {
-    setImageState('loaded')
-    onLoadComplete?.()
-  }, [onLoadComplete])
-
-  const handleError = useCallback(() => {
-    setImageState('error')
-    console.warn(`Failed to load image: ${src}`)
-  }, [src])
-
-  return (
-    <div ref={ref} className={`relative overflow-hidden ${className}`} style={style}>
-      {imageState === 'loading' && (
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
-      )}
-      
-      {imageState === 'error' && (
-        <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
-          <div className="text-center text-gray-400">
-            <div className="w-12 h-12 mx-auto mb-2 bg-gray-200 rounded-lg flex items-center justify-center">
-              📷
-            </div>
-            <p className="text-xs">Immagine non disponibile</p>
-          </div>
-        </div>
-      )}
-      
-      {inView && imageState !== 'error' && (
-        <img
-          src={src}
-          alt={alt}
-          className={`w-full h-full object-cover transition-opacity duration-500 ${
-            imageState === 'loaded' ? 'opacity-100' : 'opacity-0'
-          }`}
-          loading="lazy"
-          decoding="async"
-          onLoad={handleLoad}
-          onError={handleError}
-          style={{ willChange: 'opacity' }}
-        />
-      )}
-    </div>
-  )
-})
-
-LazyImage.displayName = 'LazyImage'
-
 const useOptimizedCountUp = (endValue: number, inView: boolean, delay: number = 0) => {
   const [count, setCount] = useState(0)
   const shouldReduceMotion = useReducedMotion()
@@ -251,7 +191,6 @@ const TimelineItem: React.FC<{
   })
   
   const shouldReduceMotion = useReducedMotion()
-  const [imageLoaded, setImageLoaded] = useState(false)
 
   // 🎯 TRACKING INTERESSE TIMELINE
   useEffect(() => {
@@ -369,11 +308,14 @@ const TimelineItem: React.FC<{
         className="flex-1 relative group max-w-md"
       >
         <div className="relative overflow-hidden rounded-2xl shadow-xl">
-          <LazyImage
+          <OptimizedImage
             src={item.image}
             alt={item.title}
             className="w-full h-64 lg:h-72 transition-transform duration-500 group-hover:scale-105"
-            onLoadComplete={() => setImageLoaded(true)}
+            priority={index === 0}
+            placeholder="blur"
+            aspectRatio="4/3"
+            objectFit="cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>

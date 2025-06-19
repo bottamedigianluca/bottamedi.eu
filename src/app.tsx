@@ -129,18 +129,16 @@ const useMobileDockVisibility = () => {
 
 const App: React.FC = () => {
   const [language, setLanguage] = useState<'it' | 'de'>('it')
-  const { isVisible: isDockVisible, contactRef, heroRef, legalRef } = useMobileDockVisibility()
+  const { isVisible: isDockVisible } = useMobileDockVisibility()
 
-  // Section observers per tracking (senza conflitti)
+  // Section observers per tracking - SEMPLIFICATI
+  const [heroRef, heroInView] = useInView({ threshold: 0.3 })
   const [aboutRef, aboutInView] = useInView({ threshold: 0.3 })
   const [banchettoRef, banchettoInView] = useInView({ threshold: 0.3 })
   const [servicesRef, servicesInView] = useInView({ threshold: 0.3 })
   const [productsRef, productsInView] = useInView({ threshold: 0.3 })
   const [wholesaleRef, wholesaleInView] = useInView({ threshold: 0.3 })
-
-  // Usa gli observer gestiti dall'hook per evitare conflitti
-  const [heroInView] = useInView({ threshold: 0.3 })
-  const [contactInView] = useInView({ threshold: 0.3 })
+  const [contactRef, contactInView] = useInView({ threshold: 0.3 })
 
   // 🎯 TRACKING SETUP
   useEffect(() => {
@@ -309,10 +307,8 @@ const App: React.FC = () => {
       {/* Footer */}
       <Footer language={language} />
 
-      {/* Legal Documents - CON REF PER DETECTION */}
-      <div ref={legalRef}>
-        <LegalDocuments language={language} />
-      </div>
+      {/* Legal Documents */}
+      <LegalDocuments language={language} />
 
       {/* Mobile Dock - FIXED VISIBILITY LOGIC */}
       <MobileDock 

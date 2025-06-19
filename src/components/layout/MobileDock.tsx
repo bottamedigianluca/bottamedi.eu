@@ -3,7 +3,7 @@ import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
 
 interface MobileDockProps {
   language: 'it' | 'de'
-  hideInFooter?: boolean
+  isVisible: boolean // Prop per controllare la visibilità dal parent
 }
 
 const translations = {
@@ -90,9 +90,8 @@ const ClockIcon = () => (
   </svg>
 )
 
-// 🚀 HOOK SCROLL DETECTION OTTIMIZZATO
-const useScrollDetection = (hideInFooter: boolean) => {
-  const [isVisible, setIsVisible] = useState(true)
+// 🚀 HOOK SCROLL DETECTION SEMPLIFICATO
+const useCurrentSection = () => {
   const [currentSection, setCurrentSection] = useState('hero')
 
   useEffect(() => {
@@ -131,18 +130,13 @@ const useScrollDetection = (hideInFooter: boolean) => {
     }
   }, [])
 
-  useEffect(() => {
-    // La visibilità è controllata solo dalla prop `hideInFooter`
-    setIsVisible(!hideInFooter)
-  }, [hideInFooter])
-
-  return { isVisible, currentSection }
+  return currentSection
 }
 
-const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter = false }) => {
+const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, isVisible }) => {
   const [activeMenu, setActiveMenu] = useState<'none' | 'menu' | 'call' | 'directions'>('none')
   const [isMobile, setIsMobile] = useState(false)
-  const { isVisible, currentSection } = useScrollDetection(hideInFooter)
+  const currentSection = useCurrentSection()
   const t = translations[language]
 
   useEffect(() => {
@@ -210,7 +204,8 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
     setActiveMenu('none')
   }, [])
 
-  if (!isMobile) return null
+  // Se non è mobile o non è visibile, non renderizzare nulla
+  if (!isMobile || !isVisible) return null
 
   // 🎯 VARIANTI ANIMATE STABILI
   const backdropVariants = {
@@ -309,7 +304,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
 
         {/* 📱 MENU POPUP */}
         <AnimatePresence mode="wait">
-          {activeMenu === 'menu' && isVisible && (
+          {activeMenu === 'menu' && (
             <motion.div
               key="menu-popup"
               variants={popupVariants}
@@ -384,7 +379,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
 
         {/* 📞 CALL POPUP */}
         <AnimatePresence mode="wait">
-          {activeMenu === 'call' && isVisible && (
+          {activeMenu === 'call' && (
             <motion.div
               key="call-popup"
               variants={popupVariants}
@@ -487,7 +482,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
 
         {/* 🗺️ DIRECTIONS POPUP */}
         <AnimatePresence mode="wait">
-          {activeMenu === 'directions' && isVisible && (
+          {activeMenu === 'directions' && (
             <motion.div
               key="directions-popup"
               variants={popupVariants}
@@ -578,85 +573,83 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
 
         {/* 🚀 DOCK PRINCIPALE */}
         <AnimatePresence>
-          {isVisible && (
-            <motion.div
-              key="main-dock"
-              variants={dockVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="fixed bottom-0 left-0 right-0 z-[1001] pointer-events-none"
-              style={{
-                paddingBottom: 'max(20px, env(safe-area-inset-bottom))',
-                paddingLeft: 'env(safe-area-inset-left)',
-                paddingRight: 'env(safe-area-inset-right)',
-                willChange: 'transform, opacity'
-              }}
-            >
-              <div className="flex justify-center px-4">
-                <div className="pointer-events-auto bg-white/90 backdrop-blur-xl rounded-3xl p-3 shadow-2xl border border-white/50">
-                  <div className="flex items-center space-x-3">
-                    {/* Menu Button */}
-                    <motion.button
-                      layoutId="dock-menu-button"
-                      whileHover={{ scale: 1.08, y: -3 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => toggleMenu('menu')}
-                      className={`
-                        w-16 h-16 rounded-2xl flex flex-col items-center justify-center
-                        transition-all duration-200
-                        ${activeMenu === 'menu' 
-                          ? 'bg-gradient-to-br from-blue-500 to-green-500 text-white shadow-xl' 
-                          : 'bg-white text-gray-700 shadow-lg hover:shadow-xl'
-                        }
-                      `}
-                    >
-                      <MenuIcon />
-                      <span className="text-xs font-bold mt-1">{t.menu}</span>
-                    </motion.button>
+          <motion.div
+            key="main-dock"
+            variants={dockVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="fixed bottom-0 left-0 right-0 z-[1001] pointer-events-none"
+            style={{
+              paddingBottom: 'max(20px, env(safe-area-inset-bottom))',
+              paddingLeft: 'env(safe-area-inset-left)',
+              paddingRight: 'env(safe-area-inset-right)',
+              willChange: 'transform, opacity'
+            }}
+          >
+            <div className="flex justify-center px-4">
+              <div className="pointer-events-auto bg-white/90 backdrop-blur-xl rounded-3xl p-3 shadow-2xl border border-white/50">
+                <div className="flex items-center space-x-3">
+                  {/* Menu Button */}
+                  <motion.button
+                    layoutId="dock-menu-button"
+                    whileHover={{ scale: 1.08, y: -3 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => toggleMenu('menu')}
+                    className={`
+                      w-16 h-16 rounded-2xl flex flex-col items-center justify-center
+                      transition-all duration-200
+                      ${activeMenu === 'menu' 
+                        ? 'bg-gradient-to-br from-blue-500 to-green-500 text-white shadow-xl' 
+                        : 'bg-white text-gray-700 shadow-lg hover:shadow-xl'
+                      }
+                    `}
+                  >
+                    <MenuIcon />
+                    <span className="text-xs font-bold mt-1">{t.menu}</span>
+                  </motion.button>
 
-                    {/* Call Button */}
-                    <motion.button
-                      layoutId="dock-call-button"
-                      whileHover={{ scale: 1.08, y: -3 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => toggleMenu('call')}
-                      className={`
-                        w-16 h-16 rounded-2xl flex flex-col items-center justify-center
-                        transition-all duration-200
-                        ${activeMenu === 'call' 
-                          ? 'bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-xl' 
-                          : 'bg-white text-gray-700 shadow-lg hover:shadow-xl'
-                        }
-                      `}
-                    >
-                      <PhoneIcon />
-                      <span className="text-xs font-bold mt-1">{t.call}</span>
-                    </motion.button>
+                  {/* Call Button */}
+                  <motion.button
+                    layoutId="dock-call-button"
+                    whileHover={{ scale: 1.08, y: -3 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => toggleMenu('call')}
+                    className={`
+                      w-16 h-16 rounded-2xl flex flex-col items-center justify-center
+                      transition-all duration-200
+                      ${activeMenu === 'call' 
+                        ? 'bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-xl' 
+                        : 'bg-white text-gray-700 shadow-lg hover:shadow-xl'
+                      }
+                    `}
+                  >
+                    <PhoneIcon />
+                    <span className="text-xs font-bold mt-1">{t.call}</span>
+                  </motion.button>
 
-                    {/* Directions Button */}
-                    <motion.button
-                      layoutId="dock-directions-button"
-                      whileHover={{ scale: 1.08, y: -3 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => toggleMenu('directions')}
-                      className={`
-                        w-16 h-16 rounded-2xl flex flex-col items-center justify-center
-                        transition-all duration-200
-                        ${activeMenu === 'directions' 
-                          ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-xl' 
-                          : 'bg-white text-gray-700 shadow-lg hover:shadow-xl'
-                        }
-                      `}
-                    >
-                      <MapIcon />
-                      <span className="text-xs font-bold mt-1">{t.directions}</span>
-                    </motion.button>
-                  </div>
+                  {/* Directions Button */}
+                  <motion.button
+                    layoutId="dock-directions-button"
+                    whileHover={{ scale: 1.08, y: -3 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => toggleMenu('directions')}
+                    className={`
+                      w-16 h-16 rounded-2xl flex flex-col items-center justify-center
+                      transition-all duration-200
+                      ${activeMenu === 'directions' 
+                        ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-xl' 
+                        : 'bg-white text-gray-700 shadow-lg hover:shadow-xl'
+                      }
+                    `}
+                  >
+                    <MapIcon />
+                    <span className="text-xs font-bold mt-1">{t.directions}</span>
+                  </motion.button>
                 </div>
               </div>
-            </motion.div>
-          )}
+            </div>
+          </motion.div>
         </AnimatePresence>
       </div>
     </LayoutGroup>

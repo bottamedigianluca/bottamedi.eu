@@ -69,14 +69,9 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               >
                 <div className="flex items-center space-x-2">
                   <span className="text-lg">{otherLanguage.flag}</span>
-                  <div className="flex flex-col">
-                    <span className="font-medium text-gray-800 text-sm">
-                      {otherLanguage.label}
-                    </span>
-                    <span className="text-xs text-gray-600 opacity-80">
-                      Cambia lingua
-                    </span>
-                  </div>
+                  <span className="font-medium text-gray-800 text-sm">
+                    {otherLanguage.label}
+                  </span>
                 </div>
               </motion.button>
             </motion.div>

@@ -333,49 +333,49 @@ const App: React.FC = () => {
       Component: HeroSection, 
       ref: heroRef, 
       inView: heroInView, 
-      props: { language },
+      props: { language, inView: heroInView },
       key: 'hero'
     },
     { 
       Component: AboutSection, 
       ref: aboutRef, 
       inView: aboutInView, 
-      props: { language },
+      props: { language, inView: aboutInView },
       key: 'about'
     },
     { 
       Component: BanchettoSection, 
       ref: banchettoRef, 
       inView: banchettoInView, 
-      props: { language },
+      props: { language, inView: banchettoInView },
       key: 'banchetto'
     },
     { 
       Component: ServicesSection, 
       ref: servicesRef, 
       inView: servicesInView, 
-      props: { language },
+      props: { language, inView: servicesInView },
       key: 'services'
     },
     { 
       Component: ProductsSection, 
       ref: productsRef, 
       inView: productsInView, 
-      props: { language },
+      props: { language, inView: productsInView },
       key: 'products'
     },
     { 
       Component: WholesaleContact, 
       ref: wholesaleRef, 
       inView: wholesaleInView, 
-      props: { language },
+      props: { language, inView: wholesaleInView },
       key: 'wholesale'
     },
     { 
       Component: ContactSection, 
       ref: contactRef, 
       inView: contactInView, 
-      props: { language },
+      props: { language, inView: contactInView },
       key: 'contact'
     }
   ], [
@@ -396,7 +396,7 @@ const App: React.FC = () => {
       <main className="safe-component">
         {sections.map(({ Component, ref, inView, props, key }) => (
           <div key={key} ref={ref} className="section-container safe-component">
-            <Component {...props} inView={inView} />
+            <Component {...props} />
           </div>
         ))}
       </main>
@@ -413,7 +413,6 @@ const App: React.FC = () => {
       <MobileDock 
         language={language} 
         isVisible={isDockVisible}
-        className={isDockVisible ? '' : 'hide-mobile-dock'}
       />
     </div>
   )

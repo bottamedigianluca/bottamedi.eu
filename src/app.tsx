@@ -85,15 +85,15 @@ const useMobileDockVisibility = () => {
       scrollTimeout = setTimeout(() => {
         setIsScrolling(false)
         
-        // Timeout inattività ridotto per mobile (600ms invece di 800ms)
+        // Timeout inattività ridotto per mobile (400ms invece di 600ms)
         inactivityTimeout = setTimeout(() => {
-          // NASCONDI se nel footer o hero/contact
+          // 🎯 NELLE SEZIONI CENTRALI: MOSTRA SEMPRE DOPO INATTIVITÀ
           if (!heroInView && !contactInView && !footerInView) {
             setIsVisible(true)
           } else {
             setIsVisible(false)
           }
-        }, 600)
+        }, 400)
       }, 100)
     }
 
@@ -107,7 +107,7 @@ const useMobileDockVisibility = () => {
     }
   }, [lastScrollY, heroInView, contactInView, footerInView])
 
-  // Logica di visibilità ottimizzata - NASCONDE NEL FOOTER
+  // Logica di visibilità ottimizzata - MOSTRA NELLE SEZIONI CENTRALI
   useEffect(() => {
     if (heroInView) {
       setCurrentSection('hero')
@@ -118,12 +118,14 @@ const useMobileDockVisibility = () => {
     } else {
       setCurrentSection('middle')
       
-      // Nelle sezioni intermedie, logica intelligente:
+      // 🎯 NELLE SEZIONI CENTRALI: SEMPRE VISIBILE CON LOGICA SCROLL
       if (isScrolling) {
         // Durante lo scroll: mostra solo se si scrolla verso l'alto
         setIsVisible(scrollDirection === 'up')
+      } else {
+        // Quando non si scrolla: SEMPRE VISIBILE nelle sezioni centrali
+        setIsVisible(true)
       }
-      // Quando non si scrolla: la dock apparirà dopo il timeout
     }
   }, [heroInView, contactInView, footerInView, scrollDirection, isScrolling])
 

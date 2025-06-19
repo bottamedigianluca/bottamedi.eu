@@ -530,7 +530,7 @@ Wir sind für die Verarbeitung Ihrer persönlichen Daten verantwortlich und verp
 
   const t = translations[language]
 
-  // Listen for unlock events from footer
+  // Listen for unlock events from footer - RIMOSSA LA CHIAMATA SCROLL PROBLEMATICA
   useEffect(() => {
     const handleUnlockEvent = (event: CustomEvent) => {
       const { docType, language: eventLang } = event.detail
@@ -538,13 +538,13 @@ Wir sind für die Verarbeitung Ihrer persönlichen Daten verantwortlich und verp
         setIsUnlocked(true)
         setSelectedCategory(docType)
         
-        // Scroll to legal section
-        setTimeout(() => {
-          const element = document.getElementById('legal-documents')
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth' })
-          }
-        }, 200)
+        // RIMOSSA LA CHIAMATA SCROLL PROBLEMATICA - Il footer gestisce già lo scroll
+        // setTimeout(() => {
+        //   const element = document.getElementById('legal-documents')
+        //   if (element) {
+        //     element.scrollIntoView({ behavior: 'smooth' })
+        //   }
+        // }, 200)
       }
     }
 

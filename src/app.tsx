@@ -28,7 +28,7 @@ declare global {
   }
 }
 
-// 🎯 INTELLIGENT MOBILE DOCK VISIBILITY HOOK - OTTIMIZZATO
+// 🎯 INTELLIGENT MOBILE DOCK VISIBILITY HOOK - NASCOSTA NEL FOOTER
 const useMobileDockVisibility = () => {
   const [isVisible, setIsVisible] = useState(false)
   const [lastScrollY, setLastScrollY] = useState(0)
@@ -44,6 +44,12 @@ const useMobileDockVisibility = () => {
 
   const [heroRef, heroInView] = useInView({
     threshold: 0.5 // Ridotto da 0.7
+  })
+
+  // NUOVO: Observer per Footer - NASCONDE DOCK
+  const [footerRef, footerInView] = useInView({
+    threshold: 0.05, // Molto sensibile
+    rootMargin: '0px 0px -10px 0px'
   })
 
   // Scroll behavior logic ottimizzato
@@ -81,8 +87,11 @@ const useMobileDockVisibility = () => {
         
         // Timeout inattività ridotto per mobile (600ms invece di 800ms)
         inactivityTimeout = setTimeout(() => {
-          if (!heroInView && !contactInView) {
+          // NASCONDI se nel footer o hero/contact
+          if (!heroInView && !contactInView && !footerInView) {
             setIsVisible(true)
+          } else {
+            setIsVisible(false)
           }
         }, 600)
       }, 100)
@@ -96,16 +105,16 @@ const useMobileDockVisibility = () => {
       if (scrollTimeout) clearTimeout(scrollTimeout)
       if (inactivityTimeout) clearTimeout(inactivityTimeout)
     }
-  }, [lastScrollY, heroInView, contactInView])
+  }, [lastScrollY, heroInView, contactInView, footerInView])
 
-  // Logica di visibilità ottimizzata
+  // Logica di visibilità ottimizzata - NASCONDE NEL FOOTER
   useEffect(() => {
     if (heroInView) {
       setCurrentSection('hero')
       setIsVisible(false) // Sempre nascosta nella hero
-    } else if (contactInView) {
-      setCurrentSection('contact')
-      setIsVisible(false) // Sempre nascosta nel contact/footer
+    } else if (contactInView || footerInView) {
+      setCurrentSection(footerInView ? 'footer' : 'contact')
+      setIsVisible(false) // 🎯 NASCOSTA NEL FOOTER E CONTACT
     } else {
       setCurrentSection('middle')
       
@@ -116,12 +125,13 @@ const useMobileDockVisibility = () => {
       }
       // Quando non si scrolla: la dock apparirà dopo il timeout
     }
-  }, [heroInView, contactInView, scrollDirection, isScrolling])
+  }, [heroInView, contactInView, footerInView, scrollDirection, isScrolling])
 
   return { 
     isVisible, 
     contactRef, 
     heroRef, 
+    footerRef, // NUOVO: ref per footer
     currentSection,
     scrollDirection,
     isScrolling
@@ -130,7 +140,7 @@ const useMobileDockVisibility = () => {
 
 const App: React.FC = () => {
   const [language, setLanguage] = useState<'it' | 'de'>('it')
-  const { isVisible: isDockVisible, contactRef, heroRef } = useMobileDockVisibility()
+  const { isVisible: isDockVisible, contactRef, heroRef, footerRef } = useMobileDockVisibility()
 
   // Section observers con soglie ottimizzate per mobile
   const [aboutRef, aboutInView] = useInView({ 
@@ -375,7 +385,7 @@ const App: React.FC = () => {
   ])
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white safe-component">
       {/* Language Selector */}
       <LanguageSelector 
         language={language} 
@@ -383,24 +393,27 @@ const App: React.FC = () => {
       />
       
       {/* Main Sections */}
-      <main>
+      <main className="safe-component">
         {sections.map(({ Component, ref, inView, props, key }) => (
-          <div key={key} ref={ref}>
+          <div key={key} ref={ref} className="section-container safe-component">
             <Component {...props} inView={inView} />
           </div>
         ))}
       </main>
 
-      {/* Footer */}
-      <Footer language={language} />
+      {/* Footer con riferimento per nascondere dock */}
+      <div ref={footerRef}>
+        <Footer language={language} />
+      </div>
 
       {/* Legal Documents */}
       <LegalDocuments language={language} />
 
-      {/* Mobile Dock - FIXED VISIBILITY LOGIC */}
+      {/* Mobile Dock - NASCOSTA NEL FOOTER */}
       <MobileDock 
         language={language} 
-        isVisible={isDockVisible} 
+        isVisible={isDockVisible}
+        className={isDockVisible ? '' : 'hide-mobile-dock'}
       />
     </div>
   )

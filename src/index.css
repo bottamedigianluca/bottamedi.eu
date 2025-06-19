@@ -1,31 +1,25 @@
-/* 🌐 Google Fonts - OTTIMIZZATO CON DISPLAY SWAP */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* 🎯 BASE STYLES - CRASH PREVENTION */
 @layer base {
   html {
     scroll-behavior: smooth;
     overflow-x: hidden;
-    /* 🔒 Previeni crash pagina bianca */
-    min-height: 100vh;
-    width: 100%;
-    max-width: 100vw;
+    min-height: 100%;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
     min-height: 100vh;
+    overflow-x: hidden;
     background-color: #ffffff;
-    /* 🔒 Stabilità rendering */
-    width: 100%;
-    max-width: 100vw;
+    color: #171717;
     position: relative;
   }
 
@@ -33,46 +27,30 @@
     font-family: 'Playfair Display', serif;
   }
 
-  /* 🚀 PERFORMANCE CRITICHE - EVITA CRASH */
   * {
     box-sizing: border-box;
-    /* GPU acceleration sicuro */
     transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    /* Previeni layout shift */
-    contain: layout style;
   }
 
-  /* 🔒 ROOT CONTAINER SICURO */
   #root {
     min-height: 100vh;
-    width: 100%;
-    max-width: 100vw;
-    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
     position: relative;
-    /* Evita crash */
-    display: block;
-    opacity: 1;
-    visibility: visible;
+    width: 100%;
   }
 }
 
-/* 🎯 CUSTOM COMPONENTS */
 @layer components {
-  /* 🔥 MOBILE DOCK - COMPLETAMENTE RISCRITTO E OTTIMIZZATO */
   .mobile-dock {
-    /* Performance critiche */
     will-change: transform, opacity;
     transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    /* Touch ottimizzato */
     touch-action: manipulation;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
-    /* Posizionamento stabile */
     position: fixed;
     bottom: 0;
     left: 0;
@@ -84,16 +62,13 @@
   .mobile-dock button,
   .mobile-dock a,
   .mobile-dock-item {
-    /* Touch responsivo 60ms */
     touch-action: manipulation;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
     transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    /* Performance */
     will-change: transform;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    /* Dimensioni touch-friendly */
     min-height: 44px;
     min-width: 44px;
     display: flex;
@@ -108,7 +83,6 @@
     transition-duration: 60ms;
   }
 
-  /* 🎭 MOBILE DOCK - STATI DI VISIBILITÀ */
   .mobile-dock.hidden {
     transform: translateY(100px);
     opacity: 0;
@@ -123,21 +97,18 @@
     visibility: visible;
   }
 
-  /* 📱 LANGUAGE SELECTOR - GLASS EFFECT OTTIMIZZATO */
   .language-selector {
     position: fixed;
     top: 1rem;
     right: 1rem;
     z-index: 9999;
     transition: all 200ms ease-out;
-    /* Performance */
     will-change: transform;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
   }
 
   .language-selector-button {
-    /* Glass effect ottimizzato */
     background: rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -145,7 +116,6 @@
     border-radius: 12px;
     padding: 12px 16px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-    /* Interazione ottimizzata */
     transition: all 150ms ease-out;
     min-width: 80px;
     display: flex;
@@ -155,10 +125,8 @@
     color: #374151;
     font-weight: 600;
     cursor: pointer;
-    /* Touch */
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
-    /* Performance */
     will-change: transform, background-color;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
@@ -190,7 +158,6 @@
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
     min-width: 120px;
     z-index: 10000;
-    /* Performance */
     will-change: transform, opacity;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
@@ -211,7 +178,6 @@
     font-size: 14px;
     font-weight: 500;
     color: #374151;
-    /* Touch */
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
@@ -225,7 +191,6 @@
     transform: scale(0.98);
   }
 
-  /* 📞 CONTACT SECTION - CARDS PERFETTAMENTE SIMMETRICHE */
   .contact-cards-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -243,7 +208,6 @@
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     border: 1px solid #e5e7eb;
     transition: all 300ms ease;
-    /* Performance */
     will-change: transform, box-shadow;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
@@ -314,10 +278,8 @@
     cursor: pointer;
     text-decoration: none;
     min-height: 44px;
-    /* Touch ottimizzato */
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
-    /* Performance */
     will-change: transform;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
@@ -365,13 +327,10 @@
     transform: translateY(-1px);
   }
 
-  /* 🎯 BUTTON STYLES GLOBALI */
   .btn-primary {
     @apply bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300;
-    /* Touch */
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
-    /* Performance */
     will-change: transform;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
@@ -379,10 +338,8 @@
 
   .btn-secondary {
     @apply border-2 border-green-500 text-green-600 px-6 py-3 rounded-xl font-semibold hover:bg-green-50 transition-all duration-300;
-    /* Touch */
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
-    /* Performance */
     will-change: transform;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
@@ -390,7 +347,6 @@
 
   .card {
     @apply bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-neutral-100;
-    /* Performance */
     will-change: box-shadow;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
@@ -400,11 +356,9 @@
     @apply bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent;
   }
 
-  /* 🎭 LEGAL DOCUMENTS - SCROLL OTTIMIZZATO */
   .legal-modal {
     scroll-behavior: smooth;
     -webkit-scroll-behavior: smooth;
-    /* Performance */
     will-change: transform, opacity;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
@@ -421,7 +375,6 @@
   }
 }
 
-/* 🚀 CUSTOM UTILITIES */
 @layer utilities {
   .text-shadow {
     text-shadow: 0 2px 8px rgba(0,0,0,0.3);
@@ -436,42 +389,21 @@
     will-change: transform;
   }
 
-  .animation-delay-100 {
-    animation-delay: 0.1s;
-  }
+  .animation-delay-100 { animation-delay: 0.1s; }
+  .animation-delay-200 { animation-delay: 0.2s; }
+  .animation-delay-300 { animation-delay: 0.3s; }
 
-  .animation-delay-200 {
-    animation-delay: 0.2s;
-  }
-
-  .animation-delay-300 {
-    animation-delay: 0.3s;
-  }
-
-  /* 🚀 PERFORMANCE OTTIMIZZAZIONI CRITICHE */
   .section-container {
-    will-change: auto;
-    contain: layout style paint;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    /* Prevenzione overflow */
-    overflow-x: hidden;
-    max-width: 100vw;
+    position: relative;
+    overflow: hidden;
   }
 
-  .section-container.in-view {
-    will-change: transform, opacity;
-  }
-
-  /* 🎯 TOUCH OTTIMIZZATO GLOBALE */
   .touch-target {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
     min-height: 44px;
     min-width: 44px;
-    /* Performance */
     will-change: transform;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
@@ -482,7 +414,6 @@
     transition-duration: 60ms;
   }
 
-  /* 🔒 FIX CRASH PAGINA BIANCA */
   .safe-transform {
     transform: translateZ(0);
     will-change: auto;
@@ -496,7 +427,6 @@
     display: block !important;
   }
 
-  /* 🚨 NASCONDI MOBILE DOCK IN FOOTER E LEGAL */
   .hide-mobile-dock {
     display: none !important;
     visibility: hidden !important;
@@ -504,16 +434,6 @@
     pointer-events: none !important;
   }
 
-  /* 🎨 STATUS BAR COLORS DINAMICI */
-  .status-bar-hero { --status-color: #22c55e; }
-  .status-bar-about { --status-color: #16a34a; }
-  .status-bar-dettaglio { --status-color: #15803d; }
-  .status-bar-services { --status-color: #166534; }
-  .status-bar-products { --status-color: #14532d; }
-  .status-bar-wholesale { --status-color: #052e16; }
-  .status-bar-contact { --status-color: #1f2937; }
-
-  /* 🚀 GPU ACCELERATION SICURO */
   .gpu-accelerated {
     transform: translateZ(0);
     will-change: transform;
@@ -527,48 +447,31 @@
   }
 }
 
-/* 📜 SCROLLBAR STYLING */
 ::-webkit-scrollbar {
   width: 8px;
 }
-
 ::-webkit-scrollbar-track {
   @apply bg-neutral-100;
 }
-
 ::-webkit-scrollbar-thumb {
   @apply bg-green-400 rounded-full;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-green-500;
 }
 
-/* 🎯 FOCUS STYLES - ACCESSIBILITÀ */
-.focus-visible:focus {
-  @apply outline-none ring-2 ring-blue-500 ring-offset-2;
-}
-
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible,
-[tabindex]:focus-visible {
+:focus-visible {
   outline: 2px solid #3b82f6 !important;
   outline-offset: 2px !important;
   border-radius: 4px;
 }
 
-/* 📱 MOBILE OPTIMIZATIONS */
 @media (max-width: 768px) {
-  /* 🔒 Prevent horizontal overflow */
   body, html {
     overflow-x: hidden !important;
     max-width: 100vw !important;
   }
 
-  /* 🎭 Language Selector Mobile */
   .language-selector {
     right: 0.5rem;
     top: 0.5rem;
@@ -581,7 +484,6 @@ select:focus-visible,
     margin-right: 0;
   }
 
-  /* 📞 Contact Cards Mobile */
   .contact-cards-container {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -597,10 +499,7 @@ select:focus-visible,
     font-size: 1rem;
   }
 
-  /* 🎯 Touch targets ottimizzati */
-  button, 
-  a, 
-  .clickable {
+  button, a, .clickable {
     min-height: 44px;
     min-width: 44px;
     display: flex;
@@ -608,87 +507,67 @@ select:focus-visible,
     justify-content: center;
   }
 
-  /* 📱 Mobile dock sicuro */
   .mobile-dock {
-    /* Sicurezza mobile */
     will-change: transform;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     transform: translateZ(0);
-    /* Bottom safe area */
     padding-bottom: max(20px, env(safe-area-inset-bottom));
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
   }
 
-  /* 🚀 Velocità animazioni mobile */
   .mobile-animation {
     animation-duration: 150ms !important;
     transition-duration: 60ms !important;
   }
 
-  /* 🔧 Fix input iOS */
   input, textarea, select {
-    font-size: 16px; /* Prevent zoom on iOS */
+    font-size: 16px;
     -webkit-appearance: none;
     border-radius: 0;
   }
 }
 
-/* 📟 Tablet Optimizations */
 @media (min-width: 768px) and (max-width: 1024px) {
   .contact-cards-container {
     gap: 1.5rem;
   }
-
   .contact-card {
     padding: 1.25rem;
   }
 }
 
-/* 🖥️ Large Desktop */
 @media (min-width: 1024px) {
   .contact-cards-container {
     gap: 2rem;
   }
-
   .contact-card {
     padding: 2rem;
   }
-
   .contact-card-icon {
     width: 3.5rem;
     height: 3.5rem;
     font-size: 1.5rem;
   }
-
-  /* 📱 Hide mobile dock on desktop */
   .mobile-dock {
     display: none !important;
   }
 }
 
-/* ♿ ACCESSIBILITÀ - REDUCED MOTION */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  
-  .mobile-dock,
-  .language-selector,
-  .section-container,
-  .contact-card {
+  .mobile-dock, .language-selector, .section-container, .contact-card {
     transition: none !important;
     animation: none !important;
   }
 }
 
-/* 📱 HIGH CONTRAST MODE */
 @media (prefers-contrast: high) {
   .language-selector-button,
   .language-selector-dropdown {
@@ -696,41 +575,33 @@ select:focus-visible,
     border: 2px solid #000000 !important;
     color: #000000 !important;
   }
-  
-  button, 
-  a {
+  button, a {
     border: 2px solid currentColor !important;
   }
 }
 
-/* 🌙 DARK MODE PREFERENCES */
 @media (prefers-color-scheme: dark) {
   .auto-dark {
     background-color: #1f2937;
     color: #f9fafb;
   }
-
   .language-selector-button {
     background: rgba(31, 41, 55, 0.8);
     border-color: rgba(255, 255, 255, 0.2);
     color: #f9fafb;
   }
-
   .language-selector-dropdown {
     background: rgba(31, 41, 55, 0.95);
     border-color: rgba(255, 255, 255, 0.3);
   }
-
   .language-selector-option {
     color: #f9fafb;
   }
-
   .language-selector-option:hover {
     background: rgba(34, 197, 94, 0.2);
   }
 }
 
-/* 🚫 REDUCED TRANSPARENCY */
 @media (prefers-reduced-transparency: reduce) {
   .backdrop-blur-custom,
   .language-selector-button,
@@ -741,111 +612,56 @@ select:focus-visible,
   }
 }
 
-/* 🖨️ PRINT STYLES */
 @media print {
   .no-print,
   .mobile-dock,
   .language-selector {
     display: none !important;
   }
-  
   .section-container {
     break-inside: avoid;
   }
 }
 
-/* 🎯 ANIMAZIONI OTTIMIZZATE PER MOBILE */
 @keyframes glass-appear {
-  from {
-    opacity: 0;
-    transform: translateY(-10px) scale(0.95);
-    backdrop-filter: blur(0px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    backdrop-filter: blur(25px);
-  }
+  from { opacity: 0; transform: translateY(-10px) scale(0.95); backdrop-filter: blur(0px); }
+  to { opacity: 1; transform: translateY(0) scale(1); backdrop-filter: blur(25px); }
 }
 
 @keyframes dock-slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(100px) scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(100px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes dock-slide-down {
-  from {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(100px) scale(0.9);
-  }
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(100px) scale(0.9); }
 }
 
-.language-selector-dropdown {
-  animation: glass-appear 200ms ease-out;
-}
+.language-selector-dropdown { animation: glass-appear 200ms ease-out; }
+.mobile-dock.visible { animation: dock-slide-up 300ms ease-out; }
+.mobile-dock.hidden { animation: dock-slide-down 250ms ease-in; }
 
-.mobile-dock.visible {
-  animation: dock-slide-up 300ms ease-out;
-}
+html { scroll-behavior: smooth; }
+@supports not (scroll-behavior: smooth) { html { scroll-behavior: auto; } }
 
-.mobile-dock.hidden {
-  animation: dock-slide-down 250ms ease-in;
-}
-
-/* 🔧 SMOOTH SCROLLING CON FALLBACK */
-html {
-  scroll-behavior: smooth;
-}
-
-@supports not (scroll-behavior: smooth) {
-  html {
-    scroll-behavior: auto;
-  }
-}
-
-/* 🎯 SMOOTH TRANSITIONS GLOBALI */
 a, button, input, textarea, select {
   transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* 🍎 FIX SAFARI E WEBKIT */
 @supports (-webkit-touch-callout: none) {
-  input, textarea, select {
-    -webkit-appearance: none;
-    border-radius: 0;
-  }
-  
-  .mobile-dock,
-  .language-selector {
-    -webkit-transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-  }
+  input, textarea, select { -webkit-appearance: none; border-radius: 0; }
+  .mobile-dock, .language-selector { -webkit-transform: translateZ(0); -webkit-backface-visibility: hidden; }
 }
 
-/* 🚀 CONTAINER QUERIES */
 @container (max-width: 768px) {
-  .container-responsive {
-    padding: 1rem;
-  }
+  .container-responsive { padding: 1rem; }
 }
 
 @container (min-width: 769px) {
-  .container-responsive {
-    padding: 2rem;
-  }
+  .container-responsive { padding: 2rem; }
 }
 
-/* 🔒 STABILITÀ LAYOUT FINALE */
 .stable-layout {
   contain: layout style paint;
 }

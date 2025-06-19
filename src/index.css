@@ -1,15 +1,19 @@
-/* Google Fonts - DEVE ESSERE PRIMA DI TUTTO */
+/* 🌐 Google Fonts - OTTIMIZZATO CON DISPLAY SWAP */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Base Styles */
+/* 🎯 BASE STYLES - CRASH PREVENTION */
 @layer base {
   html {
     scroll-behavior: smooth;
     overflow-x: hidden;
+    /* 🔒 Previeni crash pagina bianca */
+    min-height: 100vh;
+    width: 100%;
+    max-width: 100vw;
   }
 
   body {
@@ -19,76 +23,82 @@
     overflow-x: hidden;
     min-height: 100vh;
     background-color: #ffffff;
+    /* 🔒 Stabilità rendering */
+    width: 100%;
+    max-width: 100vw;
+    position: relative;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
   }
 
-  /* Fix per crash pagina bianca */
+  /* 🚀 PERFORMANCE CRITICHE - EVITA CRASH */
   * {
-    -webkit-transform: translateZ(0);
+    box-sizing: border-box;
+    /* GPU acceleration sicuro */
+    transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+    /* Previeni layout shift */
+    contain: layout style;
   }
 
-  /* Prevenzione overflow */
-  body, html {
-    position: relative;
+  /* 🔒 ROOT CONTAINER SICURO */
+  #root {
+    min-height: 100vh;
     width: 100%;
     max-width: 100vw;
+    overflow-x: hidden;
+    position: relative;
+    /* Evita crash */
+    display: block;
+    opacity: 1;
+    visibility: visible;
   }
 }
 
-/* Custom Components */
+/* 🎯 CUSTOM COMPONENTS */
 @layer components {
-  .btn-primary {
-    @apply bg-gradient-to-r from-brand-500 to-brand-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300;
-  }
-
-  .btn-secondary {
-    @apply border-2 border-brand-500 text-brand-600 px-6 py-3 rounded-xl font-semibold hover:bg-brand-50 transition-all duration-300;
-  }
-
-  .card {
-    @apply bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-neutral-100;
-  }
-
-  .gradient-text {
-    @apply bg-gradient-to-r from-brand-600 to-accent-600 bg-clip-text text-transparent;
-  }
-
-  /* Mobile Header - Sempre Trasparente */
-  .mobile-header {
-    background: transparent !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    border-bottom: none !important;
-    box-shadow: none !important;
-    transition: all 150ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  
-  .mobile-header .header-content {
-    background: transparent !important;
-  }
-
-  /* Mobile Dock - Reattività 60ms */
+  /* 🔥 MOBILE DOCK - COMPLETAMENTE RISCRITTO E OTTIMIZZATO */
   .mobile-dock {
+    /* Performance critiche */
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* Touch ottimizzato */
     touch-action: manipulation;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
-    will-change: transform, opacity;
-    transform: translateZ(0);
+    /* Posizionamento stabile */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    pointer-events: auto;
   }
 
   .mobile-dock button,
   .mobile-dock a,
   .mobile-dock-item {
+    /* Touch responsivo 60ms */
     touch-action: manipulation;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
     transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* Performance */
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* Dimensioni touch-friendly */
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .mobile-dock button:active,
@@ -98,31 +108,36 @@
     transition-duration: 60ms;
   }
 
-  /* Legal Documents - Scroll Smooth */
-  .legal-modal {
-    scroll-behavior: smooth;
-    -webkit-scroll-behavior: smooth;
+  /* 🎭 MOBILE DOCK - STATI DI VISIBILITÀ */
+  .mobile-dock.hidden {
+    transform: translateY(100px);
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
   }
 
-  .legal-modal .close-button {
-    touch-action: manipulation;
-    transition: all 60ms ease;
+  .mobile-dock.visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
   }
 
-  .legal-modal .close-button:active {
-    transform: scale(0.9);
-  }
-
-  /* LANGUAGE SELECTOR - GLASS EFFECT E FIX MOBILE */
+  /* 📱 LANGUAGE SELECTOR - GLASS EFFECT OTTIMIZZATO */
   .language-selector {
     position: fixed;
     top: 1rem;
     right: 1rem;
     z-index: 9999;
     transition: all 200ms ease-out;
+    /* Performance */
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
   .language-selector-button {
+    /* Glass effect ottimizzato */
     background: rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -130,6 +145,7 @@
     border-radius: 12px;
     padding: 12px 16px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    /* Interazione ottimizzata */
     transition: all 150ms ease-out;
     min-width: 80px;
     display: flex;
@@ -139,9 +155,13 @@
     color: #374151;
     font-weight: 600;
     cursor: pointer;
-    /* FIX BACKGROUND INIZIALE TRASPARENTE */
-    background-color: transparent;
-    background-image: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
+    /* Touch */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    /* Performance */
+    will-change: transform, background-color;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
   .language-selector-button:hover {
@@ -170,6 +190,10 @@
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
     min-width: 120px;
     z-index: 10000;
+    /* Performance */
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
   .language-selector-option {
@@ -187,6 +211,9 @@
     font-size: 14px;
     font-weight: 500;
     color: #374151;
+    /* Touch */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .language-selector-option:hover {
@@ -198,7 +225,7 @@
     transform: scale(0.98);
   }
 
-  /* CONTACT SECTION - CARDS SIMMETRICHE */
+  /* 📞 CONTACT SECTION - CARDS PERFETTAMENTE SIMMETRICHE */
   .contact-cards-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -216,6 +243,10 @@
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     border: 1px solid #e5e7eb;
     transition: all 300ms ease;
+    /* Performance */
+    will-change: transform, box-shadow;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
   .contact-card:hover {
@@ -283,6 +314,13 @@
     cursor: pointer;
     text-decoration: none;
     min-height: 44px;
+    /* Touch ottimizzato */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    /* Performance */
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
   .contact-card-btn-primary {
@@ -314,6 +352,7 @@
 
   .contact-card-btn-whatsapp:hover {
     background: #059669;
+    transform: translateY(-1px);
   }
 
   .contact-card-btn-map {
@@ -323,10 +362,66 @@
 
   .contact-card-btn-map:hover {
     background: #2563eb;
+    transform: translateY(-1px);
+  }
+
+  /* 🎯 BUTTON STYLES GLOBALI */
+  .btn-primary {
+    @apply bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300;
+    /* Touch */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    /* Performance */
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .btn-secondary {
+    @apply border-2 border-green-500 text-green-600 px-6 py-3 rounded-xl font-semibold hover:bg-green-50 transition-all duration-300;
+    /* Touch */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    /* Performance */
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-neutral-100;
+    /* Performance */
+    will-change: box-shadow;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent;
+  }
+
+  /* 🎭 LEGAL DOCUMENTS - SCROLL OTTIMIZZATO */
+  .legal-modal {
+    scroll-behavior: smooth;
+    -webkit-scroll-behavior: smooth;
+    /* Performance */
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .legal-modal .close-button {
+    touch-action: manipulation;
+    transition: all 60ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .legal-modal .close-button:active {
+    transform: scale(0.9);
   }
 }
 
-/* Custom Utilities */
+/* 🚀 CUSTOM UTILITIES */
 @layer utilities {
   .text-shadow {
     text-shadow: 0 2px 8px rgba(0,0,0,0.3);
@@ -353,34 +448,33 @@
     animation-delay: 0.3s;
   }
 
-  /* Performance Ottimizzazioni */
+  /* 🚀 PERFORMANCE OTTIMIZZAZIONI CRITICHE */
   .section-container {
     will-change: auto;
     contain: layout style paint;
     transform: translateZ(0);
     backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* Prevenzione overflow */
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   .section-container.in-view {
     will-change: transform, opacity;
   }
 
-  /* Accessibilità - Contrasti Migliorati */
-  .text-low-contrast {
-    color: #374151 !important;
-  }
-
-  .bg-low-contrast {
-    background-color: #f3f4f6 !important;
-  }
-
-  /* Reattività Touch Globale */
+  /* 🎯 TOUCH OTTIMIZZATO GLOBALE */
   .touch-target {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
     min-height: 44px;
     min-width: 44px;
+    /* Performance */
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
   .touch-target:active {
@@ -388,30 +482,7 @@
     transition-duration: 60ms;
   }
 
-  /* Status Bar Dynamic Color Support */
-  .status-bar-hero { 
-    --status-color: #22c55e; 
-  }
-  .status-bar-about { 
-    --status-color: #16a34a; 
-  }
-  .status-bar-dettaglio { 
-    --status-color: #15803d; 
-  }
-  .status-bar-services { 
-    --status-color: #166534; 
-  }
-  .status-bar-products { 
-    --status-color: #14532d; 
-  }
-  .status-bar-wholesale { 
-    --status-color: #052e16; 
-  }
-  .status-bar-contact { 
-    --status-color: #1f2937; 
-  }
-
-  /* Fix per crash pagina bianca */
+  /* 🔒 FIX CRASH PAGINA BIANCA */
   .safe-transform {
     transform: translateZ(0);
     will-change: auto;
@@ -419,23 +490,44 @@
     -webkit-backface-visibility: hidden;
   }
 
-  /* Prevent white screen flashes */
   .prevent-flash {
     opacity: 1 !important;
     visibility: visible !important;
     display: block !important;
   }
 
-  /* NASCONDI MOBILE DOCK NEL FOOTER */
+  /* 🚨 NASCONDI MOBILE DOCK IN FOOTER E LEGAL */
   .hide-mobile-dock {
     display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
     pointer-events: none !important;
   }
+
+  /* 🎨 STATUS BAR COLORS DINAMICI */
+  .status-bar-hero { --status-color: #22c55e; }
+  .status-bar-about { --status-color: #16a34a; }
+  .status-bar-dettaglio { --status-color: #15803d; }
+  .status-bar-services { --status-color: #166534; }
+  .status-bar-products { --status-color: #14532d; }
+  .status-bar-wholesale { --status-color: #052e16; }
+  .status-bar-contact { --status-color: #1f2937; }
+
+  /* 🚀 GPU ACCELERATION SICURO */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .critical-render {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 500px;
+  }
 }
 
-/* Scrollbar Styling */
+/* 📜 SCROLLBAR STYLING */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -445,16 +537,16 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-brand-400 rounded-full;
+  @apply bg-green-400 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-brand-500;
+  @apply bg-green-500;
 }
 
-/* Focus Styles - Accessibilità Migliorata */
+/* 🎯 FOCUS STYLES - ACCESSIBILITÀ */
 .focus-visible:focus {
-  @apply outline-none ring-2 ring-brand-500 ring-offset-2;
+  @apply outline-none ring-2 ring-blue-500 ring-offset-2;
 }
 
 button:focus-visible,
@@ -468,15 +560,15 @@ select:focus-visible,
   border-radius: 4px;
 }
 
-/* Mobile Optimizations */
+/* 📱 MOBILE OPTIMIZATIONS */
 @media (max-width: 768px) {
-  /* Prevent horizontal overflow */
+  /* 🔒 Prevent horizontal overflow */
   body, html {
     overflow-x: hidden !important;
     max-width: 100vw !important;
   }
 
-  /* Language Selector Mobile Fix */
+  /* 🎭 Language Selector Mobile */
   .language-selector {
     right: 0.5rem;
     top: 0.5rem;
@@ -489,14 +581,7 @@ select:focus-visible,
     margin-right: 0;
   }
 
-  /* Header mobile ottimizzazioni */
-  .mobile-header-container {
-    background: transparent !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
-
-  /* Contact Cards Mobile */
+  /* 📞 Contact Cards Mobile */
   .contact-cards-container {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -512,7 +597,7 @@ select:focus-visible,
     font-size: 1rem;
   }
 
-  /* Touch targets migliorati per mobile */
+  /* 🎯 Touch targets ottimizzati */
   button, 
   a, 
   .clickable {
@@ -523,21 +608,26 @@ select:focus-visible,
     justify-content: center;
   }
 
-  /* Dock mobile ottimizzazioni */
-  .mobile-dock-container {
+  /* 📱 Mobile dock sicuro */
+  .mobile-dock {
+    /* Sicurezza mobile */
     will-change: transform;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     transform: translateZ(0);
+    /* Bottom safe area */
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 
-  /* Velocità animazioni mobile */
+  /* 🚀 Velocità animazioni mobile */
   .mobile-animation {
     animation-duration: 150ms !important;
     transition-duration: 60ms !important;
   }
 
-  /* Fix per input iOS */
+  /* 🔧 Fix input iOS */
   input, textarea, select {
     font-size: 16px; /* Prevent zoom on iOS */
     -webkit-appearance: none;
@@ -545,7 +635,7 @@ select:focus-visible,
   }
 }
 
-/* Tablet Optimizations */
+/* 📟 Tablet Optimizations */
 @media (min-width: 768px) and (max-width: 1024px) {
   .contact-cards-container {
     gap: 1.5rem;
@@ -556,7 +646,7 @@ select:focus-visible,
   }
 }
 
-/* Large Desktop */
+/* 🖥️ Large Desktop */
 @media (min-width: 1024px) {
   .contact-cards-container {
     gap: 2rem;
@@ -571,9 +661,14 @@ select:focus-visible,
     height: 3.5rem;
     font-size: 1.5rem;
   }
+
+  /* 📱 Hide mobile dock on desktop */
+  .mobile-dock {
+    display: none !important;
+  }
 }
 
-/* Animazioni ridotte per utenti con preferenze di movimento ridotto */
+/* ♿ ACCESSIBILITÀ - REDUCED MOTION */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -585,39 +680,30 @@ select:focus-visible,
   }
   
   .mobile-dock,
-  .mobile-header,
-  .section-container,
   .language-selector,
+  .section-container,
   .contact-card {
     transition: none !important;
     animation: none !important;
   }
 }
 
-/* High contrast mode support */
+/* 📱 HIGH CONTRAST MODE */
 @media (prefers-contrast: high) {
-  .text-low-contrast {
+  .language-selector-button,
+  .language-selector-dropdown {
+    background: #ffffff !important;
+    border: 2px solid #000000 !important;
     color: #000000 !important;
-  }
-  
-  .bg-low-contrast {
-    background-color: #ffffff !important;
-    border: 1px solid #000000;
   }
   
   button, 
   a {
     border: 2px solid currentColor !important;
   }
-
-  .language-selector-button,
-  .language-selector-dropdown {
-    background: #ffffff !important;
-    border: 2px solid #000000 !important;
-  }
 }
 
-/* Dark mode preferences */
+/* 🌙 DARK MODE PREFERENCES */
 @media (prefers-color-scheme: dark) {
   .auto-dark {
     background-color: #1f2937;
@@ -644,58 +730,7 @@ select:focus-visible,
   }
 }
 
-/* Print Styles */
-@media print {
-  .no-print,
-  .mobile-dock,
-  .mobile-header,
-  .language-selector {
-    display: none !important;
-  }
-  
-  .section-container {
-    break-inside: avoid;
-  }
-}
-
-/* Utilities per performance critiche */
-.gpu-accelerated {
-  transform: translateZ(0);
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-.critical-render {
-  content-visibility: auto;
-  contain-intrinsic-size: 0 500px;
-}
-
-/* Smooth scrolling con fallback per browser vecchi */
-html {
-  scroll-behavior: smooth;
-}
-
-@supports not (scroll-behavior: smooth) {
-  html {
-    scroll-behavior: auto;
-  }
-}
-
-/* Container queries per componenti responsive */
-@container (max-width: 768px) {
-  .container-responsive {
-    padding: 1rem;
-  }
-}
-
-@container (min-width: 769px) {
-  .container-responsive {
-    padding: 2rem;
-  }
-}
-
-/* Prefers reduced transparency */
+/* 🚫 REDUCED TRANSPARENCY */
 @media (prefers-reduced-transparency: reduce) {
   .backdrop-blur-custom,
   .language-selector-button,
@@ -706,82 +741,20 @@ html {
   }
 }
 
-/* Status bar dinamica per ogni sezione */
-.theme-color-hero {
-  background-color: #22c55e;
-}
-
-.theme-color-about {
-  background-color: #16a34a;
-}
-
-.theme-color-dettaglio {
-  background-color: #15803d;
-}
-
-.theme-color-services {
-  background-color: #166534;
-}
-
-.theme-color-products {
-  background-color: #14532d;
-}
-
-.theme-color-wholesale {
-  background-color: #052e16;
-}
-
-.theme-color-contact {
-  background-color: #1f2937;
-}
-
-/* Animazioni ottimizzate per mobile */
-@media (max-width: 768px) {
-  .mobile-optimized {
-    animation-duration: 150ms !important;
-    transition-duration: 60ms !important;
-  }
-  
-  .mobile-dock-fast,
-  .mobile-header {
-    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-  }
-}
-
-/* Smooth transitions per tutti gli elementi interattivi */
-a, button, input, textarea, select {
-  transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-/* Fix per input su iOS */
-@supports (-webkit-touch-callout: none) {
-  input, textarea, select {
-    -webkit-appearance: none;
-    border-radius: 0;
-  }
-  
-  .mobile-dock-fast,
+/* 🖨️ PRINT STYLES */
+@media print {
+  .no-print,
+  .mobile-dock,
   .language-selector {
-    -webkit-transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
+    display: none !important;
+  }
+  
+  .section-container {
+    break-inside: avoid;
   }
 }
 
-/* Fix aggiuntivi per evitare crash */
-.safe-component {
-  opacity: 1;
-  visibility: visible;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-/* Prevent layout shift */
-.stable-layout {
-  contain: layout style paint;
-}
-
-/* Language selector glass animations */
+/* 🎯 ANIMAZIONI OTTIMIZZATE PER MOBILE */
 @keyframes glass-appear {
   from {
     opacity: 0;
@@ -795,6 +768,92 @@ a, button, input, textarea, select {
   }
 }
 
+@keyframes dock-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(100px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dock-slide-down {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(100px) scale(0.9);
+  }
+}
+
 .language-selector-dropdown {
   animation: glass-appear 200ms ease-out;
+}
+
+.mobile-dock.visible {
+  animation: dock-slide-up 300ms ease-out;
+}
+
+.mobile-dock.hidden {
+  animation: dock-slide-down 250ms ease-in;
+}
+
+/* 🔧 SMOOTH SCROLLING CON FALLBACK */
+html {
+  scroll-behavior: smooth;
+}
+
+@supports not (scroll-behavior: smooth) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* 🎯 SMOOTH TRANSITIONS GLOBALI */
+a, button, input, textarea, select {
+  transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* 🍎 FIX SAFARI E WEBKIT */
+@supports (-webkit-touch-callout: none) {
+  input, textarea, select {
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+  
+  .mobile-dock,
+  .language-selector {
+    -webkit-transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+  }
+}
+
+/* 🚀 CONTAINER QUERIES */
+@container (max-width: 768px) {
+  .container-responsive {
+    padding: 1rem;
+  }
+}
+
+@container (min-width: 769px) {
+  .container-responsive {
+    padding: 2rem;
+  }
+}
+
+/* 🔒 STABILITÀ LAYOUT FINALE */
+.stable-layout {
+  contain: layout style paint;
+}
+
+.safe-component {
+  opacity: 1;
+  visibility: visible;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }

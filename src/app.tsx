@@ -28,7 +28,7 @@ declare global {
   }
 }
 
-// 🎯 INTELLIGENT MOBILE DOCK VISIBILITY HOOK - NASCOSTA NEL FOOTER
+// 🎯 INTELLIGENT MOBILE DOCK VISIBILITY HOOK
 const useMobileDockVisibility = () => {
   const [isVisible, setIsVisible] = useState(false)
   const [lastScrollY, setLastScrollY] = useState(0)
@@ -36,23 +36,17 @@ const useMobileDockVisibility = () => {
   const [isScrolling, setIsScrolling] = useState(false)
   const [currentSection, setCurrentSection] = useState('hero')
   
-  // Section observers con soglie ottimizzate per mobile - RIDOTTE ULTERIORMENTE
+  // Section observers
   const [contactRef, contactInView] = useInView({
-    threshold: 0.05, // Ridotto drasticamente 
-    rootMargin: '0px 0px -10px 0px' // Margine quasi zero
+    threshold: 0.2,
+    rootMargin: '-50px 0px 0px 0px'
   })
 
   const [heroRef, heroInView] = useInView({
-    threshold: 0.3 // Ridotto da 0.5
+    threshold: 0.7
   })
 
-  // NUOVO: Observer per Footer - NASCONDE DOCK - PIÙ SENSIBILE
-  const [footerRef, footerInView] = useInView({
-    threshold: 0.01, // Molto sensibile
-    rootMargin: '0px 0px 50px 0px' // Margine positivo per anticipare
-  })
-
-  // Scroll behavior logic ottimizzato
+  // Scroll behavior logic
   useEffect(() => {
     let scrollTimeout: NodeJS.Timeout
     let inactivityTimeout: NodeJS.Timeout
@@ -61,8 +55,8 @@ const useMobileDockVisibility = () => {
       const currentScrollY = window.scrollY
       const scrollDelta = currentScrollY - lastScrollY
       
-      // Determina direzione scroll con soglia ridotta per mobile
-      if (Math.abs(scrollDelta) > 3) { // Ridotto da 5 per maggiore responsività
+      // Determina direzione scroll
+      if (Math.abs(scrollDelta) > 5) { // Soglia minima per evitare micro-scroll
         const newDirection = scrollDelta > 0 ? 'down' : 'up'
         setScrollDirection(newDirection)
         setLastScrollY(currentScrollY)
@@ -81,23 +75,19 @@ const useMobileDockVisibility = () => {
         clearTimeout(scrollTimeout)
       }
 
-      // Timeout ridotto per mobile (100ms invece di 150ms)
+      // Dopo 150ms senza scroll, considera lo scroll terminato
       scrollTimeout = setTimeout(() => {
         setIsScrolling(false)
         
-        // Timeout inattività ridotto per mobile (400ms invece di 600ms)
+        // Dopo 800ms di inattività, mostra la dock (se non in hero/contact)
         inactivityTimeout = setTimeout(() => {
-          // 🎯 NELLE SEZIONI CENTRALI: MOSTRA SEMPRE DOPO INATTIVITÀ
-          if (!heroInView && !contactInView && !footerInView) {
+          if (!heroInView && !contactInView) {
             setIsVisible(true)
-          } else {
-            setIsVisible(false)
           }
-        }, 400)
-      }, 100)
+        }, 800)
+      }, 150)
     }
 
-    // Passive listener per migliore performance mobile
     window.addEventListener('scroll', handleScroll, { passive: true })
     
     return () => {
@@ -105,48 +95,32 @@ const useMobileDockVisibility = () => {
       if (scrollTimeout) clearTimeout(scrollTimeout)
       if (inactivityTimeout) clearTimeout(inactivityTimeout)
     }
-  }, [lastScrollY, heroInView, contactInView, footerInView])
+  }, [lastScrollY, heroInView, contactInView])
 
-  // Logica di visibilità ottimizzata - MOSTRA NELLE SEZIONI CENTRALI
+  // Logica di visibilità basata su sezione e comportamento scroll
   useEffect(() => {
     if (heroInView) {
       setCurrentSection('hero')
       setIsVisible(false) // Sempre nascosta nella hero
-    } else if (contactInView || footerInView) {
-      setCurrentSection(footerInView ? 'footer' : 'contact')
-      setIsVisible(false) // 🎯 NASCOSTA NEL FOOTER E CONTACT
+    } else if (contactInView) {
+      setCurrentSection('contact')
+      setIsVisible(false) // Sempre nascosta nel contact/footer
     } else {
       setCurrentSection('middle')
       
-      // 🎯 NELLE SEZIONI CENTRALI: SEMPRE VISIBILE CON LOGICA SCROLL
+      // Nelle sezioni intermedie, logica intelligente:
       if (isScrolling) {
         // Durante lo scroll: mostra solo se si scrolla verso l'alto
         setIsVisible(scrollDirection === 'up')
-      } else {
-        // Quando non si scrolla: SEMPRE VISIBILE nelle sezioni centrali
-        setIsVisible(true)
       }
+      // Quando non si scrolla: la dock apparirà dopo 800ms (gestito sopra)
     }
-  }, [heroInView, contactInView, footerInView, scrollDirection, isScrolling])
-
-  // 🎯 DEBUG: Log per verificare lo stato della dock
-  useEffect(() => {
-    console.log('🎯 DOCK STATUS:', {
-      heroInView,
-      contactInView, 
-      footerInView,
-      currentSection,
-      scrollDirection,
-      isScrolling,
-      isDockVisible: isVisible
-    })
-  }, [heroInView, contactInView, footerInView, currentSection, scrollDirection, isScrolling, isVisible])
+  }, [heroInView, contactInView, scrollDirection, isScrolling])
 
   return { 
     isVisible, 
     contactRef, 
     heroRef, 
-    footerRef,
     currentSection,
     scrollDirection,
     isScrolling
@@ -155,44 +129,18 @@ const useMobileDockVisibility = () => {
 
 const App: React.FC = () => {
   const [language, setLanguage] = useState<'it' | 'de'>('it')
-  const { isVisible: isDockVisible, contactRef, heroRef, footerRef } = useMobileDockVisibility()
+  const { isVisible: isDockVisible, contactRef, heroRef, legalRef } = useMobileDockVisibility()
 
-  // Section observers NORMALI - torniamo ai valori che funzionavano
-  const [aboutRef, aboutInView] = useInView({ 
-    threshold: 0.2,
-    triggerOnce: false
-  })
-  
-  const [banchettoRef, banchettoInView] = useInView({ 
-    threshold: 0.2,
-    triggerOnce: false
-  })
-  
-  const [servicesRef, servicesInView] = useInView({ 
-    threshold: 0.2,
-    triggerOnce: false
-  })
-  
-  const [productsRef, productsInView] = useInView({ 
-    threshold: 0.2,
-    triggerOnce: false
-  })
-  
-  const [wholesaleRef, wholesaleInView] = useInView({ 
-    threshold: 0.2,
-    triggerOnce: false
-  })
+  // Section observers per tracking (senza conflitti)
+  const [aboutRef, aboutInView] = useInView({ threshold: 0.3 })
+  const [banchettoRef, banchettoInView] = useInView({ threshold: 0.3 })
+  const [servicesRef, servicesInView] = useInView({ threshold: 0.3 })
+  const [productsRef, productsInView] = useInView({ threshold: 0.3 })
+  const [wholesaleRef, wholesaleInView] = useInView({ threshold: 0.3 })
 
-  // Observers separati per hero e contact 
-  const [heroInView] = useInView({ 
-    threshold: 0.3,
-    triggerOnce: false
-  })
-  
-  const [contactInView] = useInView({ 
-    threshold: 0.2,
-    triggerOnce: false
-  })
+  // Usa gli observer gestiti dall'hook per evitare conflitti
+  const [heroInView] = useInView({ threshold: 0.3 })
+  const [contactInView] = useInView({ threshold: 0.3 })
 
   // 🎯 TRACKING SETUP
   useEffect(() => {
@@ -303,28 +251,17 @@ const App: React.FC = () => {
       console.log(`📍 Sezione corrente: ${sectionName}`)
     }
 
-    // Performance tracking ottimizzato per mobile
+    // Performance tracking
     if (typeof window !== 'undefined' && 'performance' in window) {
-      const handleLoad = () => {
-        // Ritardo ridotto per mobile
+      window.addEventListener('load', () => {
         setTimeout(() => {
-          try {
-            const timing = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
-            if (timing) {
-              const loadTime = timing.loadEventEnd - timing.loadEventStart
-              window.trackPerformanceSito?.('page_load_time', loadTime, 2000) // Soglia ridotta per mobile
-            }
-          } catch (error) {
-            console.warn('Performance timing non disponibile:', error)
+          const timing = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
+          if (timing) {
+            const loadTime = timing.loadEventEnd - timing.loadEventStart
+            window.trackPerformanceSito?.('page_load_time', loadTime, 3000)
           }
         }, 0)
-      }
-
-      if (document.readyState === 'complete') {
-        handleLoad()
-      } else {
-        window.addEventListener('load', handleLoad, { once: true })
-      }
+      })
     }
   }, [])
 
@@ -337,57 +274,15 @@ const App: React.FC = () => {
     }
   }, [])
 
-  // Memoized sections con performance ottimizzate
+  // Memoized sections for performance
   const sections = useMemo(() => [
-    { 
-      Component: HeroSection, 
-      ref: heroRef, 
-      inView: heroInView, 
-      props: { language, inView: heroInView },
-      key: 'hero'
-    },
-    { 
-      Component: AboutSection, 
-      ref: aboutRef, 
-      inView: aboutInView, 
-      props: { language, inView: aboutInView },
-      key: 'about'
-    },
-    { 
-      Component: BanchettoSection, 
-      ref: banchettoRef, 
-      inView: banchettoInView, 
-      props: { language, inView: banchettoInView },
-      key: 'banchetto'
-    },
-    { 
-      Component: ServicesSection, 
-      ref: servicesRef, 
-      inView: servicesInView, 
-      props: { language, inView: servicesInView },
-      key: 'services'
-    },
-    { 
-      Component: ProductsSection, 
-      ref: productsRef, 
-      inView: productsInView, 
-      props: { language, inView: productsInView },
-      key: 'products'
-    },
-    { 
-      Component: WholesaleContact, 
-      ref: wholesaleRef, 
-      inView: wholesaleInView, 
-      props: { language, inView: wholesaleInView },
-      key: 'wholesale'
-    },
-    { 
-      Component: ContactSection, 
-      ref: contactRef, 
-      inView: contactInView, 
-      props: { language, inView: contactInView },
-      key: 'contact'
-    }
+    { Component: HeroSection, ref: heroRef, inView: heroInView, props: { language } },
+    { Component: AboutSection, ref: aboutRef, inView: aboutInView, props: { language } },
+    { Component: BanchettoSection, ref: banchettoRef, inView: banchettoInView, props: { language } },
+    { Component: ServicesSection, ref: servicesRef, inView: servicesInView, props: { language } },
+    { Component: ProductsSection, ref: productsRef, inView: productsInView, props: { language } },
+    { Component: WholesaleContact, ref: wholesaleRef, inView: wholesaleInView, props: { language } },
+    { Component: ContactSection, ref: contactRef, inView: contactInView, props: { language } }
   ], [
     language, heroRef, heroInView, aboutRef, aboutInView, banchettoRef, banchettoInView,
     servicesRef, servicesInView, productsRef, productsInView, wholesaleRef, wholesaleInView,
@@ -395,7 +290,7 @@ const App: React.FC = () => {
   ])
 
   return (
-    <div className="min-h-screen bg-white safe-component">
+    <div className="min-h-screen bg-white">
       {/* Language Selector */}
       <LanguageSelector 
         language={language} 
@@ -403,26 +298,26 @@ const App: React.FC = () => {
       />
       
       {/* Main Sections */}
-      <main className="safe-component">
-        {sections.map(({ Component, ref, inView, props, key }) => (
-          <div key={key} ref={ref} className="section-container safe-component">
-            <Component {...props} />
+      <main>
+        {sections.map(({ Component, ref, inView, props }, index) => (
+          <div key={index} ref={ref}>
+            <Component {...props} inView={inView} />
           </div>
         ))}
       </main>
 
-      {/* Footer con riferimento per nascondere dock */}
-      <div ref={footerRef}>
-        <Footer language={language} />
+      {/* Footer */}
+      <Footer language={language} />
+
+      {/* Legal Documents - CON REF PER DETECTION */}
+      <div ref={legalRef}>
+        <LegalDocuments language={language} />
       </div>
 
-      {/* Legal Documents */}
-      <LegalDocuments language={language} />
-
-      {/* Mobile Dock - NASCOSTA NEL FOOTER */}
+      {/* Mobile Dock - FIXED VISIBILITY LOGIC */}
       <MobileDock 
         language={language} 
-        isVisible={isDockVisible}
+        isVisible={isDockVisible} 
       />
     </div>
   )

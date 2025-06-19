@@ -28,35 +28,118 @@ declare global {
   }
 }
 
-// 🎯 SIMPLIFIED MOBILE DOCK VISIBILITY HOOK
+// 🎯 INTELLIGENT MOBILE DOCK VISIBILITY HOOK
 const useMobileDockVisibility = () => {
-  const [isVisible, setIsVisible] = useState(true)
+  const [isVisible, setIsVisible] = useState(false)
+  const [lastScrollY, setLastScrollY] = useState(0)
+  const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('down')
+  const [isScrolling, setIsScrolling] = useState(false)
+  const [currentSection, setCurrentSection] = useState('hero')
   
-  // Contact section observer - nasconde la dock quando si entra in contact
+  // Section observers
   const [contactRef, contactInView] = useInView({
-    threshold: 0.3, // Si attiva quando il 30% della sezione contact è visibile
-    rootMargin: '-100px 0px 0px 0px' // Margine negativo per anticipare l'hiding
+    threshold: 0.2,
+    rootMargin: '-50px 0px 0px 0px'
   })
 
-  useEffect(() => {
-    // Nasconde la dock appena si entra nella sezione contact
-    setIsVisible(!contactInView)
-  }, [contactInView])
+  const [heroRef, heroInView] = useInView({
+    threshold: 0.7
+  })
 
-  return { isVisible, contactRef }
+  // Scroll behavior logic
+  useEffect(() => {
+    let scrollTimeout: NodeJS.Timeout
+    let inactivityTimeout: NodeJS.Timeout
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      const scrollDelta = currentScrollY - lastScrollY
+      
+      // Determina direzione scroll
+      if (Math.abs(scrollDelta) > 5) { // Soglia minima per evitare micro-scroll
+        const newDirection = scrollDelta > 0 ? 'down' : 'up'
+        setScrollDirection(newDirection)
+        setLastScrollY(currentScrollY)
+      }
+
+      // Indica che si sta scrollando
+      setIsScrolling(true)
+      
+      // Clear del timeout di inattività
+      if (inactivityTimeout) {
+        clearTimeout(inactivityTimeout)
+      }
+
+      // Reset del timeout di scroll
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout)
+      }
+
+      // Dopo 150ms senza scroll, considera lo scroll terminato
+      scrollTimeout = setTimeout(() => {
+        setIsScrolling(false)
+        
+        // Dopo 800ms di inattività, mostra la dock (se non in hero/contact)
+        inactivityTimeout = setTimeout(() => {
+          if (!heroInView && !contactInView) {
+            setIsVisible(true)
+          }
+        }, 800)
+      }, 150)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (scrollTimeout) clearTimeout(scrollTimeout)
+      if (inactivityTimeout) clearTimeout(inactivityTimeout)
+    }
+  }, [lastScrollY, heroInView, contactInView])
+
+  // Logica di visibilità basata su sezione e comportamento scroll
+  useEffect(() => {
+    if (heroInView) {
+      setCurrentSection('hero')
+      setIsVisible(false) // Sempre nascosta nella hero
+    } else if (contactInView) {
+      setCurrentSection('contact')
+      setIsVisible(false) // Sempre nascosta nel contact/footer
+    } else {
+      setCurrentSection('middle')
+      
+      // Nelle sezioni intermedie, logica intelligente:
+      if (isScrolling) {
+        // Durante lo scroll: mostra solo se si scrolla verso l'alto
+        setIsVisible(scrollDirection === 'up')
+      }
+      // Quando non si scrolla: la dock apparirà dopo 800ms (gestito sopra)
+    }
+  }, [heroInView, contactInView, scrollDirection, isScrolling])
+
+  return { 
+    isVisible, 
+    contactRef, 
+    heroRef, 
+    currentSection,
+    scrollDirection,
+    isScrolling
+  }
 }
 
 const App: React.FC = () => {
   const [language, setLanguage] = useState<'it' | 'de'>('it')
-  const { isVisible: isDockVisible, contactRef } = useMobileDockVisibility()
+  const { isVisible: isDockVisible, contactRef, heroRef } = useMobileDockVisibility()
 
-  // Section observers per tracking
-  const [heroRef, heroInView] = useInView({ threshold: 0.3 })
+  // Section observers per tracking (rimuoviamo heroRef e contactRef duplicati)
   const [aboutRef, aboutInView] = useInView({ threshold: 0.3 })
   const [banchettoRef, banchettoInView] = useInView({ threshold: 0.3 })
   const [servicesRef, servicesInView] = useInView({ threshold: 0.3 })
   const [productsRef, productsInView] = useInView({ threshold: 0.3 })
   const [wholesaleRef, wholesaleInView] = useInView({ threshold: 0.3 })
+
+  // Observers for hero and contact managed by the hook
+  const [heroInView] = useInView({ threshold: 0.3 })
   const [contactInView] = useInView({ threshold: 0.3 })
 
   // 🎯 TRACKING SETUP

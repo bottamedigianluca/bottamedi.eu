@@ -190,3 +190,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                         delay: lang.code === 'it' ? 0 : 0.05 
                       }}
                     >
+                      <span className="text-lg">{lang.flag}</span>
+                      <span className="font-medium">{lang.label}</span>
+                      <span className="text-xs text-gray-500">{lang.name}</span>
+                    </motion.button>

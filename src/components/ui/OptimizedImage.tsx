@@ -33,13 +33,16 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   objectFit = 'cover'
 }) => {
   const [imageState, setImageState] = useState<'loading' | 'loaded' | 'error'>('loading')
-  const [inView, setInView] = useState(!lazy || priority)
+  const [inView, setInView] = useState(false)
   const imgRef = useRef<HTMLImageElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Intersection Observer per lazy loading
   useEffect(() => {
-    if (!lazy || priority) return
+    if (!lazy || priority) {
+      setInView(true) // Mostra immediatamente se priority o non lazy
+      return
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -110,22 +113,11 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
     console.warn(`Failed to load image: ${src}`)
   }, [onError, src])
 
-  // Generate responsive srcSet
+  // Generate responsive srcSet - semplificato per sicurezza
   const generateSrcSet = (baseSrc: string) => {
-    if (!baseSrc.includes('.webp') && !baseSrc.includes('.jpg') && !baseSrc.includes('.png')) {
-      return baseSrc
-    }
-    
-    const extension = baseSrc.split('.').pop()
-    const baseName = baseSrc.replace(`.${extension}`, '')
-    
-    return [
-      `${baseName}_400w.${extension} 400w`,
-      `${baseName}_800w.${extension} 800w`,
-      `${baseName}_1200w.${extension} 1200w`,
-      `${baseName}_1600w.${extension} 1600w`,
-      `${baseSrc} 2000w`
-    ].join(', ')
+    // Per ora ritorniamo solo il src originale per semplicità
+    // In futuro si può implementare la generazione di srcSet multiple
+    return baseSrc
   }
 
   // Placeholder components
@@ -208,7 +200,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
         {imageState === 'error' && <ErrorPlaceholder />}
 
         {/* Main image */}
-        {inView && imageState !== 'error' && (
+        {inView && (
           <motion.img
             ref={imgRef}
             src={src}

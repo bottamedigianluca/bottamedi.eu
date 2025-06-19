@@ -290,7 +290,7 @@ setActiveMenu('none')
 // 📞 Gestione chiamate
 const handleCall = useCallback((phone: string) => {
 const cleanPhone = phone.replace(/\s/g, '')
-window.open(tel:+39${cleanPhone}, '_self')
+window.open(`tel:+39${cleanPhone}`, '_self')
 setActiveMenu('none')
 
 if ('vibrate' in navigator) {

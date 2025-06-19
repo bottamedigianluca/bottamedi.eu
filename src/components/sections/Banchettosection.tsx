@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+import OptimizedImage from '../ui/OptimizedImage'
 
 interface BanchettoSectionProps {
   language: 'it' | 'de'
@@ -151,7 +152,6 @@ const AdvancedLazyImage: React.FC<{
   index: number
   priority?: boolean
 }> = React.memo(({ item, index, priority = false }) => {
-  const [imageState, setImageState] = useState<'loading' | 'loaded' | 'error'>('loading')
   const shouldReduceMotion = useReducedMotion()
   
   const [ref, inView] = useInView({
@@ -159,14 +159,6 @@ const AdvancedLazyImage: React.FC<{
     triggerOnce: true,
     rootMargin: priority ? '200px' : '100px'
   })
-
-  const handleImageLoad = useCallback(() => {
-    setImageState('loaded')
-  }, [])
-
-  const handleImageError = useCallback(() => {
-    setImageState('error')
-  }, [])
 
   const itemVariants = useMemo(() => ({
     hidden: { 
@@ -186,30 +178,6 @@ const AdvancedLazyImage: React.FC<{
     }
   }), [index, shouldReduceMotion])
 
-  const imageVariants = useMemo(() => ({
-    loading: { 
-      opacity: 0, 
-      scale: shouldReduceMotion ? 1 : 1.05,
-      filter: shouldReduceMotion ? 'none' : 'blur(4px)'
-    },
-    loaded: { 
-      opacity: 1, 
-      scale: 1,
-      filter: 'blur(0px)',
-      transition: { 
-        duration: shouldReduceMotion ? 0.2 : 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
-    },
-    hover: shouldReduceMotion ? {} : { 
-      scale: 1.03,
-      transition: { 
-        duration: 0.3,
-        ease: "easeOut"
-      } 
-    }
-  }), [shouldReduceMotion])
-
   return (
     <motion.div
       ref={ref}
@@ -221,46 +189,16 @@ const AdvancedLazyImage: React.FC<{
       style={{ willChange: 'transform' }}
     >
       <div className="relative h-56 overflow-hidden bg-gradient-to-br from-green-50 to-green-100">
-        
-        {imageState === 'loading' && (
-          <div className="absolute inset-0 flex items-center justify-center bg-green-100">
-            <div className="flex flex-col items-center space-y-2">
-              <div className="w-8 h-8 border-2 border-green-300 border-t-green-600 rounded-full animate-spin" />
-              <div className="text-green-600 text-xs font-medium">Caricamento...</div>
-            </div>
-          </div>
-        )}
-
-        {imageState === 'error' && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-            <div className="text-center text-gray-400">
-              <div className="w-12 h-12 mx-auto mb-2 bg-gray-200 rounded-lg flex items-center justify-center">
-                📷
-              </div>
-              <p className="text-xs">Immagine non disponibile</p>
-            </div>
-          </div>
-        )}
-
-        {imageState !== 'error' && inView && (
-          <motion.img
-            src={item.src}
-            alt={item.description}
-            className="w-full h-full object-cover"
-            loading={priority ? "eager" : "lazy"}
-            onLoad={handleImageLoad}
-            onError={handleImageError}
-            initial="loading"
-            animate={imageState}
-            whileHover="hover"
-            variants={imageVariants}
-            style={{
-              willChange: 'transform, opacity, filter'
-            }}
-            decoding="async"
-            fetchPriority={priority ? "high" : "low"}
-          />
-        )}
+        <OptimizedImage
+          src={item.src}
+          alt={item.description}
+          className="w-full h-full transition-transform duration-500 group-hover:scale-105"
+          priority={priority}
+          placeholder="blur"
+          aspectRatio="16/9"
+          objectFit="cover"
+          style={{ willChange: 'transform, opacity' }}
+        />
         
         <div 
           className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300"
@@ -271,7 +209,7 @@ const AdvancedLazyImage: React.FC<{
           <motion.h3 
             className="text-white font-semibold text-sm mb-1 drop-shadow-lg leading-tight"
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 5 }}
-            animate={imageState === 'loaded' ? { opacity: 1, y: 0 } : {}}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: shouldReduceMotion ? 0 : 0.2, duration: shouldReduceMotion ? 0.1 : 0.3 }}
           >
             {item.title}
@@ -290,12 +228,7 @@ const AdvancedLazyImage: React.FC<{
 AdvancedLazyImage.displayName = 'AdvancedLazyImage'
 
 const HeroImage: React.FC<{ inView: boolean }> = React.memo(({ inView }) => {
-  const [imageLoaded, setImageLoaded] = useState(false)
   const shouldReduceMotion = useReducedMotion()
-
-  const handleImageLoad = useCallback(() => {
-    setImageLoaded(true)
-  }, [])
 
   return (
     <motion.div
@@ -305,18 +238,14 @@ const HeroImage: React.FC<{ inView: boolean }> = React.memo(({ inView }) => {
       className="mb-14"
     >
       <div className="relative h-80 lg:h-96 rounded-2xl overflow-hidden shadow-xl">
-        {!imageLoaded && (
-          <div className="absolute inset-0 bg-gradient-to-br from-green-100 to-green-200 animate-pulse" />
-        )}
-        
-        <img
+        <OptimizedImage
           src="/images/banchetto.webp"
           alt="Il Banchetto Bottamedi a Mezzolombardo ricco di frutta e verdura fresca"
-          className={`w-full h-full object-cover transition-opacity duration-500 ${
-            imageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-          loading="eager"
-          onLoad={handleImageLoad}
+          className="w-full h-full"
+          priority={true}
+          placeholder="blur"
+          aspectRatio="16/9"
+          objectFit="cover"
           style={{ willChange: 'opacity' }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
@@ -455,4 +384,4 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
   )
 }
 
-export default React.memo(BanchettoSection);
+export default React.memo(BanchettoSection)

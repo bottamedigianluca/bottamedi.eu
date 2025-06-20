@@ -85,20 +85,27 @@ const SectionWrapper: React.FC<SectionWrapperProps> = ({
   </SectionErrorBoundary>
 )
 
-// 🎯 HOOK CENTRALIZZATO PER MOBILE DOCK VISIBILITY
+// 🎯 HOOK CENTRALIZZATO PER MOBILE DOCK VISIBILITY - LOGICA ORIGINALE COMPLETA
 const useMobileDockVisibility = () => {
   const [isVisible, setIsVisible] = useState(false)
   const [currentSection, setCurrentSection] = useState('hero')
   const [isMobile, setIsMobile] = useState(false)
-  const [isLegalOpen, setIsLegalOpen] = useState(false)
+
+  // Refs per tracking avanzato
+  const lastScrollY = useRef(0)
+  const scrollTimeout = useRef<NodeJS.Timeout>()
+  const inactivityTimeout = useRef<NodeJS.Timeout>()
+  const scrollDirection = useRef<'up' | 'down'>('down')
+  const isScrolling = useRef(false)
 
   // 📱 Mobile detection
   useEffect(() => {
     const checkMobile = () => {
       const mobile = window.innerWidth < 1024
       setIsMobile(mobile)
+
       if (!mobile) {
-        setIsVisible(false)
+        setIsVisible(false) // Hide on desktop
       }
     }
 
@@ -107,29 +114,23 @@ const useMobileDockVisibility = () => {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // 🎯 SEZIONE DETECTION MIGLIORATA
+  // 📍 Section detection
   useEffect(() => {
     if (!isMobile) return
 
     let rafId: number
-    let lastScrollY = 0
-    let isScrollingDown = false
 
     const detectCurrentSection = () => {
       rafId = requestAnimationFrame(() => {
-        const scrollY = window.scrollY
-        isScrollingDown = scrollY > lastScrollY
-        lastScrollY = scrollY
-
         const sections = ['hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact']
-        const scrollPosition = scrollY + window.innerHeight / 2
+        const scrollPosition = window.scrollY + window.innerHeight / 2
         let foundSection = 'hero'
 
         for (const sectionId of sections) {
           const element = document.getElementById(sectionId)
           if (element) {
             const rect = element.getBoundingClientRect()
-            const elementTop = scrollY + rect.top
+            const elementTop = window.scrollY + rect.top
             const elementBottom = elementTop + rect.height
             
             if (scrollPosition >= elementTop && scrollPosition < elementBottom) {
@@ -146,6 +147,7 @@ const useMobileDockVisibility = () => {
     }
 
     const handleScroll = () => detectCurrentSection()
+
     detectCurrentSection()
     window.addEventListener('scroll', handleScroll, { passive: true })
 
@@ -155,71 +157,98 @@ const useMobileDockVisibility = () => {
     }
   }, [isMobile, currentSection])
 
-  // 🎯 LEGAL DOCUMENTS DETECTION
-  useEffect(() => {
-    const handleLegalStateChange = () => {
-      const legalElement = document.getElementById('legal-documents')
-      const isOpen = legalElement && 
-                   !legalElement.classList.contains('hidden') &&
-                   legalElement.getBoundingClientRect().height > 50
-      
-      setIsLegalOpen(!!isOpen)
-    }
-
-    // Check initial state
-    handleLegalStateChange()
-
-    // Listen for legal document events
-    const handleLegalEvent = () => {
-      setTimeout(handleLegalStateChange, 100)
-    }
-
-    window.addEventListener('openLegalDocument', handleLegalEvent)
-    document.addEventListener('openLegalDocument', handleLegalEvent)
-
-    // Mutation observer per cambiamenti nel DOM
-    const observer = new MutationObserver(handleLegalStateChange)
-    const legalElement = document.getElementById('legal-documents')
-    if (legalElement) {
-      observer.observe(legalElement, { 
-        attributes: true, 
-        attributeFilter: ['class', 'style'] 
-      })
-    }
-
-    return () => {
-      window.removeEventListener('openLegalDocument', handleLegalEvent)
-      document.removeEventListener('openLegalDocument', handleLegalEvent)
-      observer.disconnect()
-    }
-  }, [])
-
-  // 🎯 LOGICA PRINCIPALE DI VISIBILITÀ
+  // 🧠 LOGICA INTELLIGENTE DI VISIBILITÀ ORIGINALE
   useEffect(() => {
     if (!isMobile) {
       setIsVisible(false)
       return
     }
 
-    // Zone di esclusione: hero e contact
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      const scrollDelta = currentScrollY - lastScrollY.current
+      
+      // Aggiorna direzione solo per movimenti significativi
+      if (Math.abs(scrollDelta) > 5) {
+        scrollDirection.current = scrollDelta > 0 ? 'down' : 'up'
+        lastScrollY.current = currentScrollY
+        isScrolling.current = true
+      }
+
+      // Clear timeout precedenti
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current)
+      if (inactivityTimeout.current) clearTimeout(inactivityTimeout.current)
+
+      // 🚫 ZONE DI ESCLUSIONE SEMPLIFICATE
+      const excludedSections = ['hero', 'contact']
+      const isInExcludedSection = excludedSections.includes(currentSection)
+      
+      // Controllo documenti legali
+      const legalElement = document.getElementById('legal-documents')
+      const isLegalOpen = legalElement && 
+                        !legalElement.classList.contains('hidden') &&
+                        legalElement.getBoundingClientRect().height > 50
+
+      // Se siamo in una zona esclusa o legal è aperto, nascondi
+      if (isInExcludedSection || isLegalOpen) {
+        setIsVisible(false)
+        return
+      }
+
+      // 🎯 LOGICA INTELLIGENTE PRINCIPALE
+      scrollTimeout.current = setTimeout(() => {
+        isScrolling.current = false
+        
+        // Mostra immediatamente se si scrolla verso l'alto
+        if (scrollDirection.current === 'up') {
+          setIsVisible(true)
+          return
+        }
+
+        // Se si scrolla verso il basso, aspetta inattività
+        if (scrollDirection.current === 'down') {
+          setIsVisible(false)
+          
+          // Timer di inattività più corto
+          inactivityTimeout.current = setTimeout(() => {
+            // Ricontrolla le condizioni
+            const currentExcluded = excludedSections.includes(currentSection)
+            const currentLegalOpen = legalElement && 
+                                   !legalElement.classList.contains('hidden') &&
+                                   legalElement.getBoundingClientRect().height > 50
+
+            if (!currentExcluded && !currentLegalOpen && !isScrolling.current) {
+              setIsVisible(true)
+            }
+          }, 800) // Ridotto a 800ms per reattività migliore
+        }
+      }, 50) // Debounce ridotto
+    }
+
+    // Inizializza immediatamente se in sezione valida
     const excludedSections = ['hero', 'contact']
-    const isInExcludedSection = excludedSections.includes(currentSection)
-
-    // Se legal documents è aperto, nascondi
-    if (isLegalOpen) {
-      setIsVisible(false)
-      return
+    if (!excludedSections.includes(currentSection)) {
+      const legalElement = document.getElementById('legal-documents')
+      const isLegalOpen = legalElement && 
+                        !legalElement.classList.contains('hidden') &&
+                        legalElement.getBoundingClientRect().height > 50
+      
+      if (!isLegalOpen) {
+        // Timer iniziale per apparizione
+        inactivityTimeout.current = setTimeout(() => {
+          setIsVisible(true)
+        }, 500)
+      }
     }
 
-    // Se siamo in una sezione esclusa, nascondi
-    if (isInExcludedSection) {
-      setIsVisible(false)
-      return
-    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
 
-    // Mostra il dock nelle sezioni intermedie
-    setIsVisible(true)
-  }, [isMobile, currentSection, isLegalOpen])
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current)
+      if (inactivityTimeout.current) clearTimeout(inactivityTimeout.current)
+    }
+  }, [isMobile, currentSection])
 
   return {
     isVisible: isMobile && isVisible,

@@ -40,62 +40,93 @@
     @apply bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent;
   }
 
-  /* 🌐 LANGUAGE SELECTOR HERO - NON INVADENTE */
-  .language-selector-hero {
+  /* 🌐 LANGUAGE SELECTOR - EFFETTO GLASS COME PRIMA */
+  .language-selector {
     position: fixed;
-    top: 1.5rem;
-    right: 1.5rem;
-    z-index: 1000; /* Ridotto da 9999 per essere meno invadente */
+    top: 1rem;
+    right: 1rem;
+    z-index: 9999;
   }
 
-  .language-selector-hero-button {
-    background: rgba(255, 255, 255, 0.15); /* Più trasparente */
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 16px;
+  .language-selector-button {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
     padding: 12px 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* Ombra più leggera */
-    transition: all 200ms ease-out;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    transition: all 150ms ease-out;
     min-width: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    color: rgba(255, 255, 255, 0.95); /* Sempre bianco/trasparente */
+    color: #ffffff;
     font-weight: 600;
     cursor: pointer;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
 
-  .language-selector-hero-button:hover {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.3);
+  .language-selector-button:hover {
+    background: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.4);
     transform: translateY(-1px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
   }
 
-  .language-selector-hero-button:active {
+  .language-selector-button:active {
     transform: translateY(0) scale(0.98);
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.4);
   }
 
-  .language-switch-indicator {
+  .language-selector-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    min-width: 120px;
+    z-index: 10000;
+  }
+
+  .language-selector-option {
     display: flex;
     align-items: center;
-    justify-content: center;
-    opacity: 0.7;
-    transition: opacity 200ms ease;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    transition: all 120ms ease-out;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .language-selector-hero-button:hover .language-switch-indicator {
-    opacity: 1;
+  .language-selector-option:hover {
+    background: rgba(34, 197, 94, 0.1);
+    transform: translateX(2px);
   }
 
-  /* 📱 MOBILE DOCK - RIMOSSO TUTTO IL CONTROLLO VISIBILITÀ */
+  .language-selector-option:active {
+    transform: scale(0.98);
+  }
+
+  /* 📱 MOBILE DOCK */
   .mobile-dock {
-    /* Rimosso tutto il controllo di visibilità - gestito da App.tsx */
     touch-action: manipulation;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -238,7 +269,7 @@
     transform: translateY(-1px);
   }
 
-  /* Legal Documents - Scroll Smooth */
+  /* Legal Documents */
   .legal-modal {
     scroll-behavior: smooth;
     -webkit-scroll-behavior: smooth;
@@ -269,19 +300,6 @@
     will-change: transform;
   }
 
-  .animation-delay-100 {
-    animation-delay: 0.1s;
-  }
-
-  .animation-delay-200 {
-    animation-delay: 0.2s;
-  }
-
-  .animation-delay-300 {
-    animation-delay: 0.3s;
-  }
-
-  /* Performance Ottimizzazioni */
   .section-container {
     will-change: auto;
     contain: layout style paint;
@@ -291,7 +309,6 @@
     will-change: transform, opacity;
   }
 
-  /* Accessibilità - Contrasti Migliorati */
   .text-low-contrast {
     color: #374151 !important;
   }
@@ -300,7 +317,6 @@
     background-color: #f3f4f6 !important;
   }
 
-  /* Reattività Touch Globale */
   .touch-target {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
@@ -311,35 +327,59 @@
     transform: scale(0.95);
     transition-duration: 60ms;
   }
-
-  /* Status Bar Dynamic Color Support */
-  .status-bar-hero { 
-    --status-color: #22c55e; 
-  }
-  .status-bar-about { 
-    --status-color: #16a34a; 
-  }
-  .status-bar-dettaglio { 
-    --status-color: #15803d; 
-  }
-  .status-bar-services { 
-    --status-color: #166534; 
-  }
-  .status-bar-products { 
-    --status-color: #14532d; 
-  }
-  .status-bar-wholesale { 
-    --status-color: #052e16; 
-  }
-  .status-bar-contact { 
-    --status-color: #1f2937; 
-  }
 }
 
-/* 🎯 CRITICAL: SEZIONI SEMPRE VISIBILI SU MOBILE */
+/* 🎯 CRITICAL: FORZA VISIBILITÀ SEZIONI SU MOBILE */
+/* OVERRIDE ASSOLUTO - TUTTE LE SEZIONI DEVONO ESSERE VISIBILI */
+section,
+main,
+main > *,
+.section-container,
+[class*="Section"],
+[class*="section"],
+[id*="section"],
+[data-section],
+#hero,
+#about,
+#dettaglio,
+#banchetto,
+#services,
+#products,
+#wholesale,
+#contact,
+#footer,
+#legal {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  width: 100% !important;
+  min-height: auto !important;
+}
+
+/* COMPONENTI SPECIFICI CHE SI NASCONDEVANO */
+[class*="BanchettoSection"],
+[class*="WholesaleContact"],
+[class*="ContactSection"],
+[class*="ProductsSection"],
+[class*="ServicesSection"],
+[class*="AboutSection"],
+[class*="HeroSection"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  width: 100% !important;
+}
+
+/* MOBILE SPECIFICO - FORZA TUTTO */
 @media (max-width: 1023px) {
-  /* FORZA LA VISIBILITÀ DI TUTTE LE SEZIONI */
+  * {
+    visibility: visible !important;
+  }
+  
   section,
+  main,
   main > div,
   .section-container,
   [class*="Section"],
@@ -351,10 +391,13 @@
     opacity: 1 !important;
     position: relative !important;
     width: 100% !important;
+    height: auto !important;
     min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
   }
 
-  /* SEZIONI SPECIFICHE CHE SI NASCONDEVANO */
+  /* SEZIONI SPECIFICHE */
   #hero,
   #about, 
   #dettaglio,
@@ -370,9 +413,11 @@
     opacity: 1 !important;
     position: relative !important;
     z-index: 1 !important;
+    width: 100% !important;
+    height: auto !important;
   }
 
-  /* COMPONENTI CHE SI NASCONDEVANO */
+  /* COMPONENTI */
   [class*="BanchettoSection"],
   [class*="WholesaleContact"],
   [class*="ContactSection"],
@@ -384,24 +429,27 @@
     visibility: visible !important;
     opacity: 1 !important;
     position: relative !important;
+    width: 100% !important;
+    height: auto !important;
   }
 
-  /* Language Selector su mobile - meno invadente */
-  .language-selector-hero {
+  /* Language Selector mobile */
+  .language-selector {
     top: 1rem;
     right: 1rem;
-    z-index: 500; /* Ridotto ulteriormente */
+    z-index: 9999;
   }
 
-  .language-selector-hero-button {
+  .language-selector-button {
     padding: 10px 14px;
     min-width: 70px;
-    background: rgba(255, 255, 255, 0.1); /* Ancora più trasparente */
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    color: #ffffff;
   }
 
-  /* Touch targets migliorati per mobile */
+  /* Touch targets */
   button, 
   a, 
   .clickable {
@@ -427,15 +475,9 @@
     height: 2.5rem;
     font-size: 1rem;
   }
-
-  /* Velocità animazioni mobile */
-  .mobile-animation {
-    animation-duration: 150ms !important;
-    transition-duration: 60ms !important;
-  }
 }
 
-/* Desktop - Nascondi mobile dock se presente */
+/* Desktop */
 @media (min-width: 1024px) {
   .mobile-dock {
     display: none !important;
@@ -455,14 +497,13 @@
     font-size: 1.5rem;
   }
 
-  /* Language selector desktop */
-  .language-selector-hero {
+  .language-selector {
     top: 2rem;
     right: 2rem;
   }
 }
 
-/* Scrollbar Styling */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -479,12 +520,7 @@
   @apply bg-green-500;
 }
 
-/* Focus Styles - Accessibilità Migliorata */
-.focus-visible:focus {
-  @apply outline-none ring-2 ring-green-500 ring-offset-2;
-}
-
-/* Focus indicators migliorati per tutti gli elementi interattivi */
+/* Focus */
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
@@ -496,7 +532,7 @@ select:focus-visible,
   border-radius: 4px;
 }
 
-/* Animazioni ridotte per utenti con preferenze di movimento ridotto */
+/* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -506,16 +542,9 @@ select:focus-visible,
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  
-  .mobile-dock,
-  .language-selector-hero,
-  .section-container {
-    transition: none !important;
-    animation: none !important;
-  }
 }
 
-/* High contrast mode support */
+/* High Contrast */
 @media (prefers-contrast: high) {
   .text-low-contrast {
     color: #000000 !important;
@@ -531,32 +560,45 @@ select:focus-visible,
     border: 2px solid currentColor !important;
   }
 
-  .language-selector-hero-button {
+  .language-selector-button {
     background: rgba(255, 255, 255, 0.9) !important;
     border: 2px solid #000000 !important;
     color: #000000 !important;
   }
 }
 
-/* Dark mode preferences */
+/* Dark Mode */
 @media (prefers-color-scheme: dark) {
   .auto-dark {
     background-color: #1f2937;
     color: #f9fafb;
   }
 
-  .language-selector-hero-button {
-    background: rgba(31, 41, 55, 0.6);
+  .language-selector-button {
+    background: rgba(255, 255, 255, 0.6);
     border-color: rgba(255, 255, 255, 0.15);
     color: #f9fafb;
   }
+
+  .language-selector-dropdown {
+    background: rgba(31, 41, 55, 0.95);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .language-selector-option {
+    color: #f9fafb;
+  }
+
+  .language-selector-option:hover {
+    background: rgba(34, 197, 94, 0.2);
+  }
 }
 
-/* Print Styles */
+/* Print */
 @media print {
   .no-print,
   .mobile-dock,
-  .language-selector-hero {
+  .language-selector {
     display: none !important;
   }
   
@@ -565,7 +607,7 @@ select:focus-visible,
   }
 }
 
-/* Utilities per performance critiche */
+/* Performance */
 .gpu-accelerated {
   transform: translateZ(0);
   will-change: transform;
@@ -576,7 +618,7 @@ select:focus-visible,
   contain-intrinsic-size: 0 500px;
 }
 
-/* Smooth scrolling con fallback per browser vecchi */
+/* Smooth Scrolling */
 html {
   scroll-behavior: smooth;
 }
@@ -587,168 +629,68 @@ html {
   }
 }
 
-/* Container queries per componenti responsive */
-@container (max-width: 768px) {
-  .container-responsive {
-    padding: 1rem;
-  }
-}
-
-@container (min-width: 769px) {
-  .container-responsive {
-    padding: 2rem;
-  }
-}
-
-/* Prefers reduced transparency */
+/* Reduced Transparency */
 @media (prefers-reduced-transparency: reduce) {
   .backdrop-blur-custom,
-  .language-selector-hero-button {
+  .language-selector-button,
+  .language-selector-dropdown {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     background-color: rgba(255, 255, 255, 0.95);
   }
 }
 
-/* Status bar dinamica per ogni sezione */
-.theme-color-hero {
-  background-color: #22c55e;
-}
+/* Theme Colors */
+.theme-color-hero { background-color: #22c55e; }
+.theme-color-about { background-color: #16a34a; }
+.theme-color-dettaglio { background-color: #15803d; }
+.theme-color-services { background-color: #166534; }
+.theme-color-products { background-color: #14532d; }
+.theme-color-wholesale { background-color: #052e16; }
+.theme-color-contact { background-color: #1f2937; }
 
-.theme-color-about {
-  background-color: #16a34a;
-}
-
-.theme-color-dettaglio {
-  background-color: #15803d;
-}
-
-.theme-color-services {
-  background-color: #166534;
-}
-
-.theme-color-products {
-  background-color: #14532d;
-}
-
-.theme-color-wholesale {
-  background-color: #052e16;
-}
-
-.theme-color-contact {
-  background-color: #1f2937;
-}
-
-/* Animazioni ottimizzate per mobile */
-@media (max-width: 768px) {
-  .mobile-optimized {
-    animation-duration: 150ms !important;
-    transition-duration: 60ms !important;
-  }
-  
-  .mobile-dock-fast {
-    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-  }
-}
-
-/* Utilities per debugging in development */
-@media screen {
-  .debug-mobile-only {
-    display: none;
-  }
-  
-  @media (max-width: 768px) {
-    .debug-mobile-only {
-      display: block;
-      position: fixed;
-      bottom: 10px;
-      left: 10px;
-      background: rgba(0, 0, 0, 0.8);
-      color: white;
-      padding: 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      z-index: 9999;
-    }
-  }
-}
-
-/* Smooth transitions per tutti gli elementi interattivi */
-a, button, input, textarea, select {
-  transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-/* Fix per input su iOS */
+/* iOS Fixes */
 @supports (-webkit-touch-callout: none) {
   input, textarea, select {
     -webkit-appearance: none;
     border-radius: 0;
   }
   
-  .mobile-dock-fast,
   .mobile-dock {
     -webkit-transform: translateZ(0);
     -webkit-backface-visibility: hidden;
   }
 }
 
-/* Animazioni keyframes */
-@keyframes glass-appear {
-  from {
-    opacity: 0;
-    transform: translateY(-10px) scale(0.95);
-    backdrop-filter: blur(0px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    backdrop-filter: blur(25px);
-  }
+/* Smooth Transitions */
+a, button, input, textarea, select {
+  transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-@keyframes language-switch {
-  0% { transform: scale(1) rotate(0deg); }
-  50% { transform: scale(1.1) rotate(180deg); }
-  100% { transform: scale(1) rotate(360deg); }
+/* RIMUOVI QUALSIASI NASCONDIMENTO FORZATO */
+[style*="display: none"],
+[style*="visibility: hidden"],
+[style*="opacity: 0"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
-.language-selector-hero-button:active .language-switch-indicator {
-  animation: language-switch 0.3s ease-in-out;
-}
-
-/* 🎯 DEBUG UTILITY - RIMUOVI IN PRODUZIONE */
+/* ULTIMO OVERRIDE - GARANZIA ASSOLUTA */
 @media (max-width: 1023px) {
-  .debug-section-visibility {
-    position: relative !important;
-    outline: 2px solid red !important;
-    background: rgba(255, 0, 0, 0.1) !important;
+  body * {
+    visibility: visible !important;
   }
   
-  .debug-section-visibility::before {
-    content: attr(id) " - VISIBLE";
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: red;
-    color: white;
-    padding: 2px 6px;
-    font-size: 10px;
-    z-index: 10000;
-  }
-}
-
-/* OVERRIDE FINALE - GARANTISCI VISIBILITÀ ASSOLUTA SU MOBILE */
-@media (max-width: 1023px) {
-  * {
-    /* Rimuovi eventuali display:none nascosti */
-  }
-  
-  section:not(.hidden),
-  .section-container:not(.hidden),
-  [id^="section"]:not(.hidden),
-  [class*="Section"]:not(.hidden) {
+  section:not(.hidden):not([style*="display: none"]),
+  .section-container:not(.hidden):not([style*="display: none"]),
+  [id^="section"]:not(.hidden):not([style*="display: none"]),
+  [class*="Section"]:not(.hidden):not([style*="display: none"]) {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
   }
 }

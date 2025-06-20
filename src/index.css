@@ -25,11 +25,11 @@
 /* Custom Components */
 @layer components {
   .btn-primary {
-    @apply bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300;
+    @apply bg-gradient-to-r from-brand-500 to-brand-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300;
   }
 
   .btn-secondary {
-    @apply border-2 border-green-500 text-green-600 px-6 py-3 rounded-xl font-semibold hover:bg-green-50 transition-all duration-300;
+    @apply border-2 border-brand-500 text-brand-600 px-6 py-3 rounded-xl font-semibold hover:bg-brand-50 transition-all duration-300;
   }
 
   .card {
@@ -37,95 +37,24 @@
   }
 
   .gradient-text {
-    @apply bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-brand-600 to-accent-600 bg-clip-text text-transparent;
   }
 
-  /* 🌐 LANGUAGE SELECTOR - EFFETTO GLASS COME PRIMA */
-  .language-selector {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    z-index: 9999;
+  /* Mobile Header - Sempre Trasparente */
+  .mobile-header {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
+    transition: all 150ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .mobile-header .header-content {
+    background: transparent !important;
   }
 
-  .language-selector-button {
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 12px;
-    padding: 12px 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-    transition: all 150ms ease-out;
-    min-width: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    color: #ffffff;
-    font-weight: 600;
-    cursor: pointer;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .language-selector-button:hover {
-    background: rgba(255, 255, 255, 0.35);
-    border-color: rgba(255, 255, 255, 0.4);
-    transform: translateY(-1px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-  }
-
-  .language-selector-button:active {
-    transform: translateY(0) scale(0.98);
-    background: rgba(255, 255, 255, 0.4);
-  }
-
-  .language-selector-dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    margin-top: 8px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 12px;
-    padding: 8px;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
-    min-width: 120px;
-    z-index: 10000;
-  }
-
-  .language-selector-option {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    border-radius: 8px;
-    transition: all 120ms ease-out;
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    width: 100%;
-    text-align: left;
-    font-size: 14px;
-    font-weight: 500;
-    color: #374151;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .language-selector-option:hover {
-    background: rgba(34, 197, 94, 0.1);
-    transform: translateX(2px);
-  }
-
-  .language-selector-option:active {
-    transform: scale(0.98);
-  }
-
-  /* 📱 MOBILE DOCK */
+  /* Mobile Dock - Reattività 60ms */
   .mobile-dock {
     touch-action: manipulation;
     -webkit-touch-callout: none;
@@ -149,127 +78,7 @@
     transition-duration: 60ms;
   }
 
-  /* Contact Cards */
-  .contact-cards-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    align-items: stretch;
-  }
-
-  .contact-card {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    background: white;
-    border-radius: 1rem;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e5e7eb;
-    transition: all 300ms ease;
-  }
-
-  .contact-card:hover {
-    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-  }
-
-  .contact-card-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .contact-card-icon {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-    color: white;
-    flex-shrink: 0;
-  }
-
-  .contact-card-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .contact-card-info {
-    flex: 1;
-    margin-bottom: 1.5rem;
-  }
-
-  .contact-card-actions {
-    margin-top: auto;
-  }
-
-  .contact-card-actions .btn-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-
-  .contact-card-actions .btn-grid-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-  }
-
-  .contact-card-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    font-size: 0.875rem;
-    transition: all 200ms ease;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    min-height: 44px;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .contact-card-btn-primary {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    color: white;
-    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
-  }
-
-  .contact-card-btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
-  }
-
-  .contact-card-btn-whatsapp {
-    background: #10b981;
-    color: white;
-  }
-
-  .contact-card-btn-whatsapp:hover {
-    background: #059669;
-    transform: translateY(-1px);
-  }
-
-  .contact-card-btn-map {
-    background: #3b82f6;
-    color: white;
-  }
-
-  .contact-card-btn-map:hover {
-    background: #2563eb;
-    transform: translateY(-1px);
-  }
-
-  /* Legal Documents */
+  /* Legal Documents - Scroll Smooth */
   .legal-modal {
     scroll-behavior: smooth;
     -webkit-scroll-behavior: smooth;
@@ -300,6 +109,19 @@
     will-change: transform;
   }
 
+  .animation-delay-100 {
+    animation-delay: 0.1s;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 0.2s;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 0.3s;
+  }
+
+  /* Performance Ottimizzazioni */
   .section-container {
     will-change: auto;
     contain: layout style paint;
@@ -309,14 +131,16 @@
     will-change: transform, opacity;
   }
 
+  /* Accessibilità - Contrasti Migliorati */
   .text-low-contrast {
-    color: #374151 !important;
+    color: #374151 !important; /* Gray-700 invece di gray-500 per migliore contrasto */
   }
 
   .bg-low-contrast {
-    background-color: #f3f4f6 !important;
+    background-color: #f3f4f6 !important; /* Gray-100 invece di gray-50 */
   }
 
+  /* Reattività Touch Globale */
   .touch-target {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
@@ -327,183 +151,32 @@
     transform: scale(0.95);
     transition-duration: 60ms;
   }
-}
 
-/* 🎯 CRITICAL: FORZA VISIBILITÀ SEZIONI SU MOBILE */
-/* OVERRIDE ASSOLUTO - TUTTE LE SEZIONI DEVONO ESSERE VISIBILI */
-section,
-main,
-main > *,
-.section-container,
-[class*="Section"],
-[class*="section"],
-[id*="section"],
-[data-section],
-#hero,
-#about,
-#dettaglio,
-#banchetto,
-#services,
-#products,
-#wholesale,
-#contact,
-#footer,
-#legal {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  position: relative !important;
-  width: 100% !important;
-  min-height: auto !important;
-}
-
-/* COMPONENTI SPECIFICI CHE SI NASCONDEVANO */
-[class*="BanchettoSection"],
-[class*="WholesaleContact"],
-[class*="ContactSection"],
-[class*="ProductsSection"],
-[class*="ServicesSection"],
-[class*="AboutSection"],
-[class*="HeroSection"] {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  position: relative !important;
-  width: 100% !important;
-}
-
-/* MOBILE SPECIFICO - FORZA TUTTO */
-@media (max-width: 1023px) {
-  * {
-    visibility: visible !important;
+  /* Status Bar Dynamic Color Support */
+  .status-bar-hero { 
+    --status-color: #22c55e; 
   }
-  
-  section,
-  main,
-  main > div,
-  .section-container,
-  [class*="Section"],
-  [class*="section"],
-  [id*="section"],
-  [data-section] {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: relative !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: auto !important;
-    max-height: none !important;
-    overflow: visible !important;
+  .status-bar-about { 
+    --status-color: #16a34a; 
   }
-
-  /* SEZIONI SPECIFICHE */
-  #hero,
-  #about, 
-  #dettaglio,
-  #banchetto,
-  #services,
-  #products,
-  #wholesale,
-  #contact,
-  #footer,
-  #legal {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: relative !important;
-    z-index: 1 !important;
-    width: 100% !important;
-    height: auto !important;
+  .status-bar-dettaglio { 
+    --status-color: #15803d; 
   }
-
-  /* COMPONENTI */
-  [class*="BanchettoSection"],
-  [class*="WholesaleContact"],
-  [class*="ContactSection"],
-  [class*="ProductsSection"],
-  [class*="ServicesSection"],
-  [class*="AboutSection"],
-  [class*="HeroSection"] {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: relative !important;
-    width: 100% !important;
-    height: auto !important;
+  .status-bar-services { 
+    --status-color: #166534; 
   }
-
-  /* Language Selector mobile */
-  .language-selector {
-    top: 1rem;
-    right: 1rem;
-    z-index: 9999;
+  .status-bar-products { 
+    --status-color: #14532d; 
   }
-
-  .language-selector-button {
-    padding: 10px 14px;
-    min-width: 70px;
-    background: rgba(255, 255, 255, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-    color: #ffffff;
+  .status-bar-wholesale { 
+    --status-color: #052e16; 
   }
-
-  /* Touch targets */
-  button, 
-  a, 
-  .clickable {
-    min-height: 44px;
-    min-width: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* Contact Cards Mobile */
-  .contact-cards-container {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .contact-card {
-    padding: 1.25rem;
-  }
-
-  .contact-card-icon {
-    width: 2.5rem;
-    height: 2.5rem;
-    font-size: 1rem;
+  .status-bar-contact { 
+    --status-color: #1f2937; 
   }
 }
 
-/* Desktop */
-@media (min-width: 1024px) {
-  .mobile-dock {
-    display: none !important;
-  }
-
-  .contact-cards-container {
-    gap: 2rem;
-  }
-
-  .contact-card {
-    padding: 2rem;
-  }
-
-  .contact-card-icon {
-    width: 3.5rem;
-    height: 3.5rem;
-    font-size: 1.5rem;
-  }
-
-  .language-selector {
-    top: 2rem;
-    right: 2rem;
-  }
-}
-
-/* Scrollbar */
+/* Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -513,14 +186,19 @@ main > *,
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-green-400 rounded-full;
+  @apply bg-brand-400 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-green-500;
+  @apply bg-brand-500;
 }
 
-/* Focus */
+/* Focus Styles - Accessibilità Migliorata */
+.focus-visible:focus {
+  @apply outline-none ring-2 ring-brand-500 ring-offset-2;
+}
+
+/* Focus indicators migliorati per tutti gli elementi interattivi */
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
@@ -532,7 +210,41 @@ select:focus-visible,
   border-radius: 4px;
 }
 
-/* Reduced Motion */
+/* Miglioramenti specifici per mobile */
+@media (max-width: 768px) {
+  /* Header mobile ottimizzazioni */
+  .mobile-header-container {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Touch targets migliorati per mobile */
+  button, 
+  a, 
+  .clickable {
+    min-height: 44px; /* Apple HIG raccomandazione */
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Dock mobile ottimizzazioni */
+  .mobile-dock-container {
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  /* Velocità animazioni mobile */
+  .mobile-animation {
+    animation-duration: 150ms !important;
+    transition-duration: 60ms !important;
+  }
+}
+
+/* Animazioni ridotte per utenti con preferenze di movimento ridotto */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -542,9 +254,16 @@ select:focus-visible,
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  
+  .mobile-dock,
+  .mobile-header,
+  .section-container {
+    transition: none !important;
+    animation: none !important;
+  }
 }
 
-/* High Contrast */
+/* High contrast mode support */
 @media (prefers-contrast: high) {
   .text-low-contrast {
     color: #000000 !important;
@@ -559,46 +278,21 @@ select:focus-visible,
   a {
     border: 2px solid currentColor !important;
   }
-
-  .language-selector-button {
-    background: rgba(255, 255, 255, 0.9) !important;
-    border: 2px solid #000000 !important;
-    color: #000000 !important;
-  }
 }
 
-/* Dark Mode */
+/* Dark mode preferences */
 @media (prefers-color-scheme: dark) {
   .auto-dark {
     background-color: #1f2937;
     color: #f9fafb;
   }
-
-  .language-selector-button {
-    background: rgba(255, 255, 255, 0.6);
-    border-color: rgba(255, 255, 255, 0.15);
-    color: #f9fafb;
-  }
-
-  .language-selector-dropdown {
-    background: rgba(31, 41, 55, 0.95);
-    border-color: rgba(255, 255, 255, 0.3);
-  }
-
-  .language-selector-option {
-    color: #f9fafb;
-  }
-
-  .language-selector-option:hover {
-    background: rgba(34, 197, 94, 0.2);
-  }
 }
 
-/* Print */
+/* Print Styles */
 @media print {
   .no-print,
   .mobile-dock,
-  .language-selector {
+  .mobile-header {
     display: none !important;
   }
   
@@ -607,7 +301,7 @@ select:focus-visible,
   }
 }
 
-/* Performance */
+/* Utilities per performance critiche */
 .gpu-accelerated {
   transform: translateZ(0);
   will-change: transform;
@@ -618,7 +312,7 @@ select:focus-visible,
   contain-intrinsic-size: 0 500px;
 }
 
-/* Smooth Scrolling */
+/* Smooth scrolling con fallback per browser vecchi */
 html {
   scroll-behavior: smooth;
 }
@@ -629,68 +323,106 @@ html {
   }
 }
 
-/* Reduced Transparency */
+/* Container queries per componenti responsive */
+@container (max-width: 768px) {
+  .container-responsive {
+    padding: 1rem;
+  }
+}
+
+@container (min-width: 769px) {
+  .container-responsive {
+    padding: 2rem;
+  }
+}
+
+/* Prefers reduced transparency */
 @media (prefers-reduced-transparency: reduce) {
-  .backdrop-blur-custom,
-  .language-selector-button,
-  .language-selector-dropdown {
+  .backdrop-blur-custom {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     background-color: rgba(255, 255, 255, 0.95);
   }
 }
 
-/* Theme Colors */
-.theme-color-hero { background-color: #22c55e; }
-.theme-color-about { background-color: #16a34a; }
-.theme-color-dettaglio { background-color: #15803d; }
-.theme-color-services { background-color: #166534; }
-.theme-color-products { background-color: #14532d; }
-.theme-color-wholesale { background-color: #052e16; }
-.theme-color-contact { background-color: #1f2937; }
+/* Status bar dinamica per ogni sezione */
+.theme-color-hero {
+  background-color: #22c55e;
+}
 
-/* iOS Fixes */
+.theme-color-about {
+  background-color: #16a34a;
+}
+
+.theme-color-dettaglio {
+  background-color: #15803d;
+}
+
+.theme-color-services {
+  background-color: #166534;
+}
+
+.theme-color-products {
+  background-color: #14532d;
+}
+
+.theme-color-wholesale {
+  background-color: #052e16;
+}
+
+.theme-color-contact {
+  background-color: #1f2937;
+}
+
+/* Animazioni ottimizzate per mobile */
+@media (max-width: 768px) {
+  .mobile-optimized {
+    animation-duration: 150ms !important;
+    transition-duration: 60ms !important;
+  }
+  
+  .mobile-dock-fast,
+  .mobile-header {
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  }
+}
+
+/* Utilities per debugging in development */
+@media screen {
+  .debug-mobile-only {
+    display: none;
+  }
+  
+  @media (max-width: 768px) {
+    .debug-mobile-only {
+      display: block;
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      z-index: 9999;
+    }
+  }
+}
+
+/* Smooth transitions per tutti gli elementi interattivi */
+a, button, input, textarea, select {
+  transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Fix per input su iOS */
 @supports (-webkit-touch-callout: none) {
   input, textarea, select {
     -webkit-appearance: none;
     border-radius: 0;
   }
   
-  .mobile-dock {
+  .mobile-dock-fast {
     -webkit-transform: translateZ(0);
     -webkit-backface-visibility: hidden;
-  }
-}
-
-/* Smooth Transitions */
-a, button, input, textarea, select {
-  transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-/* RIMUOVI QUALSIASI NASCONDIMENTO FORZATO */
-[style*="display: none"],
-[style*="visibility: hidden"],
-[style*="opacity: 0"] {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-/* ULTIMO OVERRIDE - GARANZIA ASSOLUTA */
-@media (max-width: 1023px) {
-  body * {
-    visibility: visible !important;
-  }
-  
-  section:not(.hidden):not([style*="display: none"]),
-  .section-container:not(.hidden):not([style*="display: none"]),
-  [id^="section"]:not(.hidden):not([style*="display: none"]),
-  [class*="Section"]:not(.hidden):not([style*="display: none"]) {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: relative !important;
-    width: 100% !important;
-    height: auto !important;
   }
 }

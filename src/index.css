@@ -1,697 +1,599 @@
-import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react'
-import { useInView } from 'react-intersection-observer'
-import { EnterpriseErrorBoundary, AppErrorBoundary, SectionErrorBoundary } from './components/common/ErrorBoundary'
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-// 🔥 IMPORT CORRETTI CON CASE SENSITIVITY FISSO
-import HeroSection from './components/sections/HeroSection'
-import AboutSection from './components/sections/AboutSection'
-import BanchettoSection from './components/sections/BanchettoSection'
-import ServicesSection from './components/sections/ServicesSection'
-import ProductsSection from './components/sections/ProductsSection'
-import WholesaleContact from './components/sections/WholesaleContact'
-import ContactSection from './components/sections/ContactSection'
-import Footer from './components/layout/Footer'
-import LegalDocuments from './components/legal/LegalDocuments'
-import MobileDock from './components/layout/MobileDock'
-import LanguageSelector from './components/ui/LanguageSelector'
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 
-// 🎯 TRACKING GLOBALE ENTERPRISE
-declare global {
-  interface Window {
-    trackNavigazione: (sezione: string, azione: string, dettaglio: string) => void;
-    trackStoriaTradizione: (elemento: string, interesse: string) => void;
-    trackQualitaProdotti: (aspetto: string, valutazione: string) => void;
-    trackAzioneContatto: (tipoContatto: string, fonte: string, destinazione: string) => void;
-    trackLocalizzazione: (azione: string, luogo: string, risultato: string) => void;
-    trackRichiestaInformazioni: (tipo: string, argomento: string, modalita: string) => void;
-    trackPerformanceSito: (metrica: string, valore: number, soglia: number) => void;
-    trackTempoSezione: (sezione: string, secondi: number) => void;
-    updateCurrentSection: (sectionName: string) => void;
-    gtag: (...args: any[]) => void;
-    performanceTracked?: boolean;
+/* Base Styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
   }
 }
 
-// 🎬 LOADING FALLBACK OTTIMIZZATO
-const SectionLoadingFallback: React.FC<{ sectionName: string }> = ({ sectionName }) => (
-  <div className="min-h-[400px] flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100 mx-4 my-8 rounded-2xl">
-    <div className="text-center">
-      <div className="relative mb-4">
-        <div className="w-12 h-12 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mx-auto"></div>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse"></div>
-        </div>
-      </div>
-      <p className="text-green-700 font-medium">
-        Caricamento {sectionName}...
-      </p>
-    </div>
-  </div>
-)
+/* Custom Components */
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300;
+  }
 
-// 🎯 SEZIONE WRAPPER CON ERROR BOUNDARY
-interface SectionWrapperProps {
-  children: React.ReactNode
-  sectionName: string
-  className?: string
-}
+  .btn-secondary {
+    @apply border-2 border-green-500 text-green-600 px-6 py-3 rounded-xl font-semibold hover:bg-green-50 transition-all duration-300;
+  }
 
-const SectionWrapper: React.FC<SectionWrapperProps> = ({ 
-  children, 
-  sectionName, 
-  className = '' 
-}) => (
-  <SectionErrorBoundary
-    sectionName={sectionName}
-    onError={(error, errorInfo) => {
-      console.error(`❌ Errore in sezione ${sectionName}:`, error, errorInfo)
-      
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'section_error', {
-          event_category: 'Errors',
-          event_label: `${sectionName}_error`,
-          custom_parameter_1: error.message,
-          custom_parameter_2: sectionName,
-          value: 1
-        })
-      }
-    }}
-  >
-    <section className={`section-container ${className}`}>
-      <Suspense fallback={<SectionLoadingFallback sectionName={sectionName} />}>
-        {children}
-      </Suspense>
-    </section>
-  </SectionErrorBoundary>
-)
+  .card {
+    @apply bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-neutral-100;
+  }
 
-// 🎯 HOOK CENTRALIZZATO PER MOBILE DOCK VISIBILITY - LOGICA ORIGINALE COMPLETA
-const useMobileDockVisibility = () => {
-  const [isVisible, setIsVisible] = useState(false)
-  const [currentSection, setCurrentSection] = useState('hero')
-  const [isMobile, setIsMobile] = useState(false)
+  .gradient-text {
+    @apply bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent;
+  }
 
-  // Refs per tracking avanzato
-  const lastScrollY = useRef(0)
-  const scrollTimeout = useRef<NodeJS.Timeout>()
-  const inactivityTimeout = useRef<NodeJS.Timeout>()
-  const scrollDirection = useRef<'up' | 'down'>('down')
-  const isScrolling = useRef(false)
+  /* 🌐 LANGUAGE SELECTOR - EFFETTO GLASS COME PRIMA */
+  .language-selector {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 9999;
+  }
 
-  // 📱 Mobile detection
-  useEffect(() => {
-    const checkMobile = () => {
-      const mobile = window.innerWidth < 1024
-      setIsMobile(mobile)
+  .language-selector-button {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 12px 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    transition: all 150ms ease-out;
+    min-width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #ffffff;
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-      if (!mobile) {
-        setIsVisible(false) // Hide on desktop
-      }
-    }
+  .language-selector-button:hover {
+    background: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  }
 
-    checkMobile()
-    window.addEventListener('resize', checkMobile, { passive: true })
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
+  .language-selector-button:active {
+    transform: translateY(0) scale(0.98);
+    background: rgba(255, 255, 255, 0.4);
+  }
 
-  // 📍 Section detection
-  useEffect(() => {
-    if (!isMobile) return
+  .language-selector-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    min-width: 120px;
+    z-index: 10000;
+  }
 
-    let rafId: number
+  .language-selector-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    transition: all 120ms ease-out;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-    const detectCurrentSection = () => {
-      rafId = requestAnimationFrame(() => {
-        const sections = ['hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact']
-        const scrollPosition = window.scrollY + window.innerHeight / 2
-        let foundSection = 'hero'
+  .language-selector-option:hover {
+    background: rgba(34, 197, 94, 0.1);
+    transform: translateX(2px);
+  }
 
-        for (const sectionId of sections) {
-          const element = document.getElementById(sectionId)
-          if (element) {
-            const rect = element.getBoundingClientRect()
-            const elementTop = window.scrollY + rect.top
-            const elementBottom = elementTop + rect.height
-            
-            if (scrollPosition >= elementTop && scrollPosition < elementBottom) {
-              foundSection = sectionId
-              break
-            }
-          }
-        }
+  .language-selector-option:active {
+    transform: scale(0.98);
+  }
 
-        if (foundSection !== currentSection) {
-          setCurrentSection(foundSection)
-        }
-      })
-    }
+  /* 📱 MOBILE DOCK */
+  .mobile-dock {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
 
-    const handleScroll = () => detectCurrentSection()
+  .mobile-dock button,
+  .mobile-dock a,
+  .mobile-dock-item {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
 
-    detectCurrentSection()
-    window.addEventListener('scroll', handleScroll, { passive: true })
+  .mobile-dock button:active,
+  .mobile-dock a:active,
+  .mobile-dock-item:active {
+    transform: scale(0.95);
+    transition-duration: 60ms;
+  }
 
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-      if (rafId) cancelAnimationFrame(rafId)
-    }
-  }, [isMobile, currentSection])
+  /* Contact Cards */
+  .contact-cards-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: stretch;
+  }
 
-  // 🧠 LOGICA INTELLIGENTE DI VISIBILITÀ ORIGINALE
-  useEffect(() => {
-    if (!isMobile) {
-      setIsVisible(false)
-      return
-    }
+  .contact-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    transition: all 300ms ease;
+  }
 
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY
-      const scrollDelta = currentScrollY - lastScrollY.current
-      
-      // Aggiorna direzione solo per movimenti significativi
-      if (Math.abs(scrollDelta) > 5) {
-        scrollDirection.current = scrollDelta > 0 ? 'down' : 'up'
-        lastScrollY.current = currentScrollY
-        isScrolling.current = true
-      }
+  .contact-card:hover {
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
 
-      // Clear timeout precedenti
-      if (scrollTimeout.current) clearTimeout(scrollTimeout.current)
-      if (inactivityTimeout.current) clearTimeout(inactivityTimeout.current)
+  .contact-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
 
-      // 🚫 ZONE DI ESCLUSIONE SEMPLIFICATE
-      const excludedSections = ['hero', 'contact']
-      const isInExcludedSection = excludedSections.includes(currentSection)
-      
-      // Controllo documenti legali
-      const legalElement = document.getElementById('legal-documents')
-      const isLegalOpen = legalElement && 
-                        !legalElement.classList.contains('hidden') &&
-                        legalElement.getBoundingClientRect().height > 50
+  .contact-card-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: white;
+    flex-shrink: 0;
+  }
 
-      // Se siamo in una zona esclusa o legal è aperto, nascondi
-      if (isInExcludedSection || isLegalOpen) {
-        setIsVisible(false)
-        return
-      }
+  .contact-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
 
-      // 🎯 LOGICA INTELLIGENTE PRINCIPALE
-      scrollTimeout.current = setTimeout(() => {
-        isScrolling.current = false
-        
-        // Mostra immediatamente se si scrolla verso l'alto
-        if (scrollDirection.current === 'up') {
-          setIsVisible(true)
-          return
-        }
+  .contact-card-info {
+    flex: 1;
+    margin-bottom: 1.5rem;
+  }
 
-        // Se si scrolla verso il basso, aspetta inattività
-        if (scrollDirection.current === 'down') {
-          setIsVisible(false)
-          
-          // Timer di inattività più corto
-          inactivityTimeout.current = setTimeout(() => {
-            // Ricontrolla le condizioni
-            const currentExcluded = excludedSections.includes(currentSection)
-            const currentLegalOpen = legalElement && 
-                                   !legalElement.classList.contains('hidden') &&
-                                   legalElement.getBoundingClientRect().height > 50
+  .contact-card-actions {
+    margin-top: auto;
+  }
 
-            if (!currentExcluded && !currentLegalOpen && !isScrolling.current) {
-              setIsVisible(true)
-            }
-          }, 800) // Ridotto a 800ms per reattività migliore
-        }
-      }, 50) // Debounce ridotto
-    }
+  .contact-card-actions .btn-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
 
-    // Inizializza immediatamente se in sezione valida
-    const excludedSections = ['hero', 'contact']
-    if (!excludedSections.includes(currentSection)) {
-      const legalElement = document.getElementById('legal-documents')
-      const isLegalOpen = legalElement && 
-                        !legalElement.classList.contains('hidden') &&
-                        legalElement.getBoundingClientRect().height > 50
-      
-      if (!isLegalOpen) {
-        // Timer iniziale per apparizione
-        inactivityTimeout.current = setTimeout(() => {
-          setIsVisible(true)
-        }, 500)
-      }
-    }
+  .contact-card-actions .btn-grid-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
+  .contact-card-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 200ms ease;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    min-height: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-      if (scrollTimeout.current) clearTimeout(scrollTimeout.current)
-      if (inactivityTimeout.current) clearTimeout(inactivityTimeout.current)
-    }
-  }, [isMobile, currentSection])
+  .contact-card-btn-primary {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+  }
 
-  return {
-    isVisible: isMobile && isVisible,
-    currentSection,
-    isMobile
+  .contact-card-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
+  }
+
+  .contact-card-btn-whatsapp {
+    background: #10b981;
+    color: white;
+  }
+
+  .contact-card-btn-whatsapp:hover {
+    background: #059669;
+    transform: translateY(-1px);
+  }
+
+  .contact-card-btn-map {
+    background: #3b82f6;
+    color: white;
+  }
+
+  .contact-card-btn-map:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+  }
+
+  /* Legal Documents */
+  .legal-modal {
+    scroll-behavior: smooth;
+    -webkit-scroll-behavior: smooth;
+  }
+
+  .legal-modal .close-button {
+    touch-action: manipulation;
+    transition: all 60ms ease;
+  }
+
+  .legal-modal .close-button:active {
+    transform: scale(0.9);
   }
 }
 
-// 🎯 HOOK PER HERO SECTION DETECTION (per Language Selector)
-const useHeroVisibility = () => {
-  const [isHeroVisible, setIsHeroVisible] = useState(true)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const heroElement = document.getElementById('hero')
-      if (heroElement) {
-        const rect = heroElement.getBoundingClientRect()
-        const isVisible = rect.bottom > 100 // Mostra se hero è ancora visibile almeno per 100px
-        setIsHeroVisible(isVisible)
-      }
-    }
-
-    handleScroll()
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  return isHeroVisible
-}
-
-// 📱 COMPONENTE PRINCIPALE
-const App: React.FC = () => {
-  const [language, setLanguage] = useState<'it' | 'de'>('it')
-  const [isInitialized, setIsInitialized] = useState(false)
-
-  // 🎯 HOOKS CENTRALIZZATI
-  const mobileDock = useMobileDockVisibility()
-  const isHeroVisible = useHeroVisibility()
-
-  // 🎯 INTERSECTION OBSERVERS OTTIMIZZATI
-  const observerOptions = useMemo(() => ({
-    threshold: 0.3,
-    rootMargin: '0px 0px -50px 0px'
-  }), [])
-
-  const [heroRef, heroInView] = useInView(observerOptions)
-  const [aboutRef, aboutInView] = useInView(observerOptions)
-  const [banchettoRef, banchettoInView] = useInView(observerOptions)
-  const [servicesRef, servicesInView] = useInView(observerOptions)
-  const [productsRef, productsInView] = useInView(observerOptions)
-  const [wholesaleRef, wholesaleInView] = useInView(observerOptions)
-  const [contactRef, contactInView] = useInView(observerOptions)
-
-  // 🚀 TRACKING SETUP ENTERPRISE
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    const initializeTracking = () => {
-      try {
-        // 🎯 TRACKING NAVIGATION
-        if (!window.trackNavigazione) {
-          window.trackNavigazione = (sezione, azione, dettaglio) => {
-            console.log(`📍 Navigazione: ${sezione} -> ${azione} (${dettaglio})`)
-            if (window.gtag) {
-              window.gtag('event', 'navigazione', {
-                event_category: 'Navigation',
-                event_label: sezione,
-                custom_parameter_1: azione,
-                custom_parameter_2: dettaglio,
-                value: 1
-              })
-            }
-          }
-        }
-
-        // 🎯 TRACKING STORIA E TRADIZIONE
-        if (!window.trackStoriaTradizione) {
-          window.trackStoriaTradizione = (elemento, interesse) => {
-            console.log(`📖 Storia/Tradizione: ${elemento} (${interesse})`)
-            if (window.gtag) {
-              window.gtag('event', 'storia_tradizione', {
-                event_category: 'Brand Interest',
-                event_label: elemento,
-                custom_parameter_1: interesse,
-                value: 1
-              })
-            }
-          }
-        }
-
-        // 🎯 TRACKING QUALITÀ PRODOTTI
-        if (!window.trackQualitaProdotti) {
-          window.trackQualitaProdotti = (aspetto, valutazione) => {
-            console.log(`⭐ Qualità Prodotti: ${aspetto} (${valutazione})`)
-            if (window.gtag) {
-              window.gtag('event', 'qualita_prodotti', {
-                event_category: 'Product Quality',
-                event_label: aspetto,
-                custom_parameter_1: valutazione,
-                value: 1
-              })
-            }
-          }
-        }
-
-        // 🎯 TRACKING AZIONI CONTATTO
-        if (!window.trackAzioneContatto) {
-          window.trackAzioneContatto = (tipoContatto, fonte, destinazione) => {
-            console.log(`📞 Azione Contatto: ${tipoContatto} da ${fonte} verso ${destinazione}`)
-            if (window.gtag) {
-              window.gtag('event', 'azione_contatto', {
-                event_category: 'Contact Actions',
-                event_label: tipoContatto,
-                custom_parameter_1: fonte,
-                custom_parameter_2: destinazione,
-                value: 1
-              })
-            }
-          }
-        }
-
-        // 🎯 TRACKING LOCALIZZAZIONE
-        if (!window.trackLocalizzazione) {
-          window.trackLocalizzazione = (azione, luogo, risultato) => {
-            console.log(`🗺️ Localizzazione: ${azione} a ${luogo} (${risultato})`)
-            if (window.gtag) {
-              window.gtag('event', 'localizzazione', {
-                event_category: 'Location Interest',
-                event_label: azione,
-                custom_parameter_1: luogo,
-                custom_parameter_2: risultato,
-                value: 1
-              })
-            }
-          }
-        }
-
-        // 🎯 TRACKING RICHIESTE INFORMAZIONI
-        if (!window.trackRichiestaInformazioni) {
-          window.trackRichiestaInformazioni = (tipo, argomento, modalita) => {
-            console.log(`ℹ️ Richiesta Info: ${tipo} su ${argomento} via ${modalita}`)
-            if (window.gtag) {
-              window.gtag('event', 'richiesta_informazioni', {
-                event_category: 'Information Requests',
-                event_label: tipo,
-                custom_parameter_1: argomento,
-                custom_parameter_2: modalita,
-                value: 1
-              })
-            }
-          }
-        }
-
-        // 🎯 TRACKING PERFORMANCE
-        if (!window.trackPerformanceSito) {
-          window.trackPerformanceSito = (metrica, valore, soglia) => {
-            console.log(`⚡ Performance: ${metrica} = ${valore}ms (soglia: ${soglia}ms)`)
-            if (window.gtag) {
-              window.gtag('event', 'performance_sito', {
-                event_category: 'Site Performance',
-                event_label: metrica,
-                custom_parameter_1: valore.toString(),
-                custom_parameter_2: valore > soglia ? 'slow' : 'fast',
-                value: valore
-              })
-            }
-          }
-        }
-
-        // 🎯 TRACKING TEMPO IN SEZIONE
-        if (!window.trackTempoSezione) {
-          window.trackTempoSezione = (sezione, secondi) => {
-            console.log(`⏱️ Tempo in sezione ${sezione}: ${secondi}s`)
-            if (window.gtag) {
-              window.gtag('event', 'tempo_sezione', {
-                event_category: 'Section Engagement',
-                event_label: sezione,
-                custom_parameter_1: secondi.toString(),
-                custom_parameter_2: secondi > 10 ? 'engaged' : 'quick',
-                value: secondi
-              })
-            }
-          }
-        }
-
-        // 🎯 UPDATE CURRENT SECTION
-        if (!window.updateCurrentSection) {
-          window.updateCurrentSection = (sectionName) => {
-            console.log(`📍 Sezione corrente: ${sectionName}`)
-            
-            // Aggiorna theme color dinamicamente
-            const themeColorMeta = document.getElementById('theme-color-meta')
-            const sectionColors: Record<string, string> = {
-              'hero': '#22c55e',
-              'about': '#16a34a', 
-              'dettaglio': '#15803d',
-              'services': '#166534',
-              'products': '#14532d',
-              'wholesale': '#052e16',
-              'contact': '#1f2937'
-            }
-            
-            if (themeColorMeta && sectionColors[sectionName]) {
-              themeColorMeta.setAttribute('content', sectionColors[sectionName])
-            }
-
-            // Update page title dinamicamente
-            const titleMap: Record<string, string> = {
-              'hero': 'Bottamedi - Frutta e Verdura di Qualità dal 1974',
-              'about': 'La Nostra Storia - Bottamedi',
-              'dettaglio': 'Il Nostro Banchetto - Bottamedi',
-              'services': 'I Nostri Servizi - Bottamedi',
-              'products': 'I Nostri Prodotti - Bottamedi',
-              'wholesale': 'Ingrosso HORECA - Bottamedi',
-              'contact': 'Contatti - Bottamedi'
-            }
-
-            if (titleMap[sectionName] && sectionName !== 'hero') {
-              document.title = titleMap[sectionName]
-            }
-          }
-        }
-
-        setIsInitialized(true)
-
-      } catch (error) {
-        console.error('❌ Errore inizializzazione tracking:', error)
-        setIsInitialized(true)
-      }
-    }
-
-    // 🚀 PERFORMANCE TRACKING AVANZATO
-    if ('performance' in window && !window.performanceTracked) {
-      window.performanceTracked = true
-      
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          try {
-            const timing = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
-            if (timing) {
-              const loadTime = timing.loadEventEnd - timing.loadEventStart
-              window.trackPerformanceSito?.('page_load_time', loadTime, 3000)
-            }
-
-            // Largest Contentful Paint
-            if ('getLCP' in window) {
-              // @ts-ignore
-              window.getLCP((lcp) => {
-                window.trackPerformanceSito?.('largest_contentful_paint', lcp.value, 2500)
-              })
-            }
-
-            // First Input Delay
-            if ('getFID' in window) {
-              // @ts-ignore
-              window.getFID((fid) => {
-                window.trackPerformanceSito?.('first_input_delay', fid.value, 100)
-              })
-            }
-
-          } catch (error) {
-            console.warn('Performance tracking error:', error)
-          }
-        }, 100)
-      })
-    }
-
-    initializeTracking()
-  }, [])
-
-  // 🎯 LANGUAGE CHANGE HANDLER
-  const handleLanguageChange = useCallback((newLanguage: 'it' | 'de') => {
-    setLanguage(newLanguage)
-    
-    try {
-      localStorage.setItem('bottamedi_language', newLanguage)
-    } catch (error) {
-      console.warn('Non è possibile salvare la lingua:', error)
-    }
-    
-    if (typeof window !== 'undefined') {
-      window.trackNavigazione?.('language_selector', 'cambio_lingua', newLanguage)
-    }
-  }, [])
-
-  // 🎯 CARICA LINGUA SALVATA
-  useEffect(() => {
-    try {
-      const savedLanguage = localStorage.getItem('bottamedi_language') as 'it' | 'de'
-      if (savedLanguage && ['it', 'de'].includes(savedLanguage)) {
-        setLanguage(savedLanguage)
-      }
-    } catch (error) {
-      console.warn('Non è possibile caricare la lingua salvata:', error)
-    }
-  }, [])
-
-  // 🎯 SEZIONI MEMOIZZATE CON ERROR HANDLING
-  const sections = useMemo(() => [
-    { 
-      name: 'hero',
-      Component: HeroSection, 
-      ref: heroRef, 
-      inView: heroInView, 
-      props: { language } 
-    },
-    { 
-      name: 'about',
-      Component: AboutSection, 
-      ref: aboutRef, 
-      inView: aboutInView, 
-      props: { language } 
-    },
-    { 
-      name: 'banchetto',
-      Component: BanchettoSection, 
-      ref: banchettoRef, 
-      inView: banchettoInView, 
-      props: { language } 
-    },
-    { 
-      name: 'services',
-      Component: ServicesSection, 
-      ref: servicesRef, 
-      inView: servicesInView, 
-      props: { language } 
-    },
-    { 
-      name: 'products',
-      Component: ProductsSection, 
-      ref: productsRef, 
-      inView: productsInView, 
-      props: { language } 
-    },
-    { 
-      name: 'wholesale',
-      Component: WholesaleContact, 
-      ref: wholesaleRef, 
-      inView: wholesaleInView, 
-      props: { language } 
-    },
-    { 
-      name: 'contact',
-      Component: ContactSection, 
-      ref: contactRef, 
-      inView: contactInView, 
-      props: { language } 
-    }
-  ], [
-    language, 
-    heroRef, heroInView, 
-    aboutRef, aboutInView, 
-    banchettoRef, banchettoInView,
-    servicesRef, servicesInView, 
-    productsRef, productsInView, 
-    wholesaleRef, wholesaleInView,
-    contactRef, contactInView
-  ])
-
-  // 🚫 LOADING STATE INIZIALE
-  if (!isInitialized) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="relative mb-6">
-            <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mx-auto"></div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <img 
-                src="/favicon.webp" 
-                alt="Bottamedi" 
-                className="w-8 h-8 object-contain"
-                onError={(e) => {
-                  // Fallback se favicon non carica
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  const parent = target.parentElement;
-                  if (parent) {
-                    parent.innerHTML = '<div class="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>';
-                  }
-                }}
-              />
-            </div>
-          </div>
-          <h2 className="text-xl font-bold text-green-900 mb-2">Bottamedi</h2>
-          <p className="text-green-700">Caricamento in corso...</p>
-        </div>
-      </div>
-    )
+/* Custom Utilities */
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
 
-  return (
-    <AppErrorBoundary
-      onError={(error, errorInfo) => {
-        console.error('💥 CRASH APPLICAZIONE:', error, errorInfo)
-        
-        if (typeof window !== 'undefined' && window.gtag) {
-          window.gtag('event', 'app_crash_critical', {
-            event_category: 'Critical Errors',
-            event_label: 'app_level_crash',
-            custom_parameter_1: error.message,
-            custom_parameter_2: 'application_level',
-            value: 100
-          })
-        }
-      }}
-    >
-      <div className="min-h-screen bg-white overflow-x-hidden safe-component">
-        {/* 🌐 Language Selector - SEMPRE VISIBILE CON EFFETTO GLASS */}
-        <LanguageSelector 
-          language={language} 
-          onLanguageChange={handleLanguageChange}
-        />
-        
-        {/* 📱 Main Sections */}
-        <main className="relative">
-          {sections.map(({ name, Component, ref, inView, props }, index) => (
-            <SectionWrapper key={`section-${name}-${index}`} sectionName={name}>
-              <div ref={ref}>
-                <Component {...props} inView={inView} />
-              </div>
-            </SectionWrapper>
-          ))}
-        </main>
+  .backdrop-blur-custom {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
 
-        {/* 🦶 Footer */}
-        <SectionWrapper sectionName="footer">
-          <Footer language={language} />
-        </SectionWrapper>
+  .will-change-transform {
+    will-change: transform;
+  }
 
-        {/* ⚖️ Legal Documents */}
-        <SectionWrapper sectionName="legal">
-          <LegalDocuments language={language} />
-        </SectionWrapper>
+  .section-container {
+    will-change: auto;
+    contain: layout style paint;
+  }
 
-        {/* 📱 Mobile Dock - LOGICA CENTRALIZZATA */}
-        {mobileDock.isVisible && (
-          <SectionWrapper sectionName="mobile-dock">
-            <MobileDock language={language} />
-          </SectionWrapper>
-        )}
-      </div>
-    </AppErrorBoundary>
-  )
+  .section-container.in-view {
+    will-change: transform, opacity;
+  }
+
+  .text-low-contrast {
+    color: #374151 !important;
+  }
+
+  .bg-low-contrast {
+    background-color: #f3f4f6 !important;
+  }
+
+  .touch-target {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .touch-target:active {
+    transform: scale(0.95);
+    transition-duration: 60ms;
+  }
 }
 
-export default App
+/* 🎯 CRITICAL: FORZA VISIBILITÀ SEZIONI SU MOBILE - VERSIONE CORRETTA */
+@media (max-width: 1023px) {
+  /* SEZIONI SPECIFICHE CHE SI NASCONDEVANO */
+  #hero,
+  #about, 
+  #dettaglio,
+  #banchetto,
+  #services,
+  #products,
+  #wholesale,
+  #contact,
+  section[id],
+  .section-container {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    width: 100% !important;
+  }
+
+  /* COMPONENTI SPECIFICI CHE SI NASCONDEVANO */
+  [class*="BanchettoSection"],
+  [class*="WholesaleContact"],
+  [class*="ContactSection"],
+  [class*="ProductsSection"],
+  [class*="ServicesSection"],
+  [class*="AboutSection"],
+  [class*="HeroSection"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* Language Selector mobile */
+  .language-selector {
+    top: 1rem;
+    right: 1rem;
+    z-index: 9999;
+  }
+
+  .language-selector-button {
+    padding: 10px 14px;
+    min-width: 70px;
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    color: #ffffff;
+  }
+
+  /* Touch targets */
+  button, 
+  a, 
+  .clickable {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Contact Cards Mobile */
+  .contact-cards-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .contact-card {
+    padding: 1.25rem;
+  }
+
+  .contact-card-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .mobile-dock {
+    display: none !important;
+  }
+
+  .contact-cards-container {
+    gap: 2rem;
+  }
+
+  .contact-card {
+    padding: 2rem;
+  }
+
+  .contact-card-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 1.5rem;
+  }
+
+  .language-selector {
+    top: 2rem;
+    right: 2rem;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-neutral-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-green-400 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-green-500;
+}
+
+/* Focus */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px !important;
+  border-radius: 4px;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High Contrast */
+@media (prefers-contrast: high) {
+  .text-low-contrast {
+    color: #000000 !important;
+  }
+  
+  .bg-low-contrast {
+    background-color: #ffffff !important;
+    border: 1px solid #000000;
+  }
+  
+  button, 
+  a {
+    border: 2px solid currentColor !important;
+  }
+
+  .language-selector-button {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 2px solid #000000 !important;
+    color: #000000 !important;
+  }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .auto-dark {
+    background-color: #1f2937;
+    color: #f9fafb;
+  }
+
+  .language-selector-button {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #f9fafb;
+  }
+
+  .language-selector-dropdown {
+    background: rgba(31, 41, 55, 0.95);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .language-selector-option {
+    color: #f9fafb;
+  }
+
+  .language-selector-option:hover {
+    background: rgba(34, 197, 94, 0.2);
+  }
+}
+
+/* Print */
+@media print {
+  .no-print,
+  .mobile-dock,
+  .language-selector {
+    display: none !important;
+  }
+  
+  .section-container {
+    break-inside: avoid;
+  }
+}
+
+/* Performance */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.critical-render {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+@supports not (scroll-behavior: smooth) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Reduced Transparency */
+@media (prefers-reduced-transparency: reduce) {
+  .backdrop-blur-custom,
+  .language-selector-button,
+  .language-selector-dropdown {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background-color: rgba(255, 255, 255, 0.95);
+  }
+}
+
+/* Theme Colors */
+.theme-color-hero { background-color: #22c55e; }
+.theme-color-about { background-color: #16a34a; }
+.theme-color-dettaglio { background-color: #15803d; }
+.theme-color-services { background-color: #166534; }
+.theme-color-products { background-color: #14532d; }
+.theme-color-wholesale { background-color: #052e16; }
+.theme-color-contact { background-color: #1f2937; }
+
+/* iOS Fixes */
+@supports (-webkit-touch-callout: none) {
+  input, textarea, select {
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+  
+  .mobile-dock {
+    -webkit-transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+  }
+}
+
+/* Smooth Transitions */
+a, button, input, textarea, select {
+  transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* RIMUOVI OVERRIDE ECCESSIVI - MANTIENI SOLO I NECESSARI */

@@ -894,3 +894,897 @@ section {
 }
 
 /* 🔧 CONTAINER QUERY
+/* 🌐 Google Fonts - OTTIMIZZATO CON DISPLAY SWAP */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 🎯 BASE STYLES - CRITICAL VIEWPORT FIX */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* 🔥 REMOVE PROBLEMATIC OVERFLOWS */
+    width: 100%;
+    min-height: 100vh;
+    /* 🚨 FIX PARETI BIANCHE - NO OVERFLOW HIDDEN */
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* 🔥 CRITICAL: NO OVERFLOW HIDDEN CHE CAUSA PARETI BIANCHE */
+    min-height: 100vh;
+    background-color: #ffffff;
+    width: 100%;
+    position: relative;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  /* 🚀 PERFORMANCE CRITICHE - SIMPLIFIED */
+  * {
+    box-sizing: border-box;
+  }
+
+  /* 🔒 ROOT CONTAINER - NO PROBLEMATIC CONSTRAINTS */
+  #root {
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    /* 🚨 REMOVE MAX-WIDTH THAT CAUSES WHITE BARS */
+  }
+}
+
+/* 🎯 CUSTOM COMPONENTS */
+@layer components {
+  /* 🔥 MOBILE DOCK - SIMPLIFIED AND WORKING */
+  .mobile-dock {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    pointer-events: auto;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .mobile-dock button,
+  .mobile-dock a {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 150ms ease;
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-dock button:active,
+  .mobile-dock a:active {
+    transform: scale(0.95);
+    transition-duration: 60ms;
+  }
+
+  /* 📱 LANGUAGE SELECTOR - GLASS EFFECT */
+  .language-selector {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 9999;
+  }
+
+  .language-selector-button {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 12px 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    transition: all 150ms ease-out;
+    min-width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #374151;
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .language-selector-button:hover {
+    background: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  .language-selector-button:active {
+    transform: translateY(0) scale(0.98);
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  .language-selector-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    min-width: 120px;
+    z-index: 10000;
+  }
+
+  .language-selector-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    transition: all 120ms ease-out;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .language-selector-option:hover {
+    background: rgba(34, 197, 94, 0.1);
+    transform: translateX(2px);
+  }
+
+  .language-selector-option:active {
+    transform: scale(0.98);
+  }
+
+  /* 📞 CONTACT SECTION - RESPONSIVE GRID */
+  .contact-cards-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: stretch;
+  }
+
+  .contact-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    transition: all 300ms ease;
+  }
+
+  .contact-card:hover {
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .contact-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-card-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .contact-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .contact-card-info {
+    flex: 1;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-card-actions {
+    margin-top: auto;
+  }
+
+  .contact-card-actions .btn-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .contact-card-actions .btn-grid-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .contact-card-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 200ms ease;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    min-height: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .contact-card-btn-primary {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+  }
+
+  .contact-card-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
+  }
+
+  .contact-card-btn-whatsapp {
+    background: #10b981;
+    color: white;
+  }
+
+  .contact-card-btn-whatsapp:hover {
+    background: #059669;
+    transform: translateY(-1px);
+  }
+
+  .contact-card-btn-map {
+    background: #3b82f6;
+    color: white;
+  }
+
+  .contact-card-btn-map:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+  }
+
+  /* 🎯 BUTTON STYLES GLOBALI */
+  .btn-primary {
+    @apply bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn-secondary {
+    @apply border-2 border-green-500 text-green-600 px-6 py-3 rounded-xl font-semibold hover:bg-green-50 transition-all duration-300;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-neutral-100;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent;
+  }
+
+  /* 🎭 LEGAL DOCUMENTS */
+  .legal-modal {
+    scroll-behavior: smooth;
+    -webkit-scroll-behavior: smooth;
+  }
+
+  .legal-modal .close-button {
+    touch-action: manipulation;
+    transition: all 60ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .legal-modal .close-button:active {
+    transform: scale(0.9);
+  }
+}
+
+/* 🚀 CUSTOM UTILITIES */
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  .backdrop-blur-custom {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .animation-delay-100 {
+    animation-delay: 0.1s;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 0.2s;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 0.3s;
+  }
+
+  /* 🚀 PERFORMANCE OTTIMIZZAZIONI */
+  .section-container {
+    will-change: auto;
+    contain: layout style paint;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .section-container.in-view {
+    will-change: transform, opacity;
+  }
+
+  /* 🎯 TOUCH OTTIMIZZATO */
+  .touch-target {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .touch-target:active {
+    transform: scale(0.95);
+    transition-duration: 60ms;
+  }
+
+  /* 🔒 SAFE COMPONENTS */
+  .safe-transform {
+    transform: translateZ(0);
+    will-change: auto;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .prevent-flash {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+  }
+
+  /* 🚨 FORCE SHOW ON MOBILE - CRITICAL FIX */
+  .force-show-mobile {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* 🔥 CRITICAL: ENSURE ALL SECTIONS VISIBLE */
+  section {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* 🚀 GPU ACCELERATION SICURO */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+}
+
+/* 📜 SCROLLBAR STYLING */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-neutral-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-green-400 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-green-500;
+}
+
+/* 🎯 FOCUS STYLES - ACCESSIBILITÀ */
+.focus-visible:focus {
+  @apply outline-none ring-2 ring-blue-500 ring-offset-2;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px !important;
+  border-radius: 4px;
+}
+
+/* 📱 MOBILE OPTIMIZATIONS - CRITICAL FIXES */
+@media (max-width: 768px) {
+  /* 🔥 CRITICAL: PREVENT WHITE BARS ON MOBILE */
+  body, html {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    /* DO NOT USE overflow-x: hidden - causes white bars */
+  }
+
+  #root {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 🚨 FORCE ALL SECTIONS VISIBLE ON MOBILE */
+  section,
+  .section-container,
+  [id="section"],
+  [class*="Section"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    position: relative !important;
+  }
+
+  /* 🔥 SPECIFIC FIXES FOR PROBLEMATIC SECTIONS */
+  #dettaglio,
+  #wholesale,
+  [data-section="dettaglio"],
+  [data-section="wholesale"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    min-height: 200px !important;
+  }
+
+  /* 🎭 Language Selector Mobile */
+  .language-selector {
+    right: 0.5rem;
+    top: 0.5rem;
+  }
+
+  .language-selector-dropdown {
+    right: 0;
+    left: auto;
+    min-width: 140px;
+    margin-right: 0;
+  }
+
+  /* 📞 Contact Cards Mobile */
+  .contact-cards-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .contact-card {
+    padding: 1.25rem;
+  }
+
+  .contact-card-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1rem;
+  }
+
+  /* 🎯 Touch targets ottimizzati */
+  button,
+  a,
+  .clickable {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 📱 Mobile dock sicuro */
+  .mobile-dock {
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* 🔧 Fix input iOS */
+  input, textarea, select {
+    font-size: 16px; /* Prevent zoom on iOS */
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+
+  /* 🚨 CRITICAL: CONTAINER PADDING FIX */
+  .container {
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
+/* 📟 Tablet Optimizations */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .contact-cards-container {
+    gap: 1.5rem;
+  }
+
+  .contact-card {
+    padding: 1.25rem;
+  }
+}
+
+/* 🖥️ Large Desktop */
+@media (min-width: 1024px) {
+  .contact-cards-container {
+    gap: 2rem;
+  }
+
+  .contact-card {
+    padding: 2rem;
+  }
+
+  .contact-card-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 1.5rem;
+  }
+
+  /* 📱 Hide mobile dock on desktop */
+  .mobile-dock {
+    display: none !important;
+  }
+}
+
+/* ♿ ACCESSIBILITÀ - REDUCED MOTION */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .mobile-dock,
+  .language-selector,
+  .section-container,
+  .contact-card {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* 📱 HIGH CONTRAST MODE */
+@media (prefers-contrast: high) {
+  .language-selector-button,
+  .language-selector-dropdown {
+    background: #ffffff !important;
+    border: 2px solid #000000 !important;
+    color: #000000 !important;
+  }
+
+  button,
+  a {
+    border: 2px solid currentColor !important;
+  }
+}
+
+/* 🌙 DARK MODE PREFERENCES */
+@media (prefers-color-scheme: dark) {
+  .auto-dark {
+    background-color: #1f2937;
+    color: #f9fafb;
+  }
+
+  .language-selector-button {
+    background: rgba(31, 41, 55, 0.8);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #f9fafb;
+  }
+
+  .language-selector-dropdown {
+    background: rgba(31, 41, 55, 0.95);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .language-selector-option {
+    color: #f9fafb;
+  }
+
+  .language-selector-option:hover {
+    background: rgba(34, 197, 94, 0.2);
+  }
+}
+
+/* 🚫 REDUCED TRANSPARENCY */
+@media (prefers-reduced-transparency: reduce) {
+  .backdrop-blur-custom,
+  .language-selector-button,
+  .language-selector-dropdown {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background-color: rgba(255, 255, 255, 0.95);
+  }
+}
+
+/* 🖨️ PRINT STYLES */
+@media print {
+  .no-print,
+  .mobile-dock,
+  .language-selector {
+    display: none !important;
+  }
+
+  .section-container {
+    break-inside: avoid;
+  }
+}
+
+/* 🎯 ANIMAZIONI OTTIMIZZATE */
+@keyframes glass-appear {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    backdrop-filter: blur(25px);
+  }
+}
+
+@keyframes dock-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(100px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dock-slide-down {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(100px) scale(0.9);
+  }
+}
+
+.language-selector-dropdown {
+  animation: glass-appear 200ms ease-out;
+}
+
+.mobile-dock.visible {
+  animation: dock-slide-up 300ms ease-out;
+}
+
+.mobile-dock.hidden {
+  animation: dock-slide-down 250ms ease-in;
+}
+
+/* 🔧 SMOOTH SCROLLING CON FALLBACK */
+html {
+  scroll-behavior: smooth;
+}
+
+@supports not (scroll-behavior: smooth) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* 🎯 SMOOTH TRANSITIONS GLOBALI */
+a, button, input, textarea, select {
+  transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* 🍎 FIX SAFARI E WEBKIT */
+@supports (-webkit-touch-callout: none) {
+  input, textarea, select {
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+
+  .mobile-dock,
+  .language-selector {
+    -webkit-transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+  }
+}
+
+/* 🔒 CRITICAL STABILITY FIXES */
+html, body, #root {
+  /* 🚨 REMOVE ALL CONSTRAINTS THAT CAUSE WHITE BARS */
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: relative !important;
+  /* NO max-width, NO overflow-x hidden */
+}
+
+.stable-layout {
+  contain: layout style paint;
+}
+
+.safe-component {
+  opacity: 1;
+  visibility: visible;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* 🔥 FORCE SECTION VISIBILITY - NUCLEAR OPTION */
+section,
+.section-container,
+[data-section],
+[id="section"],
+[class*="Section"],
+[class*="section"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 100px !important;
+}
+
+/* 🚨 CRITICAL MOBILE SECTION VISIBILITY FIXES */
+@media (max-width: 1023px) {
+  /* 🔥 FORCE SHOW ALL COMPONENTS ON MOBILE */
+  *[class*="Section"],
+  *[class*="section"],
+  *[id*="section"],
+  section,
+  main > div,
+  .section-container {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 200px !important;
+    overflow: visible !important;
+    transform: none !important;
+    clip: unset !important;
+    clip-path: none !important;
+  }
+
+  /* 🚨 SPECIFIC MOBILE FIXES FOR PROBLEMATIC SECTIONS */
+  [class*="BanchettoSection"],
+  [class*="WholesaleContact"],
+  #dettaglio,
+  #wholesale,
+  #banchetto,
+  #contact {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    min-height: 300px !important;
+    position: relative !important;
+    z-index: 1 !important;
+    background: transparent !important;
+  }
+
+  /* 🔧 CONTAINER FIXES FOR MOBILE */
+  .container,
+  .mx-auto {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* 🎯 GRID FIXES FOR MOBILE */
+  .grid {
+    display: grid !important;
+    width: 100% !important;
+  }
+
+  .grid-cols-1 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* 🚨 MOTION COMPONENTS MOBILE FIX */
+  [data-framer-name],
+  [style*="transform"],
+  [style*="opacity"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* 🔥 CRITICAL WHITE BARS FIX */
+* {
+  /* 🚨 REMOVE ANY CONSTRAINT THAT CAUSES WHITE BARS */
+  max-width: none !important;
+}
+
+body {
+  /* 🔥 ENSURE FULL WIDTH ALWAYS */
+  width: 100vw !important;
+  min-width: 100% !important;
+  overflow-x: auto !important; /* Allow horizontal scroll if needed */
+}
+
+#root {
+  /* 🔥 ROOT MUST BE FULL WIDTH */
+  width: 100vw !important;
+  min-width: 100% !important;
+  max-width: none !important;
+}
+
+/* 🎯 SECTION FULL WIDTH ENFORCEMENT */
+section {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}

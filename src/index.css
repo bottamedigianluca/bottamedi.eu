@@ -1,94 +1,93 @@
-/* 🌐 Google Fonts - OTTIMIZZATO CON DISPLAY SWAP */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* 🎯 BASE STYLES - CRITICAL VIEWPORT FIX */
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+
+/* Base Styles */
 @layer base {
   html {
     scroll-behavior: smooth;
-    /* 🔥 REMOVE PROBLEMATIC OVERFLOWS */
-    width: 100%;
-    min-height: 100vh;
-    /* 🚨 FIX PARETI BIANCHE - NO OVERFLOW HIDDEN */
-    overflow-x: hidden;
   }
 
   body {
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* 🔥 CRITICAL: NO OVERFLOW HIDDEN CHE CAUSA PARETI BIANCHE */
-    min-height: 100vh;
-    background-color: #ffffff;
-    width: 100%;
-    position: relative;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', Georgia, serif;
-  }
-
-  /* 🚀 PERFORMANCE CRITICHE - SIMPLIFIED */
-  * {
-    box-sizing: border-box;
-  }
-
-  /* 🔒 ROOT CONTAINER - NO PROBLEMATIC CONSTRAINTS */
-  #root {
-    min-height: 100vh;
-    width: 100%;
-    position: relative;
-    display: block;
-    opacity: 1;
-    visibility: visible;
-    /* 🚨 REMOVE MAX-WIDTH THAT CAUSES WHITE BARS */
-    overflow-x: hidden;
+    font-family: 'Playfair Display', serif;
   }
 }
 
-/* 🎯 CUSTOM COMPONENTS */
+/* Custom Components */
 @layer components {
-  /* 🔥 MOBILE DOCK - SIMPLIFIED AND WORKING */
+  .btn-primary {
+    @apply bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300;
+  }
+
+  .btn-secondary {
+    @apply border-2 border-green-500 text-green-600 px-6 py-3 rounded-xl font-semibold hover:bg-green-50 transition-all duration-300;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-neutral-100;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent;
+  }
+
+  /* Mobile Header - Sempre Trasparente */
+  .mobile-header {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
+    transition: all 150ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .mobile-header .header-content {
+    background: transparent !important;
+  }
+
+  /* Mobile Dock - Reattività 60ms - FORZA VISIBILITA */
   .mobile-dock {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 9999;
-    pointer-events: auto;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* FORZA VISIBILITA MOBILE DOCK */
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 9999 !important;
   }
 
   .mobile-dock button,
-  .mobile-dock a {
+  .mobile-dock a,
+  .mobile-dock-item {
     touch-action: manipulation;
+    -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
-    transition: all 150ms ease;
-    min-height: 44px;
-    min-width: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   .mobile-dock button:active,
-  .mobile-dock a:active {
+  .mobile-dock a:active,
+  .mobile-dock-item:active {
     transform: scale(0.95);
     transition-duration: 60ms;
   }
 
-  /* 📱 LANGUAGE SELECTOR - GLASS EFFECT */
+  /* Language Selector */
   .language-selector {
     position: fixed;
     top: 1rem;
@@ -173,7 +172,7 @@
     transform: scale(0.98);
   }
 
-  /* 📞 CONTACT SECTION - RESPONSIVE GRID */
+  /* Contact Cards */
   .contact-cards-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -293,28 +292,7 @@
     transform: translateY(-1px);
   }
 
-  /* 🎯 BUTTON STYLES GLOBALI */
-  .btn-primary {
-    @apply bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .btn-secondary {
-    @apply border-2 border-green-500 text-green-600 px-6 py-3 rounded-xl font-semibold hover:bg-green-50 transition-all duration-300;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .card {
-    @apply bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-neutral-100;
-  }
-
-  .gradient-text {
-    @apply bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent;
-  }
-
-  /* 🎭 LEGAL DOCUMENTS */
+  /* Legal Documents - Scroll Smooth */
   .legal-modal {
     scroll-behavior: smooth;
     -webkit-scroll-behavior: smooth;
@@ -323,7 +301,6 @@
   .legal-modal .close-button {
     touch-action: manipulation;
     transition: all 60ms ease;
-    -webkit-tap-highlight-color: transparent;
   }
 
   .legal-modal .close-button:active {
@@ -331,7 +308,7 @@
   }
 }
 
-/* 🚀 CUSTOM UTILITIES */
+/* Custom Utilities */
 @layer utilities {
   .text-shadow {
     text-shadow: 0 2px 8px rgba(0,0,0,0.3);
@@ -358,26 +335,30 @@
     animation-delay: 0.3s;
   }
 
-  /* 🚀 PERFORMANCE OTTIMIZZAZIONI */
+  /* Performance Ottimizzazioni */
   .section-container {
     will-change: auto;
     contain: layout style paint;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
   }
 
   .section-container.in-view {
     will-change: transform, opacity;
   }
 
-  /* 🎯 TOUCH OTTIMIZZATO */
+  /* Accessibilità - Contrasti Migliorati */
+  .text-low-contrast {
+    color: #374151 !important; /* Gray-700 invece di gray-500 per migliore contrasto */
+  }
+
+  .bg-low-contrast {
+    background-color: #f3f4f6 !important; /* Gray-100 invece di gray-50 */
+  }
+
+  /* Reattività Touch Globale */
   .touch-target {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    min-height: 44px;
-    min-width: 44px;
   }
 
   .touch-target:active {
@@ -385,44 +366,48 @@
     transition-duration: 60ms;
   }
 
-  /* 🔒 SAFE COMPONENTS */
-  .safe-transform {
-    transform: translateZ(0);
-    will-change: auto;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+  /* Status Bar Dynamic Color Support */
+  .status-bar-hero { 
+    --status-color: #22c55e; 
   }
-
-  .prevent-flash {
-    opacity: 1 !important;
-    visibility: visible !important;
-    display: block !important;
+  .status-bar-about { 
+    --status-color: #16a34a; 
   }
-
-  /* 🚨 FORCE SHOW ON MOBILE - CRITICAL FIX */
-  .force-show-mobile {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+  .status-bar-dettaglio { 
+    --status-color: #15803d; 
   }
-
-  /* 🔥 CRITICAL: ENSURE ALL SECTIONS VISIBLE */
-  section {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+  .status-bar-services { 
+    --status-color: #166534; 
   }
-
-  /* 🚀 GPU ACCELERATION SICURO */
-  .gpu-accelerated {
-    transform: translateZ(0);
-    will-change: transform;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+  .status-bar-products { 
+    --status-color: #14532d; 
+  }
+  .status-bar-wholesale { 
+    --status-color: #052e16; 
+  }
+  .status-bar-contact { 
+    --status-color: #1f2937; 
   }
 }
 
-/* 📜 SCROLLBAR STYLING */
+/* SOLO FIX PER VISIBILITA SEZIONI - NIENTE ALTERAZIONI PROPORZIONI */
+section {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* SPECIFICI FIX PER SEZIONI PROBLEMATICHE - SENZA FORZARE ALTEZZE */
+#dettaglio,
+#wholesale,
+[data-section="dettaglio"],
+[data-section="wholesale"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -439,11 +424,12 @@
   @apply bg-green-500;
 }
 
-/* 🎯 FOCUS STYLES - ACCESSIBILITÀ */
+/* Focus Styles - Accessibilità Migliorata */
 .focus-visible:focus {
-  @apply outline-none ring-2 ring-blue-500 ring-offset-2;
+  @apply outline-none ring-2 ring-green-500 ring-offset-2;
 }
 
+/* Focus indicators migliorati per tutti gli elementi interattivi */
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
@@ -455,49 +441,48 @@ select:focus-visible,
   border-radius: 4px;
 }
 
-/* 📱 MOBILE OPTIMIZATIONS - CRITICAL FIXES */
+/* Miglioramenti specifici per mobile */
 @media (max-width: 768px) {
-  /* 🔥 CRITICAL: PREVENT WHITE BARS ON MOBILE */
-  body, html {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    /* DO NOT USE overflow-x: hidden - causes white bars */
-    overflow-x: hidden;
+  /* Header mobile ottimizzazioni */
+  .mobile-header-container {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 
-  #root {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow-x: hidden;
+  /* Touch targets migliorati per mobile */
+  button, 
+  a, 
+  .clickable {
+    min-height: 44px; /* Apple HIG raccomandazione */
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  /* 🚨 FORCE ALL SECTIONS VISIBLE ON MOBILE */
-  section,
-  .section-container,
-  [id="section"],
-  [class*="Section"] {
+  /* Dock mobile ottimizzazioni - FORZA VISIBILITA SU MOBILE */
+  .mobile-dock {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    width: 100% !important;
-    position: relative !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 9999 !important;
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 
-  /* 🔥 SPECIFIC FIXES FOR PROBLEMATIC SECTIONS */
-  #dettaglio,
-  #wholesale,
-  [data-section="dettaglio"],
-  [data-section="wholesale"] {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    height: auto !important;
-    min-height: 200px !important;
+  .mobile-dock-container {
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
-  /* 🎭 Language Selector Mobile */
+  /* Language Selector Mobile */
   .language-selector {
     right: 0.5rem;
     top: 0.5rem;
@@ -510,7 +495,7 @@ select:focus-visible,
     margin-right: 0;
   }
 
-  /* 📞 Contact Cards Mobile */
+  /* Contact Cards Mobile */
   .contact-cards-container {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -526,58 +511,19 @@ select:focus-visible,
     font-size: 1rem;
   }
 
-  /* 🎯 Touch targets ottimizzati */
-  button,
-  a,
-  .clickable {
-    min-height: 44px;
-    min-width: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* 📱 Mobile dock sicuro */
-  .mobile-dock {
-    padding-bottom: max(20px, env(safe-area-inset-bottom));
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    z-index: 9999 !important;
-  }
-
-  /* 🔧 Fix input iOS */
-  input, textarea, select {
-    font-size: 16px; /* Prevent zoom on iOS */
-    -webkit-appearance: none;
-    border-radius: 0;
-  }
-
-  /* 🚨 CRITICAL: CONTAINER PADDING FIX */
-  .container {
-    width: 100% !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+  /* Velocità animazioni mobile */
+  .mobile-animation {
+    animation-duration: 150ms !important;
+    transition-duration: 60ms !important;
   }
 }
 
-/* 📟 Tablet Optimizations */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .contact-cards-container {
-    gap: 1.5rem;
-  }
-
-  .contact-card {
-    padding: 1.25rem;
-  }
-}
-
-/* 🖥️ Large Desktop */
+/* Desktop - Nascondi mobile dock */
 @media (min-width: 1024px) {
+  .mobile-dock {
+    display: none !important;
+  }
+
   .contact-cards-container {
     gap: 2rem;
   }
@@ -591,14 +537,9 @@ select:focus-visible,
     height: 3.5rem;
     font-size: 1.5rem;
   }
-
-  /* 📱 Hide mobile dock on desktop */
-  .mobile-dock {
-    display: none !important;
-  }
 }
 
-/* ♿ ACCESSIBILITÀ - REDUCED MOTION */
+/* Animazioni ridotte per utenti con preferenze di movimento ridotto */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -608,32 +549,33 @@ select:focus-visible,
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-
+  
   .mobile-dock,
-  .language-selector,
-  .section-container,
-  .contact-card {
+  .mobile-header,
+  .section-container {
     transition: none !important;
     animation: none !important;
   }
 }
 
-/* 📱 HIGH CONTRAST MODE */
+/* High contrast mode support */
 @media (prefers-contrast: high) {
-  .language-selector-button,
-  .language-selector-dropdown {
-    background: #ffffff !important;
-    border: 2px solid #000000 !important;
+  .text-low-contrast {
     color: #000000 !important;
   }
-
-  button,
+  
+  .bg-low-contrast {
+    background-color: #ffffff !important;
+    border: 1px solid #000000;
+  }
+  
+  button, 
   a {
     border: 2px solid currentColor !important;
   }
 }
 
-/* 🌙 DARK MODE PREFERENCES */
+/* Dark mode preferences */
 @media (prefers-color-scheme: dark) {
   .auto-dark {
     background-color: #1f2937;
@@ -660,7 +602,56 @@ select:focus-visible,
   }
 }
 
-/* 🚫 REDUCED TRANSPARENCY */
+/* Print Styles */
+@media print {
+  .no-print,
+  .mobile-dock,
+  .mobile-header,
+  .language-selector {
+    display: none !important;
+  }
+  
+  .section-container {
+    break-inside: avoid;
+  }
+}
+
+/* Utilities per performance critiche */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.critical-render {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* Smooth scrolling con fallback per browser vecchi */
+html {
+  scroll-behavior: smooth;
+}
+
+@supports not (scroll-behavior: smooth) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Container queries per componenti responsive */
+@container (max-width: 768px) {
+  .container-responsive {
+    padding: 1rem;
+  }
+}
+
+@container (min-width: 769px) {
+  .container-responsive {
+    padding: 2rem;
+  }
+}
+
+/* Prefers reduced transparency */
 @media (prefers-reduced-transparency: reduce) {
   .backdrop-blur-custom,
   .language-selector-button,
@@ -671,20 +662,90 @@ select:focus-visible,
   }
 }
 
-/* 🖨️ PRINT STYLES */
-@media print {
-  .no-print,
-  .mobile-dock,
-  .language-selector {
-    display: none !important;
-  }
+/* Status bar dinamica per ogni sezione */
+.theme-color-hero {
+  background-color: #22c55e;
+}
 
-  .section-container {
-    break-inside: avoid;
+.theme-color-about {
+  background-color: #16a34a;
+}
+
+.theme-color-dettaglio {
+  background-color: #15803d;
+}
+
+.theme-color-services {
+  background-color: #166534;
+}
+
+.theme-color-products {
+  background-color: #14532d;
+}
+
+.theme-color-wholesale {
+  background-color: #052e16;
+}
+
+.theme-color-contact {
+  background-color: #1f2937;
+}
+
+/* Animazioni ottimizzate per mobile */
+@media (max-width: 768px) {
+  .mobile-optimized {
+    animation-duration: 150ms !important;
+    transition-duration: 60ms !important;
+  }
+  
+  .mobile-dock-fast,
+  .mobile-header {
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
   }
 }
 
-/* 🎯 ANIMAZIONI OTTIMIZZATE */
+/* Utilities per debugging in development */
+@media screen {
+  .debug-mobile-only {
+    display: none;
+  }
+  
+  @media (max-width: 768px) {
+    .debug-mobile-only {
+      display: block;
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      z-index: 9999;
+    }
+  }
+}
+
+/* Smooth transitions per tutti gli elementi interattivi */
+a, button, input, textarea, select {
+  transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Fix per input su iOS */
+@supports (-webkit-touch-callout: none) {
+  input, textarea, select {
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+  
+  .mobile-dock-fast,
+  .mobile-dock {
+    -webkit-transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+  }
+}
+
+/* Animazioni keyframes */
 @keyframes glass-appear {
   from {
     opacity: 0;
@@ -730,158 +791,4 @@ select:focus-visible,
 
 .mobile-dock.hidden {
   animation: dock-slide-down 250ms ease-in;
-}
-
-/* 🔧 SMOOTH SCROLLING CON FALLBACK */
-html {
-  scroll-behavior: smooth;
-}
-
-@supports not (scroll-behavior: smooth) {
-  html {
-    scroll-behavior: auto;
-  }
-}
-
-/* 🎯 SMOOTH TRANSITIONS GLOBALI */
-a, button, input, textarea, select {
-  transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-/* 🍎 FIX SAFARI E WEBKIT */
-@supports (-webkit-touch-callout: none) {
-  input, textarea, select {
-    -webkit-appearance: none;
-    border-radius: 0;
-  }
-
-  .mobile-dock,
-  .language-selector {
-    -webkit-transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-  }
-}
-
-/* 🔒 CRITICAL STABILITY FIXES */
-html, body, #root {
-  /* 🚨 REMOVE ALL CONSTRAINTS THAT CAUSE WHITE BARS */
-  width: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  position: relative !important;
-  /* NO max-width, NO overflow-x hidden */
-  overflow-x: hidden !important;
-}
-
-.stable-layout {
-  contain: layout style paint;
-}
-
-.safe-component {
-  opacity: 1;
-  visibility: visible;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-/* 🔥 FORCE SECTION VISIBILITY - NUCLEAR OPTION */
-section,
-.section-container,
-[data-section],
-[id="section"],
-[class*="Section"],
-[class*="section"] {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  position: relative !important;
-  width: 100% !important;
-  height: auto !important;
-  min-height: 100px !important;
-}
-
-/* 🚨 CRITICAL MOBILE SECTION VISIBILITY FIXES */
-@media (max-width: 1023px) {
-  /* 🔥 FORCE SHOW ALL COMPONENTS ON MOBILE */
-  *[class*="Section"],
-  *[class*="section"],
-  *[id*="section"],
-  section,
-  main > div,
-  .section-container {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: relative !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 200px !important;
-    overflow: visible !important;
-    transform: none !important;
-    clip: unset !important;
-    clip-path: none !important;
-  }
-
-  /* 🚨 SPECIFIC MOBILE FIXES FOR PROBLEMATIC SECTIONS */
-  [class*="BanchettoSection"],
-  [class*="WholesaleContact"],
-  #dettaglio,
-  #wholesale,
-  #banchetto,
-  #contact {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    height: auto !important;
-    min-height: 300px !important;
-    position: relative !important;
-    z-index: 1 !important;
-    background: transparent !important;
-  }
-
-  /* 🔧 CONTAINER FIXES FOR MOBILE */
-  .container,
-  .mx-auto {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
-
-  /* 🎯 GRID FIXES FOR MOBILE */
-  .grid {
-    display: grid !important;
-    width: 100% !important;
-  }
-
-  .grid-cols-1 {
-    grid-template-columns: 1fr !important;
-  }
-
-  .grid-cols-2 {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-
-  /* 🚨 MOTION COMPONENTS MOBILE FIX */
-  [data-framer-name],
-  [style*="transform"],
-  [style*="opacity"] {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-}
-
-/* 🎯 SECTION FULL WIDTH ENFORCEMENT */
-section {
-  width: 100% !important;
-  min-width: 100% !important;
-  max-width: none !important;
-  margin: 0 !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
 }

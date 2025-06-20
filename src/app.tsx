@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { ErrorBoundary } from 'react-error-boundary'
+import { EnterpriseErrorBoundary, AppErrorBoundary, SectionErrorBoundary } from './components/common/ErrorBoundary'
 
 // 🔥 IMPORT CORRETTI CON CASE SENSITIVITY FISSO
 import HeroSection from './components/sections/HeroSection'
@@ -32,41 +32,6 @@ declare global {
   }
 }
 
-// 🚨 ERROR FALLBACK COMPONENTS
-const SectionErrorFallback: React.FC<{ 
-  error: Error, 
-  resetError: () => void,
-  sectionName: string 
-}> = ({ error, resetError, sectionName }) => (
-  <div className="min-h-[400px] flex items-center justify-center bg-gradient-to-br from-red-50 to-red-100 border border-red-200 rounded-2xl mx-4 my-8">
-    <div className="text-center p-8 max-w-md">
-      <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-        <span className="text-2xl">⚠️</span>
-      </div>
-      <h3 className="text-lg font-bold text-red-900 mb-2">
-        Errore nella sezione {sectionName}
-      </h3>
-      <p className="text-red-700 text-sm mb-4 leading-relaxed">
-        Si è verificato un problema tecnico. La pagina funziona normalmente, solo questa sezione ha avuto un errore temporaneo.
-      </p>
-      <button
-        onClick={resetError}
-        className="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition-colors duration-200"
-      >
-        Riprova
-      </button>
-      {process.env.NODE_ENV === 'development' && (
-        <details className="mt-4 text-left">
-          <summary className="text-xs text-red-600 cursor-pointer">Dettagli errore (dev)</summary>
-          <pre className="text-xs text-red-600 mt-2 bg-red-50 p-2 rounded overflow-auto">
-            {error.message}
-          </pre>
-        </details>
-      )}
-    </div>
-  </div>
-)
-
 // 🎬 LOADING FALLBACK OTTIMIZZATO
 const SectionLoadingFallback: React.FC<{ sectionName: string }> = ({ sectionName }) => (
   <div className="min-h-[400px] flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100 mx-4 my-8 rounded-2xl">
@@ -96,10 +61,8 @@ const SectionWrapper: React.FC<SectionWrapperProps> = ({
   sectionName, 
   className = '' 
 }) => (
-  <ErrorBoundary
-    FallbackComponent={(props) => (
-      <SectionErrorFallback {...props} sectionName={sectionName} />
-    )}
+  <SectionErrorBoundary
+    sectionName={sectionName}
     onError={(error, errorInfo) => {
       console.error(`❌ Errore in sezione ${sectionName}:`, error, errorInfo)
       
@@ -120,7 +83,7 @@ const SectionWrapper: React.FC<SectionWrapperProps> = ({
         {children}
       </Suspense>
     </section>
-  </ErrorBoundary>
+  </SectionErrorBoundary>
 )
 
 // 📱 COMPONENTE PRINCIPALE
@@ -469,44 +432,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <ErrorBoundary
-      FallbackComponent={({ error, resetError }) => (
-        <div className="min-h-screen bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">⚠️</span>
-            </div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">
-              Errore Temporaneo
-            </h2>
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              Si è verificato un problema tecnico. La pagina verrà ricaricata automaticamente per risolvere il problema.
-            </p>
-            <div className="space-y-3">
-              <button
-                onClick={resetError}
-                className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                Riprova
-              </button>
-              <button
-                onClick={() => window.location.reload()}
-                className="w-full bg-gray-500 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300"
-              >
-                Ricarica Pagina
-              </button>
-            </div>
-            {process.env.NODE_ENV === 'development' && (
-              <details className="mt-4 text-left">
-                <summary className="text-xs text-gray-500 cursor-pointer">Dettagli errore (dev)</summary>
-                <pre className="text-xs text-red-600 mt-2 bg-gray-50 p-2 rounded overflow-auto max-h-32">
-                  {error.message}
-                </pre>
-              </details>
-            )}
-          </div>
-        </div>
-      )}
+    <AppErrorBoundary
       onError={(error, errorInfo) => {
         console.error('💥 CRASH APPLICAZIONE:', error, errorInfo)
         
@@ -555,7 +481,7 @@ const App: React.FC = () => {
           <MobileDock language={language} />
         </SectionWrapper>
       </div>
-    </ErrorBoundary>
+    </AppErrorBoundary>
   )
 }
 

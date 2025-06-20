@@ -40,35 +40,66 @@
     @apply bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent;
   }
 
-  /* Mobile Header - Sempre Trasparente */
-  .mobile-header {
-    background: transparent !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    border-bottom: none !important;
-    box-shadow: none !important;
-    transition: all 150ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  
-  .mobile-header .header-content {
-    background: transparent !important;
+  /* 🌐 LANGUAGE SELECTOR HERO - NON INVADENTE */
+  .language-selector-hero {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 1000; /* Ridotto da 9999 per essere meno invadente */
   }
 
-  /* Mobile Dock - Reattività 60ms - FORZA VISIBILITA */
+  .language-selector-hero-button {
+    background: rgba(255, 255, 255, 0.15); /* Più trasparente */
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 12px 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* Ombra più leggera */
+    transition: all 200ms ease-out;
+    min-width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.95); /* Sempre bianco/trasparente */
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .language-selector-hero-button:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .language-selector-hero-button:active {
+    transform: translateY(0) scale(0.98);
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .language-switch-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: opacity 200ms ease;
+  }
+
+  .language-selector-hero-button:hover .language-switch-indicator {
+    opacity: 1;
+  }
+
+  /* 📱 MOBILE DOCK - RIMOSSO TUTTO IL CONTROLLO VISIBILITÀ */
   .mobile-dock {
+    /* Rimosso tutto il controllo di visibilità - gestito da App.tsx */
     touch-action: manipulation;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
-    /* FORZA VISIBILITA MOBILE DOCK */
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    z-index: 9999 !important;
   }
 
   .mobile-dock button,
@@ -85,91 +116,6 @@
   .mobile-dock-item:active {
     transform: scale(0.95);
     transition-duration: 60ms;
-  }
-
-  /* Language Selector */
-  .language-selector {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    z-index: 9999;
-  }
-
-  .language-selector-button {
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 12px;
-    padding: 12px 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-    transition: all 150ms ease-out;
-    min-width: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    color: #374151;
-    font-weight: 600;
-    cursor: pointer;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .language-selector-button:hover {
-    background: rgba(255, 255, 255, 0.35);
-    border-color: rgba(255, 255, 255, 0.4);
-    transform: translateY(-1px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-  }
-
-  .language-selector-button:active {
-    transform: translateY(0) scale(0.98);
-    background: rgba(255, 255, 255, 0.4);
-  }
-
-  .language-selector-dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    margin-top: 8px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 12px;
-    padding: 8px;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
-    min-width: 120px;
-    z-index: 10000;
-  }
-
-  .language-selector-option {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    border-radius: 8px;
-    transition: all 120ms ease-out;
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    width: 100%;
-    text-align: left;
-    font-size: 14px;
-    font-weight: 500;
-    color: #374151;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .language-selector-option:hover {
-    background: rgba(34, 197, 94, 0.1);
-    transform: translateX(2px);
-  }
-
-  .language-selector-option:active {
-    transform: scale(0.98);
   }
 
   /* Contact Cards */
@@ -347,11 +293,11 @@
 
   /* Accessibilità - Contrasti Migliorati */
   .text-low-contrast {
-    color: #374151 !important; /* Gray-700 invece di gray-500 per migliore contrasto */
+    color: #374151 !important;
   }
 
   .bg-low-contrast {
-    background-color: #f3f4f6 !important; /* Gray-100 invece di gray-50 */
+    background-color: #f3f4f6 !important;
   }
 
   /* Reattività Touch Globale */
@@ -390,54 +336,129 @@
   }
 }
 
-/* SOLO FIX PER VISIBILITA SEZIONI - NIENTE ALTERAZIONI PROPORZIONI */
-section {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-/* SPECIFICI FIX PER SEZIONI PROBLEMATICHE - SENZA FORZARE ALTEZZE */
-#dettaglio,
-#wholesale,
-[data-section="dettaglio"],
-[data-section="wholesale"],
-[class*="BanchettoSection"],
-[class*="WholesaleContact"],
-#banchetto,
-#contact {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-/* MOBILE FIXES PER SEZIONI NASCOSTE */
+/* 🎯 CRITICAL: SEZIONI SEMPRE VISIBILI SU MOBILE */
 @media (max-width: 1023px) {
-  *[class*="Section"],
-  *[class*="section"],
-  *[id*="section"],
+  /* FORZA LA VISIBILITÀ DI TUTTE LE SEZIONI */
   section,
   main > div,
-  .section-container {
+  .section-container,
+  [class*="Section"],
+  [class*="section"],
+  [id*="section"],
+  [data-section] {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     position: relative !important;
     width: 100% !important;
+    min-height: auto !important;
   }
 
-  /* SEZIONI SPECIFICHE CHE SI NASCONDONO */
-  [class*="BanchettoSection"],
-  [class*="WholesaleContact"],
+  /* SEZIONI SPECIFICHE CHE SI NASCONDEVANO */
+  #hero,
+  #about, 
   #dettaglio,
-  #wholesale,
   #banchetto,
-  #contact {
+  #services,
+  #products,
+  #wholesale,
+  #contact,
+  #footer,
+  #legal {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     position: relative !important;
     z-index: 1 !important;
+  }
+
+  /* COMPONENTI CHE SI NASCONDEVANO */
+  [class*="BanchettoSection"],
+  [class*="WholesaleContact"],
+  [class*="ContactSection"],
+  [class*="ProductsSection"],
+  [class*="ServicesSection"],
+  [class*="AboutSection"],
+  [class*="HeroSection"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+  }
+
+  /* Language Selector su mobile - meno invadente */
+  .language-selector-hero {
+    top: 1rem;
+    right: 1rem;
+    z-index: 500; /* Ridotto ulteriormente */
+  }
+
+  .language-selector-hero-button {
+    padding: 10px 14px;
+    min-width: 70px;
+    background: rgba(255, 255, 255, 0.1); /* Ancora più trasparente */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Touch targets migliorati per mobile */
+  button, 
+  a, 
+  .clickable {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Contact Cards Mobile */
+  .contact-cards-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .contact-card {
+    padding: 1.25rem;
+  }
+
+  .contact-card-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1rem;
+  }
+
+  /* Velocità animazioni mobile */
+  .mobile-animation {
+    animation-duration: 150ms !important;
+    transition-duration: 60ms !important;
+  }
+}
+
+/* Desktop - Nascondi mobile dock se presente */
+@media (min-width: 1024px) {
+  .mobile-dock {
+    display: none !important;
+  }
+
+  .contact-cards-container {
+    gap: 2rem;
+  }
+
+  .contact-card {
+    padding: 2rem;
+  }
+
+  .contact-card-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 1.5rem;
+  }
+
+  /* Language selector desktop */
+  .language-selector-hero {
+    top: 2rem;
+    right: 2rem;
   }
 }
 
@@ -475,104 +496,6 @@ select:focus-visible,
   border-radius: 4px;
 }
 
-/* Miglioramenti specifici per mobile */
-@media (max-width: 768px) {
-  /* Header mobile ottimizzazioni */
-  .mobile-header-container {
-    background: transparent !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
-
-  /* Touch targets migliorati per mobile */
-  button, 
-  a, 
-  .clickable {
-    min-height: 44px; /* Apple HIG raccomandazione */
-    min-width: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* Dock mobile ottimizzazioni - FORZA VISIBILITA SU MOBILE */
-  .mobile-dock {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    z-index: 9999 !important;
-    padding-bottom: max(20px, env(safe-area-inset-bottom));
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-  }
-
-  .mobile-dock-container {
-    will-change: transform;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-  }
-
-  /* Language Selector Mobile */
-  .language-selector {
-    right: 0.5rem;
-    top: 0.5rem;
-  }
-
-  .language-selector-dropdown {
-    right: 0;
-    left: auto;
-    min-width: 140px;
-    margin-right: 0;
-  }
-
-  /* Contact Cards Mobile */
-  .contact-cards-container {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .contact-card {
-    padding: 1.25rem;
-  }
-
-  .contact-card-icon {
-    width: 2.5rem;
-    height: 2.5rem;
-    font-size: 1rem;
-  }
-
-  /* Velocità animazioni mobile */
-  .mobile-animation {
-    animation-duration: 150ms !important;
-    transition-duration: 60ms !important;
-  }
-}
-
-/* Desktop - Nascondi mobile dock */
-@media (min-width: 1024px) {
-  .mobile-dock {
-    display: none !important;
-  }
-
-  .contact-cards-container {
-    gap: 2rem;
-  }
-
-  .contact-card {
-    padding: 2rem;
-  }
-
-  .contact-card-icon {
-    width: 3.5rem;
-    height: 3.5rem;
-    font-size: 1.5rem;
-  }
-}
-
 /* Animazioni ridotte per utenti con preferenze di movimento ridotto */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -585,7 +508,7 @@ select:focus-visible,
   }
   
   .mobile-dock,
-  .mobile-header,
+  .language-selector-hero,
   .section-container {
     transition: none !important;
     animation: none !important;
@@ -607,6 +530,12 @@ select:focus-visible,
   a {
     border: 2px solid currentColor !important;
   }
+
+  .language-selector-hero-button {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 2px solid #000000 !important;
+    color: #000000 !important;
+  }
 }
 
 /* Dark mode preferences */
@@ -616,23 +545,10 @@ select:focus-visible,
     color: #f9fafb;
   }
 
-  .language-selector-button {
-    background: rgba(31, 41, 55, 0.8);
-    border-color: rgba(255, 255, 255, 0.2);
+  .language-selector-hero-button {
+    background: rgba(31, 41, 55, 0.6);
+    border-color: rgba(255, 255, 255, 0.15);
     color: #f9fafb;
-  }
-
-  .language-selector-dropdown {
-    background: rgba(31, 41, 55, 0.95);
-    border-color: rgba(255, 255, 255, 0.3);
-  }
-
-  .language-selector-option {
-    color: #f9fafb;
-  }
-
-  .language-selector-option:hover {
-    background: rgba(34, 197, 94, 0.2);
   }
 }
 
@@ -640,8 +556,7 @@ select:focus-visible,
 @media print {
   .no-print,
   .mobile-dock,
-  .mobile-header,
-  .language-selector {
+  .language-selector-hero {
     display: none !important;
   }
   
@@ -688,8 +603,7 @@ html {
 /* Prefers reduced transparency */
 @media (prefers-reduced-transparency: reduce) {
   .backdrop-blur-custom,
-  .language-selector-button,
-  .language-selector-dropdown {
+  .language-selector-hero-button {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     background-color: rgba(255, 255, 255, 0.95);
@@ -732,8 +646,7 @@ html {
     transition-duration: 60ms !important;
   }
   
-  .mobile-dock-fast,
-  .mobile-header {
+  .mobile-dock-fast {
     animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
   }
 }
@@ -749,7 +662,7 @@ html {
       display: block;
       position: fixed;
       bottom: 10px;
-      right: 10px;
+      left: 10px;
       background: rgba(0, 0, 0, 0.8);
       color: white;
       padding: 8px;
@@ -793,36 +706,49 @@ a, button, input, textarea, select {
   }
 }
 
-@keyframes dock-slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(100px) scale(0.9);
+@keyframes language-switch {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(180deg); }
+  100% { transform: scale(1) rotate(360deg); }
+}
+
+.language-selector-hero-button:active .language-switch-indicator {
+  animation: language-switch 0.3s ease-in-out;
+}
+
+/* 🎯 DEBUG UTILITY - RIMUOVI IN PRODUZIONE */
+@media (max-width: 1023px) {
+  .debug-section-visibility {
+    position: relative !important;
+    outline: 2px solid red !important;
+    background: rgba(255, 0, 0, 0.1) !important;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+  
+  .debug-section-visibility::before {
+    content: attr(id) " - VISIBLE";
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: red;
+    color: white;
+    padding: 2px 6px;
+    font-size: 10px;
+    z-index: 10000;
   }
 }
 
-@keyframes dock-slide-down {
-  from {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+/* OVERRIDE FINALE - GARANTISCI VISIBILITÀ ASSOLUTA SU MOBILE */
+@media (max-width: 1023px) {
+  * {
+    /* Rimuovi eventuali display:none nascosti */
   }
-  to {
-    opacity: 0;
-    transform: translateY(100px) scale(0.9);
+  
+  section:not(.hidden),
+  .section-container:not(.hidden),
+  [id^="section"]:not(.hidden),
+  [class*="Section"]:not(.hidden) {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
-}
-
-.language-selector-dropdown {
-  animation: glass-appear 200ms ease-out;
-}
-
-.mobile-dock.visible {
-  animation: dock-slide-up 300ms ease-out;
-}
-
-.mobile-dock.hidden {
-  animation: dock-slide-down 250ms ease-in;
 }

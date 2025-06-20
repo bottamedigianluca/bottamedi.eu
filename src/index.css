@@ -1,12 +1,11 @@
-/* Google Fonts Import */
+/* 🌐 Google Fonts - OTTIMIZZATO CON DISPLAY SWAP */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 
-/* Tailwind CSS Directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Base Styles */
+/* 🎯 BASE STYLES - CRITICAL VIEWPORT FIX */
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -21,6 +20,7 @@
     min-height: 100vh;
     background-color: #ffffff;
     width: 100%;
+    position: relative;
     margin: 0;
     padding: 0;
   }
@@ -43,9 +43,9 @@
   }
 }
 
-/* Component Styles */
+/* 🎯 CUSTOM COMPONENTS */
 @layer components {
-  /* Mobile Dock */
+  /* 🔥 MOBILE DOCK - SIMPLIFIED AND WORKING */
   .mobile-dock {
     position: fixed;
     bottom: 0;
@@ -56,6 +56,9 @@
     transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 
   .mobile-dock button,
@@ -76,7 +79,7 @@
     transition-duration: 60ms;
   }
 
-  /* Language Selector */
+  /* 📱 LANGUAGE SELECTOR - GLASS EFFECT */
   .language-selector {
     position: fixed;
     top: 1rem;
@@ -161,7 +164,7 @@
     transform: scale(0.98);
   }
 
-  /* Contact Cards */
+  /* 📞 CONTACT SECTION - RESPONSIVE GRID */
   .contact-cards-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -281,7 +284,7 @@
     transform: translateY(-1px);
   }
 
-  /* Global Button Styles */
+  /* 🎯 BUTTON STYLES GLOBALI */
   .btn-primary {
     @apply bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300;
     touch-action: manipulation;
@@ -302,7 +305,7 @@
     @apply bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent;
   }
 
-  /* Legal Documents */
+  /* 🎭 LEGAL DOCUMENTS */
   .legal-modal {
     scroll-behavior: smooth;
     -webkit-scroll-behavior: smooth;
@@ -319,7 +322,7 @@
   }
 }
 
-/* Utility Styles */
+/* 🚀 CUSTOM UTILITIES */
 @layer utilities {
   .text-shadow {
     text-shadow: 0 2px 8px rgba(0,0,0,0.3);
@@ -346,7 +349,7 @@
     animation-delay: 0.3s;
   }
 
-  /* Performance Optimizations */
+  /* 🚀 PERFORMANCE OTTIMIZZAZIONI */
   .section-container {
     will-change: auto;
     contain: layout style paint;
@@ -359,7 +362,7 @@
     will-change: transform, opacity;
   }
 
-  /* Touch Optimizations */
+  /* 🎯 TOUCH OTTIMIZZATO */
   .touch-target {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
@@ -373,7 +376,7 @@
     transition-duration: 60ms;
   }
 
-  /* Safe Components */
+  /* 🔒 SAFE COMPONENTS */
   .safe-transform {
     transform: translateZ(0);
     will-change: auto;
@@ -387,12 +390,14 @@
     display: block !important;
   }
 
+  /* 🚨 FORCE SHOW ON MOBILE - CRITICAL FIX */
   .force-show-mobile {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
   }
 
+  /* 🚀 GPU ACCELERATION SICURO */
   .gpu-accelerated {
     transform: translateZ(0);
     will-change: transform;
@@ -401,14 +406,7 @@
   }
 }
 
-/* Ensure all sections are visible */
-section {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-/* Scrollbar Styling */
+/* 📜 SCROLLBAR STYLING */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -425,7 +423,7 @@ section {
   @apply bg-green-500;
 }
 
-/* Focus Styles for Accessibility */
+/* 🎯 FOCUS STYLES - ACCESSIBILITÀ */
 .focus-visible:focus {
   @apply outline-none ring-2 ring-blue-500 ring-offset-2;
 }
@@ -441,8 +439,9 @@ select:focus-visible,
   border-radius: 4px;
 }
 
-/* Mobile Optimizations */
+/* 📱 MOBILE OPTIMIZATIONS - CRITICAL FIXES */
 @media (max-width: 768px) {
+  /* 🔥 CRITICAL: PREVENT WHITE BARS ON MOBILE */
   body, html {
     width: 100% !important;
     margin: 0 !important;
@@ -455,6 +454,7 @@ select:focus-visible,
     padding: 0 !important;
   }
 
+  /* 🚨 FORCE ALL SECTIONS VISIBLE ON MOBILE */
   section,
   .section-container,
   [id="section"],
@@ -466,6 +466,7 @@ select:focus-visible,
     position: relative !important;
   }
 
+  /* 🔥 SPECIFIC FIXES FOR PROBLEMATIC SECTIONS */
   #dettaglio,
   #wholesale,
   [data-section="dettaglio"],
@@ -477,6 +478,7 @@ select:focus-visible,
     min-height: 200px !important;
   }
 
+  /* 🎭 Language Selector Mobile */
   .language-selector {
     right: 0.5rem;
     top: 0.5rem;
@@ -489,6 +491,7 @@ select:focus-visible,
     margin-right: 0;
   }
 
+  /* 📞 Contact Cards Mobile */
   .contact-cards-container {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -504,6 +507,7 @@ select:focus-visible,
     font-size: 1rem;
   }
 
+  /* 🎯 Touch targets ottimizzati */
   button,
   a,
   .clickable {
@@ -514,18 +518,25 @@ select:focus-visible,
     justify-content: center;
   }
 
+  /* 📱 Mobile dock sicuro */
   .mobile-dock {
     padding-bottom: max(20px, env(safe-area-inset-bottom));
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 9999 !important;
   }
 
+  /* 🔧 Fix input iOS */
   input, textarea, select {
-    font-size: 16px;
+    font-size: 16px; /* Prevent zoom on iOS */
     -webkit-appearance: none;
     border-radius: 0;
   }
 
+  /* 🚨 CRITICAL: CONTAINER PADDING FIX */
   .container {
     width: 100% !important;
     margin-left: auto !important;
@@ -535,7 +546,7 @@ select:focus-visible,
   }
 }
 
-/* Tablet Optimizations */
+/* 📟 Tablet Optimizations */
 @media (min-width: 768px) and (max-width: 1024px) {
   .contact-cards-container {
     gap: 1.5rem;
@@ -546,7 +557,7 @@ select:focus-visible,
   }
 }
 
-/* Desktop Optimizations */
+/* 🖥️ Large Desktop */
 @media (min-width: 1024px) {
   .contact-cards-container {
     gap: 2rem;
@@ -562,12 +573,13 @@ select:focus-visible,
     font-size: 1.5rem;
   }
 
+  /* 📱 Hide mobile dock on desktop */
   .mobile-dock {
     display: none !important;
   }
 }
 
-/* Accessibility - Reduced Motion */
+/* ♿ ACCESSIBILITÀ - REDUCED MOTION */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -587,7 +599,7 @@ select:focus-visible,
   }
 }
 
-/* High Contrast Mode */
+/* 📱 HIGH CONTRAST MODE */
 @media (prefers-contrast: high) {
   .language-selector-button,
   .language-selector-dropdown {
@@ -602,7 +614,7 @@ select:focus-visible,
   }
 }
 
-/* Dark Mode */
+/* 🌙 DARK MODE PREFERENCES */
 @media (prefers-color-scheme: dark) {
   .auto-dark {
     background-color: #1f2937;
@@ -629,7 +641,7 @@ select:focus-visible,
   }
 }
 
-/* Reduced Transparency */
+/* 🚫 REDUCED TRANSPARENCY */
 @media (prefers-reduced-transparency: reduce) {
   .backdrop-blur-custom,
   .language-selector-button,
@@ -640,7 +652,7 @@ select:focus-visible,
   }
 }
 
-/* Print Styles */
+/* 🖨️ PRINT STYLES */
 @media print {
   .no-print,
   .mobile-dock,
@@ -653,7 +665,7 @@ select:focus-visible,
   }
 }
 
-/* Animations */
+/* 🎯 ANIMAZIONI OTTIMIZZATE */
 @keyframes glass-appear {
   from {
     opacity: 0;
@@ -701,7 +713,7 @@ select:focus-visible,
   animation: dock-slide-down 250ms ease-in;
 }
 
-/* Smooth Scrolling */
+/* 🔧 SMOOTH SCROLLING CON FALLBACK */
 html {
   scroll-behavior: smooth;
 }
@@ -712,12 +724,12 @@ html {
   }
 }
 
-/* Global Transitions */
+/* 🎯 SMOOTH TRANSITIONS GLOBALI */
 a, button, input, textarea, select {
   transition: all 60ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* Safari and WebKit Fixes */
+/* 🍎 FIX SAFARI E WEBKIT */
 @supports (-webkit-touch-callout: none) {
   input, textarea, select {
     -webkit-appearance: none;
@@ -731,7 +743,7 @@ a, button, input, textarea, select {
   }
 }
 
-/* Critical Stability Fixes */
+/* 🔒 CRITICAL STABILITY FIXES */
 html, body, #root {
   width: 100% !important;
   margin: 0 !important;
@@ -751,7 +763,7 @@ html, body, #root {
   -webkit-backface-visibility: hidden;
 }
 
-/* Force Section Visibility */
+/* 🔥 FORCE SECTION VISIBILITY - NUCLEAR OPTION */
 section,
 .section-container,
 [data-section],
@@ -767,8 +779,9 @@ section,
   min-height: 100px !important;
 }
 
-/* Mobile Section Visibility Fixes */
+/* 🚨 CRITICAL MOBILE SECTION VISIBILITY FIXES */
 @media (max-width: 1023px) {
+  /* 🔥 FORCE SHOW ALL COMPONENTS ON MOBILE */
   *[class*="Section"],
   *[class*="section"],
   *[id*="section"],
@@ -788,6 +801,7 @@ section,
     clip-path: none !important;
   }
 
+  /* 🚨 SPECIFIC MOBILE FIXES FOR PROBLEMATIC SECTIONS */
   [class*="BanchettoSection"],
   [class*="WholesaleContact"],
   #dettaglio,
@@ -804,6 +818,7 @@ section,
     background: transparent !important;
   }
 
+  /* 🔧 CONTAINER FIXES FOR MOBILE */
   .container,
   .mx-auto {
     width: 100% !important;
@@ -814,6 +829,7 @@ section,
     padding-right: 1rem !important;
   }
 
+  /* 🎯 GRID FIXES FOR MOBILE */
   .grid {
     display: grid !important;
     width: 100% !important;
@@ -827,6 +843,7 @@ section,
     grid-template-columns: repeat(2, 1fr) !important;
   }
 
+  /* 🚨 MOTION COMPONENTS MOBILE FIX */
   [data-framer-name],
   [style*="transform"],
   [style*="opacity"] {
@@ -837,7 +854,9 @@ section,
   }
 }
 
-/* White Bars Fix */
+/* 🔥 CRITICAL WHITE BARS FIX - REMOVED TO PREVENT PROPORTIONS ISSUES */
+/* Comentato per evitare sproporzioni */
+/*
 * {
   max-width: none !important;
 }
@@ -853,11 +872,12 @@ body {
   min-width: 100% !important;
   max-width: none !important;
 }
+*/
 
+/* 🎯 SECTION FULL WIDTH ENFORCEMENT */
 section {
   width: 100% !important;
   min-width: 100% !important;
-  max-width: none !important;
   margin: 0 !important;
   padding-left: 0 !important;
   padding-right: 0 !important;

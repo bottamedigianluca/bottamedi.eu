@@ -1,686 +1,477 @@
-import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react'
-import { useInView } from 'react-intersection-observer'
-import { EnterpriseErrorBoundary, AppErrorBoundary, SectionErrorBoundary } from './components/common/ErrorBoundary'
+import React, { useState, useEffect, useMemo, useCallback, Suspense, lazy } from 'react'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { HelmetProvider, Helmet } from 'react-helmet-async'
 
-// 🔥 IMPORT CORRETTI CON CASE SENSITIVITY FISSO
-import HeroSection from './components/sections/HeroSection'
-import AboutSection from './components/sections/AboutSection'
-import BanchettoSection from './components/sections/BanchettoSection'
-import ServicesSection from './components/sections/ServicesSection'
-import ProductsSection from './components/sections/ProductsSection'
-import WholesaleContact from './components/sections/WholesaleContact'
-import ContactSection from './components/sections/ContactSection'
+// Hooks ottimizzati
+import { useLocalStorage } from './hooks/useLocalStorage'
+import { useScrollInfo, useScrollDirection } from './hooks/useScrollDirection'
+import { useIntersectionObserver } from './hooks/useIntersectionObserver'
+
+// Layout Components
+import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
-import LegalDocuments from './components/legal/LegalDocuments'
 import MobileDock from './components/layout/MobileDock'
-import LanguageSelector from './components/ui/LanguageSelector'
 
-// 🎯 TRACKING GLOBALE ENTERPRISE
-declare global {
-  interface Window {
-    trackNavigazione: (sezione: string, azione: string, dettaglio: string) => void;
-    trackStoriaTradizione: (elemento: string, interesse: string) => void;
-    trackQualitaProdotti: (aspetto: string, valutazione: string) => void;
-    trackAzioneContatto: (tipoContatto: string, fonte: string, destinazione: string) => void;
-    trackLocalizzazione: (azione: string, luogo: string, risultato: string) => void;
-    trackRichiestaInformazioni: (tipo: string, argomento: string, modalita: string) => void;
-    trackPerformanceSito: (metrica: string, valore: number, soglia: number) => void;
-    trackTempoSezione: (sezione: string, secondi: number) => void;
-    updateCurrentSection: (sectionName: string) => void;
-    gtag: (...args: any[]) => void;
-    performanceTracked?: boolean;
-  }
-}
+// Legal Components
+import CookieBanner from './components/legal/CookieBanner'
+import LegalDocuments from './components/legal/LegalDocuments'
 
-// 🎬 LOADING FALLBACK OTTIMIZZATO
-const SectionLoadingFallback: React.FC<{ sectionName: string }> = ({ sectionName }) => (
-  <div className="min-h-[400px] flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100 mx-4 my-8 rounded-2xl">
-    <div className="text-center">
-      <div className="relative mb-4">
-        <div className="w-12 h-12 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mx-auto"></div>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse"></div>
-        </div>
-      </div>
-      <p className="text-green-700 font-medium">
-        Caricamento {sectionName}...
-      </p>
+// Utility imports
+import { getLanguageFromStorage, getBrowserLanguage, isMobile } from './utils/helpers'
+
+// Lazy load delle sezioni per ottimizzazione
+const HeroSection = lazy(() => import('./components/sections/HeroSection'))
+const AboutSection = lazy(() => import('./components/sections/AboutSection'))
+const BanchettoSection = lazy(() => import('./components/sections/Banchettosection'))
+const ServicesSection = lazy(() => import('./components/sections/ServicesSection'))
+const ProductsSection = lazy(() => import('./components/sections/ProductsSection'))
+const WholesaleContact = lazy(() => import('./components/sections/Wholesalecontact'))
+const ContactSection = lazy(() => import('./components/sections/ContactSection'))
+
+// Costanti per ottimizzazione - Tempi ridotti per reattività
+const SECTIONS = [
+  { id: 'hero', Component: HeroSection },
+  { id: 'about', Component: AboutSection },
+  { id: 'dettaglio', Component: BanchettoSection },
+  { id: 'services', Component: ServicesSection },
+  { id: 'products', Component: ProductsSection },
+  { id: 'wholesale', Component: WholesaleContact },
+  { id: 'contact', Component: ContactSection }
+] as const
+
+const MOBILE_DOCK_IDLE_TIME = 500 // Ridotto a 500ms per reattività
+const SCROLL_DETECTION_DELAY = 16 // 60fps = 16ms per frame
+const HEADER_FADE_SPEED = 150 // Scomparsa più veloce header
+
+// Mappa colori per status bar dinamica
+const SECTION_COLORS = {
+  hero: '#22c55e', // Green-500
+  about: '#16a34a', // Green-600
+  dettaglio: '#15803d', // Green-700
+  services: '#166534', // Green-800
+  products: '#14532d', // Green-900
+  wholesale: '#052e16', // Green-950
+  contact: '#1f2937' // Gray-800
+} as const
+
+// Loading Component ottimizzato
+const OptimizedSectionLoader: React.FC<{ name: string }> = React.memo(({ name }) => (
+  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100">
+    <div className="relative">
+      <motion.div
+        className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+      />
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+      >
+        <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse" />
+      </motion.div>
     </div>
+    <motion.p
+      className="absolute bottom-4 text-green-700 font-medium text-sm"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.1 }}
+      aria-live="polite"
+    >
+      Caricamento {name}...
+    </motion.p>
   </div>
-)
+))
+OptimizedSectionLoader.displayName = 'OptimizedSectionLoader'
 
-// 🎯 SEZIONE WRAPPER CON ERROR BOUNDARY
-interface SectionWrapperProps {
-  children: React.ReactNode
-  sectionName: string
-  className?: string
-}
-
-const SectionWrapper: React.FC<SectionWrapperProps> = ({ 
-  children, 
-  sectionName, 
-  className = '' 
-}) => (
-  <SectionErrorBoundary
-    sectionName={sectionName}
-    onError={(error, errorInfo) => {
-      console.error(`❌ Errore in sezione ${sectionName}:`, error, errorInfo)
-      
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'section_error', {
-          event_category: 'Errors',
-          event_label: `${sectionName}_error`,
-          custom_parameter_1: error.message,
-          custom_parameter_2: sectionName,
-          value: 1
-        })
-      }
-    }}
-  >
-    <section className={`section-container ${className}`}>
-      <Suspense fallback={<SectionLoadingFallback sectionName={sectionName} />}>
-        {children}
-      </Suspense>
-    </section>
-  </SectionErrorBoundary>
-)
-
-// 🎯 HOOK CENTRALIZZATO PER MOBILE DOCK VISIBILITY - LOGICA ORIGINALE COMPLETA
-const useMobileDockVisibility = () => {
+// Hook personalizzato per gestione mobile dock intelligente - Ottimizzato
+const useMobileDockVisibility = (sectionsInView: Record<string, boolean>) => {
   const [isVisible, setIsVisible] = useState(false)
-  const [currentSection, setCurrentSection] = useState('hero')
-  const [isMobile, setIsMobile] = useState(false)
-
-  // Refs per tracking avanzato
-  const lastScrollY = useRef(0)
-  const scrollTimeout = useRef<NodeJS.Timeout>()
-  const inactivityTimeout = useRef<NodeJS.Timeout>()
-  const scrollDirection = useRef<'up' | 'down'>('down')
-  const isScrolling = useRef(false)
-
-  // 📱 Mobile detection
+  const [isIdle, setIsIdle] = useState(false)
+  const [lastScrollTime, setLastScrollTime] = useState(Date.now())
+  
+  const scrollDirection = useScrollDirection({ threshold: 3, throttleDelay: SCROLL_DETECTION_DELAY })
+  const { scrollY, isScrolling } = useScrollInfo({ throttleDelay: SCROLL_DETECTION_DELAY })
+  
+  // Gestione idle timer ottimizzata
   useEffect(() => {
-    const checkMobile = () => {
-      const mobile = window.innerWidth < 1024
-      setIsMobile(mobile)
+    if (isScrolling) {
+      setLastScrollTime(Date.now())
+      setIsIdle(false)
+    }
 
-      if (!mobile) {
-        setIsVisible(false) // Hide on desktop
+    const idleTimer = setTimeout(() => {
+      const now = Date.now()
+      if (now - lastScrollTime > MOBILE_DOCK_IDLE_TIME && !isScrolling) {
+        setIsIdle(true)
       }
-    }
+    }, MOBILE_DOCK_IDLE_TIME)
 
-    checkMobile()
-    window.addEventListener('resize', checkMobile, { passive: true })
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
+    return () => clearTimeout(idleTimer)
+  }, [isScrolling, lastScrollTime])
 
-  // 📍 Section detection
+  // Logica intelligente di visibilità - Esclude SOLO hero e contact/footer
   useEffect(() => {
-    if (!isMobile) return
-
-    let rafId: number
-
-    const detectCurrentSection = () => {
-      rafId = requestAnimationFrame(() => {
-        const sections = ['hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact']
-        const scrollPosition = window.scrollY + window.innerHeight / 2
-        let foundSection = 'hero'
-
-        for (const sectionId of sections) {
-          const element = document.getElementById(sectionId)
-          if (element) {
-            const rect = element.getBoundingClientRect()
-            const elementTop = window.scrollY + rect.top
-            const elementBottom = elementTop + rect.height
-            
-            if (scrollPosition >= elementTop && scrollPosition < elementBottom) {
-              foundSection = sectionId
-              break
-            }
-          }
-        }
-
-        if (foundSection !== currentSection) {
-          setCurrentSection(foundSection)
-        }
-      })
-    }
-
-    const handleScroll = () => detectCurrentSection()
-
-    detectCurrentSection()
-    window.addEventListener('scroll', handleScroll, { passive: true })
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-      if (rafId) cancelAnimationFrame(rafId)
-    }
-  }, [isMobile, currentSection])
-
-  // 🧠 LOGICA INTELLIGENTE DI VISIBILITÀ ORIGINALE
-  useEffect(() => {
-    if (!isMobile) {
+    const isInHero = sectionsInView.hero || scrollY < 50
+    const isInContact = sectionsInView.contact // Semplificato footer detection
+    
+    // Nascondi SOLO in hero e contact
+    if (isInHero || isInContact) {
       setIsVisible(false)
       return
     }
 
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY
-      const scrollDelta = currentScrollY - lastScrollY.current
-      
-      // Aggiorna direzione solo per movimenti significativi
-      if (Math.abs(scrollDelta) > 5) {
-        scrollDirection.current = scrollDelta > 0 ? 'down' : 'up'
-        lastScrollY.current = currentScrollY
-        isScrolling.current = true
-      }
+    // Mostra in TUTTE le altre sezioni (about, dettaglio, services, products, wholesale)
+    const shouldShow = 
+      scrollY > 50 && ( // Dopo hero
+        scrollDirection === 'up' || // Scroll inverso
+        isIdle || // Idle state
+        (!isScrolling && scrollY > 80) // Quando fermo dopo scroll
+      )
 
-      // Clear timeout precedenti
-      if (scrollTimeout.current) clearTimeout(scrollTimeout.current)
-      if (inactivityTimeout.current) clearTimeout(inactivityTimeout.current)
+    setIsVisible(shouldShow)
+  }, [scrollDirection, scrollY, isIdle, isScrolling, sectionsInView])
 
-      // 🚫 ZONE DI ESCLUSIONE SEMPLIFICATE
-      const excludedSections = ['hero', 'contact']
-      const isInExcludedSection = excludedSections.includes(currentSection)
-      
-      // Controllo documenti legali
-      const legalElement = document.getElementById('legal-documents')
-      const isLegalOpen = legalElement && 
-                        !legalElement.classList.contains('hidden') &&
-                        legalElement.getBoundingClientRect().height > 50
-
-      // Se siamo in una zona esclusa o legal è aperto, nascondi
-      if (isInExcludedSection || isLegalOpen) {
-        setIsVisible(false)
-        return
-      }
-
-      // 🎯 LOGICA INTELLIGENTE PRINCIPALE
-      scrollTimeout.current = setTimeout(() => {
-        isScrolling.current = false
-        
-        // Mostra immediatamente se si scrolla verso l'alto
-        if (scrollDirection.current === 'up') {
-          setIsVisible(true)
-          return
-        }
-
-        // Se si scrolla verso il basso, aspetta inattività
-        if (scrollDirection.current === 'down') {
-          setIsVisible(false)
-          
-          // Timer di inattività più corto
-          inactivityTimeout.current = setTimeout(() => {
-            // Ricontrolla le condizioni
-            const currentExcluded = excludedSections.includes(currentSection)
-            const currentLegalOpen = legalElement && 
-                                   !legalElement.classList.contains('hidden') &&
-                                   legalElement.getBoundingClientRect().height > 50
-
-            if (!currentExcluded && !currentLegalOpen && !isScrolling.current) {
-              setIsVisible(true)
-            }
-          }, 800) // Ridotto a 800ms per reattività migliore
-        }
-      }, 50) // Debounce ridotto
-    }
-
-    // Inizializza immediatamente se in sezione valida
-    const excludedSections = ['hero', 'contact']
-    if (!excludedSections.includes(currentSection)) {
-      const legalElement = document.getElementById('legal-documents')
-      const isLegalOpen = legalElement && 
-                        !legalElement.classList.contains('hidden') &&
-                        legalElement.getBoundingClientRect().height > 50
-      
-      if (!isLegalOpen) {
-        // Timer iniziale per apparizione
-        inactivityTimeout.current = setTimeout(() => {
-          setIsVisible(true)
-        }, 500)
-      }
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-      if (scrollTimeout.current) clearTimeout(scrollTimeout.current)
-      if (inactivityTimeout.current) clearTimeout(inactivityTimeout.current)
-    }
-  }, [isMobile, currentSection])
-
-  return {
-    isVisible: isMobile && isVisible,
-    currentSection,
-    isMobile
-  }
+  return isVisible
 }
 
-// 🎯 HOOK PER HERO SECTION DETECTION (per Language Selector)
-const useHeroVisibility = () => {
-  const [isHeroVisible, setIsHeroVisible] = useState(true)
-
+// Hook per header mobile - Scomparsa più veloce e sempre trasparente
+const useMobileHeaderVisibility = (sectionsInView: Record<string, boolean>) => {
+  const [isVisible, setIsVisible] = useState(true)
+  const { scrollY } = useScrollInfo({ throttleDelay: SCROLL_DETECTION_DELAY })
+  
   useEffect(() => {
-    const handleScroll = () => {
-      const heroElement = document.getElementById('hero')
-      if (heroElement) {
-        const rect = heroElement.getBoundingClientRect()
-        const isVisible = rect.bottom > 100 // Mostra se hero è ancora visibile almeno per 100px
-        setIsHeroVisible(isVisible)
+    const isInHero = sectionsInView.hero || scrollY < 60 // Soglia ridotta per scomparsa più veloce
+    setIsVisible(isInHero)
+  }, [sectionsInView.hero, scrollY])
+
+  return isVisible
+}
+
+// Hook per colore dinamico status bar
+const useStatusBarColor = (sectionsInView: Record<string, boolean>) => {
+  const [currentColor, setCurrentColor] = useState(SECTION_COLORS.hero)
+  
+  useEffect(() => {
+    // Trova la sezione attualmente visibile (priorità in ordine)
+    for (const section of SECTIONS) {
+      if (sectionsInView[section.id]) {
+        setCurrentColor(SECTION_COLORS[section.id as keyof typeof SECTION_COLORS])
+        break
       }
     }
+  }, [sectionsInView])
 
-    handleScroll()
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+  return currentColor
+}
+
+// Hook per intersection observer delle sezioni
+const useSectionsInView = () => {
+  const [sectionsInView, setSectionsInView] = useState<Record<string, boolean>>({})
+
+  const updateSectionInView = useCallback((sectionId: string, inView: boolean) => {
+    setSectionsInView(prev => ({
+      ...prev,
+      [sectionId]: inView
+    }))
   }, [])
 
-  return isHeroVisible
+  return { sectionsInView, updateSectionInView }
 }
 
-// 📱 COMPONENTE PRINCIPALE
+// Componente sezione ottimizzato con lazy loading intelligente
+const OptimizedSection: React.FC<{
+  section: typeof SECTIONS[number]
+  language: 'it' | 'de'
+  onInViewChange: (sectionId: string, inView: boolean) => void
+  priority?: boolean
+}> = React.memo(({ section, language, onInViewChange, priority = false }) => {
+  const shouldReduceMotion = useReducedMotion()
+  
+  const { ref, inView } = useIntersectionObserver({
+    threshold: 0.15,
+    triggerOnce: false,
+    rootMargin: priority ? '200px' : '100px'
+  })
+
+  useEffect(() => {
+    onInViewChange(section.id, inView)
+  }, [inView, section.id, onInViewChange])
+
+  const sectionVariants = useMemo(() => ({
+    hidden: { 
+      opacity: 0, 
+      y: shouldReduceMotion ? 0 : 15 
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: shouldReduceMotion ? 0.05 : 0.25, // Animazioni più veloci
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
+  }), [shouldReduceMotion])
+
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={inView ? "visible" : "hidden"}
+      variants={sectionVariants}
+      style={{ willChange: inView ? 'transform, opacity' : 'auto' }}
+    >
+      <Suspense fallback={<OptimizedSectionLoader name={section.id} />}>
+        <section.Component language={language} inView={inView} />
+      </Suspense>
+    </motion.div>
+  )
+})
+OptimizedSection.displayName = 'OptimizedSection'
+
+// Componente principale App
 const App: React.FC = () => {
-  const [language, setLanguage] = useState<'it' | 'de'>('it')
-  const [isInitialized, setIsInitialized] = useState(false)
+  // States principali
+  const [language, setLanguage] = useLocalStorage<'it' | 'de'>('bottamedi-language', 'it')
+  const [isMobileDevice, setIsMobileDevice] = useState(false)
+  const [isAppReady, setIsAppReady] = useState(false)
+  
+  // Hooks personalizzati
+  const { sectionsInView, updateSectionInView } = useSectionsInView()
+  const mobileDockVisible = useMobileDockVisibility(sectionsInView)
+  const mobileHeaderVisible = useMobileHeaderVisibility(sectionsInView)
+  const statusBarColor = useStatusBarColor(sectionsInView)
+  const shouldReduceMotion = useReducedMotion()
 
-  // 🎯 HOOKS CENTRALIZZATI
-  const mobileDock = useMobileDockVisibility()
-  const isHeroVisible = useHeroVisibility()
-
-  // 🎯 INTERSECTION OBSERVERS OTTIMIZZATI
-  const observerOptions = useMemo(() => ({
-    threshold: 0.3,
-    rootMargin: '0px 0px -50px 0px'
-  }), [])
-
-  const [heroRef, heroInView] = useInView(observerOptions)
-  const [aboutRef, aboutInView] = useInView(observerOptions)
-  const [banchettoRef, banchettoInView] = useInView(observerOptions)
-  const [servicesRef, servicesInView] = useInView(observerOptions)
-  const [productsRef, productsInView] = useInView(observerOptions)
-  const [wholesaleRef, wholesaleInView] = useInView(observerOptions)
-  const [contactRef, contactInView] = useInView(observerOptions)
-
-  // 🚀 TRACKING SETUP ENTERPRISE
+  // Inizializzazione app
   useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    const initializeTracking = () => {
-      try {
-        // 🎯 TRACKING NAVIGATION
-        if (!window.trackNavigazione) {
-          window.trackNavigazione = (sezione, azione, dettaglio) => {
-            console.log(`📍 Navigazione: ${sezione} -> ${azione} (${dettaglio})`)
-            if (window.gtag) {
-              window.gtag('event', 'navigazione', {
-                event_category: 'Navigation',
-                event_label: sezione,
-                custom_parameter_1: azione,
-                custom_parameter_2: dettaglio,
-                value: 1
-              })
-            }
-          }
-        }
-
-        // 🎯 TRACKING STORIA E TRADIZIONE
-        if (!window.trackStoriaTradizione) {
-          window.trackStoriaTradizione = (elemento, interesse) => {
-            console.log(`📖 Storia/Tradizione: ${elemento} (${interesse})`)
-            if (window.gtag) {
-              window.gtag('event', 'storia_tradizione', {
-                event_category: 'Brand Interest',
-                event_label: elemento,
-                custom_parameter_1: interesse,
-                value: 1
-              })
-            }
-          }
-        }
-
-        // 🎯 TRACKING QUALITÀ PRODOTTI
-        if (!window.trackQualitaProdotti) {
-          window.trackQualitaProdotti = (aspetto, valutazione) => {
-            console.log(`⭐ Qualità Prodotti: ${aspetto} (${valutazione})`)
-            if (window.gtag) {
-              window.gtag('event', 'qualita_prodotti', {
-                event_category: 'Product Quality',
-                event_label: aspetto,
-                custom_parameter_1: valutazione,
-                value: 1
-              })
-            }
-          }
-        }
-
-        // 🎯 TRACKING AZIONI CONTATTO
-        if (!window.trackAzioneContatto) {
-          window.trackAzioneContatto = (tipoContatto, fonte, destinazione) => {
-            console.log(`📞 Azione Contatto: ${tipoContatto} da ${fonte} verso ${destinazione}`)
-            if (window.gtag) {
-              window.gtag('event', 'azione_contatto', {
-                event_category: 'Contact Actions',
-                event_label: tipoContatto,
-                custom_parameter_1: fonte,
-                custom_parameter_2: destinazione,
-                value: 1
-              })
-            }
-          }
-        }
-
-        // 🎯 TRACKING LOCALIZZAZIONE
-        if (!window.trackLocalizzazione) {
-          window.trackLocalizzazione = (azione, luogo, risultato) => {
-            console.log(`🗺️ Localizzazione: ${azione} a ${luogo} (${risultato})`)
-            if (window.gtag) {
-              window.gtag('event', 'localizzazione', {
-                event_category: 'Location Interest',
-                event_label: azione,
-                custom_parameter_1: luogo,
-                custom_parameter_2: risultato,
-                value: 1
-              })
-            }
-          }
-        }
-
-        // 🎯 TRACKING RICHIESTE INFORMAZIONI
-        if (!window.trackRichiestaInformazioni) {
-          window.trackRichiestaInformazioni = (tipo, argomento, modalita) => {
-            console.log(`ℹ️ Richiesta Info: ${tipo} su ${argomento} via ${modalita}`)
-            if (window.gtag) {
-              window.gtag('event', 'richiesta_informazioni', {
-                event_category: 'Information Requests',
-                event_label: tipo,
-                custom_parameter_1: argomento,
-                custom_parameter_2: modalita,
-                value: 1
-              })
-            }
-          }
-        }
-
-        // 🎯 TRACKING PERFORMANCE
-        if (!window.trackPerformanceSito) {
-          window.trackPerformanceSito = (metrica, valore, soglia) => {
-            console.log(`⚡ Performance: ${metrica} = ${valore}ms (soglia: ${soglia}ms)`)
-            if (window.gtag) {
-              window.gtag('event', 'performance_sito', {
-                event_category: 'Site Performance',
-                event_label: metrica,
-                custom_parameter_1: valore.toString(),
-                custom_parameter_2: valore > soglia ? 'slow' : 'fast',
-                value: valore
-              })
-            }
-          }
-        }
-
-        // 🎯 TRACKING TEMPO IN SEZIONE
-        if (!window.trackTempoSezione) {
-          window.trackTempoSezione = (sezione, secondi) => {
-            console.log(`⏱️ Tempo in sezione ${sezione}: ${secondi}s`)
-            if (window.gtag) {
-              window.gtag('event', 'tempo_sezione', {
-                event_category: 'Section Engagement',
-                event_label: sezione,
-                custom_parameter_1: secondi.toString(),
-                custom_parameter_2: secondi > 10 ? 'engaged' : 'quick',
-                value: secondi
-              })
-            }
-          }
-        }
-
-        // 🎯 UPDATE CURRENT SECTION
-        if (!window.updateCurrentSection) {
-          window.updateCurrentSection = (sectionName) => {
-            console.log(`📍 Sezione corrente: ${sectionName}`)
-            
-            // Aggiorna theme color dinamicamente
-            const themeColorMeta = document.getElementById('theme-color-meta')
-            const sectionColors: Record<string, string> = {
-              'hero': '#22c55e',
-              'about': '#16a34a', 
-              'dettaglio': '#15803d',
-              'services': '#166534',
-              'products': '#14532d',
-              'wholesale': '#052e16',
-              'contact': '#1f2937'
-            }
-            
-            if (themeColorMeta && sectionColors[sectionName]) {
-              themeColorMeta.setAttribute('content', sectionColors[sectionName])
-            }
-
-            // Update page title dinamicamente
-            const titleMap: Record<string, string> = {
-              'hero': 'Bottamedi - Frutta e Verdura di Qualità dal 1974',
-              'about': 'La Nostra Storia - Bottamedi',
-              'dettaglio': 'Il Nostro Banchetto - Bottamedi',
-              'services': 'I Nostri Servizi - Bottamedi',
-              'products': 'I Nostri Prodotti - Bottamedi',
-              'wholesale': 'Ingrosso HORECA - Bottamedi',
-              'contact': 'Contatti - Bottamedi'
-            }
-
-            if (titleMap[sectionName] && sectionName !== 'hero') {
-              document.title = titleMap[sectionName]
-            }
-          }
-        }
-
-        setIsInitialized(true)
-
-      } catch (error) {
-        console.error('❌ Errore inizializzazione tracking:', error)
-        setIsInitialized(true)
-      }
-    }
-
-    // 🚀 PERFORMANCE TRACKING AVANZATO
-    if ('performance' in window && !window.performanceTracked) {
-      window.performanceTracked = true
+    const initializeApp = async () => {
+      // Detect device type
+      setIsMobileDevice(isMobile())
       
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          try {
-            const timing = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
-            if (timing) {
-              const loadTime = timing.loadEventEnd - timing.loadEventStart
-              window.trackPerformanceSito?.('page_load_time', loadTime, 3000)
-            }
+      // Detect language se non salvato
+      if (!getLanguageFromStorage()) {
+        const browserLang = getBrowserLanguage()
+        setLanguage(browserLang)
+      }
 
-            // Largest Contentful Paint
-            if ('getLCP' in window) {
-              // @ts-ignore
-              window.getLCP((lcp) => {
-                window.trackPerformanceSito?.('largest_contentful_paint', lcp.value, 2500)
-              })
-            }
-
-            // First Input Delay
-            if ('getFID' in window) {
-              // @ts-ignore
-              window.getFID((fid) => {
-                window.trackPerformanceSito?.('first_input_delay', fid.value, 100)
-              })
-            }
-
-          } catch (error) {
-            console.warn('Performance tracking error:', error)
-          }
-        }, 100)
-      })
+      // Mark app as ready - Più veloce
+      setTimeout(() => {
+        setIsAppReady(true)
+      }, 50)
     }
 
-    initializeTracking()
-  }, [])
+    initializeApp()
+  }, [setLanguage])
 
-  // 🎯 LANGUAGE CHANGE HANDLER
+  // Handler per cambio lingua
   const handleLanguageChange = useCallback((newLanguage: 'it' | 'de') => {
     setLanguage(newLanguage)
     
-    try {
-      localStorage.setItem('bottamedi_language', newLanguage)
-    } catch (error) {
-      console.warn('Non è possibile salvare la lingua:', error)
+    // Track language change
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'language_change', {
+        event_category: 'user_preference',
+        event_label: newLanguage,
+        value: 1
+      })
     }
-    
-    if (typeof window !== 'undefined') {
-      window.trackNavigazione?.('language_selector', 'cambio_lingua', newLanguage)
-    }
-  }, [])
+  }, [setLanguage])
 
-  // 🎯 CARICA LINGUA SALVATA
-  useEffect(() => {
-    try {
-      const savedLanguage = localStorage.getItem('bottamedi_language') as 'it' | 'de'
-      if (savedLanguage && ['it', 'de'].includes(savedLanguage)) {
-        setLanguage(savedLanguage)
+  // SEO Meta tags dinamici
+  const seoTitle = useMemo(() => 
+    language === 'it' 
+      ? '🍎 Bottamedi Frutta e Verdura Mezzolombardo | Ingrosso HORECA e Dettaglio | 50 anni di Qualità Trentino Alto Adige'
+      : '🍎 Bottamedi Obst und Gemüse Mezzolombardo | HORECA Großhandel und Einzelhandel | 50 Jahre Qualität Südtirol'
+  , [language])
+
+  const seoDescription = useMemo(() => 
+    language === 'it'
+      ? '🍎 Bottamedi: 50 anni di tradizione familiare nella vendita di frutta e verdura fresca a Mezzolombardo. Banchetto dettaglio e servizio ingrosso HORECA per ristoranti nel Trentino Alto Adige. Qualità garantita dal 1974.'
+      : '🍎 Bottamedi: 50 Jahre Familientradition im Verkauf von frischem Obst und Gemüse in Mezzolombardo. Einzelhandel Marktstand und HORECA Großhandelsservice für Restaurants in Südtirol. Qualität garantiert seit 1974.'
+  , [language])
+
+  // Animation variants per l'app - Ottimizzati
+  const appVariants = useMemo(() => ({
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: {
+        duration: shouldReduceMotion ? 0.05 : 0.2,
+        ease: "easeOut",
+        staggerChildren: shouldReduceMotion ? 0 : 0.05
       }
-    } catch (error) {
-      console.warn('Non è possibile caricare la lingua salvata:', error)
     }
-  }, [])
+  }), [shouldReduceMotion])
 
-  // 🎯 SEZIONI MEMOIZZATE CON ERROR HANDLING
-  const sections = useMemo(() => [
-    { 
-      name: 'hero',
-      Component: HeroSection, 
-      ref: heroRef, 
-      inView: heroInView, 
-      props: { language } 
-    },
-    { 
-      name: 'about',
-      Component: AboutSection, 
-      ref: aboutRef, 
-      inView: aboutInView, 
-      props: { language } 
-    },
-    { 
-      name: 'banchetto',
-      Component: BanchettoSection, 
-      ref: banchettoRef, 
-      inView: banchettoInView, 
-      props: { language } 
-    },
-    { 
-      name: 'services',
-      Component: ServicesSection, 
-      ref: servicesRef, 
-      inView: servicesInView, 
-      props: { language } 
-    },
-    { 
-      name: 'products',
-      Component: ProductsSection, 
-      ref: productsRef, 
-      inView: productsInView, 
-      props: { language } 
-    },
-    { 
-      name: 'wholesale',
-      Component: WholesaleContact, 
-      ref: wholesaleRef, 
-      inView: wholesaleInView, 
-      props: { language } 
-    },
-    { 
-      name: 'contact',
-      Component: ContactSection, 
-      ref: contactRef, 
-      inView: contactInView, 
-      props: { language } 
-    }
-  ], [
-    language, 
-    heroRef, heroInView, 
-    aboutRef, aboutInView, 
-    banchettoRef, banchettoInView,
-    servicesRef, servicesInView, 
-    productsRef, productsInView, 
-    wholesaleRef, wholesaleInView,
-    contactRef, contactInView
-  ])
-
-  // 🚫 LOADING STATE INIZIALE
-  if (!isInitialized) {
+  // Loading screen mentre app si inizializza
+  if (!isAppReady) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
+      <div className="fixed inset-0 bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center z-50">
         <div className="text-center">
-          <div className="relative mb-6">
-            <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mx-auto"></div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
-            </div>
-          </div>
-          <h2 className="text-xl font-bold text-green-900 mb-2">Bottamedi</h2>
-          <p className="text-green-700">Caricamento in corso...</p>
+          <motion.img
+            src="/logo-bottamedi.webp"
+            alt="Bottamedi Loading"
+            className="w-20 h-20 mx-auto mb-4"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          />
+          <motion.div
+            className="w-8 h-8 border-2 border-green-300 border-t-green-600 rounded-full animate-spin mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
+          />
         </div>
       </div>
     )
   }
 
   return (
-    <AppErrorBoundary
-      onError={(error, errorInfo) => {
-        console.error('💥 CRASH APPLICAZIONE:', error, errorInfo)
-        
-        if (typeof window !== 'undefined' && window.gtag) {
-          window.gtag('event', 'app_crash_critical', {
-            event_category: 'Critical Errors',
-            event_label: 'app_level_crash',
-            custom_parameter_1: error.message,
-            custom_parameter_2: 'application_level',
-            value: 100
-          })
-        }
-      }}
-    >
-      <div className="min-h-screen bg-white overflow-x-hidden safe-component">
-        {/* 🌐 Language Selector - SOLO QUANDO HERO è VISIBILE */}
-        {isHeroVisible && (
-          <LanguageSelector 
-            language={language} 
+    <HelmetProvider>
+      <motion.div
+        className="min-h-screen bg-white overflow-x-hidden"
+        initial="hidden"
+        animate="visible"
+        variants={appVariants}
+      >
+        {/* SEO Meta Tags - Accessibilità migliorata */}
+        <Helmet>
+          <html lang={language} />
+          <title>{seoTitle}</title>
+          <meta name="description" content={seoDescription} />
+          <meta property="og:title" content={seoTitle} />
+          <meta property="og:description" content={seoDescription} />
+          <meta property="og:locale" content={language === 'it' ? 'it_IT' : 'de_IT'} />
+          
+          {/* Status bar dinamica per mobile */}
+          <meta name="theme-color" content={statusBarColor} />
+          <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+          
+          {/* Preload critical resources */}
+          <link rel="preload" href="/logo-bottamedi.webp" as="image" />
+          <link rel="preload" href="/images/banchetto.webp" as="image" />
+          <link rel="preload" href="/videos/hero-video-verdure-rotanti.mp4" as="video" type="video/mp4" />
+          
+          {/* Performance hints */}
+          <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+          <link rel="dns-prefetch" href="//www.google-analytics.com" />
+          
+          {/* Viewport ottimizzato per accessibilità - RIMOSSO user-scalable=no */}
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+          <meta name="format-detection" content="telephone=yes" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+        </Helmet>
+
+        {/* Header - Desktop sempre, Mobile solo in Hero con sfondo trasparente */}
+        {!isMobileDevice ? (
+          <Header
+            language={language}
             onLanguageChange={handleLanguageChange}
+            isMenuOpen={false}
+            onToggleMenu={() => {}}
           />
+        ) : (
+          <AnimatePresence>
+            {mobileHeaderVisible && (
+              <motion.div
+                initial={{ y: -80, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -80, opacity: 0 }}
+                transition={{
+                  type: 'tween',
+                  duration: shouldReduceMotion ? 0.05 : HEADER_FADE_SPEED / 1000,
+                  ease: [0.25, 0.46, 0.45, 0.94]
+                }}
+                className="relative z-40"
+                style={{
+                  background: 'transparent', // Sempre trasparente
+                  backdropFilter: 'none'
+                }}
+              >
+                <Header
+                  language={language}
+                  onLanguageChange={handleLanguageChange}
+                  isMenuOpen={false}
+                  onToggleMenu={() => {}}
+                  className="bg-transparent backdrop-blur-none" // Classe aggiuntiva per trasparenza
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         )}
-        
-        {/* 📱 Main Sections */}
+
+        {/* Main Content */}
         <main className="relative">
-          {sections.map(({ name, Component, ref, inView, props }, index) => (
-            <SectionWrapper key={`section-${name}-${index}`} sectionName={name}>
-              <div ref={ref}>
-                <Component {...props} inView={inView} />
-              </div>
-            </SectionWrapper>
+          {SECTIONS.map((section, index) => (
+            <OptimizedSection
+              key={section.id}
+              section={section}
+              language={language}
+              onInViewChange={updateSectionInView}
+              priority={index < 2} // Prime 2 sezioni prioritarie
+            />
           ))}
         </main>
 
-        {/* 🦶 Footer */}
-        <SectionWrapper sectionName="footer">
-          <Footer language={language} />
-        </SectionWrapper>
+        {/* Footer */}
+        <Footer language={language} />
 
-        {/* ⚖️ Legal Documents */}
-        <SectionWrapper sectionName="legal">
-          <LegalDocuments language={language} />
-        </SectionWrapper>
+        {/* Legal Documents con scroll fix */}
+        <LegalDocuments 
+          language={language} 
+          scrollBehavior="smooth" // Evita salti casuali
+        />
 
-        {/* 📱 Mobile Dock - LOGICA CENTRALIZZATA */}
-        {mobileDock.isVisible && (
-          <SectionWrapper sectionName="mobile-dock">
-            <MobileDock language={language} />
-          </SectionWrapper>
+        {/* Mobile Dock - Logica ottimizzata per comparire in ogni sezione tranne hero e contact */}
+        {isMobileDevice && (
+          <AnimatePresence>
+            {mobileDockVisible && (
+              <motion.div
+                initial={{ y: 100, opacity: 0, scale: 0.9 }}
+                animate={{ y: 0, opacity: 1, scale: 1 }}
+                exit={{ y: 100, opacity: 0, scale: 0.9 }}
+                transition={{ 
+                  type: 'spring',
+                  damping: 30,
+                  stiffness: 400,
+                  duration: shouldReduceMotion ? 0.05 : 0.15 // Animazione più veloce
+                }}
+                className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none"
+                style={{
+                  willChange: 'transform, opacity',
+                  touchAction: 'none' // Evita conflitti touch
+                }}
+              >
+                <MobileDock 
+                  language={language} 
+                  hideInFooter={false}
+                  touchDelay={60} // Reattività 60ms come richiesto
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         )}
-      </div>
-    </AppErrorBoundary>
+
+        {/* Cookie Banner - Solo se necessario */}
+        <CookieBanner language={language} />
+
+        {/* Performance Monitor (solo in development) */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="fixed bottom-4 right-4 bg-black/80 text-white p-2 rounded text-xs z-50 font-mono">
+            <div>Sections: {Object.keys(sectionsInView).filter(k => sectionsInView[k]).join(', ')}</div>
+            <div>Dock: {mobileDockVisible ? '✅' : '❌'}</div>
+            <div>Header: {mobileHeaderVisible ? '✅' : '❌'}</div>
+            <div>Device: {isMobileDevice ? '📱' : '🖥️'}</div>
+            <div>Lang: {language}</div>
+            <div>Color: <span style={{color: statusBarColor}}>●</span></div>
+          </div>
+        )}
+      </motion.div>
+    </HelmetProvider>
   )
 }
 
-export default App
+export default React.memo(App)

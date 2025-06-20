@@ -260,7 +260,7 @@ export class EnterpriseErrorBoundary extends Component<Props, State> {
     console.error('Component Stack:', errorInfo.componentStack)
     console.groupEnd()
 
-    // Analytics tracking
+    // Analytics tracking - check if gtag exists
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', 'error_boundary_triggered', {
         event_category: 'Error Boundaries',

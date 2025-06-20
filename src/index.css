@@ -401,10 +401,44 @@ section {
 #dettaglio,
 #wholesale,
 [data-section="dettaglio"],
-[data-section="wholesale"] {
+[data-section="wholesale"],
+[class*="BanchettoSection"],
+[class*="WholesaleContact"],
+#banchetto,
+#contact {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
+}
+
+/* MOBILE FIXES PER SEZIONI NASCOSTE */
+@media (max-width: 1023px) {
+  *[class*="Section"],
+  *[class*="section"],
+  *[id*="section"],
+  section,
+  main > div,
+  .section-container {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    width: 100% !important;
+  }
+
+  /* SEZIONI SPECIFICHE CHE SI NASCONDONO */
+  [class*="BanchettoSection"],
+  [class*="WholesaleContact"],
+  #dettaglio,
+  #wholesale,
+  #banchetto,
+  #contact {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 1 !important;
+  }
 }
 
 /* Scrollbar Styling */

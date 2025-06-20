@@ -5,10 +5,10 @@ import { EnterpriseErrorBoundary, AppErrorBoundary, SectionErrorBoundary } from 
 // 🔥 IMPORT CORRETTI CON CASE SENSITIVITY FISSO
 import HeroSection from './components/sections/HeroSection'
 import AboutSection from './components/sections/AboutSection'
-import BanchettoSection from './components/sections/BanchettoSection' // ✅ FISSO
+import BanchettoSection from './components/sections/BanchettoSection'
 import ServicesSection from './components/sections/ServicesSection'
 import ProductsSection from './components/sections/ProductsSection'
-import WholesaleContact from './components/sections/WholesaleContact' // ✅ FISSO
+import WholesaleContact from './components/sections/WholesaleContact'
 import ContactSection from './components/sections/ContactSection'
 import Footer from './components/layout/Footer'
 import LegalDocuments from './components/legal/LegalDocuments'
@@ -66,7 +66,6 @@ const SectionWrapper: React.FC<SectionWrapperProps> = ({
     onError={(error, errorInfo) => {
       console.error(`❌ Errore in sezione ${sectionName}:`, error, errorInfo)
       
-      // Track errore
       if (typeof window !== 'undefined' && window.gtag) {
         window.gtag('event', 'section_error', {
           event_category: 'Errors',
@@ -86,10 +85,179 @@ const SectionWrapper: React.FC<SectionWrapperProps> = ({
   </SectionErrorBoundary>
 )
 
+// 🎯 HOOK CENTRALIZZATO PER MOBILE DOCK VISIBILITY
+const useMobileDockVisibility = () => {
+  const [isVisible, setIsVisible] = useState(false)
+  const [currentSection, setCurrentSection] = useState('hero')
+  const [isMobile, setIsMobile] = useState(false)
+  const [isLegalOpen, setIsLegalOpen] = useState(false)
+
+  // 📱 Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 1024
+      setIsMobile(mobile)
+      if (!mobile) {
+        setIsVisible(false)
+      }
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile, { passive: true })
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // 🎯 SEZIONE DETECTION MIGLIORATA
+  useEffect(() => {
+    if (!isMobile) return
+
+    let rafId: number
+    let lastScrollY = 0
+    let isScrollingDown = false
+
+    const detectCurrentSection = () => {
+      rafId = requestAnimationFrame(() => {
+        const scrollY = window.scrollY
+        isScrollingDown = scrollY > lastScrollY
+        lastScrollY = scrollY
+
+        const sections = ['hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact']
+        const scrollPosition = scrollY + window.innerHeight / 2
+        let foundSection = 'hero'
+
+        for (const sectionId of sections) {
+          const element = document.getElementById(sectionId)
+          if (element) {
+            const rect = element.getBoundingClientRect()
+            const elementTop = scrollY + rect.top
+            const elementBottom = elementTop + rect.height
+            
+            if (scrollPosition >= elementTop && scrollPosition < elementBottom) {
+              foundSection = sectionId
+              break
+            }
+          }
+        }
+
+        if (foundSection !== currentSection) {
+          setCurrentSection(foundSection)
+        }
+      })
+    }
+
+    const handleScroll = () => detectCurrentSection()
+    detectCurrentSection()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (rafId) cancelAnimationFrame(rafId)
+    }
+  }, [isMobile, currentSection])
+
+  // 🎯 LEGAL DOCUMENTS DETECTION
+  useEffect(() => {
+    const handleLegalStateChange = () => {
+      const legalElement = document.getElementById('legal-documents')
+      const isOpen = legalElement && 
+                   !legalElement.classList.contains('hidden') &&
+                   legalElement.getBoundingClientRect().height > 50
+      
+      setIsLegalOpen(!!isOpen)
+    }
+
+    // Check initial state
+    handleLegalStateChange()
+
+    // Listen for legal document events
+    const handleLegalEvent = () => {
+      setTimeout(handleLegalStateChange, 100)
+    }
+
+    window.addEventListener('openLegalDocument', handleLegalEvent)
+    document.addEventListener('openLegalDocument', handleLegalEvent)
+
+    // Mutation observer per cambiamenti nel DOM
+    const observer = new MutationObserver(handleLegalStateChange)
+    const legalElement = document.getElementById('legal-documents')
+    if (legalElement) {
+      observer.observe(legalElement, { 
+        attributes: true, 
+        attributeFilter: ['class', 'style'] 
+      })
+    }
+
+    return () => {
+      window.removeEventListener('openLegalDocument', handleLegalEvent)
+      document.removeEventListener('openLegalDocument', handleLegalEvent)
+      observer.disconnect()
+    }
+  }, [])
+
+  // 🎯 LOGICA PRINCIPALE DI VISIBILITÀ
+  useEffect(() => {
+    if (!isMobile) {
+      setIsVisible(false)
+      return
+    }
+
+    // Zone di esclusione: hero e contact
+    const excludedSections = ['hero', 'contact']
+    const isInExcludedSection = excludedSections.includes(currentSection)
+
+    // Se legal documents è aperto, nascondi
+    if (isLegalOpen) {
+      setIsVisible(false)
+      return
+    }
+
+    // Se siamo in una sezione esclusa, nascondi
+    if (isInExcludedSection) {
+      setIsVisible(false)
+      return
+    }
+
+    // Mostra il dock nelle sezioni intermedie
+    setIsVisible(true)
+  }, [isMobile, currentSection, isLegalOpen])
+
+  return {
+    isVisible: isMobile && isVisible,
+    currentSection,
+    isMobile
+  }
+}
+
+// 🎯 HOOK PER HERO SECTION DETECTION (per Language Selector)
+const useHeroVisibility = () => {
+  const [isHeroVisible, setIsHeroVisible] = useState(true)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const heroElement = document.getElementById('hero')
+      if (heroElement) {
+        const rect = heroElement.getBoundingClientRect()
+        const isVisible = rect.bottom > 100 // Mostra se hero è ancora visibile almeno per 100px
+        setIsHeroVisible(isVisible)
+      }
+    }
+
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  return isHeroVisible
+}
+
 // 📱 COMPONENTE PRINCIPALE
 const App: React.FC = () => {
   const [language, setLanguage] = useState<'it' | 'de'>('it')
   const [isInitialized, setIsInitialized] = useState(false)
+
+  // 🎯 HOOKS CENTRALIZZATI
+  const mobileDock = useMobileDockVisibility()
+  const isHeroVisible = useHeroVisibility()
 
   // 🎯 INTERSECTION OBSERVERS OTTIMIZZATI
   const observerOptions = useMemo(() => ({
@@ -279,7 +447,7 @@ const App: React.FC = () => {
 
       } catch (error) {
         console.error('❌ Errore inizializzazione tracking:', error)
-        setIsInitialized(true) // Continua comunque
+        setIsInitialized(true)
       }
     }
 
@@ -326,14 +494,12 @@ const App: React.FC = () => {
   const handleLanguageChange = useCallback((newLanguage: 'it' | 'de') => {
     setLanguage(newLanguage)
     
-    // Salva preferenza
     try {
       localStorage.setItem('bottamedi_language', newLanguage)
     } catch (error) {
       console.warn('Non è possibile salvare la lingua:', error)
     }
     
-    // Track language change
     if (typeof window !== 'undefined') {
       window.trackNavigazione?.('language_selector', 'cambio_lingua', newLanguage)
     }
@@ -436,7 +602,6 @@ const App: React.FC = () => {
       onError={(error, errorInfo) => {
         console.error('💥 CRASH APPLICAZIONE:', error, errorInfo)
         
-        // Track crash critico
         if (typeof window !== 'undefined' && window.gtag) {
           window.gtag('event', 'app_crash_critical', {
             event_category: 'Critical Errors',
@@ -449,11 +614,13 @@ const App: React.FC = () => {
       }}
     >
       <div className="min-h-screen bg-white overflow-x-hidden safe-component">
-        {/* 🌐 Language Selector - SEMPRE VISIBILE */}
-        <LanguageSelector 
-          language={language} 
-          onLanguageChange={handleLanguageChange}
-        />
+        {/* 🌐 Language Selector - SOLO QUANDO HERO è VISIBILE */}
+        {isHeroVisible && (
+          <LanguageSelector 
+            language={language} 
+            onLanguageChange={handleLanguageChange}
+          />
+        )}
         
         {/* 📱 Main Sections */}
         <main className="relative">
@@ -476,10 +643,12 @@ const App: React.FC = () => {
           <LegalDocuments language={language} />
         </SectionWrapper>
 
-        {/* 📱 Mobile Dock - COMPLETAMENTE RISCRITTO */}
-        <SectionWrapper sectionName="mobile-dock">
-          <MobileDock language={language} />
-        </SectionWrapper>
+        {/* 📱 Mobile Dock - LOGICA CENTRALIZZATA */}
+        {mobileDock.isVisible && (
+          <SectionWrapper sectionName="mobile-dock">
+            <MobileDock language={language} />
+          </SectionWrapper>
+        )}
       </div>
     </AppErrorBoundary>
   )

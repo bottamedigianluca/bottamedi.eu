@@ -789,205 +789,108 @@ height: auto !important;
 min-height: 100px !important;
 }
 /* 🚨 CRITICAL MOBILE SECTION VISIBILITY FIXES */
-@media (max-width: 1024px) {
-  /* 🔥 FORCE RENDER ALL SECTIONS ON MOBILE/TABLET */
-  #hero,
-  #about, 
+@media (max-width: 1023px) {
+  /* 🔥 FORCE SHOW ALL COMPONENTS ON MOBILE */
+  *[class*="Section"],
+  *[class*="section"],
+  *[id*="section"],
+  section,
+  main > div,
+  .section-container {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 200px !important;
+    overflow: visible !important;
+    transform: none !important;
+    clip: unset !important;
+    clip-path: none !important;
+  }
+
+  /* 🚨 SPECIFIC MOBILE FIXES FOR PROBLEMATIC SECTIONS */
+  [class*="BanchettoSection"],
+  [class*="WholesaleContact"],
   #dettaglio,
-  #services,
-  #products,
   #wholesale,
+  #banchetto,
   #contact {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     height: auto !important;
     min-height: 300px !important;
+    position: relative !important;
+    z-index: 1 !important;
+    background: transparent !important;
+  }
+
+  /* 🔧 CONTAINER FIXES FOR MOBILE */
+  .container,
+  .mx-auto {
     width: 100% !important;
-    position: relative !important;
-    z-index: 1 !important;
-    transform: none !important;
-    contain: none !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
   }
 
-  /* 🚨 SPECIFIC PROBLEMATIC SECTIONS */
-  [class*="BanchettoSection"],
-  [class*="WholesaleContact"],
-  [data-component="BanchettoSection"],
-  [data-component="WholesaleContact"] {
+  /* 🎯 GRID FIXES FOR MOBILE */
+  .grid {
+    display: grid !important;
+    width: 100% !important;
+  }
+
+  .grid-cols-1 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* 🚨 MOTION COMPONENTS MOBILE FIX */
+  [data-framer-name],
+  [style*="transform"],
+  [style*="opacity"] {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    height: auto !important;
-    min-height: 400px !important;
-    overflow: visible !important;
-    clip: none !important;
-    clip-path: none !important;
-    mask: none !important;
-  }
-
-  /* 🔧 DISABLE PROBLEMATIC ANIMATIONS ON MOBILE */
-  .section-container,
-  [class*="motion-"],
-  [data-animate] {
-    animation: none !important;
-    transition: none !important;
     transform: none !important;
-    will-change: auto !important;
-  }
-
-  /* 🎯 INTERSECTION OBSERVER BYPASS */
-  [data-inview="false"],
-  [aria-hidden="true"] {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    aria-hidden: false !important;
   }
 }
 
-/* 🔥 VIEWPORT WIDTH FIX - PREVENT WHITE BARS */
+/* 🔥 CRITICAL WHITE BARS FIX */
 * {
-  /* Remove any max-width constraints that could cause white bars */
+  /* 🚨 REMOVE ANY CONSTRAINT THAT CAUSES WHITE BARS */
   max-width: none !important;
 }
 
-.container,
-.mx-auto,
-[class*="container"] {
-  width: 100% !important;
-  max-width: none !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  padding-left: 1rem !important;
-  padding-right: 1rem !important;
-}
-
-@media (min-width: 640px) {
-  .container,
-  .mx-auto,
-  [class*="container"] {
-    padding-left: 1.5rem !important;
-    padding-right: 1.5rem !important;
-  }
-}
-
-@media (min-width: 1024px) {
-  .container,
-  .mx-auto,
-  [class*="container"] {
-    max-width: 1200px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
-  }
-}
-
-/* 🚨 EMERGENCY MOBILE SECTION RENDERER */
-@media (max-width: 768px) {
-  /* Override any CSS that might hide sections */
-  [style*="display: none"],
-  [style*="visibility: hidden"],
-  [style*="opacity: 0"] {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
-  /* Force content to be visible */
-  .opacity-0 {
-    opacity: 1 !important;
-  }
-
-  .invisible {
-    visibility: visible !important;
-  }
-
-  .hidden {
-    display: block !important;
-  }
-
-  /* Ensure proper spacing */
-  section {
-    margin-bottom: 2rem !important;
-    padding-top: 2rem !important;
-    padding-bottom: 2rem !important;
-  }
-
-  /* Fix any potential z-index issues */
-  main,
-  section,
-  .section-container {
-    position: relative !important;
-    z-index: 1 !important;
-  }
-}
-
-/* 🔧 FRAMER MOTION OVERRIDES FOR MOBILE */
-@media (max-width: 1024px) {
-  /* Disable all Framer Motion animations on mobile */
-  [data-framer-component],
-  [data-framer-name] {
-    transform: none !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    display: block !important;
-  }
-}
-
-/* 🎯 CRITICAL ERROR PREVENTION */
-.error-boundary,
-.error-fallback {
-  display: none !important;
-}
-
-/* 🚀 FINAL NUCLEAR OPTION - FORCE EVERYTHING VISIBLE */
-@media (max-width: 1024px) {
-  * {
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
-  *[hidden] {
-    display: block !important;
-  }
-
-  *[style*="display: none"] {
-    display: block !important;
-  }
-}
-
-/* 🔒 PREVENT ANY LAYOUT SHIFTS */
-img,
-video,
-iframe {
-  height: auto !important;
-  max-width: 100% !important;
-}
-
-/* 🎯 ENSURE PROPER STACKING */
-body > div,
-#root,
-main {
-  position: relative !important;
-  z-index: 0 !important;
-}
-
-/* 🔥 BACKGROUND FULL WIDTH FIX */
-section[class*="bg-"],
-div[class*="bg-gradient"] {
+body {
+  /* 🔥 ENSURE FULL WIDTH ALWAYS */
   width: 100vw !important;
-  margin-left: calc(-50vw + 50%) !important;
-  padding-left: calc(50vw - 50%) !important;
-  padding-right: calc(50vw - 50%) !important;
+  min-width: 100% !important;
+  overflow-x: auto !important; /* Allow horizontal scroll if needed */
 }
 
-/* 🎨 ENSURE PROPER BACKGROUND COVERAGE */
-.bg-gradient-to-br,
-.bg-gradient-to-r,
-[class*="bg-gradient"] {
-  background-attachment: scroll !important;
-  background-size: cover !important;
-  background-repeat: no-repeat !important;
+#root {
+  /* 🔥 ROOT MUST BE FULL WIDTH */
+  width: 100vw !important;
+  min-width: 100% !important;
+  max-width: none !important;
 }
+
+/* 🎯 SECTION FULL WIDTH ENFORCEMENT */
+section {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* 🔧 CONTAINER QUERY

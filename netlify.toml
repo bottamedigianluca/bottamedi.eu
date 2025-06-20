@@ -3,8 +3,8 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "20.11.0"
-  NPM_VERSION = "10.2.4"
+  NODE_VERSION = "20"
+  NPM_VERSION = "10"
 
 # Cache per assets statici
 [[headers]]
@@ -18,27 +18,8 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000"
 
-# Cache per fonts
-[[headers]]
-  for = "*.woff2"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-# Security headers
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-
 # Redirect per SPA
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-[[headers]]
-  for = "/*.xml"
-  [headers.values]
-    Content-Type = "application/xml"

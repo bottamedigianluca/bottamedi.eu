@@ -1,1149 +1,1303 @@
 <!DOCTYPE html>
 <html lang="it" class="scroll-smooth">
 <head>
-  <!-- Google Analytics 4 (GA4) - Tracking Avanzato Italiano -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZYL9HZJKCE"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+ <!-- Google Analytics 4 (GA4) - Tracking Avanzato Italiano -->
+ <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZYL9HZJKCE"></script>
+ <script>
+   window.dataLayer = window.dataLayer || [];
+   function gtag(){dataLayer.push(arguments);}
+   gtag('js', new Date());
 
-    // Configurazione avanzata GA4
-    gtag('config', 'G-ZYL9HZJKCE', {
-      page_title: 'Bottamedi Frutta e Verdura Mezzolombardo',
-      page_location: window.location.href,
-      content_group1: 'Ortofrutta Trentino',
-      content_group2: 'HORECA Services',
-      content_group3: 'Banchetto Dettaglio',
-      content_group4: 'Prodotti Locali',
-      content_group5: 'Servizi Commerciali',
-      custom_map: {
-        'custom_parameter_1': 'trentino_alto_adige',
-        'custom_parameter_2': 'mezzolombardo',
-        'custom_parameter_3': 'tipo_cliente',
-        'custom_parameter_4': 'area_interesse',
-        'custom_parameter_5': 'fonte_traffico'
-      },
-      send_page_view: true,
-      enhanced_measurement: {
-        scrolls: true,
-        outbound_clicks: true,
-        site_search: true,
-        video_engagement: true,
-        file_downloads: true
-      }
-    });
+   // Configurazione avanzata GA4
+   gtag('config', 'G-ZYL9HZJKCE', {
+     page_title: 'Bottamedi Frutta e Verdura Mezzolombardo',
+     page_location: window.location.href,
+     content_group1: 'Ortofrutta Trentino',
+     content_group2: 'HORECA Services',
+     content_group3: 'Banchetto Dettaglio',
+     content_group4: 'Prodotti Locali',
+     content_group5: 'Servizi Commerciali',
+     custom_map: {
+       'custom_parameter_1': 'trentino_alto_adige',
+       'custom_parameter_2': 'mezzolombardo',
+       'custom_parameter_3': 'tipo_cliente',
+       'custom_parameter_4': 'area_interesse',
+       'custom_parameter_5': 'fonte_traffico'
+     },
+     send_page_view: true,
+     enhanced_measurement: {
+       scrolls: true,
+       outbound_clicks: true,
+       site_search: true,
+       video_engagement: true,
+       file_downloads: true
+     }
+   });
 
-    // Configurazione cookie consent
-    gtag('consent', 'default', {
-      analytics_storage: 'denied',
-      ad_storage: 'denied',
-      functionality_storage: 'granted',
-      personalization_storage: 'denied',
-      security_storage: 'granted'
-    });
+   // Configurazione cookie consent
+   gtag('consent', 'default', {
+     analytics_storage: 'denied',
+     ad_storage: 'denied',
+     functionality_storage: 'granted',
+     personalization_storage: 'denied',
+     security_storage: 'granted'
+   });
 
-    // EVENTI PERSONALIZZATI IN ITALIANO per Analytics
-    
-    // 1. NAVIGAZIONE E COMPORTAMENTO UTENTE
-    window.trackNavigazione = function(sezione, azione, dettaglio) {
-      gtag('event', 'navigazione_sito', {
-        event_category: 'Comportamento Utente',
-        event_label: sezione + ' - ' + azione,
-        custom_parameter_1: sezione,
-        custom_parameter_2: azione,
-        custom_parameter_3: dettaglio || 'generico',
-        value: 1
-      });
-    };
+   // EVENTI PERSONALIZZATI IN ITALIANO per Analytics
+   
+   // 1. NAVIGAZIONE E COMPORTAMENTO UTENTE
+   window.trackNavigazione = function(sezione, azione, dettaglio) {
+     gtag('event', 'navigazione_sito', {
+       event_category: 'Comportamento Utente',
+       event_label: sezione + ' - ' + azione,
+       custom_parameter_1: sezione,
+       custom_parameter_2: azione,
+       custom_parameter_3: dettaglio || 'generico',
+       value: 1
+     });
+   };
 
-    window.trackTempoSezione = function(sezione, secondi) {
-      gtag('event', 'tempo_in_sezione', {
-        event_category: 'Engagement',
-        event_label: sezione,
-        custom_parameter_1: sezione,
-        custom_parameter_2: secondi > 30 ? 'alta_attenzione' : 'bassa_attenzione',
-        value: secondi
-      });
-    };
+   window.trackTempoSezione = function(sezione, secondi) {
+     gtag('event', 'tempo_in_sezione', {
+       event_category: 'Engagement',
+       event_label: sezione,
+       custom_parameter_1: sezione,
+       custom_parameter_2: secondi > 30 ? 'alta_attenzione' : 'bassa_attenzione',
+       value: secondi
+     });
+   };
 
-    // 2. INTERESSE PRODOTTI E SERVIZI
-    window.trackInteresseProdotti = function(categoria, prodotto, azione) {
-      gtag('event', 'interesse_prodotti', {
-        event_category: 'Prodotti e Servizi',
-        event_label: categoria + ' - ' + prodotto,
-        custom_parameter_1: categoria,
-        custom_parameter_2: prodotto,
-        custom_parameter_3: azione,
-        value: 5
-      });
-    };
+   // 2. INTERESSE PRODOTTI E SERVIZI
+   window.trackInteresseProdotti = function(categoria, prodotto, azione) {
+     gtag('event', 'interesse_prodotti', {
+       event_category: 'Prodotti e Servizi',
+       event_label: categoria + ' - ' + prodotto,
+       custom_parameter_1: categoria,
+       custom_parameter_2: prodotto,
+       custom_parameter_3: azione,
+       value: 5
+     });
+   };
 
-    window.trackServizioHoreca = function(azione, dettaglio) {
-      gtag('event', 'servizio_horeca', {
-        event_category: 'HORECA Business',
-        event_label: azione,
-        custom_parameter_1: 'horeca',
-        custom_parameter_2: azione,
-        custom_parameter_3: dettaglio,
-        value: 10
-      });
-    };
+   window.trackServizioHoreca = function(azione, dettaglio) {
+     gtag('event', 'servizio_horeca', {
+       event_category: 'HORECA Business',
+       event_label: azione,
+       custom_parameter_1: 'horeca',
+       custom_parameter_2: azione,
+       custom_parameter_3: dettaglio,
+       value: 10
+     });
+   };
 
-    // 3. AZIONI DI CONTATTO E CONVERSIONI
-    window.trackAzioneContatto = function(tipoContatto, fonte, destinazione) {
-      gtag('event', 'azione_contatto', {
-        event_category: 'Conversioni',
-        event_label: tipoContatto + ' - ' + destinazione,
-        custom_parameter_1: tipoContatto,
-        custom_parameter_2: fonte,
-        custom_parameter_3: destinazione,
-        value: 20
-      });
-    };
+   // 3. AZIONI DI CONTATTO E CONVERSIONI
+   window.trackAzioneContatto = function(tipoContatto, fonte, destinazione) {
+     gtag('event', 'azione_contatto', {
+       event_category: 'Conversioni',
+       event_label: tipoContatto + ' - ' + destinazione,
+       custom_parameter_1: tipoContatto,
+       custom_parameter_2: fonte,
+       custom_parameter_3: destinazione,
+       value: 20
+     });
+   };
 
-    window.trackRichiestaInformazioni = function(tipo, argomento, modalita) {
-      gtag('event', 'richiesta_informazioni', {
-        event_category: 'Lead Generation',
-        event_label: tipo + ' - ' + argomento,
-        custom_parameter_1: tipo,
-        custom_parameter_2: argomento,
-        custom_parameter_3: modalita,
-        value: 25
-      });
-    };
+   window.trackRichiestaInformazioni = function(tipo, argomento, modalita) {
+     gtag('event', 'richiesta_informazioni', {
+       event_category: 'Lead Generation',
+       event_label: tipo + ' - ' + argomento,
+       custom_parameter_1: tipo,
+       custom_parameter_2: argomento,
+       custom_parameter_3: modalita,
+       value: 25
+     });
+   };
 
-    // 4. INTERAZIONI MOBILE E UX
-    window.trackMobileDock = function(azione, elemento, sezioneAttuale) {
-      gtag('event', 'dock_mobile', {
-        event_category: 'Mobile UX',
-        event_label: azione + ' - ' + elemento,
-        custom_parameter_1: 'mobile',
-        custom_parameter_2: elemento,
-        custom_parameter_3: sezioneAttuale,
-        value: 3
-      });
-    };
+   // 4. INTERAZIONI MOBILE E UX
+   window.trackMobileDock = function(azione, elemento, sezioneAttuale) {
+     gtag('event', 'dock_mobile', {
+       event_category: 'Mobile UX',
+       event_label: azione + ' - ' + elemento,
+       custom_parameter_1: 'mobile',
+       custom_parameter_2: elemento,
+       custom_parameter_3: sezioneAttuale,
+       value: 3
+     });
+   };
 
-    window.trackComportamentoMobile = function(azione, contesto) {
-      gtag('event', 'comportamento_mobile', {
-        event_category: 'Mobile Behavior',
-        event_label: azione,
-        custom_parameter_1: 'mobile',
-        custom_parameter_2: azione,
-        custom_parameter_3: contesto,
-        value: 1
-      });
-    };
+   window.trackComportamentoMobile = function(azione, contesto) {
+     gtag('event', 'comportamento_mobile', {
+       event_category: 'Mobile Behavior',
+       event_label: azione,
+       custom_parameter_1: 'mobile',
+       custom_parameter_2: azione,
+       custom_parameter_3: contesto,
+       value: 1
+     });
+   };
 
-    // 5. LOCALIZZAZIONE E RICERCHE
-    window.trackLocalizzazione = function(azione, luogo, risultato) {
-      gtag('event', 'localizzazione', {
-        event_category: 'Geografia e Posizione',
-        event_label: azione + ' - ' + luogo,
-        custom_parameter_1: luogo,
-        custom_parameter_2: azione,
-        custom_parameter_3: risultato,
-        value: 15
-      });
-    };
+   // 5. LOCALIZZAZIONE E RICERCHE
+   window.trackLocalizzazione = function(azione, luogo, risultato) {
+     gtag('event', 'localizzazione', {
+       event_category: 'Geografia e Posizione',
+       event_label: azione + ' - ' + luogo,
+       custom_parameter_1: luogo,
+       custom_parameter_2: azione,
+       custom_parameter_3: risultato,
+       value: 15
+     });
+   };
 
-    window.trackCercaInformazioni = function(termine, sezione, trovato) {
-      gtag('event', 'ricerca_informazioni', {
-        event_category: 'Ricerca e Scoperta',
-        event_label: termine,
-        custom_parameter_1: termine,
-        custom_parameter_2: sezione,
-        custom_parameter_3: trovato ? 'informazione_trovata' : 'informazione_non_trovata',
-        value: 2
-      });
-    };
+   window.trackCercaInformazioni = function(termine, sezione, trovato) {
+     gtag('event', 'ricerca_informazioni', {
+       event_category: 'Ricerca e Scoperta',
+       event_label: termine,
+       custom_parameter_1: termine,
+       custom_parameter_2: sezione,
+       custom_parameter_3: trovato ? 'informazione_trovata' : 'informazione_non_trovata',
+       value: 2
+     });
+   };
 
-    // 6. QUALITÀ E TRADIZIONE
-    window.trackStoriaTradizione = function(elemento, interesse) {
-      gtag('event', 'storia_tradizione', {
-        event_category: 'Brand e Valori',
-        event_label: elemento,
-        custom_parameter_1: 'tradizione',
-        custom_parameter_2: elemento,
-        custom_parameter_3: interesse,
-        value: 8
-      });
-    };
+   // 6. QUALITÀ E TRADIZIONE
+   window.trackStoriaTradizione = function(elemento, interesse) {
+     gtag('event', 'storia_tradizione', {
+       event_category: 'Brand e Valori',
+       event_label: elemento,
+       custom_parameter_1: 'tradizione',
+       custom_parameter_2: elemento,
+       custom_parameter_3: interesse,
+       value: 8
+     });
+   };
 
-    window.trackQualitaProdotti = function(aspetto, valutazione) {
-      gtag('event', 'qualita_prodotti', {
-        event_category: 'Percezione Qualità',
-        event_label: aspetto,
-        custom_parameter_1: 'qualita',
-        custom_parameter_2: aspetto,
-        custom_parameter_3: valutazione,
-        value: 6
-      });
-    };
+   window.trackQualitaProdotti = function(aspetto, valutazione) {
+     gtag('event', 'qualita_prodotti', {
+       event_category: 'Percezione Qualità',
+       event_label: aspetto,
+       custom_parameter_1: 'qualita',
+       custom_parameter_2: aspetto,
+       custom_parameter_3: valutazione,
+       value: 6
+     });
+   };
 
-    // 7. BUSINESS INTELLIGENCE
-    window.trackComportamentoCliente = function(tipoCliente, comportamento, valore) {
-      gtag('event', 'profilo_cliente', {
-        event_category: 'Business Intelligence',
-        event_label: tipoCliente + ' - ' + comportamento,
-        custom_parameter_1: tipoCliente,
-        custom_parameter_2: comportamento,
-        custom_parameter_3: 'analisi_comportamento',
-        value: valore || 1
-      });
-    };
+   // 7. BUSINESS INTELLIGENCE
+   window.trackComportamentoCliente = function(tipoCliente, comportamento, valore) {
+     gtag('event', 'profilo_cliente', {
+       event_category: 'Business Intelligence',
+       event_label: tipoCliente + ' - ' + comportamento,
+       custom_parameter_1: tipoCliente,
+       custom_parameter_2: comportamento,
+       custom_parameter_3: 'analisi_comportamento',
+       value: valore || 1
+     });
+   };
 
-    window.trackOpportunitaCommerciale = function(tipo, priorita, dettaglio) {
-      gtag('event', 'opportunita_commerciale', {
-        event_category: 'Opportunità Business',
-        event_label: tipo + ' - Priorità ' + priorita,
-        custom_parameter_1: tipo,
-        custom_parameter_2: priorita,
-        custom_parameter_3: dettaglio,
-        value: priorita === 'alta' ? 30 : (priorita === 'media' ? 15 : 5)
-      });
-    };
+   window.trackOpportunitaCommerciale = function(tipo, priorita, dettaglio) {
+     gtag('event', 'opportunita_commerciale', {
+       event_category: 'Opportunità Business',
+       event_label: tipo + ' - Priorità ' + priorita,
+       custom_parameter_1: tipo,
+       custom_parameter_2: priorita,
+       custom_parameter_3: dettaglio,
+       value: priorita === 'alta' ? 30 : (priorita === 'media' ? 15 : 5)
+     });
+   };
 
-    // 8. EVENTI STAGIONALI E TEMPORALI
-    window.trackInteresseStagionale = function(stagione, prodotto, domanda) {
-      gtag('event', 'interesse_stagionale', {
-        event_category: 'Andamenti Stagionali',
-        event_label: stagione + ' - ' + prodotto,
-        custom_parameter_1: stagione,
-        custom_parameter_2: prodotto,
-        custom_parameter_3: domanda,
-        value: 4
-      });
-    };
+   // 8. EVENTI STAGIONALI E TEMPORALI
+   window.trackInteresseStagionale = function(stagione, prodotto, domanda) {
+     gtag('event', 'interesse_stagionale', {
+       event_category: 'Andamenti Stagionali',
+       event_label: stagione + ' - ' + prodotto,
+       custom_parameter_1: stagione,
+       custom_parameter_2: prodotto,
+       custom_parameter_3: domanda,
+       value: 4
+     });
+   };
 
-    // 9. PERFORMANCE E TECNICO
-    window.trackPerformanceSito = function(metrica, valore, soglia) {
-      gtag('event', 'performance_sito', {
-        event_category: 'Performance Tecnica',
-        event_label: metrica,
-        custom_parameter_1: metrica,
-        custom_parameter_2: valore > soglia ? 'lento' : 'veloce',
-        custom_parameter_3: 'user_experience',
-        value: Math.round(valore)
-      });
-    };
+   // 9. PERFORMANCE E TECNICO
+   window.trackPerformanceSito = function(metrica, valore, soglia) {
+     gtag('event', 'performance_sito', {
+       event_category: 'Performance Tecnica',
+       event_label: metrica,
+       custom_parameter_1: metrica,
+       custom_parameter_2: valore > soglia ? 'lento' : 'veloce',
+       custom_parameter_3: 'user_experience',
+       value: Math.round(valore)
+     });
+   };
 
-    // FUNZIONI DI UTILITÀ
-    window.trackErroreUX = function(errore, contesto, impatto) {
-      gtag('event', 'errore_ux', {
-        event_category: 'Problemi UX',
-        event_label: errore,
-        custom_parameter_1: errore,
-        custom_parameter_2: contesto,
-        custom_parameter_3: impatto,
-        value: impatto === 'alto' ? 10 : (impatto === 'medio' ? 5 : 1)
-      });
-    };
-  </script>
+   // FUNZIONI DI UTILITÀ
+   window.trackErroreUX = function(errore, contesto, impatto) {
+     gtag('event', 'errore_ux', {
+       event_category: 'Problemi UX',
+       event_label: errore,
+       custom_parameter_1: errore,
+       custom_parameter_2: contesto,
+       custom_parameter_3: impatto,
+       value: impatto === 'alto' ? 10 : (impatto === 'medio' ? 5 : 1)
+     });
+   };
+ </script>
 
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/webp" href="/favicon.webp" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.webp" />
-  <link rel="icon" type="image/webp" sizes="32x32" href="/favicon-32x32.webp" />
-  <link rel="icon" type="image/webp" sizes="16x16" href="/favicon-16x16.webp" />
-  
-  <!-- VIEWPORT OTTIMIZZATO - ACCESSIBILITÀ MIGLIORATA -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0" />
-  
-  <!-- DNS Prefetch per performance -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="dns-prefetch" href="//www.google-analytics.com">
-  <link rel="dns-prefetch" href="//www.googletagmanager.com">
-  <link rel="dns-prefetch" href="//maps.googleapis.com">
-  <link rel="dns-prefetch" href="//maps.app.goo.gl">
-  <link rel="dns-prefetch" href="//wa.me">
-  
-  <!-- Titolo SEO ottimizzato -->
-  <title>🍎 Bottamedi Frutta e Verdura Mezzolombardo | Ingrosso HORECA e Dettaglio | 50 anni di Qualità Trentino Alto Adige</title>
-  
-  <!-- Meta Description ottimizzata -->
-  <meta name="description" content="🍎 Bottamedi: 50 anni di tradizione familiare nella vendita di frutta e verdura fresca a Mezzolombardo. Banchetto dettaglio e servizio ingrosso HORECA per ristoranti nel Trentino Alto Adige. Qualità garantita dal 1974." />
-  
-  <!-- Keywords SEO ottimizzate -->
-  <meta name="keywords" content="frutta verdura Mezzolombardo, ingrosso ortofrutta Trentino, banchetto frutta fresca, HORECA ristoranti Trento, fornitore verdure hotel, mele Melinda DOP, prodotti tipici trentini, ortofrutta Val di Non, Bottamedi famiglia, frutta stagione biologica, verdure fresche km zero, consegna ristoranti pizzerie, Via Cavalleggeri Udine, Via de Gasperi, ingrosso alimentari, dettaglio ortofrutta, qualità superiore, tradizione familiare, Pierluigi Bottamedi, distribuzione frutta, commercio verdure, mercato ortofrutticolo" />
-  
-  <!-- Geo Tags -->
-  <meta name="geo.region" content="IT-TN" />
-  <meta name="geo.placename" content="Mezzolombardo, Trentino Alto Adige" />
-  <meta name="geo.position" content="46.2137;11.0978" />
-  <meta name="ICBM" content="46.2137, 11.0978" />
-  
-  <!-- Robots e Indexing -->
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-  <meta name="googlebot" content="index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1" />
-  <meta name="bingbot" content="index, follow" />
-  
-  <!-- HTTP Headers -->
-  <meta http-equiv="x-dns-prefetch-control" content="on">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  
-  <!-- Preload Critical Resources -->
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" href="/videos/hero-video-verdure-rotanti.mp4" as="video" type="video/mp4">
-  <link rel="preload" href="/images/poster.webp" as="image" type="image/webp">
-  <link rel="preload" href="/logo-bottamedi.webp" as="image" type="image/webp">
-  <link rel="preload" href="/images/banchetto.webp" as="image" type="image/webp">
-  
-  <!-- Fallback Fonts -->
-  <noscript>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  </noscript>
-  
-  <!-- Open Graph Meta Tags -->
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Bottamedi Frutta e Verdura" />
-  <meta property="og:title" content="🍎 Bottamedi: Frutta e Verdura Fresca Mezzolombardo dal 1974 | Trentino Alto Adige" />
-  <meta property="og:description" content="🍎 50 anni di tradizione familiare nella vendita di frutta e verdura fresca. Banchetto dettaglio e servizio ingrosso HORECA per ristoranti. Qualità garantita nel cuore del Trentino." />
-  <meta property="og:image" content="https://www.bottamedi.eu/images/banchetto.webp" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Banchetto Bottamedi con varietà di frutta e verdura fresca a Mezzolombardo, Trentino Alto Adige" />
-  <meta property="og:url" content="https://www.bottamedi.eu" />
-  <meta property="og:locale" content="it_IT" />
-  <meta property="og:locale:alternate" content="de_IT" />
-  
-  <!-- Twitter Card Meta Tags -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@bottamedi" />
-  <meta name="twitter:title" content="🍎 Bottamedi Frutta e Verdura Mezzolombardo | Dal 1974" />
-  <meta name="twitter:description" content="🍎 50 anni di tradizione familiare. Frutta e verdura fresca, ingrosso HORECA e banchetto dettaglio nel Trentino Alto Adige. Qualità garantita." />
-  <meta name="twitter:image" content="https://www.bottamedi.eu/images/banchetto.webp" />
-  <meta name="twitter:image:alt" content="Banchetto Bottamedi con frutta e verdura fresca" />
-  
-  <!-- Canonical URL -->
-  <link rel="canonical" href="https://www.bottamedi.eu" />
-  
-  <!-- Hreflang per multilingua -->
-  <link rel="alternate" hreflang="it" href="https://www.bottamedi.eu" />
-  <link rel="alternate" hreflang="de" href="https://www.bottamedi.eu" />
-  <link rel="alternate" hreflang="x-default" href="https://www.bottamedi.eu" />
-  
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="/manifest.json" />
-  
-  <!-- Critical CSS Inline MINIMO -->
-  <style>
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0;
-    }
-    
-    html { 
-      scroll-behavior: smooth; 
-      -webkit-text-size-adjust: 100%;
-    }
-    
-    body { 
-      font-family: 'Inter', system-ui, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      background: #ffffff;
-      color: #171717;
-      overflow-x: hidden;
-    }
-    
-    .loading-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      transition: opacity 0.4s ease-out, visibility 0.4s ease-out;
-    }
-    
-    .loading-logo {
-      width: 120px;
-      height: auto;
-      margin-bottom: 20px;
-      animation: logoFloat 2.5s ease-in-out infinite;
-    }
-    
-    .loading-text {
-      color: #22c55e;
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 20px;
-      animation: textPulse 2s ease-in-out infinite;
-      letter-spacing: 2px;
-    }
-    
-    .loading-subtext {
-      color: #16a34a;
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 20px;
-      opacity: 0.8;
-    }
-    
-    .loading-spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid rgba(34, 197, 94, 0.2);
-      border-top: 3px solid #22c55e;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    
-    @keyframes logoFloat {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-12px); }
-    }
-    
-    @keyframes textPulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    .loaded .loading-screen {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-    
-    /* Focus accessibilità */
-    :focus-visible {
-      outline: 3px solid #2563eb !important;
-      outline-offset: 2px;
-    }
-    
-    /* Riduzione animazioni se preferito */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-      
-      .loading-logo, .loading-text {
-        animation: none;
-      }
-    }
-  </style>
-  
-  <!-- PWA Meta Tags - Status bar dinamica -->
-  <meta name="theme-color" content="#22c55e" id="theme-color-meta" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="Bottamedi" />
-  <meta name="application-name" content="Bottamedi" />
-  <meta name="msapplication-TileColor" content="#22c55e" />
+ <meta charset="UTF-8" />
+ <link rel="icon" type="image/webp" href="/favicon.webp" />
+ <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.webp" />
+ <link rel="icon" type="image/webp" sizes="32x32" href="/favicon-32x32.webp" />
+ <link rel="icon" type="image/webp" sizes="16x16" href="/favicon-16x16.webp" />
+ 
+ <!-- VIEWPORT OTTIMIZZATO - ACCESSIBILITÀ MIGLIORATA -->
+ <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0" />
+ 
+ <!-- DNS Prefetch per performance -->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link rel="dns-prefetch" href="//www.google-analytics.com">
+ <link rel="dns-prefetch" href="//www.googletagmanager.com">
+ <link rel="dns-prefetch" href="//maps.googleapis.com">
+ <link rel="dns-prefetch" href="//maps.app.goo.gl">
+ <link rel="dns-prefetch" href="//wa.me">
+ 
+ <!-- 🎯 SEO OTTIMIZZATO - TITLE TAG PERFETTO -->
+ <title>Bottamedi Frutta e Verdura Mezzolombardo | Dal 1974 | Ingrosso HORECA Trentino</title>
+ 
+ <!-- 🎯 META DESCRIPTION OTTIMIZZATA -->
+ <meta name="description" content="Frutta e verdura fresca a Mezzolombardo dal 1974. Banchetto dettaglio e servizio ingrosso HORECA per ristoranti. Tradizione familiare, qualità trentina. ☎ 0461 602534" />
+ 
+ <!-- 🎯 KEYWORDS SEO OTTIMIZZATE - FOCUS LOCAL -->
+ <meta name="keywords" content="frutta verdura Mezzolombardo, fruttivendolo Mezzolombardo, ingrosso ortofrutta Trentino, fornitore ristoranti Trento, mele Melinda DOP, prodotti stagionali Trentino, HORECA frutta verdura, banchetto Mezzolombardo, asparagi Zambana, frutta km zero, verdura fresca Val di Non, Bottamedi 1974, consegna ristoranti, grossista alimentari Trentino, Via Cavalleggeri Udine, Via de Gasperi, prodotti tipici trentini, ortofrutta locale, tradizione familiare" />
+ 
+ <!-- 🎯 GEO TAGS PRECISI -->
+ <meta name="geo.region" content="IT-TN" />
+ <meta name="geo.placename" content="Mezzolombardo, Trentino Alto Adige" />
+ <meta name="geo.position" content="46.2137;11.0978" />
+ <meta name="ICBM" content="46.2137, 11.0978" />
+ 
+ <!-- Robots e Indexing -->
+ <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+ <meta name="googlebot" content="index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1" />
+ <meta name="bingbot" content="index, follow" />
+ 
+ <!-- HTTP Headers -->
+ <meta http-equiv="x-dns-prefetch-control" content="on">
+ <meta http-equiv="X-UA-Compatible" content="IE=edge">
+ 
+ <!-- Preload Critical Resources -->
+ <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+ <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+ <link rel="preload" href="/videos/hero-video-verdure-rotanti.mp4" as="video" type="video/mp4">
+ <link rel="preload" href="/images/poster.webp" as="image" type="image/webp">
+ <link rel="preload" href="/logo-bottamedi.webp" as="image" type="image/webp">
+ <link rel="preload" href="/images/banchetto.webp" as="image" type="image/webp">
+ 
+ <!-- Fallback Fonts -->
+ <noscript>
+   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+ </noscript>
+ 
+ <!-- 🎯 OPEN GRAPH OTTIMIZZATO -->
+ <meta property="og:type" content="website" />
+ <meta property="og:site_name" content="Bottamedi Frutta e Verdura" />
+ <meta property="og:title" content="Bottamedi Frutta e Verdura Mezzolombardo | Dal 1974 | Trentino Alto Adige" />
+ <meta property="og:description" content="50 anni di tradizione familiare nella vendita di frutta e verdura fresca. Banchetto dettaglio e servizio ingrosso HORECA per ristoranti. Qualità garantita nel cuore del Trentino." />
+ <meta property="og:image" content="https://www.bottamedi.eu/images/banchetto.webp" />
+ <meta property="og:image:width" content="1200" />
+ <meta property="og:image:height" content="630" />
+ <meta property="og:image:alt" content="Banchetto Bottamedi con varietà di frutta e verdura fresca a Mezzolombardo, Trentino Alto Adige" />
+ <meta property="og:url" content="https://www.bottamedi.eu" />
+ <meta property="og:locale" content="it_IT" />
+ <meta property="og:locale:alternate" content="de_IT" />
+ 
+ <!-- Twitter Card Meta Tags -->
+ <meta name="twitter:card" content="summary_large_image" />
+ <meta name="twitter:site" content="@bottamedi" />
+ <meta name="twitter:title" content="Bottamedi Frutta e Verdura Mezzolombardo | Dal 1974" />
+ <meta name="twitter:description" content="50 anni di tradizione familiare. Frutta e verdura fresca, ingrosso HORECA e banchetto dettaglio nel Trentino Alto Adige. Qualità garantita." />
+ <meta name="twitter:image" content="https://www.bottamedi.eu/images/banchetto.webp" />
+ <meta name="twitter:image:alt" content="Banchetto Bottamedi con frutta e verdura fresca" />
+ 
+ <!-- Canonical URL -->
+ <link rel="canonical" href="https://www.bottamedi.eu" />
+ 
+ <!-- Hreflang per multilingua -->
+ <link rel="alternate" hreflang="it" href="https://www.bottamedi.eu" />
+ <link rel="alternate" hreflang="de" href="https://www.bottamedi.eu" />
+ <link rel="alternate" hreflang="x-default" href="https://www.bottamedi.eu" />
+ 
+ <!-- PWA Manifest -->
+ <link rel="manifest" href="/manifest.json" />
+ 
+ <!-- Critical CSS Inline MINIMO -->
+ <style>
+   * { 
+     box-sizing: border-box; 
+     margin: 0; 
+     padding: 0;
+   }
+   
+   html { 
+     scroll-behavior: smooth; 
+     -webkit-text-size-adjust: 100%;
+   }
+   
+   body { 
+     font-family: 'Inter', system-ui, sans-serif;
+     -webkit-font-smoothing: antialiased;
+     -moz-osx-font-smoothing: grayscale;
+     background: #ffffff;
+     color: #171717;
+     overflow-x: hidden;
+   }
+   
+   .loading-screen {
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%);
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     z-index: 9999;
+     transition: opacity 0.4s ease-out, visibility 0.4s ease-out;
+   }
+   
+   .loading-logo {
+     width: 120px;
+     height: auto;
+     margin-bottom: 20px;
+     animation: logoFloat 2.5s ease-in-out infinite;
+   }
+   
+   .loading-text {
+     color: #22c55e;
+     font-size: 20px;
+     font-weight: 700;
+     margin-bottom: 20px;
+     animation: textPulse 2s ease-in-out infinite;
+     letter-spacing: 2px;
+   }
+   
+   .loading-subtext {
+     color: #16a34a;
+     font-size: 14px;
+     font-weight: 500;
+     margin-bottom: 20px;
+     opacity: 0.8;
+   }
+   
+   .loading-spinner {
+     width: 40px;
+     height: 40px;
+     border: 3px solid rgba(34, 197, 94, 0.2);
+     border-top: 3px solid #22c55e;
+     border-radius: 50%;
+     animation: spin 1s linear infinite;
+   }
+   
+   @keyframes logoFloat {
+     0%, 100% { transform: translateY(0px); }
+     50% { transform: translateY(-12px); }
+   }
+   
+   @keyframes textPulse {
+     0%, 100% { opacity: 1; }
+     50% { opacity: 0.7; }
+   }
+   
+   @keyframes spin {
+     0% { transform: rotate(0deg); }
+     100% { transform: rotate(360deg); }
+   }
+   
+   .loaded .loading-screen {
+     opacity: 0;
+     visibility: hidden;
+     pointer-events: none;
+   }
+   
+   /* Focus accessibilità */
+   :focus-visible {
+     outline: 3px solid #2563eb !important;
+     outline-offset: 2px;
+   }
+   
+   /* Riduzione animazioni se preferito */
+   @media (prefers-reduced-motion: reduce) {
+     *, *::before, *::after {
+       animation-duration: 0.01ms !important;
+       animation-iteration-count: 1 !important;
+       transition-duration: 0.01ms !important;
+     }
+     
+     .loading-logo, .loading-text {
+       animation: none;
+     }
+   }
+ </style>
+ 
+ <!-- PWA Meta Tags - Status bar dinamica -->
+ <meta name="theme-color" content="#22c55e" id="theme-color-meta" />
+ <meta name="mobile-web-app-capable" content="yes" />
+ <meta name="apple-mobile-web-app-capable" content="yes" />
+ <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+ <meta name="apple-mobile-web-app-title" content="Bottamedi" />
+ <meta name="application-name" content="Bottamedi" />
+ <meta name="msapplication-TileColor" content="#22c55e" />
 </head>
 <body>
 
-  <!-- Loading Screen -->
-  <div class="loading-screen" id="loading-screen">
-    <img 
-      src="/logo-bottamedi.webp" 
-      alt="Bottamedi Logo - Frutta e Verdura Mezzolombardo dal 1974" 
-      class="loading-logo"
-      width="120"
-      height="120"
-      onerror="this.style.display='none'; document.querySelector('.loading-fallback').style.display='block';"
-    />
-    
-    <!-- Fallback per logo non caricato -->
-    <div class="loading-fallback" style="display: none;">
-      <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; color: white; margin-bottom: 20px; animation: logoFloat 2.5s ease-in-out infinite;">
-        B
-      </div>
-    </div>
-    
-    <div class="loading-text">BOTTAMEDI</div>
-    <div class="loading-subtext">Frutta e Verdura dal 1974</div>
-    <div class="loading-spinner"></div>
-  </div>
-  
-  <!-- Main App Container -->
-  <div id="root"></div>
-  
-  <!-- Main React App -->
-  <script type="module" src="/src/main.tsx"></script>
-  
-  <!-- Performance Monitoring Avanzato -->
-  <script>
-    // TRACKING PERFORMANCE IN ITALIANO
-    if ('PerformanceObserver' in window) {
-      const perfObserver = new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-          if (entry.entryType === 'largest-contentful-paint') {
-            const lcpTime = Math.round(entry.startTime);
-            window.trackPerformanceSito?.('caricamento_contenuto_principale', lcpTime, 2500);
-            
-            gtag('event', 'performance_lcp', {
-              event_category: 'Performance Tecnica',
-              event_label: lcpTime > 2500 ? 'caricamento_lento' : 'caricamento_veloce',
-              custom_parameter_1: 'largest_contentful_paint',
-              custom_parameter_2: lcpTime + 'ms',
-              value: lcpTime
-            });
-          }
-          
-          if (entry.entryType === 'first-input') {
-            const fidTime = Math.round(entry.processingStart - entry.startTime);
-            window.trackPerformanceSito?.('prima_interazione', fidTime, 100);
-            
-            gtag('event', 'performance_fid', {
-              event_category: 'Performance Tecnica',
-              event_label: fidTime > 100 ? 'interazione_lenta' : 'interazione_veloce',
-              custom_parameter_1: 'first_input_delay',
-              custom_parameter_2: fidTime + 'ms',
-              value: fidTime
-            });
-          }
-        }
-      });
-      
-      try {
-        perfObserver.observe({ entryTypes: ['largest-contentful-paint', 'first-input'] });
-      } catch (e) {
-        window.trackErroreUX?.('performance_observer_non_supportato', 'inizializzazione', 'basso');
-      }
-    }
-    
-    // TRACKING STABILITÀ LAYOUT (CLS)
-    let clsValue = 0;
-    let sessionValue = 0;
-    let sessionEntries = [];
+ <!-- Loading Screen -->
+ <div class="loading-screen" id="loading-screen">
+   <img 
+     src="/logo-bottamedi.webp" 
+     alt="Bottamedi Logo - Frutta e Verdura Mezzolombardo dal 1974" 
+     class="loading-logo"
+     width="120"
+     height="120"
+     onerror="this.style.display='none'; document.querySelector('.loading-fallback').style.display='block';"
+   />
+   
+   <!-- Fallback per logo non caricato -->
+   <div class="loading-fallback" style="display: none;">
+     <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; color: white; margin-bottom: 20px; animation: logoFloat 2.5s ease-in-out infinite;">
+       B
+     </div>
+   </div>
+   
+   <div class="loading-text">BOTTAMEDI</div>
+   <div class="loading-subtext">Frutta e Verdura dal 1974</div>
+   <div class="loading-spinner"></div>
+ </div>
+ 
+ <!-- Main App Container -->
+ <div id="root"></div>
+ 
+ <!-- Main React App -->
+ <script type="module" src="/src/main.tsx"></script>
+ 
+ <!-- Performance Monitoring Avanzato -->
+ <script>
+   // TRACKING PERFORMANCE IN ITALIANO
+   if ('PerformanceObserver' in window) {
+     const perfObserver = new PerformanceObserver((list) => {
+       for (const entry of list.getEntries()) {
+         if (entry.entryType === 'largest-contentful-paint') {
+           const lcpTime = Math.round(entry.startTime);
+           window.trackPerformanceSito?.('caricamento_contenuto_principale', lcpTime, 2500);
+           
+           gtag('event', 'performance_lcp', {
+             event_category: 'Performance Tecnica',
+             event_label: lcpTime > 2500 ? 'caricamento_lento' : 'caricamento_veloce',
+             custom_parameter_1: 'largest_contentful_paint',
+             custom_parameter_2: lcpTime + 'ms',
+             value: lcpTime
+           });
+         }
+         
+         if (entry.entryType === 'first-input') {
+           const fidTime = Math.round(entry.processingStart - entry.startTime);
+           window.trackPerformanceSito?.('prima_interazione', fidTime, 100);
+           
+           gtag('event', 'performance_fid', {
+             event_category: 'Performance Tecnica',
+             event_label: fidTime > 100 ? 'interazione_lenta' : 'interazione_veloce',
+             custom_parameter_1: 'first_input_delay',
+             custom_parameter_2: fidTime + 'ms',
+             value: fidTime
+           });
+         }
+       }
+     });
+     
+     try {
+       perfObserver.observe({ entryTypes: ['largest-contentful-paint', 'first-input'] });
+     } catch (e) {
+       window.trackErroreUX?.('performance_observer_non_supportato', 'inizializzazione', 'basso');
+     }
+   }
+   
+   // TRACKING STABILITÀ LAYOUT (CLS)
+   let clsValue = 0;
+   let sessionValue = 0;
+   let sessionEntries = [];
 
-    const clsObserver = new PerformanceObserver((list) => {
-      for (const entry of list.getEntries()) {
-        if (!entry.hadRecentInput) {
-          const firstSessionEntry = sessionEntries[0];
-          const lastSessionEntry = sessionEntries[sessionEntries.length - 1];
+   const clsObserver = new PerformanceObserver((list) => {
+     for (const entry of list.getEntries()) {
+       if (!entry.hadRecentInput) {
+         const firstSessionEntry = sessionEntries[0];
+         const lastSessionEntry = sessionEntries[sessionEntries.length - 1];
 
-          if (sessionValue &&
-              entry.startTime - lastSessionEntry.startTime < 1000 &&
-              entry.startTime - firstSessionEntry.startTime < 5000) {
-            sessionValue += entry.value;
-            sessionEntries.push(entry);
-          } else {
-            sessionValue = entry.value;
-            sessionEntries = [entry];
-          }
+         if (sessionValue &&
+             entry.startTime - lastSessionEntry.startTime < 1000 &&
+             entry.startTime - firstSessionEntry.startTime < 5000) {
+           sessionValue += entry.value;
+           sessionEntries.push(entry);
+         } else {
+           sessionValue = entry.value;
+           sessionEntries = [entry];
+         }
 
-          if (sessionValue > clsValue) {
-            clsValue = sessionValue;
-            const clsScore = Math.round(clsValue * 1000);
-            
-            gtag('event', 'stabilita_layout', {
-              event_category: 'Performance Tecnica',
-              event_label: clsScore > 100 ? 'layout_instabile' : 'layout_stabile',
-              custom_parameter_1: 'cumulative_layout_shift',
-              custom_parameter_2: clsScore + '_punti',
-              value: clsScore
-            });
-          }
-        }
-      }
-    });
+         if (sessionValue > clsValue) {
+           clsValue = sessionValue;
+           const clsScore = Math.round(clsValue * 1000);
+           
+           gtag('event', 'stabilita_layout', {
+             event_category: 'Performance Tecnica',
+             event_label: clsScore > 100 ? 'layout_instabile' : 'layout_stabile',
+             custom_parameter_1: 'cumulative_layout_shift',
+             custom_parameter_2: clsScore + '_punti',
+             value: clsScore
+           });
+         }
+       }
+     }
+   });
 
-    try {
-      clsObserver.observe({ entryTypes: ['layout-shift'] });
-    } catch (e) {
-      window.trackErroreUX?.('cls_observer_non_supportato', 'inizializzazione', 'basso');
-    }
-    
-    // GESTIONE LOADING SCREEN
-    function hideLoadingScreen() {
-      document.body.classList.add('loaded');
-      
-      const loadTime = performance.now();
-      const loadTimeSeconds = Math.round(loadTime / 1000);
-      
-      gtag('event', 'tempo_caricamento_iniziale', {
-        event_category: 'Performance Utente',
-        event_label: loadTime > 3000 ? 'caricamento_lento' : 'caricamento_veloce',
-        custom_parameter_1: 'tempo_caricamento',
-        custom_parameter_2: loadTimeSeconds + '_secondi',
-        custom_parameter_3: loadTime > 3000 ? 'possibile_abbandono' : 'esperienza_buona',
-        value: Math.round(loadTime)
-      });
-      
-      setTimeout(() => {
-        const loadingScreen = document.getElementById('loading-screen');
-        if (loadingScreen) {
-          loadingScreen.remove();
-        }
-      }, 400);
-    }
-    
-    // TRACKING COMPORTAMENTO SCROLL E ENGAGEMENT
-    let engagementStartTime = Date.now();
-    let maxScroll = 0;
-    let scrollEvents = 0;
-    let currentSection = 'hero';
-    
-    window.addEventListener('scroll', () => {
-      scrollEvents++;
-      const scrollPercent = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
-      
-      if (scrollPercent > maxScroll) {
-        maxScroll = scrollPercent;
-        
-        if (maxScroll >= 90 && maxScroll < 95) {
-          gtag('event', 'scroll_completo', {
-            event_category: 'Engagement Approfondito',
-            event_label: 'lettura_completa_sito',
-            custom_parameter_1: 'scroll_90_percento',
-            custom_parameter_2: 'utente_molto_interessato',
-            custom_parameter_3: currentSection,
-            value: 50
-          });
-        } else if (maxScroll >= 75 && maxScroll < 90) {
-          gtag('event', 'scroll_approfondito', {
-            event_category: 'Engagement Alto',
-            event_label: 'lettura_approfondita',
-            custom_parameter_1: 'scroll_75_percento',
-            custom_parameter_2: 'utente_interessato',
-            custom_parameter_3: currentSection,
-            value: 25
-          });
-        } else if (maxScroll >= 50 && maxScroll < 75) {
-          gtag('event', 'scroll_medio', {
-            event_category: 'Engagement Medio',
-            event_label: 'esplorazione_contenuti',
-            custom_parameter_1: 'scroll_50_percento',
-            custom_parameter_2: 'interesse_medio',
-            custom_parameter_3: currentSection,
-            value: 10
-          });
-        }
-      }
-      
-      if (scrollEvents % 20 === 0) {
-        const scrollSpeed = scrollEvents > 50 ? 'scroll_veloce' : 'scroll_normale';
-        window.trackComportamentoMobile?.(scrollSpeed, currentSection);
-      }
-    });
-    
-    // TRACKING TEMPO DI PERMANENZA
-    window.addEventListener('beforeunload', () => {
-      const timeOnPage = Math.round((Date.now() - engagementStartTime) / 1000);
-      const minutes = Math.round(timeOnPage / 60);
-      
-      let engagementLevel = 'basso';
-      let businessValue = 1;
-      
-      if (timeOnPage > 300) {
-        engagementLevel = 'altissimo';
-        businessValue = 100;
-      } else if (timeOnPage > 180) {
-        engagementLevel = 'alto';
-        businessValue = 50;
-      } else if (timeOnPage > 120) {
-        engagementLevel = 'medio';
-        businessValue = 25;
-      } else if (timeOnPage > 60) {
-        engagementLevel = 'discreto';
-        businessValue = 10;
-      }
-      
-      gtag('event', 'tempo_permanenza_sito', {
-        event_category: 'Engagement Totale',
-        event_label: engagementLevel + '_' + minutes + '_minuti',
-        custom_parameter_1: engagementLevel,
-        custom_parameter_2: timeOnPage + '_secondi',
-        custom_parameter_3: maxScroll > 50 ? 'con_esplorazione' : 'senza_esplorazione',
-        value: businessValue
-      });
-      
-      if (timeOnPage > 120 && maxScroll > 50) {
-        window.trackOpportunitaCommerciale?.('lead_qualificato', 'alta', 'tempo_e_scroll_elevati');
-      }
-    });
-    
-    // TRACKING DISPOSITIVO E CONTESTO
-    window.addEventListener('load', () => {
-      const isMobile = window.innerWidth <= 768;
-      const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-      const deviceType = isMobile ? 'mobile' : 'desktop';
-      
-      gtag('event', 'contesto_visita', {
-        event_category: 'Analisi Dispositivo',
-        event_label: deviceType + '_' + (connection ? connection.effectiveType : 'connessione_sconosciuta'),
-        custom_parameter_1: deviceType,
-        custom_parameter_2: connection ? connection.effectiveType : 'sconosciuta',
-        custom_parameter_3: window.screen.width + 'x' + window.screen.height,
-        value: 1
-      });
-      
-      if (isMobile) {
-        const orientation = window.screen.orientation ? window.screen.orientation.type : 'sconosciuto';
-        window.trackComportamentoMobile?.('orientamento_iniziale', orientation);
-      }
-      
-      const browserInfo = navigator.userAgent.includes('Chrome') ? 'chrome' : 
-                         navigator.userAgent.includes('Firefox') ? 'firefox' : 
-                         navigator.userAgent.includes('Safari') ? 'safari' : 'altro';
-      
-      gtag('event', 'info_browser', {
-        event_category: 'Contesto Tecnico',
-        event_label: browserInfo + '_' + deviceType,
-        custom_parameter_1: browserInfo,
-        custom_parameter_2: deviceType,
-        custom_parameter_3: navigator.language || 'lingua_sconosciuta',
-        value: 1
-      });
-    });
-    
-    // TRACKING ERRORI
-    window.addEventListener('error', (e) => {
-      window.trackErroreUX?.('errore_javascript', e.filename || 'file_sconosciuto', 'alto');
-      
-      gtag('event', 'errore_tecnico', {
-        event_category: 'Problemi Tecnici',
-        event_label: 'errore_javascript',
-        custom_parameter_1: e.message || 'messaggio_sconosciuto',
-        custom_parameter_2: e.filename || 'file_sconosciuto',
-        custom_parameter_3: 'interruzione_esperienza',
-        value: 1
-      });
-    });
-    
-    // TRACKING INTERAZIONI
-    let clickCount = 0;
-    let lastClickTime = 0;
-    
-    document.addEventListener('click', (e) => {
-      clickCount++;
-      const now = Date.now();
-      const timeSinceLastClick = now - lastClickTime;
-      lastClickTime = now;
-      
-      if (timeSinceLastClick < 1000 && clickCount > 1) {
-        window.trackComportamentoMobile?.('click_rapidi', 'utente_impaziente');
-      }
-      
-      const element = e.target;
-      const elementType = element.tagName.toLowerCase();
-      const elementClass = element.className;
-      const elementText = element.textContent ? element.textContent.slice(0, 50) : '';
-      
-      if (elementType === 'button' || elementType === 'a' || elementClass.includes('clickable')) {
-        gtag('event', 'interazione_elemento', {
-          event_category: 'Comportamento Click',
-          event_label: elementType + '_' + (elementText || 'senza_testo'),
-          custom_parameter_1: elementType,
-          custom_parameter_2: elementClass || 'senza_classe',
-          custom_parameter_3: elementText || 'elemento_vuoto',
-          value: 2
-        });
-      }
-    });
-    
-    // TRACKING VISIBILITÀ FINESTRA
-    let pageVisible = true;
-    let invisibleTime = 0;
-    let visibilityStartTime = Date.now();
-    
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        pageVisible = false;
-        invisibleTime = Date.now();
-        
-        const timeVisible = Date.now() - visibilityStartTime;
-        if (timeVisible > 5000) {
-          gtag('event', 'uscita_temporanea', {
-            event_category: 'Comportamento Navigazione',
-            event_label: 'scheda_nascosta',
-            custom_parameter_1: 'tab_switch',
-            custom_parameter_2: Math.round(timeVisible / 1000) + '_secondi_visibili',
-            custom_parameter_3: currentSection,
-            value: 1
-          });
-        }
-      } else {
-        pageVisible = true;
-        const timeInvisible = Date.now() - invisibleTime;
-        visibilityStartTime = Date.now();
-        
-        if (timeInvisible > 30000) {
-          gtag('event', 'ritorno_dopo_pausa', {
-            event_category: 'Comportamento Navigazione',
-            event_label: 'ritorno_interessato',
-            custom_parameter_1: 'tab_return',
-            custom_parameter_2: Math.round(timeInvisible / 1000) + '_secondi_via',
-            custom_parameter_3: 'possibile_confronto_prezzi',
-            value: 5
-          });
-        }
-      }
-    });
-    
-    // TRACKING RESIZE E ORIENTAMENTO
-    window.addEventListener('resize', () => {
-      const newWidth = window.innerWidth;
-      const newHeight = window.innerHeight;
-      const isMobile = newWidth <= 768;
-      
-      window.trackComportamentoMobile?.('ridimensionamento_finestra', 
-        isMobile ? 'mobile' : 'desktop');
-      
-      if (isMobile && Math.abs(newHeight - newWidth) < 100) {
-        window.trackComportamentoMobile?.('rotazione_landscape', currentSection);
-      }
-    });
-    
-    // FUNZIONI GLOBALI PER TRACKING DA COMPONENTI REACT
-    window.updateCurrentSection = function(sectionName) {
-      if (currentSection !== sectionName) {
-        const timeInPreviousSection = Date.now() - (window.sectionStartTime || Date.now());
-        
-        if (window.sectionStartTime && timeInPreviousSection > 3000) {
-          window.trackTempoSezione?.(currentSection, Math.round(timeInPreviousSection / 1000));
-        }
-        
-        currentSection = sectionName;
-        window.sectionStartTime = Date.now();
-        
-        gtag('event', 'cambio_sezione', {
-          event_category: 'Navigazione Sezioni',
-          event_label: 'ingresso_' + sectionName,
-          custom_parameter_1: sectionName,
-          custom_parameter_2: 'sezione_visualizzata',
-          custom_parameter_3: Date.now() - engagementStartTime > 60000 ? 'utente_esperto' : 'primo_approccio',
-          value: 3
-        });
-        
-        // Aggiorna meta theme-color dinamicamente
-        const themeColorMeta = document.getElementById('theme-color-meta');
-        const sectionColors = {
-          'hero': '#22c55e',
-          'about': '#16a34a', 
-          'dettaglio': '#15803d',
-          'services': '#166534',
-          'products': '#14532d',
-          'wholesale': '#052e16',
-          'contact': '#1f2937'
-        };
-        
-        if (themeColorMeta && sectionColors[sectionName]) {
-          themeColorMeta.setAttribute('content', sectionColors[sectionName]);
-        }
-      }
-    };
-    
-    // INIZIALIZZAZIONE
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(hideLoadingScreen, 1000);
-      });
-    } else {
-      setTimeout(hideLoadingScreen, 1000);
-    }
-    
-    // SERVICE WORKER PWA
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-          .then((registration) => {
-            gtag('event', 'pwa_service_worker', {
-              event_category: 'Tecnologia Avanzata',
-              event_label: 'service_worker_registrato',
-              custom_parameter_1: 'pwa_capability',
-              custom_parameter_2: 'offline_support',
-              custom_parameter_3: 'esperienza_nativa',
-              value: 5
-            });
-          })
-          .catch((registrationError) => {
-            window.trackErroreUX?.('service_worker_fallito', 'pwa_setup', 'medio');
-          });
-      });
-    }
-    
-    // TRACKING SPECIAL EVENTS
-    window.addEventListener('beforeinstallprompt', (e) => {
-      gtag('event', 'pwa_install_prompt', {
-        event_category: 'PWA Install',
-        event_label: 'installazione_disponibile',
-        custom_parameter_1: 'pwa_eligible',
-        custom_parameter_2: 'utente_idoneo',
-        custom_parameter_3: 'opportunita_app',
-        value: 20
-      });
-    });
-    
-    // PERFORMANCE BUDGET MONITORING
-    window.addEventListener('load', () => {
-      const entries = performance.getEntriesByType('navigation')[0];
-      if (entries) {
-        const loadTime = entries.loadEventEnd - entries.fetchStart;
-        
-        if (loadTime > 5000) {
-          window.trackErroreUX?.('caricamento_molto_lento', 'performance_critica', 'alto');
-        }
-        
-        gtag('event', 'metriche_caricamento_dettagliate', {
-          event_category: 'Performance Dettagliata',
-          event_label: 'analisi_completa',
-          custom_parameter_1: Math.round(entries.domContentLoadedEventEnd - entries.fetchStart) + 'ms_dom',
-          custom_parameter_2: Math.round(loadTime) + 'ms_totale',
-          custom_parameter_3: entries.transferSize + 'bytes_trasferiti',
-          value: Math.round(loadTime)
-        });
-      }
-    });
-  </script>
+   try {
+     clsObserver.observe({ entryTypes: ['layout-shift'] });
+   } catch (e) {
+     window.trackErroreUX?.('cls_observer_non_supportato', 'inizializzazione', 'basso');
+   }
+   
+   // GESTIONE LOADING SCREEN
+   function hideLoadingScreen() {
+     document.body.classList.add('loaded');
+     
+     const loadTime = performance.now();
+     const loadTimeSeconds = Math.round(loadTime / 1000);
+     
+     gtag('event', 'tempo_caricamento_iniziale', {
+       event_category: 'Performance Utente',
+       event_label: loadTime > 3000 ? 'caricamento_lento' : 'caricamento_veloce',
+       custom_parameter_1: 'tempo_caricamento',
+       custom_parameter_2: loadTimeSeconds + '_secondi',
+       custom_parameter_3: loadTime > 3000 ? 'possibile_abbandono' : 'esperienza_buona',
+       value: Math.round(loadTime)
+     });
+     
+     setTimeout(() => {
+       const loadingScreen = document.getElementById('loading-screen');
+       if (loadingScreen) {
+         loadingScreen.remove();
+       }
+     }, 400);
+   }
+   
+   // TRACKING COMPORTAMENTO SCROLL E ENGAGEMENT
+   let engagementStartTime = Date.now();
+   let maxScroll = 0;
+   let scrollEvents = 0;
+   let currentSection = 'hero';
+   
+   window.addEventListener('scroll', () => {
+     scrollEvents++;
+     const scrollPercent = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
+     
+     if (scrollPercent > maxScroll) {
+       maxScroll = scrollPercent;
+       
+       if (maxScroll >= 90 && maxScroll < 95) {
+         gtag('event', 'scroll_completo', {
+           event_category: 'Engagement Approfondito',
+           event_label: 'lettura_completa_sito',
+           custom_parameter_1: 'scroll_90_percento',
+           custom_parameter_2: 'utente_molto_interessato',
+           custom_parameter_3: currentSection,
+           value: 50
+         });
+       } else if (maxScroll >= 75 && maxScroll < 90) {
+         gtag('event', 'scroll_approfondito', {
+           event_category: 'Engagement Alto',
+           event_label: 'lettura_approfondita',
+           custom_parameter_1: 'scroll_75_percento',
+           custom_parameter_2: 'utente_interessato',
+           custom_parameter_3: currentSection,
+           value: 25
+         });
+       } else if (maxScroll >= 50 && maxScroll < 75) {
+         gtag('event', 'scroll_medio', {
+           event_category: 'Engagement Medio',
+           event_label: 'esplorazione_contenuti',
+           custom_parameter_1: 'scroll_50_percento',
+           custom_parameter_2: 'interesse_medio',
+           custom_parameter_3: currentSection,
+           value: 10
+         });
+       }
+     }
+     
+     if (scrollEvents % 20 === 0) {
+       const scrollSpeed = scrollEvents > 50 ? 'scroll_veloce' : 'scroll_normale';
+       window.trackComportamentoMobile?.(scrollSpeed, currentSection);
+     }
+   });
+   
+   // TRACKING TEMPO DI PERMANENZA
+   window.addEventListener('beforeunload', () => {
+     const timeOnPage = Math.round((Date.now() - engagementStartTime) / 1000);
+     const minutes = Math.round(timeOnPage / 60);
+     
+     let engagementLevel = 'basso';
+     let businessValue = 1;
+     
+     if (timeOnPage > 300) {
+       engagementLevel = 'altissimo';
+       businessValue = 100;
+     } else if (timeOnPage > 180) {
+       engagementLevel = 'alto';
+       businessValue = 50;
+     } else if (timeOnPage > 120) {
+       engagementLevel = 'medio';
+businessValue = 25;
+     } else if (timeOnPage > 60) {
+       engagementLevel = 'discreto';
+       businessValue = 10;
+     }
+     
+     gtag('event', 'tempo_permanenza_sito', {
+       event_category: 'Engagement Totale',
+       event_label: engagementLevel + '_' + minutes + '_minuti',
+       custom_parameter_1: engagementLevel,
+       custom_parameter_2: timeOnPage + '_secondi',
+       custom_parameter_3: maxScroll > 50 ? 'con_esplorazione' : 'senza_esplorazione',
+       value: businessValue
+     });
+     
+     if (timeOnPage > 120 && maxScroll > 50) {
+       window.trackOpportunitaCommerciale?.('lead_qualificato', 'alta', 'tempo_e_scroll_elevati');
+     }
+   });
+   
+   // TRACKING DISPOSITIVO E CONTESTO
+   window.addEventListener('load', () => {
+     const isMobile = window.innerWidth <= 768;
+     const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+     const deviceType = isMobile ? 'mobile' : 'desktop';
+     
+     gtag('event', 'contesto_visita', {
+       event_category: 'Analisi Dispositivo',
+       event_label: deviceType + '_' + (connection ? connection.effectiveType : 'connessione_sconosciuta'),
+       custom_parameter_1: deviceType,
+       custom_parameter_2: connection ? connection.effectiveType : 'sconosciuta',
+       custom_parameter_3: window.screen.width + 'x' + window.screen.height,
+       value: 1
+     });
+     
+     if (isMobile) {
+       const orientation = window.screen.orientation ? window.screen.orientation.type : 'sconosciuto';
+       window.trackComportamentoMobile?.('orientamento_iniziale', orientation);
+     }
+     
+     const browserInfo = navigator.userAgent.includes('Chrome') ? 'chrome' : 
+                        navigator.userAgent.includes('Firefox') ? 'firefox' : 
+                        navigator.userAgent.includes('Safari') ? 'safari' : 'altro';
+     
+     gtag('event', 'info_browser', {
+       event_category: 'Contesto Tecnico',
+       event_label: browserInfo + '_' + deviceType,
+       custom_parameter_1: browserInfo,
+       custom_parameter_2: deviceType,
+       custom_parameter_3: navigator.language || 'lingua_sconosciuta',
+       value: 1
+     });
+   });
+   
+   // TRACKING ERRORI
+   window.addEventListener('error', (e) => {
+     window.trackErroreUX?.('errore_javascript', e.filename || 'file_sconosciuto', 'alto');
+     
+     gtag('event', 'errore_tecnico', {
+       event_category: 'Problemi Tecnici',
+       event_label: 'errore_javascript',
+       custom_parameter_1: e.message || 'messaggio_sconosciuto',
+       custom_parameter_2: e.filename || 'file_sconosciuto',
+       custom_parameter_3: 'interruzione_esperienza',
+       value: 1
+     });
+   });
+   
+   // TRACKING INTERAZIONI
+   let clickCount = 0;
+   let lastClickTime = 0;
+   
+   document.addEventListener('click', (e) => {
+     clickCount++;
+     const now = Date.now();
+     const timeSinceLastClick = now - lastClickTime;
+     lastClickTime = now;
+     
+     if (timeSinceLastClick < 1000 && clickCount > 1) {
+       window.trackComportamentoMobile?.('click_rapidi', 'utente_impaziente');
+     }
+     
+     const element = e.target;
+     const elementType = element.tagName.toLowerCase();
+     const elementClass = element.className;
+     const elementText = element.textContent ? element.textContent.slice(0, 50) : '';
+     
+     if (elementType === 'button' || elementType === 'a' || elementClass.includes('clickable')) {
+       gtag('event', 'interazione_elemento', {
+         event_category: 'Comportamento Click',
+         event_label: elementType + '_' + (elementText || 'senza_testo'),
+         custom_parameter_1: elementType,
+         custom_parameter_2: elementClass || 'senza_classe',
+         custom_parameter_3: elementText || 'elemento_vuoto',
+         value: 2
+       });
+     }
+   });
+   
+   // TRACKING VISIBILITÀ FINESTRA
+   let pageVisible = true;
+   let invisibleTime = 0;
+   let visibilityStartTime = Date.now();
+   
+   document.addEventListener('visibilitychange', () => {
+     if (document.hidden) {
+       pageVisible = false;
+       invisibleTime = Date.now();
+       
+       const timeVisible = Date.now() - visibilityStartTime;
+       if (timeVisible > 5000) {
+         gtag('event', 'uscita_temporanea', {
+           event_category: 'Comportamento Navigazione',
+           event_label: 'scheda_nascosta',
+           custom_parameter_1: 'tab_switch',
+           custom_parameter_2: Math.round(timeVisible / 1000) + '_secondi_visibili',
+           custom_parameter_3: currentSection,
+           value: 1
+         });
+       }
+     } else {
+       pageVisible = true;
+       const timeInvisible = Date.now() - invisibleTime;
+       visibilityStartTime = Date.now();
+       
+       if (timeInvisible > 30000) {
+         gtag('event', 'ritorno_dopo_pausa', {
+           event_category: 'Comportamento Navigazione',
+           event_label: 'ritorno_interessato',
+           custom_parameter_1: 'tab_return',
+           custom_parameter_2: Math.round(timeInvisible / 1000) + '_secondi_via',
+           custom_parameter_3: 'possibile_confronto_prezzi',
+           value: 5
+         });
+       }
+     }
+   });
+   
+   // TRACKING RESIZE E ORIENTAMENTO
+   window.addEventListener('resize', () => {
+     const newWidth = window.innerWidth;
+     const newHeight = window.innerHeight;
+     const isMobile = newWidth <= 768;
+     
+     window.trackComportamentoMobile?.('ridimensionamento_finestra', 
+       isMobile ? 'mobile' : 'desktop');
+     
+     if (isMobile && Math.abs(newHeight - newWidth) < 100) {
+       window.trackComportamentoMobile?.('rotazione_landscape', currentSection);
+     }
+   });
+   
+   // FUNZIONI GLOBALI PER TRACKING DA COMPONENTI REACT
+   window.updateCurrentSection = function(sectionName) {
+     if (currentSection !== sectionName) {
+       const timeInPreviousSection = Date.now() - (window.sectionStartTime || Date.now());
+       
+       if (window.sectionStartTime && timeInPreviousSection > 3000) {
+         window.trackTempoSezione?.(currentSection, Math.round(timeInPreviousSection / 1000));
+       }
+       
+       currentSection = sectionName;
+       window.sectionStartTime = Date.now();
+       
+       gtag('event', 'cambio_sezione', {
+         event_category: 'Navigazione Sezioni',
+         event_label: 'ingresso_' + sectionName,
+         custom_parameter_1: sectionName,
+         custom_parameter_2: 'sezione_visualizzata',
+         custom_parameter_3: Date.now() - engagementStartTime > 60000 ? 'utente_esperto' : 'primo_approccio',
+         value: 3
+       });
+       
+       // Aggiorna meta theme-color dinamicamente
+       const themeColorMeta = document.getElementById('theme-color-meta');
+       const sectionColors = {
+         'hero': '#22c55e',
+         'about': '#16a34a', 
+         'dettaglio': '#15803d',
+         'services': '#166534',
+         'products': '#14532d',
+         'wholesale': '#052e16',
+         'contact': '#1f2937'
+       };
+       
+       if (themeColorMeta && sectionColors[sectionName]) {
+         themeColorMeta.setAttribute('content', sectionColors[sectionName]);
+       }
+     }
+   };
+   
+   // INIZIALIZZAZIONE
+   if (document.readyState === 'loading') {
+     document.addEventListener('DOMContentLoaded', () => {
+       setTimeout(hideLoadingScreen, 1000);
+     });
+   } else {
+     setTimeout(hideLoadingScreen, 1000);
+   }
+   
+   // SERVICE WORKER PWA
+   if ('serviceWorker' in navigator) {
+     window.addEventListener('load', () => {
+       navigator.serviceWorker.register('/service-worker.js')
+         .then((registration) => {
+           gtag('event', 'pwa_service_worker', {
+             event_category: 'Tecnologia Avanzata',
+             event_label: 'service_worker_registrato',
+             custom_parameter_1: 'pwa_capability',
+             custom_parameter_2: 'offline_support',
+             custom_parameter_3: 'esperienza_nativa',
+             value: 5
+           });
+         })
+         .catch((registrationError) => {
+           window.trackErroreUX?.('service_worker_fallito', 'pwa_setup', 'medio');
+         });
+     });
+   }
+   
+   // TRACKING SPECIAL EVENTS
+   window.addEventListener('beforeinstallprompt', (e) => {
+     gtag('event', 'pwa_install_prompt', {
+       event_category: 'PWA Install',
+       event_label: 'installazione_disponibile',
+       custom_parameter_1: 'pwa_eligible',
+       custom_parameter_2: 'utente_idoneo',
+       custom_parameter_3: 'opportunita_app',
+       value: 20
+     });
+   });
+   
+   // PERFORMANCE BUDGET MONITORING
+   window.addEventListener('load', () => {
+     const entries = performance.getEntriesByType('navigation')[0];
+     if (entries) {
+       const loadTime = entries.loadEventEnd - entries.fetchStart;
+       
+       if (loadTime > 5000) {
+         window.trackErroreUX?.('caricamento_molto_lento', 'performance_critica', 'alto');
+       }
+       
+       gtag('event', 'metriche_caricamento_dettagliate', {
+         event_category: 'Performance Dettagliata',
+         event_label: 'analisi_completa',
+         custom_parameter_1: Math.round(entries.domContentLoadedEventEnd - entries.fetchStart) + 'ms_dom',
+         custom_parameter_2: Math.round(loadTime) + 'ms_totale',
+         custom_parameter_3: entries.transferSize + 'bytes_trasferiti',
+         value: Math.round(loadTime)
+       });
+     }
+   });
+ </script>
 
-  <!-- Schema.org Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": "Bottamedi Frutta e Verdura",
-    "alternateName": ["Bottamedi Mezzolombardo", "Bottamedi HORECA", "Banchetto Bottamedi"],
-    "description": "Azienda familiare dal 1974 specializzata nella vendita di frutta e verdura fresca a Mezzolombardo. Servizi ingrosso HORECA per ristoranti e banchetto dettaglio per privati nel Trentino Alto Adige.",
-    "foundingDate": "1974",
-    "email": "bottamedipierluigi@virgilio.it",
-    "telephone": ["+39 351 577 6198", "+39 0461 602534"],
-    "faxNumber": "+39 0461 602534",
-    "url": "https://www.bottamedi.eu",
-    "logo": "https://www.bottamedi.eu/logo-bottamedi.webp",
-    "image": [
-      "https://www.bottamedi.eu/images/banchetto.webp",
-      "https://www.bottamedi.eu/images/melinda_golden.webp",
-      "https://www.bottamedi.eu/images/pomodori_cuore_bue.webp"
-    ],
-    "priceRange": "€€",
-    "currenciesAccepted": "EUR",
-    "paymentAccepted": ["Cash", "Credit Card", "Bank Transfer", "Electronic Transfer"],
-    "address": [
-      {
-        "@type": "PostalAddress",
-        "streetAddress": "Via Cavalleggeri Udine",
-        "addressLocality": "Mezzolombardo",
-        "addressRegion": "Trentino Alto Adige",
-        "postalCode": "38017",
-        "addressCountry": "IT",
-        "name": "Banchetto Dettaglio"
-      },
-      {
-        "@type": "PostalAddress", 
-        "streetAddress": "Via Alcide de Gasperi, 47",
-        "addressLocality": "Mezzolombardo",
-        "addressRegion": "Trentino Alto Adige", 
-        "postalCode": "38017",
-        "addressCountry": "IT",
-        "name": "Sede Ingrosso HORECA"
-      }
-    ],
-    "geo": [
-      {
-        "@type": "GeoCoordinates",
-        "latitude": 46.210472,
-        "longitude": 11.097015,
-        "name": "Banchetto"
-      },
-      {
-        "@type": "GeoCoordinates",
-        "latitude": 46.213210,
-        "longitude": 11.098930,
-        "name": "Ingrosso"
-      }
-    ],
-    "openingHours": ["Mo-Sa 07:00-19:30"],
-    "specialOpeningHoursSpecification": [
-      {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-        "opens": "07:00",
-        "closes": "19:30"
-      }
-    ],
-    "category": ["Grocery Store", "Wholesale Food Distributor", "Fresh Produce Market", "HORECA Supplier", "Family Business"],
-    "naics": "445230",
-    "isicV4": "4721",
-    "serviceArea": [
-      {
-        "@type": "Place",
-        "name": "Trentino Alto Adige"
-      },
-      {
-        "@type": "Place",
-        "name": "Veneto Nord"
-      },
-      {
-        "@type": "Place",
-        "name": "Lombardia Orientale"
-      }
-    ],
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "Catalogo Prodotti Bottamedi",
-      "itemListElement": [
-        {
-          "@type": "Offer",
-          "name": "Frutta Fresca Stagionale",
-          "description": "Mele Melinda DOP, pesche, kiwi, agrumi selezionati, frutta esotica",
-          "category": "Fresh Fruit"
-        },
-        {
-          "@type": "Offer", 
-          "name": "Verdure Fresche Locali",
-          "description": "Pomodori cuore di bue, zucche, insalate, verdure di stagione del Trentino",
-          "category": "Fresh Vegetables"
-        },
-        {
-          "@type": "Offer",
-          "name": "Servizio Ingrosso HORECA",
-          "description": "Fornitura quotidiana per ristoranti, hotel, pizzerie con consegne programmate",
-          "category": "Wholesale Service"
-        },
-        {
-          "@type": "Offer",
-          "name": "Prodotti Tipici Trentini",
-          "description": "Specialità locali, mele antiche, piccoli frutti di montagna",
-          "category": "Local Products"
-        }
-      ]
-    },
-    "founder": {
-      "@type": "Person",
-      "name": "Lorenzo Bottamedi",
-      "birthDate": "1950"
-    },
-    "employee": [
-      {
-        "@type": "Person",
-        "name": "Pierluigi Bottamedi",
-        "jobTitle": "Titolare e Responsabile Commerciale",
-        "email": "bottamedipierluigi@virgilio.it",
-        "telephone": "+39 0461 602534"
-      }
-    ],
-    "parentOrganization": {
-      "@type": "Organization",
-      "name": "Famiglia Bottamedi",
-      "foundingDate": "1974"
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "reviewCount": "127",
-      "bestRating": "5",
-      "worstRating": "1"
-    },
-    "contactPoint": [
-      {
-        "@type": "ContactPoint",
-        "telephone": "+39 351 577 6198",
-        "contactType": "customer service",
-        "areaServed": "IT",
-        "availableLanguage": ["Italian", "German"],
-        "hoursAvailable": "Mo-Sa 07:00-19:30"
-      },
-      {
-        "@type": "ContactPoint",
-        "telephone": "+39 0461 602534",
-        "contactType": "sales",
-        "areaServed": "IT",
-        "availableLanguage": ["Italian", "German"],
-        "hoursAvailable": "Mo-Fr 08:00-18:00"
-      }
-    ],
-    "sameAs": [
-      "https://www.facebook.com/profile.php?id=100063456281899",
-      "https://instagram.com/banchetto.bottamedi",
-      "https://maps.app.goo.gl/TFV4cgnEvcFjBHfD6"
-    ],
-    "knowsAbout": [
-      "Frutta fresca di stagione",
-      "Verdura biologica e tradizionale", 
-      "Mele Melinda DOP",
-      "Prodotti tipici trentini",
-      "Servizi HORECA",
-      "Ingrosso alimentari",
-      "Distribuzione ortofrutta",
-      "Consulenza commerciale"
-    ],
-    "award": [
-      "50 anni di attività",
-      "Riconoscimento qualità HORECA",
-      "Certificazione fornitori locali"
-    ]
-  }
-  </script>
+ <!-- 🎯 SCHEMA.ORG BANCHETTO DETTAGLIO -->
+ <script type="application/ld+json">
+ {
+   "@context": "https://schema.org",
+   "@type": "GroceryStore",
+   "name": "Banchetto Bottamedi",
+   "alternateName": ["Bottamedi Frutta e Verdura", "Fruttivendolo Mezzolombardo"],
+   "description": "Banchetto di frutta e verdura fresca nel centro di Mezzolombardo dal 1974. Selezione quotidiana di prodotti locali trentini, mele Melinda DOP, verdure di stagione. Tradizione familiare di qualità.",
+   "foundingDate": "1974",
+   "url": "https://www.bottamedi.eu",
+   "telephone": "+39 351 577 6198",
+   "email": "bottamedipierluigi@virgilio.it",
+   "logo": "https://www.bottamedi.eu/logo-bottamedi.webp",
+   "image": [
+     "https://www.bottamedi.eu/images/banchetto.webp",
+     "https://www.bottamedi.eu/images/melinda_golden.webp",
+     "https://www.bottamedi.eu/images/pomodori_cuore_bue.webp"
+   ],
+   "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "Via Cavalleggeri Udine",
+     "addressLocality": "Mezzolombardo",
+     "addressRegion": "Trentino Alto Adige",
+     "postalCode": "38017",
+     "addressCountry": "IT"
+   },
+   "geo": {
+     "@type": "GeoCoordinates",
+     "latitude": 46.210472,
+     "longitude": 11.097015
+   },
+   "openingHours": "Mo-Sa 07:00-19:30",
+   "priceRange": "€€",
+   "currenciesAccepted": "EUR",
+   "paymentAccepted": ["Cash", "Credit Card"],
+   "servesCuisine": "Prodotti freschi",
+   "knowsAbout": ["frutta fresca", "verdura locale", "mele Melinda DOP", "prodotti trentini", "asparagi Zambana"],
+   "hasOfferCatalog": {
+     "@type": "OfferCatalog",
+     "name": "Prodotti Freschi Banchetto",
+     "itemListElement": [
+       {
+         "@type": "Product",
+         "name": "Mele Melinda DOP",
+         "category": "Frutta",
+         "brand": "Melinda",
+         "description": "Mele fresche della Val di Non con certificazione DOP",
+         "offers": {
+           "@type": "Offer",
+           "availability": "https://schema.org/InStock",
+           "priceCurrency": "EUR"
+         }
+       },
+       {
+         "@type": "Product",
+         "name": "Asparagi Bianchi di Zambana",
+         "category": "Verdura",
+         "description": "Asparagi freschi del territorio trentino, stagionali",
+         "offers": {
+           "@type": "Offer",
+           "availability": "https://schema.org/SeasonallyAvailable",
+           "availabilityStarts": "2025-03-01",
+           "availabilityEnds": "2025-06-30",
+           "priceCurrency": "EUR"
+         }
+       }
+     ]
+   },
+   "serviceArea": {
+     "@type": "Place",
+     "name": "Mezzolombardo e dintorni"
+   }
+ }
+ </script>
 
-  <!-- FAQ Schema -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Dove si trova Bottamedi a Mezzolombardo?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Bottamedi ha due sedi a Mezzolombardo: il banchetto dettaglio in Via Cavalleggeri Udine (aperto lun-sab 7:00-19:30) e l'ingrosso HORECA in Via Alcide de Gasperi 47. Entrambe nel centro di Mezzolombardo, Trentino Alto Adige."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Come contattare Bottamedi per l'ingrosso HORECA?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Per il servizio ingrosso HORECA contatta Bottamedi al +39 0461 602534 o via email a bottamedipierluigi@virgilio.it. Forniamo ristoranti, hotel e pizzerie in tutto il Trentino Alto Adige con consegne programmate 6 giorni su 7."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Quali sono gli orari del banchetto Bottamedi?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Il banchetto Bottamedi è aperto dal Lunedì al Sabato dalle 07:00 alle 19:30. Siamo chiusi la Domenica per garantire la selezione quotidiana dei prodotti più freschi alle prime ore del mattino."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Che prodotti offre Bottamedi?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Bottamedi offre oltre 150 varietà di frutta e verdura fresca: mele Melinda DOP, prodotti biologici del Trentino, frutta di stagione, verdure locali, specialità del territorio e prodotti per il settore HORECA. Selezione quotidiana alle prime ore del mattino."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Bottamedi offre servizi per ristoranti e hotel?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Sì, Bottamedi ha una divisione specializzata HORECA che fornisce ristoranti, hotel, pizzerie e attività commerciali con prodotti di qualità superiore, consegne programmate, listini dedicati e consulenza professionale."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Da quanto tempo opera Bottamedi?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Bottamedi è un'azienda familiare fondata nel 1974, con oltre 50 anni di esperienza nel settore ortofrutticolo. Tre generazioni della famiglia Bottamedi continuano la tradizione di qualità e servizio nel Trentino Alto Adige."
-        }
-      }
-    ]
-  }
-  </script>
+ <!-- 🎯 SCHEMA.ORG INGROSSO HORECA -->
+ <script type="application/ld+json">
+ {
+   "@context": "https://schema.org",
+   "@type": "Wholesaler",
+   "name": "Bottamedi Ingrosso HORECA",
+   "alternateName": ["Bottamedi Grossista", "Fornitore HORECA Trentino"],
+   "description": "Servizio ingrosso HORECA dal 1974 per ristoranti, hotel e pizzerie del Trentino Alto Adige. Fornitura quotidiana di frutta e verdura fresca selezionata, consegne programmate.",
+   "foundingDate": "1974",
+   "url": "https://www.bottamedi.eu",
+   "telephone": "+39 0461 602534",
+   "email": "bottamedipierluigi@virgilio.it",
+   "logo": "https://www.bottamedi.eu/logo-bottamedi.webp",
+   "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "Via Alcide de Gasperi, 47",
+     "addressLocality": "Mezzolombardo",
+     "addressRegion": "Trentino Alto Adige",
+     "postalCode": "38017",
+     "addressCountry": "IT"
+   },
+   "geo": {
+     "@type": "GeoCoordinates",
+     "latitude": 46.213210,
+     "longitude": 11.098930
+   },
+   "serviceArea": [
+     {
+       "@type": "Place",
+       "name": "Trentino Alto Adige"
+     },
+     {
+       "@type": "Place",
+       "name": "Provincia di Trento"
+     },
+     {
+       "@type": "Place",
+       "name": "Val di Non"
+     },
+     {
+       "@type": "Place",
+       "name": "Val di Sole"
+     }
+   ],
+   "audience": {
+     "@type": "BusinessAudience",
+     "audienceType": "HORECA"
+   },
+   "hasOfferCatalog": {
+     "@type": "OfferCatalog",
+     "name": "Servizi HORECA",
+     "itemListElement": [
+       {
+         "@type": "Service",
+         "name": "Fornitura Ristoranti",
+         "description": "Consegna quotidiana frutta e verdura per ristoranti"
+       },
+       {
+         "@type": "Service",
+         "name": "Fornitura Hotel",
+         "description": "Servizio dedicato per strutture ricettive"
+       },
+       {
+         "@type": "Service",
+         "name": "Fornitura Pizzerie",
+         "description": "Prodotti specializzati per pizzerie"
+       }
+     ]
+   }
+ }
+ </script>
+
+ <!-- 🎯 SCHEMA PRODOTTI PRINCIPALI -->
+ <script type="application/ld+json">
+ {
+   "@context": "https://schema.org",
+   "@type": "ItemList",
+   "name": "Prodotti Bottamedi Stagionali",
+   "description": "Selezione di prodotti freschi disponibili presso Bottamedi Mezzolombardo",
+   "itemListElement": [
+     {
+       "@type": "Product",
+       "position": 1,
+       "name": "Mele Melinda DOP Golden",
+       "description": "Mele Golden fresche della Val di Non con certificazione DOP",
+       "category": "Frutta",
+       "brand": "Melinda",
+       "manufacturer": "Consorzio Melinda",
+       "material": "Naturale",
+       "offers": {
+         "@type": "Offer",
+         "availability": "https://schema.org/InStock",
+         "priceCurrency": "EUR",
+         "seller": {
+           "@type": "Organization",
+           "name": "Bottamedi"
+         }
+       },
+       "additionalProperty": [
+         {
+           "@type": "PropertyValue",
+           "name": "Origine",
+           "value": "Val di Non, Trentino"
+         },
+         {
+           "@type": "PropertyValue",
+           "name": "Certificazione",
+           "value": "DOP"
+         }
+       ]
+     },
+     {
+       "@type": "Product", 
+       "position": 2,
+       "name": "Asparagi Bianchi di Zambana IGP",
+       "description": "Asparagi bianchi freschi del territorio trentino, prodotto stagionale",
+       "category": "Verdura",
+       "offers": {
+         "@type": "Offer",
+         "availability": "https://schema.org/SeasonallyAvailable",
+         "availabilityStarts": "2025-03-01",
+         "availabilityEnds": "2025-06-30",
+         "priceCurrency": "EUR"
+       },
+       "additionalProperty": [
+         {
+           "@type": "PropertyValue",
+           "name": "Origine",
+           "value": "Zambana, Trentino"
+         },
+         {
+           "@type": "PropertyValue",
+           "name": "Stagionalità",
+           "value": "Marzo-Giugno"
+         }
+       ]
+     },
+     {
+       "@type": "Product",
+       "position": 3,
+       "name": "Pomodori Cuore di Bue",
+       "description": "Pomodori freschi cuore di bue, varietà locale trentina",
+       "category": "Verdura",
+       "offers": {
+         "@type": "Offer",
+         "availability": "https://schema.org/SeasonallyAvailable",
+         "availabilityStarts": "2025-05-01",
+         "availabilityEnds": "2025-09-30",
+         "priceCurrency": "EUR"
+       }
+     }
+   ]
+ }
+ </script>
+
+ <!-- 🎯 FAQ SCHEMA OTTIMIZZATO LOCAL -->
+ <script type="application/ld+json">
+ {
+   "@context": "https://schema.org",
+   "@type": "FAQPage",
+   "mainEntity": [
+     {
+       "@type": "Question",
+       "name": "Dove si trova il banchetto Bottamedi a Mezzolombardo?",
+       "acceptedAnswer": {
+         "@type": "Answer",
+         "text": "Il banchetto Bottamedi si trova in Via Cavalleggeri Udine a Mezzolombardo, nel centro del paese. Siamo aperti dal Lunedì al Sabato dalle 7:00 alle 19:30. Parcheggio comodo nelle vicinanze."
+       }
+     },
+     {
+       "@type": "Question",
+       "name": "Che prodotti offre Bottamedi?",
+       "acceptedAnswer": {
+         "@type": "Answer",
+         "text": "Bottamedi offre oltre 150 varietà di frutta e verdura fresca: mele Melinda DOP, asparagi di Zambana, prodotti stagionali del Trentino, frutta esotica e verdure locali. Selezione quotidiana alle prime ore del mattino per garantire massima freschezza."
+       }
+     },
+     {
+       "@type": "Question",
+       "name": "Bottamedi fornisce ristoranti e hotel?",
+       "acceptedAnswer": {
+         "@type": "Answer",
+         "text": "Sì, abbiamo una divisione ingrosso HORECA in Via de Gasperi 47 che fornisce ristoranti, hotel, pizzerie e attività commerciali. Consegne programmate 6 giorni su 7, listini dedicati e consulenza professionale. Contatti: 0461 602534."
+       }
+     },
+     {
+       "@type": "Question",
+       "name": "Quali sono gli orari di Bottamedi?",
+       "acceptedAnswer": {
+         "@type": "Answer",
+         "text": "Il banchetto è aperto Lunedì-Sabato 7:00-19:30. L'ingrosso HORECA riceve su appuntamento. Telefono banchetto: 351 577 6198. Siamo chiusi la Domenica per garantire la selezione dei prodotti più freschi."
+       }
+     },
+     {
+       "@type": "Question",
+       "name": "Da quanto tempo opera Bottamedi?",
+       "acceptedAnswer": {
+         "@type": "Answer",
+         "text": "Bottamedi è un'azienda familiare fondata nel 1974 con oltre 50 anni di esperienza nel settore ortofrutticolo. Tre generazioni della famiglia Bottamedi continuano la tradizione di qualità nel Trentino Alto Adige."
+       }
+     },
+     {
+       "@type": "Question",
+       "name": "Dove posso parcheggiare al banchetto Bottamedi?",
+       "acceptedAnswer": {
+         "@type": "Answer",
+         "text": "Il banchetto in Via Cavalleggeri Udine ha parcheggio comodo nelle vicinanze. Nel centro di Mezzolombardo sono disponibili posti auto gratuiti e a pagamento a pochi metri dal negozio."
+       }
+     }
+   ]
+ }
+ </script>
+
+ <!-- 🎯 ORGANIZATION SCHEMA COMPLETO -->
+ <script type="application/ld+json">
+ {
+   "@context": "https://schema.org",
+   "@type": "Organization",
+   "name": "Bottamedi Frutta e Verdura",
+   "alternateName": ["Bottamedi Mezzolombardo", "Famiglia Bottamedi"],
+   "description": "Azienda familiare dal 1974 specializzata nella vendita di frutta e verdura fresca a Mezzolombardo. Servizi ingrosso HORECA per ristoranti e banchetto dettaglio per privati nel Trentino Alto Adige.",
+   "foundingDate": "1974",
+   "email": "bottamedipierluigi@virgilio.it",
+   "telephone": ["+39 351 577 6198", "+39 0461 602534"],
+   "url": "https://www.bottamedi.eu",
+   "logo": "https://www.bottamedi.eu/logo-bottamedi.webp",
+   "image": [
+     "https://www.bottamedi.eu/images/banchetto.webp",
+     "https://www.bottamedi.eu/images/melinda_golden.webp",
+     "https://www.bottamedi.eu/images/pomodori_cuore_bue.webp",
+     "https://www.bottamedi.eu/images/kiwi-cuore.webp"
+   ],
+   "address": [
+     {
+       "@type": "PostalAddress",
+       "name": "Banchetto Dettaglio",
+       "streetAddress": "Via Cavalleggeri Udine",
+       "addressLocality": "Mezzolombardo",
+       "addressRegion": "Trentino Alto Adige",
+       "postalCode": "38017",
+       "addressCountry": "IT"
+     },
+     {
+       "@type": "PostalAddress", 
+       "name": "Sede Ingrosso HORECA",
+       "streetAddress": "Via Alcide de Gasperi, 47",
+       "addressLocality": "Mezzolombardo",
+       "addressRegion": "Trentino Alto Adige", 
+       "postalCode": "38017",
+       "addressCountry": "IT"
+     }
+   ],
+   "founder": {
+     "@type": "Person",
+     "name": "Lorenzo Bottamedi",
+     "familyName": "Bottamedi",
+     "givenName": "Lorenzo"
+   },
+   "employee": [
+     {
+       "@type": "Person",
+       "name": "Pierluigi Bottamedi",
+       "jobTitle": "Titolare e Responsabile Commerciale",
+       "email": "bottamedipierluigi@virgilio.it",
+       "telephone": "+39 0461 602534"
+     }
+   ],
+   "aggregateRating": {
+     "@type": "AggregateRating",
+     "ratingValue": "4.8",
+     "reviewCount": "127",
+     "bestRating": "5",
+     "worstRating": "1"
+   },
+   "contactPoint": [
+     {
+       "@type": "ContactPoint",
+       "telephone": "+39 351 577 6198",
+       "contactType": "customer service",
+       "areaServed": "IT-TN",
+       "availableLanguage": ["Italian", "German"],
+       "hoursAvailable": "Mo-Sa 07:00-19:30"
+     },
+     {
+       "@type": "ContactPoint",
+       "telephone": "+39 0461 602534",
+       "contactType": "sales",
+       "areaServed": "IT-TN",
+       "availableLanguage": ["Italian", "German"],
+       "hoursAvailable": "Mo-Fr 08:00-18:00"
+     }
+   ],
+   "sameAs": [
+     "https://www.facebook.com/profile.php?id=100063456281899",
+     "https://instagram.com/banchetto.bottamedi",
+     "https://maps.app.goo.gl/TFV4cgnEvcFjBHfD6"
+   ],
+   "knowsAbout": [
+     "Frutta fresca Mezzolombardo",
+     "Verdura locale Trentino", 
+     "Mele Melinda DOP",
+     "Asparagi Zambana",
+     "Servizi HORECA",
+     "Ingrosso ortofrutta",
+     "Prodotti stagionali",
+     "Consegne ristoranti"
+   ],
+   "award": [
+     "50 anni di attività nel settore",
+     "Riconoscimento qualità HORECA Trentino",
+     "Tradizione familiare certificata"
+   ],
+   "slogan": "50 anni di tradizione familiare nella qualità"
+ }
+ </script>
 
 </body>
 </html>

@@ -214,6 +214,7 @@ ${formData.contactPerson}`)
 
   return (
     <section id="wholesale" className="py-20 lg:py-24 bg-gradient-to-br from-blue-50 via-white to-green-50 relative overflow-hidden">
+      {/* Background Elements */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-0 right-1/4 w-80 h-80 bg-blue-200 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-green-200 rounded-full blur-3xl"></div>
@@ -222,8 +223,11 @@ ${formData.contactPerson}`)
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-6xl mx-auto">
           
+          {/* Header Section */}
           <motion.div
-            initial={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
             <div className="inline-flex items-center space-x-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
@@ -246,48 +250,74 @@ ${formData.contactPerson}`)
             </p>
           </motion.div>
 
+          {/* Main Content Grid */}
           <div className="grid lg:grid-cols-2 gap-10 items-start">
             
-            <div className="space-y-6">
+            {/* Left Column - Benefits & Info */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={inView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="space-y-6"
+            >
               <h3 className="text-xl font-bold text-gray-900 mb-5">
                 {t.whyChoose}
               </h3>
               
               <div className="space-y-4">
                 {t.benefits.map((benefit, index) => (
-                  <div
+                  <motion.div
                     key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={inView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
                     className="flex items-start space-x-3 p-4 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
                   >
-                    <div className="text-2xl">{benefit.icon}</div>
+                    <div className="text-2xl flex-shrink-0">{benefit.icon}</div>
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-1 text-sm">{benefit.title}</h4>
-                      <p className="text-gray-600 text-xs">{benefit.desc}</p>
+                      <p className="text-gray-600 text-xs leading-relaxed">{benefit.desc}</p>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
 
-              <div className="bg-gradient-to-br from-green-50 to-blue-50 p-5 rounded-xl border border-green-200">
+              {/* Contact Info Card */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.4, delay: 0.7 }}
+                className="bg-gradient-to-br from-green-50 to-blue-50 p-5 rounded-xl border border-green-200"
+              >
                 <h4 className="font-semibold text-gray-900 mb-3 text-sm">{t.directContacts}</h4>
                 <div className="space-y-2 text-xs text-gray-600">
                   <div className="flex items-center space-x-2">
                     <span>📞</span>
-                    <span>+39 0461 602534</span>
+                    <a href="tel:+390461602534" className="hover:text-blue-600 transition-colors">
+                      +39 0461 602534
+                    </a>
                   </div>
                   <div className="flex items-center space-x-2">
                     <span>📧</span>
-                    <span>bottamedipierluigi@virgilio.it</span>
+                    <a href="mailto:bottamedipierluigi@virgilio.it" className="hover:text-blue-600 transition-colors break-all">
+                      bottamedipierluigi@virgilio.it
+                    </a>
                   </div>
                   <div className="flex items-center space-x-2">
                     <span>📍</span>
                     <span>Via de Gasperi 47, Mezzolombardo (TN)</span>
                   </div>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
-            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+            {/* Right Column - Form */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={inView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
+            >
               <AnimatePresence mode="wait">
                 {status === 'success' ? (
                   <motion.div
@@ -295,10 +325,10 @@ ${formData.contactPerson}`)
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="text-center py-6"
+                    className="text-center py-8"
                   >
-                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                      <span className="text-xl">✅</span>
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl">✅</span>
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 mb-2">{t.form.success}</h3>
                     <p className="text-gray-600 text-sm">{t.form.successMessage}</p>
@@ -310,7 +340,8 @@ ${formData.contactPerson}`)
                     onSubmit={handleSubmit}
                     className="space-y-4"
                   >
-                    <div className="text-center mb-5">
+                    {/* Form Header */}
+                    <div className="text-center mb-6">
                       <h3 className="text-lg font-bold text-gray-900 mb-1">
                         Compila il modulo
                       </h3>
@@ -319,6 +350,7 @@ ${formData.contactPerson}`)
                       </p>
                     </div>
 
+                    {/* Business Name & Contact Person */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -330,7 +362,7 @@ ${formData.contactPerson}`)
                           value={formData.businessName}
                           onChange={(e) => handleInputChange('businessName', e.target.value)}
                           placeholder={t.form.businessNamePlaceholder}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm outline-none"
+                          className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm outline-none"
                         />
                       </div>
                       
@@ -344,11 +376,12 @@ ${formData.contactPerson}`)
                           value={formData.contactPerson}
                           onChange={(e) => handleInputChange('contactPerson', e.target.value)}
                           placeholder={t.form.contactPersonPlaceholder}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm outline-none"
+                          className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm outline-none"
                         />
                       </div>
                     </div>
 
+                    {/* Phone & Email */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -360,7 +393,7 @@ ${formData.contactPerson}`)
                           value={formData.phone}
                           onChange={(e) => handleInputChange('phone', e.target.value)}
                           placeholder={t.form.phonePlaceholder}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm outline-none"
+                          className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm outline-none"
                         />
                       </div>
                       
@@ -374,11 +407,12 @@ ${formData.contactPerson}`)
                           value={formData.email}
                           onChange={(e) => handleInputChange('email', e.target.value)}
                           placeholder={t.form.emailPlaceholder}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm outline-none"
+                          className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm outline-none"
                         />
                       </div>
                     </div>
 
+                    {/* Business Type & Location */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -388,7 +422,7 @@ ${formData.contactPerson}`)
                           required
                           value={formData.businessType}
                           onChange={(e) => handleInputChange('businessType', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white text-sm outline-none"
+                          className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white text-sm outline-none"
                         >
                           {t.form.businessTypeOptions.map((option, index) => (
                             <option key={index} value={index === 0 ? '' : option}>
@@ -407,11 +441,12 @@ ${formData.contactPerson}`)
                           value={formData.location}
                           onChange={(e) => handleInputChange('location', e.target.value)}
                           placeholder={t.form.locationPlaceholder}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm outline-none"
+                          className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm outline-none"
                         />
                       </div>
                     </div>
 
+                    {/* Message */}
                     <div>
                       <label className="block text-xs font-medium text-gray-700 mb-1">
                         {t.form.message}
@@ -421,29 +456,30 @@ ${formData.contactPerson}`)
                         value={formData.message}
                         onChange={(e) => handleInputChange('message', e.target.value)}
                         placeholder={t.form.messagePlaceholder}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none text-sm outline-none"
+                        className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none text-sm outline-none"
                       />
                     </div>
 
+                    {/* Privacy Checkbox */}
                     <div className="flex items-start space-x-2">
                       <input
                         type="checkbox"
                         id="privacy"
                         checked={privacyAccepted}
                         onChange={(e) => setPrivacyAccepted(e.target.checked)}
-                        className="mt-0.5 h-3 w-3 text-blue-600 border-gray-300 rounded focus:ring-blue-500 outline-none"
+                        className="mt-0.5 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 outline-none"
                       />
                       <label htmlFor="privacy" className="text-xs text-gray-600 leading-relaxed">
                         {t.form.privacy}
                       </label>
                     </div>
 
+                    {/* Submit Button */}
                     <button
                       type="submit"
                       disabled={!isFormValid || status === 'sending'}
                       onClick={resetButtonFocus}
-                      onBlur={() => {}}
-                      className={`w-full py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-300 outline-none focus:outline-none ${
+                      className={`w-full py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-300 outline-none focus:outline-none touch-target ${
                         isFormValid && status !== 'sending'
                           ? 'bg-gradient-to-r from-blue-600 to-green-600 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]'
                           : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -466,6 +502,7 @@ ${formData.contactPerson}`)
                       )}
                     </button>
 
+                    {/* Error Message */}
                     {status === 'error' && (
                       <div className="text-center text-red-600 text-xs bg-red-50 p-2 rounded-lg">
                         {t.form.error}
@@ -474,7 +511,7 @@ ${formData.contactPerson}`)
                   </motion.form>
                 )}
               </AnimatePresence>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>

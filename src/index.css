@@ -40,6 +40,180 @@
     @apply bg-gradient-to-r from-brand-600 to-accent-600 bg-clip-text text-transparent;
   }
 
+  /* Contact Cards - COMPONENTI CORRETTI */
+  .contact-cards-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (min-width: 1024px) {
+    .contact-cards-container {
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+  }
+
+  .contact-card {
+    position: relative;
+    background: white;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(229, 231, 235, 0.8);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .contact-card:hover {
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .contact-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+  }
+
+  .contact-card-icon {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+    flex-shrink: 0;
+  }
+
+  .contact-card-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 1.5rem;
+  }
+
+  .contact-card-info {
+    flex: 1;
+  }
+
+  .contact-card-actions {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(229, 231, 235, 0.3);
+  }
+
+  .btn-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .btn-grid-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .contact-card-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    min-height: 44px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-card-btn:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+
+  .contact-card-btn-primary {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+  }
+
+  .contact-card-btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .contact-card-btn-whatsapp {
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    color: white;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+  }
+
+  .contact-card-btn-whatsapp:hover {
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .contact-card-btn-map {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  }
+
+  .contact-card-btn-map:hover {
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .contact-card-btn:active {
+    transform: translateY(0);
+  }
+
+  /* Responsive migliorato per Contact Cards */
+  @media (max-width: 640px) {
+    .contact-card {
+      padding: 1.5rem;
+      min-height: 450px;
+    }
+    
+    .contact-card-header {
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1.25rem;
+    }
+
+    .contact-card-icon {
+      width: 3.5rem;
+      height: 3.5rem;
+      font-size: 1.25rem;
+    }
+
+    .btn-grid-row {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+
+    .contact-card-btn {
+      padding: 0.875rem 1rem;
+      font-size: 0.8rem;
+    }
+  }
+
   /* Mobile Header - Sempre Trasparente */
   .mobile-header {
     background: transparent !important;
@@ -242,6 +416,15 @@ select:focus-visible,
     animation-duration: 150ms !important;
     transition-duration: 60ms !important;
   }
+
+  /* Contact Cards mobile fix */
+  .contact-cards-container {
+    gap: 1.5rem;
+  }
+
+  .contact-card {
+    min-height: 400px;
+  }
 }
 
 /* Animazioni ridotte per utenti con preferenze di movimento ridotto */
@@ -257,7 +440,8 @@ select:focus-visible,
   
   .mobile-dock,
   .mobile-header,
-  .section-container {
+  .section-container,
+  .contact-card {
     transition: none !important;
     animation: none !important;
   }
@@ -275,8 +459,13 @@ select:focus-visible,
   }
   
   button, 
-  a {
+  a,
+  .contact-card-btn {
     border: 2px solid currentColor !important;
+  }
+
+  .contact-card {
+    border: 2px solid #000000 !important;
   }
 }
 
@@ -292,11 +481,13 @@ select:focus-visible,
 @media print {
   .no-print,
   .mobile-dock,
-  .mobile-header {
+  .mobile-header,
+  .contact-card-btn {
     display: none !important;
   }
   
-  .section-container {
+  .section-container,
+  .contact-card {
     break-inside: avoid;
   }
 }
@@ -421,8 +612,27 @@ a, button, input, textarea, select {
     border-radius: 0;
   }
   
-  .mobile-dock-fast {
+  .mobile-dock-fast,
+  .contact-card-btn {
     -webkit-transform: translateZ(0);
     -webkit-backface-visibility: hidden;
   }
+}
+
+/* Contact Card specifici fix per performance */
+.contact-card {
+  contain: layout style paint;
+}
+
+.contact-card:hover {
+  contain: layout style paint size;
+}
+
+.contact-card-btn {
+  contain: layout style;
+  will-change: transform;
+}
+
+.contact-card-btn:hover {
+  will-change: transform, box-shadow;
 }

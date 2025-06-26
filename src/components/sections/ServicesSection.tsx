@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import OptimizedImage from '../ui/OptimizedImage'
 
@@ -125,6 +125,7 @@ const translations = {
   }
 }
 
+// Animation variants ottimizzati
 const optimizedVariants = {
   cardHover: {
     y: -3,
@@ -188,12 +189,12 @@ const ServiceCard: React.FC<{
   index: number
   isActive: boolean
   onClick: () => void
-  isMobile?: boolean
-}> = React.memo(({ service, index, isActive, onClick, isMobile = false }) => {
+}> = React.memo(({ service, index, isActive, onClick }) => {
   const [ref, inView] = useInView({
     threshold: 0.2,
     triggerOnce: true
   })
+  const shouldReduceMotion = useReducedMotion()
 
   const cardVariants = useMemo(() => ({
     hidden: { opacity: 0, y: 20, scale: 0.98 },
@@ -219,7 +220,7 @@ const ServiceCard: React.FC<{
     >
       <motion.div
         onClick={onClick}
-        whileHover={!isMobile ? optimizedVariants.cardHover : undefined}
+        whileHover={shouldReduceMotion ? {} : optimizedVariants.cardHover}
         whileTap={{ scale: 0.99 }}
         className={`
           relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-200
@@ -227,11 +228,10 @@ const ServiceCard: React.FC<{
             ? 'ring-2 ring-offset-1 ring-blue-400 shadow-xl' 
             : 'shadow-lg hover:shadow-xl'
           }
-          ${isMobile ? 'mb-6' : ''}
         `}
         style={{ willChange: 'transform' }}
       >
-        <div className={`relative overflow-hidden ${isMobile ? 'h-56' : 'h-64'}`}>
+        <div className="relative h-64 overflow-hidden">
           <OptimizedImage
             src={service.image}
             alt={service.title}
@@ -294,6 +294,7 @@ const MobileServiceCard: React.FC<{
     threshold: 0.15,
     triggerOnce: true
   })
+  const shouldReduceMotion = useReducedMotion()
 
   const cardVariants = useMemo(() => ({
     hidden: { opacity: 0, y: 30, scale: 0.97 },
@@ -394,30 +395,16 @@ MobileServiceCard.displayName = 'MobileServiceCard'
 
 const ServicesSection: React.FC<ServicesSectionProps> = ({ language, inView = true }) => {
   const [activeService, setActiveService] = useState(0)
-  const [isMobile, setIsMobile] = useState(false)
+  const shouldReduceMotion = useReducedMotion()
   
   const t = useMemo(() => translations[language], [language])
-
-  React.useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024)
-    checkMobile()
-    
-    let timeoutId: NodeJS.Timeout
-    const debouncedResize = () => {
-      clearTimeout(timeoutId)
-      timeoutId = setTimeout(checkMobile, 100)
-    }
-    
-    window.addEventListener('resize', debouncedResize)
-    return () => {
-      window.removeEventListener('resize', debouncedResize)
-      clearTimeout(timeoutId)
-    }
-  }, [])
 
   const handleServiceClick = useCallback((index: number) => {
     setActiveService(index)
   }, [])
+
+  // UTILIZZO SOLO MEDIA QUERY CSS - Nessuna logica mobile che interferisce!
+  const isDesktop = window.matchMedia('(min-width: 1024px)').matches
 
   return (
     <section id="services" className="py-16 lg:py-20 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
@@ -443,110 +430,111 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ language, inView = tr
           </p>
         </motion.div>
 
-        {isMobile ? (
-          <div>
+        {/* Layout Responsive con CSS - NO JavaScript mobile logic */}
+        <div className="block lg:hidden">
+          {/* Mobile Layout */}
+          {t.services.map((service, index) => (
+            <MobileServiceCard
+              key={service.id}
+              service={service}
+              index={index}
+              language={language}
+              t={t}
+            />
+          ))}
+        </div>
+
+        <div className="hidden lg:grid lg:grid-cols-2 gap-10 items-start">
+          {/* Desktop Layout */}
+          <div className="space-y-5">
             {t.services.map((service, index) => (
-              <MobileServiceCard
+              <ServiceCard
                 key={service.id}
                 service={service}
                 index={index}
-                language={language}
-                t={t}
+                isActive={activeService === index}
+                onClick={() => handleServiceClick(index)}
               />
             ))}
           </div>
-        ) : (
-          <div className="grid lg:grid-cols-2 gap-10 items-start">
-            <div className="space-y-5">
-              {t.services.map((service, index) => (
-                <ServiceCard
-                  key={service.id}
-                  service={service}
-                  index={index}
-                  isActive={activeService === index}
-                  onClick={() => handleServiceClick(index)}
-                />
-              ))}
-            </div>
 
-            <div className="sticky top-20">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeService}
-                  variants={optimizedVariants.detailsPanel}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  className="bg-white rounded-2xl shadow-xl p-6 xl:p-8 border border-gray-100"
-                  style={{ willChange: 'transform, opacity' }}
-                >
-                  <div className="flex items-center space-x-4 mb-6">
-                    <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${t.services[activeService].color} flex items-center justify-center text-2xl shadow-lg`}>
-                      {t.services[activeService].icon}
-                    </div>
-                    <div>
-                      <h3 className="text-xl xl:text-2xl font-bold text-gray-900">
-                        {t.services[activeService].title}
-                      </h3>
-                      <p className="text-gray-600 text-sm">{t.services[activeService].shortDesc}</p>
-                    </div>
+          <div className="sticky top-20">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeService}
+                variants={optimizedVariants.detailsPanel}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className="bg-white rounded-2xl shadow-xl p-6 xl:p-8 border border-gray-100"
+                style={{ willChange: 'transform, opacity' }}
+              >
+                <div className="flex items-center space-x-4 mb-6">
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${t.services[activeService].color} flex items-center justify-center text-2xl shadow-lg`}>
+                    {t.services[activeService].icon}
                   </div>
-
-                  <div className="mb-6">
-                    <p className="text-gray-700 leading-relaxed mb-3 text-sm lg:text-base">
-                      {t.services[activeService].description}
-                    </p>
-                    <p className="text-gray-600 leading-relaxed text-sm">
-                      {t.services[activeService].longDescription}
-                    </p>
+                  <div>
+                    <h3 className="text-xl xl:text-2xl font-bold text-gray-900">
+                      {t.services[activeService].title}
+                    </h3>
+                    <p className="text-gray-600 text-sm">{t.services[activeService].shortDesc}</p>
                   </div>
+                </div>
 
-                  <div className="mb-6">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-4">{t.whatWeOffer}</h4>
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
-                      {t.services[activeService].features.map((feature: any, index: number) => (
-                        <motion.div
-                          key={index}
-                          initial="hidden"
-                          animate="visible"
-                          variants={optimizedVariants.feature}
-                          transition={{ delay: index * 0.03 }}
-                          className={`flex items-start space-x-3 p-3 rounded-xl ${t.services[activeService].bgColor} border border-gray-100 hover:shadow-sm transition-shadow duration-150`}
-                        >
-                          <div className="text-xl flex-shrink-0">{feature.icon}</div>
-                          <div>
-                            <h5 className={`font-medium ${t.services[activeService].textColor} mb-1 text-sm`}>
-                              {feature.title}
-                            </h5>
-                            <p className="text-gray-600 text-xs leading-relaxed">{feature.desc}</p>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
+                <div className="mb-6">
+                  <p className="text-gray-700 leading-relaxed mb-3 text-sm lg:text-base">
+                    {t.services[activeService].description}
+                  </p>
+                  <p className="text-gray-600 leading-relaxed text-sm">
+                    {t.services[activeService].longDescription}
+                  </p>
+                </div>
 
-                  <div className="grid grid-cols-3 gap-4">
-                    {t.services[activeService].stats.map((stat: any, index: number) => (
+                <div className="mb-6">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">{t.whatWeOffer}</h4>
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+                    {t.services[activeService].features.map((feature: any, index: number) => (
                       <motion.div
                         key={index}
                         initial="hidden"
                         animate="visible"
-                        variants={optimizedVariants.stat}
-                        transition={{ delay: 0.1 + index * 0.05 }}
-                        className="text-center p-3 bg-gray-50 rounded-xl"
+                        variants={optimizedVariants.feature}
+                        transition={{ delay: index * 0.03 }}
+                        className={`flex items-start space-x-3 p-3 rounded-xl ${t.services[activeService].bgColor} border border-gray-100 hover:shadow-sm transition-shadow duration-150`}
                       >
-                        <div className={`text-2xl font-bold bg-gradient-to-r ${t.services[activeService].color} bg-clip-text text-transparent`}>
-                          {stat.value}
+                        <div className="text-xl flex-shrink-0">{feature.icon}</div>
+                        <div>
+                          <h5 className={`font-medium ${t.services[activeService].textColor} mb-1 text-sm`}>
+                            {feature.title}
+                          </h5>
+                          <p className="text-gray-600 text-xs leading-relaxed">{feature.desc}</p>
                         </div>
-                        <div className="text-xs text-gray-600 mt-1 leading-tight">{stat.label}</div>
                       </motion.div>
                     ))}
                   </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-4">
+                  {t.services[activeService].stats.map((stat: any, index: number) => (
+                    <motion.div
+                      key={index}
+                      initial="hidden"
+                      animate="visible"
+                      variants={optimizedVariants.stat}
+                      transition={{ delay: 0.1 + index * 0.05 }}
+                      className="text-center p-3 bg-gray-50 rounded-xl"
+                    >
+                      <div className={`text-2xl font-bold bg-gradient-to-r ${t.services[activeService].color} bg-clip-text text-transparent`}>
+                        {stat.value}
+                      </div>
+                      <div className="text-xs text-gray-600 mt-1 leading-tight">{stat.label}</div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
-        )}
+        </div>
       </div>
     </section>
   )

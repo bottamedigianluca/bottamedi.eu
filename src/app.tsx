@@ -85,51 +85,73 @@ const OptimizedSectionLoader: React.FC<{ name: string }> = React.memo(({ name })
 ))
 OptimizedSectionLoader.displayName = 'OptimizedSectionLoader'
 
-// Hook per mobile dock - VERSIONE SUPER SEMPLIFICATA CON DEBUG
+// Hook per mobile dock - VERSIONE FINALE CON FOOTER DETECTION
 const useMobileDockVisibility = (sectionsInView: Record<string, boolean>) => {
   const [isVisible, setIsVisible] = useState(false)
-  const [debugInfo, setDebugInfo] = useState<string>('')
+  const [isIdle, setIsIdle] = useState(false)
+  const [lastScrollTime, setLastScrollTime] = useState(Date.now())
   
-  const { scrollY } = useScrollInfo({ throttleDelay: SCROLL_DETECTION_DELAY })
+  const scrollDirection = useScrollDirection({ threshold: 3, throttleDelay: SCROLL_DETECTION_DELAY })
+  const { scrollY, isScrolling } = useScrollInfo({ throttleDelay: SCROLL_DETECTION_DELAY })
   
-  // LOGICA ESTREMAMENTE SEMPLICE
+  // Gestione idle timer
   useEffect(() => {
-    // Solo controlli base
-    const isInHero = scrollY < 150 // Aumentato il range hero
+    if (isScrolling) {
+      setLastScrollTime(Date.now())
+      setIsIdle(false)
+    }
+
+    const idleTimer = setTimeout(() => {
+      const now = Date.now()
+      if (now - lastScrollTime > MOBILE_DOCK_IDLE_TIME && !isScrolling) {
+        setIsIdle(true)
+      }
+    }, MOBILE_DOCK_IDLE_TIME)
+
+    return () => clearTimeout(idleTimer)
+  }, [isScrolling, lastScrollTime])
+
+  // LOGICA FINALE: Nasconde in Hero, Contact E Footer
+  useEffect(() => {
+    // Controlla se siamo in hero (primi 150px della pagina)
+    const isInHero = scrollY < 150
+    
+    // Controlla se siamo in contact (sezione contact visibile)
     const isInContact = sectionsInView.contact
     
-    let shouldShow = false
-    let debug = ''
+    // NUOVO: Controlla se siamo nel footer
+    const isInFooter = (() => {
+      const footer = document.querySelector('footer')
+      if (!footer) return false
+      
+      const footerRect = footer.getBoundingClientRect()
+      const windowHeight = window.innerHeight
+      
+      // Se il footer è visibile nella viewport
+      return footerRect.top < windowHeight && footerRect.bottom > 0
+    })()
     
-    if (isInHero) {
-      debug = `NASCOSTO: Hero (scrollY: ${scrollY})`
-      shouldShow = false
-    } else if (isInContact) {
-      debug = `NASCOSTO: Contact (${sectionsInView.contact})`
-      shouldShow = false
-    } else {
-      // MOSTRA in TUTTE le altre sezioni se siamo fuori da hero
-      const currentSections = Object.keys(sectionsInView).filter(k => sectionsInView[k])
-      debug = `DOVREBBE ESSERE VISIBILE: scrollY=${scrollY}, sezioni=${currentSections.join(',')}`
-      shouldShow = true
+    // NASCONDE in hero, contact E footer
+    if (isInHero || isInContact || isInFooter) {
+      setIsVisible(false)
+      return
     }
-    
-    setDebugInfo(debug)
-    setIsVisible(shouldShow)
-    
-    // Log per debug
-    console.log('🔍 MobileDock Debug:', {
-      scrollY,
-      isInHero,
-      isInContact,
-      sectionsInView,
-      shouldShow,
-      debug
-    })
-    
-  }, [scrollY, sectionsInView])
 
-  return { isVisible, debugInfo }
+    // MOSTRA in TUTTE le altre sezioni quando:
+    // - Scroll verso l'alto
+    // - Utente è idle
+    // - Non sta scrollando e siamo oltre hero
+    const shouldShow = 
+      scrollY > 150 && ( // Fuori da hero
+        scrollDirection === 'up' || // Scroll inverso
+        isIdle || // Idle
+        !isScrolling // Fermo
+      )
+
+    setIsVisible(shouldShow)
+  }, [scrollDirection, scrollY, isIdle, isScrolling, sectionsInView])
+
+  return isVisible
 }
 
 // Hook per header mobile
@@ -166,11 +188,10 @@ const useSectionsInView = () => {
   const [sectionsInView, setSectionsInView] = useState<Record<string, boolean>>({})
 
   const updateSectionInView = useCallback((sectionId: string, inView: boolean) => {
-    setSectionsInView(prev => {
-      const newState = { ...prev, [sectionId]: inView }
-      console.log('📍 Section Update:', sectionId, inView, 'All sections:', newState)
-      return newState
-    })
+    setSectionsInView(prev => ({
+      ...prev,
+      [sectionId]: inView
+    }))
   }, [])
 
   return { sectionsInView, updateSectionInView }
@@ -235,7 +256,7 @@ const App: React.FC = () => {
   
   // Hooks personalizzati
   const { sectionsInView, updateSectionInView } = useSectionsInView()
-  const { isVisible: mobileDockVisible, debugInfo } = useMobileDockVisibility(sectionsInView)
+  const mobileDockVisible = useMobileDockVisibility(sectionsInView)
   const mobileHeaderVisible = useMobileHeaderVisibility(sectionsInView)
   const statusBarColor = useStatusBarColor(sectionsInView)
   const shouldReduceMotion = useReducedMotion()
@@ -413,35 +434,34 @@ const App: React.FC = () => {
           scrollBehavior="smooth"
         />
 
-        {/* Mobile Dock - VERSIONE DEBUG SEMPLIFICATA */}
+        {/* Mobile Dock - NASCOSTO in Hero, Contact E Footer */}
         {isMobileDevice && (
-          <>
-            {/* DEBUG PANEL SEMPRE VISIBILE */}
-            <div className="fixed top-20 left-4 right-4 bg-black/90 text-white p-4 rounded-lg text-xs z-[100] max-w-sm">
-              <div className="font-bold mb-2">🔍 MOBILE DOCK DEBUG</div>
-              <div>Visible: {mobileDockVisible ? '✅ SI' : '❌ NO'}</div>
-              <div>Device: {isMobileDevice ? '📱 Mobile' : '🖥️ Desktop'}</div>
-              <div>Sections: {Object.keys(sectionsInView).filter(k => sectionsInView[k]).join(', ')}</div>
-              <div className="mt-2 text-yellow-300">{debugInfo}</div>
-            </div>
-
-            {/* MOBILE DOCK SEMPRE VISIBILE PER TEST */}
-            <motion.div
-              initial={{ y: 100, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none"
-              style={{
-                willChange: 'transform, opacity',
-                touchAction: 'none'
-              }}
-            >
-              <MobileDock 
-                language={language} 
-                hideInFooter={false}
-                touchDelay={60}
-              />
-            </motion.div>
-          </>
+          <AnimatePresence>
+            {mobileDockVisible && (
+              <motion.div
+                initial={{ y: 100, opacity: 0, scale: 0.9 }}
+                animate={{ y: 0, opacity: 1, scale: 1 }}
+                exit={{ y: 100, opacity: 0, scale: 0.9 }}
+                transition={{ 
+                  type: 'spring',
+                  damping: 30,
+                  stiffness: 400,
+                  duration: shouldReduceMotion ? 0.05 : 0.15
+                }}
+                className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none"
+                style={{
+                  willChange: 'transform, opacity',
+                  touchAction: 'none'
+                }}
+              >
+                <MobileDock 
+                  language={language} 
+                  hideInFooter={false} // Non serve più, gestito dall'App
+                  touchDelay={60}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         )}
 
         {/* Cookie Banner */}

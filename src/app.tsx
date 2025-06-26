@@ -28,7 +28,7 @@ const ProductsSection = lazy(() => import('./components/sections/ProductsSection
 const WholesaleContact = lazy(() => import('./components/sections/Wholesalecontact'))
 const ContactSection = lazy(() => import('./components/sections/ContactSection'))
 
-// Costanti per ottimizzazione - Tempi ridotti per reattività
+// Costanti per ottimizzazione
 const SECTIONS = [
   { id: 'hero', Component: HeroSection },
   { id: 'about', Component: AboutSection },
@@ -39,19 +39,19 @@ const SECTIONS = [
   { id: 'contact', Component: ContactSection }
 ] as const
 
-const MOBILE_DOCK_IDLE_TIME = 500 // Ridotto a 500ms per reattività
-const SCROLL_DETECTION_DELAY = 16 // 60fps = 16ms per frame
-const HEADER_FADE_SPEED = 150 // Scomparsa più veloce header
+const MOBILE_DOCK_IDLE_TIME = 500
+const SCROLL_DETECTION_DELAY = 16
+const HEADER_FADE_SPEED = 150
 
 // Mappa colori per status bar dinamica
 const SECTION_COLORS = {
-  hero: '#22c55e', // Green-500
-  about: '#16a34a', // Green-600
-  dettaglio: '#15803d', // Green-700
-  services: '#166534', // Green-800
-  products: '#14532d', // Green-900
-  wholesale: '#052e16', // Green-950
-  contact: '#1f2937' // Gray-800
+  hero: '#22c55e',
+  about: '#16a34a',
+  dettaglio: '#15803d',
+  services: '#166534',
+  products: '#14532d',
+  wholesale: '#052e16',
+  contact: '#1f2937'
 } as const
 
 // Loading Component ottimizzato
@@ -85,7 +85,7 @@ const OptimizedSectionLoader: React.FC<{ name: string }> = React.memo(({ name })
 ))
 OptimizedSectionLoader.displayName = 'OptimizedSectionLoader'
 
-// Hook personalizzato per gestione mobile dock intelligente - Ottimizzato
+// Hook per mobile dock - LOGICA SEMPLIFICATA E CORRETTA
 const useMobileDockVisibility = (sectionsInView: Record<string, boolean>) => {
   const [isVisible, setIsVisible] = useState(false)
   const [isIdle, setIsIdle] = useState(false)
@@ -94,7 +94,7 @@ const useMobileDockVisibility = (sectionsInView: Record<string, boolean>) => {
   const scrollDirection = useScrollDirection({ threshold: 3, throttleDelay: SCROLL_DETECTION_DELAY })
   const { scrollY, isScrolling } = useScrollInfo({ throttleDelay: SCROLL_DETECTION_DELAY })
   
-  // Gestione idle timer ottimizzata
+  // Gestione idle timer
   useEffect(() => {
     if (isScrolling) {
       setLastScrollTime(Date.now())
@@ -111,23 +111,29 @@ const useMobileDockVisibility = (sectionsInView: Record<string, boolean>) => {
     return () => clearTimeout(idleTimer)
   }, [isScrolling, lastScrollTime])
 
-  // Logica intelligente di visibilità - Esclude SOLO hero e contact/footer
+  // LOGICA CORRETTA: Mostra SEMPRE tranne in hero e contact
   useEffect(() => {
-    const isInHero = sectionsInView.hero || scrollY < 50
-    const isInContact = sectionsInView.contact // Semplificato footer detection
+    // Controlla se siamo in hero (primi 100px della pagina)
+    const isInHero = scrollY < 100
     
-    // Nascondi SOLO in hero e contact
+    // Controlla se siamo in contact (sezione contact visibile)
+    const isInContact = sectionsInView.contact
+    
+    // NASCONDE SOLO in hero e contact
     if (isInHero || isInContact) {
       setIsVisible(false)
       return
     }
 
-    // Mostra in TUTTE le altre sezioni (about, dettaglio, services, products, wholesale)
+    // MOSTRA in TUTTE le altre sezioni quando:
+    // - Scroll verso l'alto
+    // - Utente è idle
+    // - Non sta scrollando e siamo oltre hero
     const shouldShow = 
-      scrollY > 50 && ( // Dopo hero
+      scrollY > 100 && ( // Fuori da hero
         scrollDirection === 'up' || // Scroll inverso
-        isIdle || // Idle state
-        (!isScrolling && scrollY > 80) // Quando fermo dopo scroll
+        isIdle || // Idle
+        !isScrolling // Fermo
       )
 
     setIsVisible(shouldShow)
@@ -136,13 +142,13 @@ const useMobileDockVisibility = (sectionsInView: Record<string, boolean>) => {
   return isVisible
 }
 
-// Hook per header mobile - Scomparsa più veloce e sempre trasparente
+// Hook per header mobile
 const useMobileHeaderVisibility = (sectionsInView: Record<string, boolean>) => {
   const [isVisible, setIsVisible] = useState(true)
   const { scrollY } = useScrollInfo({ throttleDelay: SCROLL_DETECTION_DELAY })
   
   useEffect(() => {
-    const isInHero = sectionsInView.hero || scrollY < 60 // Soglia ridotta per scomparsa più veloce
+    const isInHero = sectionsInView.hero || scrollY < 60
     setIsVisible(isInHero)
   }, [sectionsInView.hero, scrollY])
 
@@ -154,7 +160,6 @@ const useStatusBarColor = (sectionsInView: Record<string, boolean>) => {
   const [currentColor, setCurrentColor] = useState(SECTION_COLORS.hero)
   
   useEffect(() => {
-    // Trova la sezione attualmente visibile (priorità in ordine)
     for (const section of SECTIONS) {
       if (sectionsInView[section.id]) {
         setCurrentColor(SECTION_COLORS[section.id as keyof typeof SECTION_COLORS])
@@ -180,7 +185,7 @@ const useSectionsInView = () => {
   return { sectionsInView, updateSectionInView }
 }
 
-// Componente sezione ottimizzato con lazy loading intelligente
+// Componente sezione ottimizzato
 const OptimizedSection: React.FC<{
   section: typeof SECTIONS[number]
   language: 'it' | 'de'
@@ -208,7 +213,7 @@ const OptimizedSection: React.FC<{
       opacity: 1, 
       y: 0,
       transition: {
-        duration: shouldReduceMotion ? 0.05 : 0.25, // Animazioni più veloci
+        duration: shouldReduceMotion ? 0.05 : 0.25,
         ease: [0.25, 0.46, 0.45, 0.94]
       }
     }
@@ -247,16 +252,13 @@ const App: React.FC = () => {
   // Inizializzazione app
   useEffect(() => {
     const initializeApp = async () => {
-      // Detect device type
       setIsMobileDevice(isMobile())
       
-      // Detect language se non salvato
       if (!getLanguageFromStorage()) {
         const browserLang = getBrowserLanguage()
         setLanguage(browserLang)
       }
 
-      // Mark app as ready - Più veloce
       setTimeout(() => {
         setIsAppReady(true)
       }, 50)
@@ -269,7 +271,6 @@ const App: React.FC = () => {
   const handleLanguageChange = useCallback((newLanguage: 'it' | 'de') => {
     setLanguage(newLanguage)
     
-    // Track language change
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', 'language_change', {
         event_category: 'user_preference',
@@ -292,7 +293,7 @@ const App: React.FC = () => {
       : '🍎 Bottamedi: 50 Jahre Familientradition im Verkauf von frischem Obst und Gemüse in Mezzolombardo. Einzelhandel Marktstand und HORECA Großhandelsservice für Restaurants in Südtirol. Qualität garantiert seit 1974.'
   , [language])
 
-  // Animation variants per l'app - Ottimizzati
+  // Animation variants per l'app
   const appVariants = useMemo(() => ({
     hidden: { opacity: 0 },
     visible: { 
@@ -305,7 +306,7 @@ const App: React.FC = () => {
     }
   }), [shouldReduceMotion])
 
-  // Loading screen mentre app si inizializza
+  // Loading screen
   if (!isAppReady) {
     return (
       <div className="fixed inset-0 bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center z-50">
@@ -337,7 +338,7 @@ const App: React.FC = () => {
         animate="visible"
         variants={appVariants}
       >
-        {/* SEO Meta Tags - Accessibilità migliorata */}
+        {/* SEO Meta Tags */}
         <Helmet>
           <html lang={language} />
           <title>{seoTitle}</title>
@@ -346,26 +347,22 @@ const App: React.FC = () => {
           <meta property="og:description" content={seoDescription} />
           <meta property="og:locale" content={language === 'it' ? 'it_IT' : 'de_IT'} />
           
-          {/* Status bar dinamica per mobile */}
           <meta name="theme-color" content={statusBarColor} />
           <meta name="apple-mobile-web-app-status-bar-style" content="default" />
           
-          {/* Preload critical resources */}
           <link rel="preload" href="/logo-bottamedi.webp" as="image" />
           <link rel="preload" href="/images/banchetto.webp" as="image" />
           <link rel="preload" href="/videos/hero-video-verdure-rotanti.mp4" as="video" type="video/mp4" />
           
-          {/* Performance hints */}
           <link rel="dns-prefetch" href="//fonts.googleapis.com" />
           <link rel="dns-prefetch" href="//www.google-analytics.com" />
           
-          {/* Viewport ottimizzato per accessibilità - RIMOSSO user-scalable=no */}
           <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
           <meta name="format-detection" content="telephone=yes" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
         </Helmet>
 
-        {/* Header - Desktop sempre, Mobile solo in Hero con sfondo trasparente */}
+        {/* Header - Desktop sempre, Mobile solo in Hero trasparente */}
         {!isMobileDevice ? (
           <Header
             language={language}
@@ -387,7 +384,7 @@ const App: React.FC = () => {
                 }}
                 className="relative z-40"
                 style={{
-                  background: 'transparent', // Sempre trasparente
+                  background: 'transparent',
                   backdropFilter: 'none'
                 }}
               >
@@ -396,7 +393,7 @@ const App: React.FC = () => {
                   onLanguageChange={handleLanguageChange}
                   isMenuOpen={false}
                   onToggleMenu={() => {}}
-                  className="bg-transparent backdrop-blur-none" // Classe aggiuntiva per trasparenza
+                  className="bg-transparent backdrop-blur-none mobile-header"
                 />
               </motion.div>
             )}
@@ -411,7 +408,7 @@ const App: React.FC = () => {
               section={section}
               language={language}
               onInViewChange={updateSectionInView}
-              priority={index < 2} // Prime 2 sezioni prioritarie
+              priority={index < 2}
             />
           ))}
         </main>
@@ -419,13 +416,13 @@ const App: React.FC = () => {
         {/* Footer */}
         <Footer language={language} />
 
-        {/* Legal Documents con scroll fix */}
+        {/* Legal Documents */}
         <LegalDocuments 
           language={language} 
-          scrollBehavior="smooth" // Evita salti casuali
+          scrollBehavior="smooth"
         />
 
-        {/* Mobile Dock - Logica ottimizzata per comparire in ogni sezione tranne hero e contact */}
+        {/* Mobile Dock - LOGICA CORRETTA: Mostra in tutte le sezioni tranne hero e contact */}
         {isMobileDevice && (
           <AnimatePresence>
             {mobileDockVisible && (
@@ -437,25 +434,25 @@ const App: React.FC = () => {
                   type: 'spring',
                   damping: 30,
                   stiffness: 400,
-                  duration: shouldReduceMotion ? 0.05 : 0.15 // Animazione più veloce
+                  duration: shouldReduceMotion ? 0.05 : 0.15
                 }}
                 className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none"
                 style={{
                   willChange: 'transform, opacity',
-                  touchAction: 'none' // Evita conflitti touch
+                  touchAction: 'none'
                 }}
               >
                 <MobileDock 
                   language={language} 
                   hideInFooter={false}
-                  touchDelay={60} // Reattività 60ms come richiesto
+                  touchDelay={60}
                 />
               </motion.div>
             )}
           </AnimatePresence>
         )}
 
-        {/* Cookie Banner - Solo se necessario */}
+        {/* Cookie Banner */}
         <CookieBanner language={language} />
 
         {/* Performance Monitor (solo in development) */}

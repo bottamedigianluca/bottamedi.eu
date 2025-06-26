@@ -152,15 +152,15 @@ const ContactCard: React.FC<{
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: shouldReduceMotion ? 0.2 : 0.4, delay: shouldReduceMotion ? 0 : index * 0.1 }}
       whileHover={shouldReduceMotion ? {} : { y: -2, scale: 1.01 }}
-      className="contact-card"
+      className="bg-white rounded-2xl p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 min-h-[500px] flex flex-col"
     >
       {/* Header con icona e titolo */}
-      <div className="contact-card-header">
-        <div className={`contact-card-icon bg-gradient-to-br ${gradient}`}>
+      <div className="flex items-center space-x-4 mb-6 pb-6 border-b border-gray-100">
+        <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl shadow-lg`}>
           {icon}
         </div>
-        <div>
-          <h3 className="text-lg font-bold text-neutral-900 mb-1">
+        <div className="flex-1">
+          <h3 className="text-xl font-bold text-gray-900 mb-2">
             {contact.title}
           </h3>
           <p className="text-sm text-gray-500">
@@ -170,109 +170,106 @@ const ContactCard: React.FC<{
       </div>
 
       {/* Informazioni di contatto */}
-      <div className="contact-card-content">
-        <div className="contact-card-info">
-          <div className="space-y-3 mb-5">
-            <div className="flex items-start space-x-3">
-              <svg className="w-4 h-4 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      <div className="flex-1 mb-6">
+        <div className="space-y-4">
+          <div className="flex items-start space-x-3">
+            <svg className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <p className="text-gray-700 leading-relaxed">
+              {contact.address}
+            </p>
+          </div>
+
+          <div className="flex items-center space-x-3">
+            <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+            </svg>
+            <button 
+              onClick={callPhone}
+              className="text-gray-700 hover:text-green-600 transition-colors font-medium"
+            >
+              {contact.phone}
+            </button>
+          </div>
+
+          <div className="flex items-center space-x-3">
+            <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <button 
+              onClick={sendEmail}
+              className="text-gray-700 hover:text-green-600 transition-colors break-all"
+            >
+              {contact.email}
+            </button>
+          </div>
+
+          {contact.hours && (
+            <div className="flex items-center space-x-3">
+              <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <p className="text-neutral-600 leading-relaxed text-sm">
-                {contact.address}
+              <p className="text-gray-700 font-medium">
+                {contact.hours}
               </p>
             </div>
-
-            <div className="flex items-center space-x-3">
-              <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              <button 
-                onClick={callPhone}
-                className="text-neutral-600 hover:text-green-600 transition-colors text-sm text-left font-medium"
-              >
-                {contact.phone}
-              </button>
-            </div>
-
-            <div className="flex items-center space-x-3">
-              <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-              <button 
-                onClick={sendEmail}
-                className="text-neutral-600 hover:text-green-600 transition-colors text-sm text-left break-all"
-              >
-                {contact.email}
-              </button>
-            </div>
-
-            {contact.hours && (
-              <div className="flex items-center space-x-3">
-                <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p className="text-neutral-600 text-sm font-medium">
-                  {contact.hours}
-                </p>
-              </div>
-            )}
-          </div>
+          )}
         </div>
+      </div>
 
-        {/* Azioni rapide - LAYOUT SIMMETRICO */}
-        <div className="contact-card-actions">
-          <h4 className="text-xs font-semibold text-neutral-700 mb-3 uppercase tracking-wide">
-            {quickActions.title}
-          </h4>
-          
-          <div className="btn-grid">
-            {/* Bottone principale - full width */}
+      {/* Azioni rapide */}
+      <div className="mt-auto pt-6 border-t border-gray-100">
+        <h4 className="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wide">
+          {quickActions.title}
+        </h4>
+        
+        <div className="space-y-3">
+          {/* Bottone principale - Chiama */}
+          <motion.button
+            onClick={callPhone}
+            whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className={`w-full flex items-center justify-center space-x-3 py-4 px-6 rounded-xl font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r ${gradient}`}
+            style={{ 
+              WebkitTapHighlightColor: 'transparent',
+              touchAction: 'manipulation'
+            }}
+          >
+            <span className="text-xl">📞</span>
+            <span>{quickActions.call}</span>
+          </motion.button>
+
+          {/* Bottoni secondari affiancati */}
+          <div className="grid grid-cols-2 gap-3">
             <motion.button
-              onClick={callPhone}
+              onClick={sendWhatsApp}
               whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className={`contact-card-btn contact-card-btn-primary`}
+              className="flex items-center justify-center space-x-2 py-3 px-4 rounded-xl font-semibold text-white bg-gradient-to-r from-green-500 to-green-600 shadow-md hover:shadow-lg transition-all duration-300"
               style={{ 
-                background: `linear-gradient(135deg, ${gradient.split(' ')[1]}, ${gradient.split(' ')[3]})`,
                 WebkitTapHighlightColor: 'transparent',
                 touchAction: 'manipulation'
               }}
             >
-              <span>📞</span>
-              <span>{quickActions.call}</span>
+              <span className="text-lg">💬</span>
+              <span className="text-sm">{quickActions.whatsapp}</span>
             </motion.button>
 
-            {/* Row con due bottoni affiancati */}
-            <div className="btn-grid-row">
-              <motion.button
-                onClick={sendWhatsApp}
-                whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="contact-card-btn contact-card-btn-whatsapp"
-                style={{ 
-                  WebkitTapHighlightColor: 'transparent',
-                  touchAction: 'manipulation'
-                }}
-              >
-                <span>💬</span>
-                <span>{quickActions.whatsapp}</span>
-              </motion.button>
-
-              <motion.button
-                onClick={openMap}
-                whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="contact-card-btn contact-card-btn-map"
-                style={{ 
-                  WebkitTapHighlightColor: 'transparent',
-                  touchAction: 'manipulation'
-                }}
-              >
-                <span>🗺️</span>
-                <span>{quickActions.directions}</span>
-              </motion.button>
-            </div>
+            <motion.button
+              onClick={openMap}
+              whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex items-center justify-center space-x-2 py-3 px-4 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-500 to-blue-600 shadow-md hover:shadow-lg transition-all duration-300"
+              style={{ 
+                WebkitTapHighlightColor: 'transparent',
+                touchAction: 'manipulation'
+              }}
+            >
+              <span className="text-lg">🗺️</span>
+              <span className="text-sm">{quickActions.directions}</span>
+            </motion.button>
           </div>
         </div>
       </div>
@@ -445,7 +442,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
   }, [])
 
   return (
-    <section id="contact" className="py-20 lg:py-24 bg-gradient-to-br from-white to-neutral-50 relative overflow-hidden">
+    <section id="contact" className="py-20 lg:py-24 bg-gradient-to-br from-white to-gray-50 relative overflow-hidden">
       {/* Background Elements */}
       {!shouldReduceMotion && (
         <>
@@ -463,7 +460,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
           className="text-center mb-16"
         >
           <motion.h2
-            className="text-3xl lg:text-5xl font-bold text-neutral-900 mb-4"
+            className="text-3xl lg:text-5xl font-bold text-gray-900 mb-4"
             style={{
               background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #f59e0b 100%)',
               WebkitBackgroundClip: 'text',
@@ -477,7 +474,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: shouldReduceMotion ? 0.2 : 0.4, delay: shouldReduceMotion ? 0 : 0.1 }}
-            className="text-lg lg:text-xl text-neutral-600 mb-3"
+            className="text-lg lg:text-xl text-gray-600 mb-3"
           >
             {t.subtitle}
           </motion.p>
@@ -485,7 +482,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: shouldReduceMotion ? 0.2 : 0.4, delay: shouldReduceMotion ? 0 : 0.2 }}
-            className="text-base text-neutral-500 max-w-2xl mx-auto"
+            className="text-base text-gray-500 max-w-2xl mx-auto"
           >
             {t.description}
           </motion.p>
@@ -498,7 +495,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
           transition={{ duration: shouldReduceMotion ? 0.2 : 0.4, delay: shouldReduceMotion ? 0 : 0.3 }}
           className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 mb-12"
         >
-          <h3 className="text-xl font-bold text-neutral-900 mb-4 text-center">{t.whyChoose}</h3>
+          <h3 className="text-xl font-bold text-gray-900 mb-4 text-center">{t.whyChoose}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {t.whyChooseItems.map((item, index) => (
               <motion.div
@@ -506,7 +503,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
                 initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -10 }}
                 animate={inView ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: shouldReduceMotion ? 0.2 : 0.3, delay: shouldReduceMotion ? 0 : 0.4 + index * 0.05 }}
-                className="flex items-center space-x-2 text-sm text-neutral-700"
+                className="flex items-center space-x-2 text-sm text-gray-700"
               >
                 <span>{item}</span>
               </motion.div>
@@ -523,15 +520,15 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
             <div className="flex items-start space-x-4">
               <div className="text-3xl">{t.highlight.icon}</div>
               <div>
-                <h4 className="font-bold text-neutral-900 mb-2 text-lg">{t.highlight.title}</h4>
-                <p className="text-neutral-700 text-sm leading-relaxed italic">{t.highlight.text}</p>
+                <h4 className="font-bold text-gray-900 mb-2 text-lg">{t.highlight.title}</h4>
+                <p className="text-gray-700 text-sm leading-relaxed italic">{t.highlight.text}</p>
               </div>
             </div>
           </motion.div>
         </motion.div>
 
-        {/* Contact Cards - LAYOUT SIMMETRICO */}
-        <div className="contact-cards-container mb-16">
+        {/* Contact Cards - GRID CORRETTA */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
           <ContactCard
             contact={t.contact.retail}
             icon="🛒"
@@ -558,10 +555,10 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
           className="mt-16"
         >
           <div className="text-center mb-10">
-            <h3 className="text-2xl lg:text-3xl font-bold text-neutral-900 mb-3">
+            <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">
               {t.mapSection.title}
             </h3>
-            <p className="text-lg lg:text-xl text-neutral-600">
+            <p className="text-lg lg:text-xl text-gray-600">
               {t.mapSection.subtitle}
             </p>
           </div>
@@ -580,10 +577,10 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
                       <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl mb-3 mx-auto">
                         📍
                       </div>
-                      <h4 className="text-lg font-bold text-neutral-900">
+                      <h4 className="text-lg font-bold text-gray-900">
                         {language === 'it' ? 'Banchetto' : 'Marktstand'}
                       </h4>
-                      <p className="text-neutral-600 text-sm">Via Cavalleggeri Udine</p>
+                      <p className="text-gray-600 text-sm">Via Cavalleggeri Udine</p>
                     </div>
                   </div>
                 </div>
@@ -603,10 +600,10 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
                       <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white text-xl mb-3 mx-auto">
                         📍
                       </div>
-                      <h4 className="text-lg font-bold text-neutral-900">
+                      <h4 className="text-lg font-bold text-gray-900">
                         {language === 'it' ? 'Ingrosso HORECA' : 'Großhandel HORECA'}
                       </h4>
-                      <p className="text-neutral-600 text-sm">Via A. de Gasperi, 47</p>
+                      <p className="text-gray-600 text-sm">Via A. de Gasperi, 47</p>
                     </div>
                   </div>
                 </div>

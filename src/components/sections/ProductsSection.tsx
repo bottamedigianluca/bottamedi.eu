@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 
 interface ProductsSectionProps {
@@ -190,7 +190,7 @@ const translations = {
   }
 }
 
-// 🎭 COMPONENTI OTTIMIZZATI CON MEMOIZZAZIONE
+// Componente Card Mobile semplificato
 const MobileProductCard: React.FC<{
   category: any
   index: number
@@ -201,29 +201,15 @@ const MobileProductCard: React.FC<{
     threshold: 0.2,
     triggerOnce: true
   })
-
+  const shouldReduceMotion = useReducedMotion()
   const [imageLoaded, setImageLoaded] = useState(false)
-
-  const cardVariants = useMemo(() => ({
-    hidden: { opacity: 0, y: 20, scale: 0.98 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      scale: 1,
-      transition: {
-        duration: 0.4,
-        delay: index * 0.1,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
-    }
-  }), [index])
 
   return (
     <motion.div
       ref={ref}
-      initial="hidden"
-      animate={inView ? "visible" : "hidden"}
-      variants={cardVariants}
+      initial={{ opacity: 0, y: 20 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.4, delay: index * 0.1 }}
       className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100"
     >
       {/* Header */}
@@ -238,10 +224,7 @@ const MobileProductCard: React.FC<{
           className="w-full h-full object-cover"
           loading="lazy"
           onLoad={() => setImageLoaded(true)}
-          style={{ 
-            opacity: imageLoaded ? 1 : 0,
-            transition: 'opacity 0.3s ease'
-          }}
+          style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.3s ease' }}
         />
         <div className={`absolute inset-0 bg-gradient-to-t ${category.color} opacity-75`} />
         
@@ -260,8 +243,7 @@ const MobileProductCard: React.FC<{
 
         {/* Quick Products Preview */}
         <div className="mb-5">
-          <h4 className="font-semibold text-gray-900 mb-3 text-sm">Alcuni esempi della nostra selezione:</h4>
-          <p className="text-xs text-gray-500 mb-3 italic">*Disponibilità variabile secondo stagione e mercato</p>
+          <h4 className="font-semibold text-gray-900 mb-3 text-sm">Alcuni esempi:</h4>
           <div className="flex flex-wrap gap-2">
             {category.products.slice(0, 3).map((product: any, i: number) => (
               <span key={i} className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
@@ -286,7 +268,7 @@ const MobileProductCard: React.FC<{
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
-          <span>{isExpanded ? 'Mostra Meno' : 'Scopri Tutti i Prodotti'}</span>
+          <span>{isExpanded ? 'Mostra Meno' : 'Scopri Tutti'}</span>
           <motion.div
             animate={{ rotate: isExpanded ? 180 : 0 }}
             transition={{ duration: 0.2 }}
@@ -309,19 +291,12 @@ const MobileProductCard: React.FC<{
                 {category.longDescription}
               </p>
 
-              {/* Complete Products List */}
+              {/* Products List */}
               <div className="mb-5">
-                <h4 className="font-semibold text-gray-900 mb-3 text-sm">Esempi della nostra selezione stagionale:</h4>
-                <p className="text-xs text-gray-500 mb-3 italic">*La disponibilità varia secondo stagione, mercato e qualità</p>
+                <h4 className="font-semibold text-gray-900 mb-3 text-sm">La nostra selezione:</h4>
                 <div className="grid grid-cols-1 gap-2">
                   {category.products.map((product: any, i: number) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2, delay: i * 0.03 }}
-                      className="flex justify-between items-center p-2 bg-gray-50 rounded-lg"
-                    >
+                    <div key={i} className="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
                       <div>
                         <h5 className="font-medium text-gray-900 text-sm">{product.name}</h5>
                         <p className="text-xs text-gray-600">{product.origin}</p>
@@ -329,7 +304,7 @@ const MobileProductCard: React.FC<{
                       <span className="bg-white text-gray-700 px-2 py-1 rounded-full text-xs">
                         {product.season}
                       </span>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -339,19 +314,13 @@ const MobileProductCard: React.FC<{
                 <h4 className="font-semibold text-gray-900 mb-3 text-sm">I nostri plus:</h4>
                 <div className="space-y-2">
                   {category.features.map((feature: any, i: number) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2, delay: i * 0.05 }}
-                      className="flex items-start space-x-3 p-2 rounded-lg bg-gray-50"
-                    >
+                    <div key={i} className="flex items-start space-x-3 p-2 rounded-lg bg-gray-50">
                       <div className="text-lg">{feature.icon}</div>
                       <div>
                         <h5 className="font-medium text-gray-900 mb-1 text-sm">{feature.title}</h5>
                         <p className="text-gray-600 text-xs">{feature.desc}</p>
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -365,6 +334,7 @@ const MobileProductCard: React.FC<{
 
 MobileProductCard.displayName = 'MobileProductCard'
 
+// Componente Card Desktop
 const DesktopProductCard: React.FC<{
   category: any
   index: number
@@ -375,29 +345,14 @@ const DesktopProductCard: React.FC<{
     threshold: 0.2,
     triggerOnce: true
   })
-
   const [imageLoaded, setImageLoaded] = useState(false)
-
-  const cardVariants = useMemo(() => ({
-    hidden: { opacity: 0, y: 20, scale: 0.98 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      scale: 1,
-      transition: {
-        duration: 0.4,
-        delay: index * 0.1,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
-    }
-  }), [index])
 
   return (
     <motion.div
       ref={ref}
-      initial="hidden"
-      animate={inView ? "visible" : "hidden"}
-      variants={cardVariants}
+      initial={{ opacity: 0, y: 20 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.4, delay: index * 0.1 }}
       className="relative"
     >
       <motion.div
@@ -411,7 +366,6 @@ const DesktopProductCard: React.FC<{
             : 'shadow-lg hover:shadow-xl'
           }
         `}
-        style={{ willChange: 'transform' }}
       >
         <div className="relative h-56 overflow-hidden">
           {!imageLoaded && (
@@ -424,11 +378,7 @@ const DesktopProductCard: React.FC<{
             className="w-full h-full object-cover"
             loading="lazy"
             onLoad={() => setImageLoaded(true)}
-            style={{ 
-              opacity: imageLoaded ? 1 : 0,
-              transition: 'opacity 0.3s ease',
-              willChange: 'opacity'
-            }}
+            style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.3s ease' }}
           />
           <div className={`absolute inset-0 bg-gradient-to-t ${category.color} opacity-75`} />
         </div>
@@ -470,6 +420,7 @@ DesktopProductCard.displayName = 'DesktopProductCard'
 const ProductsSection: React.FC<ProductsSectionProps> = ({ language, inView }) => {
   const [activeCategory, setActiveCategory] = useState(0)
   const [expandedMobile, setExpandedMobile] = useState<number | null>(null)
+  const shouldReduceMotion = useReducedMotion()
   
   const t = useMemo(() => translations[language], [language])
 
@@ -483,14 +434,14 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ language, inView }) =
 
   return (
     <section id="products" className="py-20 lg:py-24 bg-gradient-to-br from-green-50 via-white to-emerald-50 relative overflow-hidden">
-      {/* Background Elements OTTIMIZZATI */}
+      {/* Background Elements */}
       <div className="absolute inset-0 opacity-25 pointer-events-none">
         <div className="absolute top-0 left-1/4 w-80 h-80 bg-green-200 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-emerald-200 rounded-full blur-3xl"></div>
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header OTTIMIZZATO */}
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -505,6 +456,8 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ language, inView }) =
           </p>
         </motion.div>
 
+        {/* LAYOUT RESPONSIVE SEMPLIFICATO - Solo CSS, no JavaScript mobile logic */}
+        
         {/* Mobile Layout */}
         <div className="block lg:hidden space-y-6 mb-16">
           {t.categories.map((category, index) => (
@@ -531,7 +484,7 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ language, inView }) =
           ))}
         </div>
 
-        {/* Desktop Details Panel OTTIMIZZATO */}
+        {/* Desktop Details Panel */}
         <div className="hidden lg:block">
           <AnimatePresence mode="wait">
             <motion.div
@@ -567,7 +520,7 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ language, inView }) =
               {/* Products Grid */}
               <div className="mb-6">
                 <h4 className="text-xl font-semibold text-gray-900 mb-3">Esempi della nostra selezione:</h4>
-                <p className="text-sm text-gray-500 mb-4 italic">*Disponibilità variabile secondo stagione, qualità e mercato di riferimento</p>
+                <p className="text-sm text-gray-500 mb-4 italic">*Disponibilità variabile secondo stagione, qualità e mercato</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   {t.categories[activeCategory].products.map((product: any, index: number) => (
                     <motion.div
@@ -614,7 +567,7 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ language, inView }) =
           </AnimatePresence>
         </div>
 
-        {/* CTA Section CORRETTA E TRADOTTA - FIXED VISIBILITY */}
+        {/* CTA Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -630,63 +583,49 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ language, inView }) =
             </h3>
             <p className="text-lg text-gray-600 mb-6 max-w-3xl mx-auto">
               {language === 'it'
-                ? 'Visita il nostro banchetto in Via Cavalleggeri Udine a Mezzolombardo e lasciati guidare dalla nostra esperienza di 50 anni nella selezione dei prodotti migliori.'
-                : 'Besuchen Sie unseren Marktstand in der Via Cavalleggeri Udine in Mezzolombardo und lassen Sie sich von unserer 50-jährigen Erfahrung bei der Auswahl der besten Produkte leiten.'
+                ? 'Visita il nostro banchetto in Via Cavalleggeri Udine a Mezzolombardo e lasciati guidare dalla nostra esperienza di 50 anni.'
+                : 'Besuchen Sie unseren Marktstand in der Via Cavalleggeri Udine in Mezzolombardo und lassen Sie sich von unserer 50-jährigen Erfahrung leiten.'
               }
             </p>
           </div>
           
-          {/* Grid di caratteristiche */}
+          {/* Grid caratteristiche */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {[
               {
                 icon: '🌅',
                 title: language === 'it' ? 'Selezione Mattutina' : 'Morgendliche Auswahl',
-                desc: language === 'it' 
-                  ? 'Prodotti freschi selezionati alle prime ore' 
-                  : 'Frische Produkte in den frühen Morgenstunden ausgewählt'
+                desc: language === 'it' ? 'Prodotti freschi alle prime ore' : 'Frische Produkte am frühen Morgen'
               },
               {
                 icon: '🏔️',
-                title: language === 'it' ? 'Prodotti del Territorio' : 'Regionale Produkte',
-                desc: language === 'it' 
-                  ? 'Eccellenze del Trentino Alto Adige' 
-                  : 'Exzellenz aus Südtirol'
+                title: language === 'it' ? 'Territorio Trentino' : 'Südtiroler Gebiet',
+                desc: language === 'it' ? 'Eccellenze locali' : 'Lokale Exzellenz'
               },
               {
                 icon: '👨‍👩‍👧‍👦',
                 title: language === 'it' ? 'Tradizione Familiare' : 'Familientradition',
-                desc: language === 'it' 
-                  ? '3 generazioni di passione ed esperienza' 
-                  : '3 Generationen Leidenschaft und Erfahrung'
+                desc: language === 'it' ? '3 generazioni di esperienza' : '3 Generationen Erfahrung'
               },
               {
                 icon: '⭐',
                 title: language === 'it' ? 'Qualità Garantita' : 'Garantierte Qualität',
-                desc: language === 'it' 
-                  ? 'Standard elevati da oltre 50 anni' 
-                  : 'Hohe Standards seit über 50 Jahren'
+                desc: language === 'it' ? 'Standard elevati da 50 anni' : 'Hohe Standards seit 50 Jahren'
               }
             ].map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.4 + index * 0.1 }}
-                className="bg-white rounded-2xl p-4 shadow-sm border border-green-100 hover:shadow-md transition-all duration-300"
-              >
+              <div key={index} className="bg-white rounded-2xl p-4 shadow-sm border border-green-100">
                 <div className="text-2xl mb-2 text-center">{feature.icon}</div>
                 <h4 className="font-semibold text-gray-900 text-sm text-center mb-1">
                   {feature.title}
                 </h4>
-                <p className="text-gray-600 text-xs text-center leading-relaxed">
+                <p className="text-gray-600 text-xs text-center">
                   {feature.desc}
                 </p>
-              </motion.div>
+              </div>
             ))}
           </div>
 
-          {/* Buttons d'azione */}
+          {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <motion.button
               whileHover={{ scale: 1.03, y: -2 }}
@@ -694,114 +633,30 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ language, inView }) =
               onClick={() => {
                 const element = document.getElementById('dettaglio')
                 if (element) {
-                  const offset = 80
-                  const elementPosition = element.offsetTop - offset
-                  window.scrollTo({
-                    top: Math.max(0, elementPosition),
-                    behavior: 'smooth'
-                  })
+                  element.scrollIntoView({ behavior: 'smooth' })
                 }
               }}
-              className="inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-xl font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-300 min-w-[200px]"
+              className="inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
             >
               <span>🛒</span>
-              <span>
-                {language === 'it' ? 'Visita il Banchetto' : 'Besuchen Sie den Marktstand'}
-              </span>
+              <span>{language === 'it' ? 'Visita il Banchetto' : 'Besuchen Sie den Marktstand'}</span>
             </motion.button>
 
             <motion.button
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => {
                 const element = document.getElementById('wholesale')
                 if (element) {
-                  const offset = 80
-                  const elementPosition = element.offsetTop - offset
-                  window.scrollTo({
-                    top: Math.max(0, elementPosition),
-                    behavior: 'smooth'
-                  })
+                  element.scrollIntoView({ behavior: 'smooth' })
                 }
               }}
-              whileHover={{ scale: 1.03, y: -2 }}
-              whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center justify-center space-x-2 border-2 border-green-500 text-green-600 px-8 py-4 rounded-xl font-semibold text-base hover:bg-green-50 transition-all duration-300 min-w-[200px]"
+              className="inline-flex items-center justify-center space-x-2 border-2 border-green-500 text-green-600 px-8 py-4 rounded-xl font-semibold hover:bg-green-50 transition-all duration-300"
             >
               <span>🏢</span>
-              <span>
-                {language === 'it' ? 'Servizio Ingrosso' : 'Großhandel Service'}
-              </span>
+              <span>{language === 'it' ? 'Servizio Ingrosso' : 'Großhandel Service'}</span>
             </motion.button>
           </div>
-
-          {/* Informazioni di contatto ottimizzate */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.8 }}
-            className="mt-8 pt-6 border-t border-green-200"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-              {/* Banchetto Info */}
-              <div className="text-center">
-                <h4 className="font-semibold text-gray-900 mb-2 flex items-center justify-center space-x-2">
-                  <span>🛒</span>
-                  <span>
-                    {language === 'it' ? 'Banchetto (Dettaglio)' : 'Marktstand (Einzelhandel)'}
-                  </span>
-                </h4>
-                <div className="space-y-1 text-sm text-gray-600">
-                  <div className="flex items-center justify-center space-x-2">
-                    <span>📍</span>
-                    <span>Via Cavalleggeri Udine, Mezzolombardo (TN)</span>
-                  </div>
-                  <div className="flex items-center justify-center space-x-2">
-                    <span>🕒</span>
-                    <span>
-                      {language === 'it' ? 'Lun-Sab: 07:00-19:30' : 'Mo-Sa: 07:00-19:30'}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-center space-x-2">
-                    <span>📞</span>
-                    <span>+39 351 577 6198</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* HORECA Info */}
-              <div className="text-center">
-                <h4 className="font-semibold text-gray-900 mb-2 flex items-center justify-center space-x-2">
-                  <span>🏢</span>
-                  <span>
-                    {language === 'it' ? 'Ingrosso HORECA' : 'Großhandel HORECA'}
-                  </span>
-                </h4>
-                <div className="space-y-1 text-sm text-gray-600">
-                  <div className="flex items-center justify-center space-x-2">
-                    <span>📍</span>
-                    <span>Via A. de Gasperi, 47, Mezzolombardo (TN)</span>
-                  </div>
-                  <div className="flex items-center justify-center space-x-2">
-                    <span>📞</span>
-                    <span>+39 0461 602534</span>
-                  </div>
-                  <div className="flex items-center justify-center space-x-2">
-                    <span>📧</span>
-                    <span>bottamedipierluigi@virgilio.it</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Call to action finale */}
-            <div className="text-center mt-6">
-              <p className="text-gray-600 text-sm max-w-2xl mx-auto">
-                {language === 'it'
-                  ? '💡 Hai bisogno di consigli? Il nostro team è sempre disponibile per guidarti nella scelta dei prodotti migliori per le tue esigenze!'
-                  : '💡 Brauchen Sie Beratung? Unser Team steht Ihnen immer zur Verfügung, um Sie bei der Auswahl der besten Produkte für Ihre Bedürfnisse zu unterstützen!'
-                }
-              </p>
-            </div>
-          </motion.div>
         </motion.div>
       </div>
     </section>

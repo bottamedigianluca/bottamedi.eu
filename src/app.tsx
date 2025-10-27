@@ -39,7 +39,7 @@ const SECTIONS = [
   { id: 'contact', Component: ContactSection }
 ] as const
 
-const MOBILE_DOCK_IDLE_TIME = 500
+const MOBILE_DOCK_IDLE_TIME = 300  // Ridotto da 500ms a 300ms per reattività
 const SCROLL_DETECTION_DELAY = 16
 const HEADER_FADE_SPEED = 150
 
@@ -111,15 +111,15 @@ const useMobileDockVisibility = (sectionsInView: Record<string, boolean>) => {
     return () => clearTimeout(idleTimer)
   }, [isScrolling, lastScrollTime])
 
-  // LOGICA SEMPLIFICATA: Nasconde SOLO in Hero, Contact e Footer
+  // LOGICA INTELLIGENTE: Nasconde in Hero/Contact/Footer, mostra smart nelle altre
   useEffect(() => {
-    // Controlla se siamo in hero (primi 150px della pagina)
+    // 1. Controlla se siamo in hero (primi 150px della pagina)
     const isInHero = scrollY < 150
 
-    // Controlla se siamo in contact (sezione contact visibile)
+    // 2. Controlla se siamo in contact (sezione contact visibile)
     const isInContact = sectionsInView.contact
 
-    // Controlla se siamo nel footer
+    // 3. Controlla se siamo nel footer
     const isInFooter = (() => {
       const footer = document.querySelector('footer')
       if (!footer) return false
@@ -131,17 +131,35 @@ const useMobileDockVisibility = (sectionsInView: Record<string, boolean>) => {
       return footerRect.top < windowHeight && footerRect.bottom > 0
     })()
 
-    // NASCONDE solo in hero, contact E footer
-    // MOSTRA in tutte le altre sezioni (about, dettaglio, services, products, wholesale)
+    // FASE 1: Nascondi sempre in hero, contact e footer
     if (isInHero || isInContact || isInFooter) {
       setIsVisible(false)
-    } else if (scrollY > 150) {
-      // Siamo oltre hero e non in contact/footer = MOSTRA
-      setIsVisible(true)
+      return
+    }
+
+    // FASE 2: Nelle altre sezioni (about, dettaglio, services, products, wholesale)
+    // Applica logica INTELLIGENTE:
+    if (scrollY > 150) {
+      // Nascondi durante scroll attivo verso il basso
+      if (isScrolling && scrollDirection === 'down') {
+        setIsVisible(false)
+        return
+      }
+
+      // Mostra in tutti gli altri casi:
+      // - Scroll verso l'alto (inversione)
+      // - Utente fermo (idle dopo 500ms)
+      // - Scroll finito (smesso di scrollare)
+      const shouldShow =
+        scrollDirection === 'up' ||  // Inversione scroll
+        isIdle ||                     // Fermo da >500ms
+        !isScrolling                  // Ha smesso di scrollare
+
+      setIsVisible(shouldShow)
     } else {
       setIsVisible(false)
     }
-  }, [scrollY, sectionsInView])
+  }, [scrollDirection, scrollY, isIdle, isScrolling, sectionsInView])
 
   return isVisible
 }

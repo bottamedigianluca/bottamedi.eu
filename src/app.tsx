@@ -111,45 +111,37 @@ const useMobileDockVisibility = (sectionsInView: Record<string, boolean>) => {
     return () => clearTimeout(idleTimer)
   }, [isScrolling, lastScrollTime])
 
-  // LOGICA FINALE: Nasconde in Hero, Contact E Footer
+  // LOGICA SEMPLIFICATA: Nasconde SOLO in Hero, Contact e Footer
   useEffect(() => {
     // Controlla se siamo in hero (primi 150px della pagina)
     const isInHero = scrollY < 150
-    
+
     // Controlla se siamo in contact (sezione contact visibile)
     const isInContact = sectionsInView.contact
-    
-    // NUOVO: Controlla se siamo nel footer
+
+    // Controlla se siamo nel footer
     const isInFooter = (() => {
       const footer = document.querySelector('footer')
       if (!footer) return false
-      
+
       const footerRect = footer.getBoundingClientRect()
       const windowHeight = window.innerHeight
-      
-      // Se il footer è visibile nella viewport
+
+      // Se il footer è visibile nella viewport (anche parzialmente)
       return footerRect.top < windowHeight && footerRect.bottom > 0
     })()
-    
-    // NASCONDE in hero, contact E footer
+
+    // NASCONDE solo in hero, contact E footer
+    // MOSTRA in tutte le altre sezioni (about, dettaglio, services, products, wholesale)
     if (isInHero || isInContact || isInFooter) {
       setIsVisible(false)
-      return
+    } else if (scrollY > 150) {
+      // Siamo oltre hero e non in contact/footer = MOSTRA
+      setIsVisible(true)
+    } else {
+      setIsVisible(false)
     }
-
-    // MOSTRA in TUTTE le altre sezioni quando:
-    // - Scroll verso l'alto
-    // - Utente è idle
-    // - Non sta scrollando e siamo oltre hero
-    const shouldShow = 
-      scrollY > 150 && ( // Fuori da hero
-        scrollDirection === 'up' || // Scroll inverso
-        isIdle || // Idle
-        !isScrolling // Fermo
-      )
-
-    setIsVisible(shouldShow)
-  }, [scrollDirection, scrollY, isIdle, isScrolling, sectionsInView])
+  }, [scrollY, sectionsInView])
 
   return isVisible
 }
@@ -205,7 +197,8 @@ const OptimizedSection: React.FC<{
   priority?: boolean
 }> = React.memo(({ section, language, onInViewChange, priority = false }) => {
   const shouldReduceMotion = useReducedMotion()
-  
+  const [hasAnimated, setHasAnimated] = useState(false)
+
   const { ref, inView } = useIntersectionObserver({
     threshold: 0.15,
     triggerOnce: false,
@@ -214,15 +207,19 @@ const OptimizedSection: React.FC<{
 
   useEffect(() => {
     onInViewChange(section.id, inView)
-  }, [inView, section.id, onInViewChange])
+    // Marca come animato la prima volta che entra in view
+    if (inView && !hasAnimated) {
+      setHasAnimated(true)
+    }
+  }, [inView, section.id, onInViewChange, hasAnimated])
 
   const sectionVariants = useMemo(() => ({
-    hidden: { 
-      opacity: 0, 
-      y: shouldReduceMotion ? 0 : 15 
+    hidden: {
+      opacity: 0,
+      y: shouldReduceMotion ? 0 : 15
     },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: {
         duration: shouldReduceMotion ? 0.05 : 0.25,
@@ -235,9 +232,9 @@ const OptimizedSection: React.FC<{
     <motion.div
       ref={ref}
       initial="hidden"
-      animate={inView ? "visible" : "hidden"}
+      animate={hasAnimated ? "visible" : (inView ? "visible" : "hidden")}
       variants={sectionVariants}
-      style={{ willChange: inView ? 'transform, opacity' : 'auto' }}
+      style={{ willChange: hasAnimated ? 'auto' : (inView ? 'transform, opacity' : 'auto') }}
     >
       <Suspense fallback={<OptimizedSectionLoader name={section.id} />}>
         <section.Component language={language} inView={inView} />

@@ -331,20 +331,26 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                   {t.sections.map((item, index) => (
                     <motion.button
                       key={item.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.04, duration: 0.3, type: 'spring' }}
-                      whileHover={{ 
-                        scale: 1.03, 
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{
+                        delay: Math.min(index * 0.02, 0.1),
+                        duration: 0.2,
+                        type: 'spring',
+                        stiffness: 500,
+                        damping: 30
+                      }}
+                      whileHover={{
+                        scale: 1.03,
                         y: -2,
-                        transition: { duration: 0.2 }
+                        transition: { duration: 0.15 }
                       }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => scrollToSection(item.id)}
                       className={`
-                        relative flex items-center p-4 rounded-2xl transition-all duration-300 min-h-[70px] group
-                        ${currentSection === item.id 
-                          ? 'text-white' 
+                        relative flex items-center p-4 rounded-2xl transition-all duration-200 min-h-[70px] group
+                        ${currentSection === item.id
+                          ? 'text-white'
                           : 'text-gray-700 hover:text-gray-900'
                         }
                       `}
@@ -361,8 +367,8 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                       }}
                     >
                       <div className="flex items-center space-x-3">
-                        <div className="text-2xl">{item.icon}</div>
-                        <span className="text-sm font-bold leading-tight">
+                        <div className="text-2xl" style={{ fontFamily: 'system-ui' }}>{item.icon}</div>
+                        <span className="text-sm font-bold leading-tight" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
                           {item.label}
                         </span>
                       </div>
@@ -725,13 +731,13 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                       height: '72px'
                     }}
                   >
-                    <motion.div 
+                    <motion.div
                       animate={activeMenu === 'menu' ? { rotate: 180, scale: 1.1 } : { rotate: 0, scale: 1 }}
                       className="mb-1"
                     >
                       <MenuIcon />
                     </motion.div>
-                    <span className="text-xs font-bold opacity-90">{t.menu}</span>
+                    <span className="text-xs font-bold opacity-90" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>{t.menu}</span>
                     
                     <AnimatePresence>
                       {activeMenu === 'menu' && (
@@ -781,13 +787,13 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                       height: '72px'
                     }}
                   >
-                    <motion.div 
+                    <motion.div
                       animate={activeMenu === 'call' ? { rotate: 8, scale: 1.1 } : { rotate: 0, scale: 1 }}
                       className="mb-1"
                     >
                       <PhoneIcon />
                     </motion.div>
-                    <span className="text-xs font-bold opacity-90">{t.call}</span>
+                    <span className="text-xs font-bold opacity-90" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>{t.call}</span>
                     
                     <AnimatePresence>
                       {activeMenu === 'call' && (
@@ -837,13 +843,13 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                       height: '72px'
                     }}
                   >
-                    <motion.div 
+                    <motion.div
                       animate={activeMenu === 'directions' ? { rotate: -8, scale: 1.1 } : { rotate: 0, scale: 1 }}
                       className="mb-1"
                     >
                       <MapIcon />
                     </motion.div>
-                    <span className="text-xs font-bold opacity-90">{t.directions}</span>
+                    <span className="text-xs font-bold opacity-90" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>{t.directions}</span>
                     
                     <AnimatePresence>
                       {activeMenu === 'directions' && (

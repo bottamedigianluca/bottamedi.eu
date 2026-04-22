@@ -1,38 +1,51 @@
 {
   "root": true,
-  "env": { 
-    "browser": true, 
-    "es2020": true 
+  "env": {
+    "browser": true,
+    "es2020": true,
+    "node": true
   },
   "extends": [
     "eslint:recommended",
-    "@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended",
     "plugin:react/recommended"
   ],
   "ignorePatterns": [
-    "dist", 
-    ".eslintrc.cjs"
+    "dist",
+    "node_modules",
+    ".eslintrc.cjs",
+    "src/content/blog/_generated-index.json"
   ],
   "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "ecmaFeatures": { "jsx": true }
+  },
   "plugins": [
-    "react-refresh",
     "@typescript-eslint",
     "react"
   ],
   "rules": {
-    "react-refresh/only-export-components": [
-      "warn",
-      { "allowConstantExport": true }
-    ],
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
+    "react/display-name": "off",
+    "react/no-unescaped-entities": "warn",
     "@typescript-eslint/no-unused-vars": [
-      "warn", 
-      { "argsIgnorePattern": "^_" }
+      "warn",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
     ],
     "@typescript-eslint/no-explicit-any": "warn",
-    "react-hooks/exhaustive-deps": "warn"
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/ban-ts-comment": "warn",
+    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/rules-of-hooks": "warn",
+    "no-empty": ["warn", { "allowEmptyCatch": true }],
+    "no-prototype-builtins": "warn",
+    "no-useless-escape": "warn",
+    "no-extra-semi": "warn",
+    "no-case-declarations": "warn"
   },
   "settings": {
     "react": {

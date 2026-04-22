@@ -29,6 +29,9 @@ jobs:
       - name: Validate blog posts
         run: npm run blog:validate
 
+      - name: Generate blog index (needed by type-check & test)
+        run: node scripts/generate-blog-index.mjs
+
       - name: Lint
         run: npm run lint
 

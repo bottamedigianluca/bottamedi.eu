@@ -1,0 +1,105 @@
+{
+  "lastUpdated": "2026-04-22",
+  "postingCadence": "2-3 post a settimana (lun/mer/ven)",
+  "targetKeywords": {
+    "primary": [
+      "frutta e verdura Mezzolombardo",
+      "ingrosso ortofrutta Trentino",
+      "HORECA ristoranti Trentino Alto Adige",
+      "fruttivendolo Mezzolombardo",
+      "mele Melinda DOP",
+      "asparagi Zambana",
+      "prodotti km zero Trentino"
+    ],
+    "secondary": [
+      "stagionalità frutta verdura",
+      "ricette con prodotti di stagione",
+      "fornitore frutta ristoranti Trento",
+      "ortofrutta biologica Trentino",
+      "piccoli frutti Val di Non",
+      "ciliegie Marostica Trentino",
+      "funghi porcini trentini",
+      "mela renetta canada"
+    ],
+    "longtail": [
+      "come scegliere frutta di stagione aprile",
+      "cosa cucinare con verdure primaverili trentino",
+      "dove comprare mele Melinda DOP Mezzolombardo",
+      "fornitore frutta verdura affidabile ristorante",
+      "guida acquisti ortofrutta HORECA",
+      "ricette asparagi Zambana tradizionali",
+      "differenza tra Golden Delicious e Renetta Canada"
+    ]
+  },
+  "categories": {
+    "stagionalita": "Prodotti del mese, calendari stagionali, guide alla selezione",
+    "ricette": "Ricette con prodotti venduti. Schema Recipe obbligatorio.",
+    "territorio": "Storie di fornitori trentini, DOP/DOC, filiera locale",
+    "horeca": "Guide per ristoratori: carte frutta, forniture, margini",
+    "storie": "Famiglia Bottamedi, 50 anni, dietro le quinte",
+    "sostenibilita": "Filiera corta, packaging, zero spreco, biologico",
+    "guide": "Come conservare, come scegliere, come abbinare",
+    "news": "Novità, eventi, aperture straordinarie"
+  },
+  "publishedSlugs": [
+    "benvenuti-nel-blog-bottamedi",
+    "stagionalita-aprile-trentino",
+    "fornitore-frutta-verdura-ristoranti-trentino"
+  ],
+  "availableImages": {
+    "base": "/images/",
+    "list": [
+      "albicocche_ingrosso_magazzino.webp",
+      "angurie.webp",
+      "arance_felici.webp",
+      "banchetto.webp",
+      "banco_frigo_disidratata_specialita.webp",
+      "banco_varieta_autunno.webp",
+      "bottamedi_ananas_fruitpoint_freschi.webp",
+      "bottamedi_dettaglio_frutta_disidratata_vaschette.webp",
+      "bottamedi_mele_melinda_montagna_cassetta.webp",
+      "bottamedi_mele_pink_lady_confezione.webp",
+      "bottamedi_sacchetti_frutta_disidratata_mista.webp",
+      "kiwi-cuore.webp",
+      "kiwi-gialli-bg.webp",
+      "mappa-banchetto-bottamedi.webp",
+      "mappa-ingrosso-bottamedi.webp",
+      "melinda_golden.webp",
+      "meloni_sattin_dettaglio.webp",
+      "pomodori_cuore_bue.webp",
+      "poster.webp",
+      "zucche_decorate_banco.webp"
+    ],
+    "imagePicking": "ALWAYS pick from the list above. Never invent paths. If no image fits perfectly, fallback to /images/banchetto.webp."
+  },
+  "animationPresets": {
+    "springy": "Primavera, ricette leggere, stagionalità (asparagi, fragole)",
+    "cinema": "Heritage, storie, grandi guide, sostenibilità",
+    "editorial": "HORECA, guide tecniche, case study, dati",
+    "snappy": "News brevi, alert stagionali, updates",
+    "organic": "Territorio, fornitori, terra, ricette tradizionali"
+  },
+  "moodPresets": {
+    "spring": "Aprile-maggio (asparagi, fragole, verde tenero)",
+    "summer": "Giugno-agosto (pesche, meloni, pomodori)",
+    "autumn": "Settembre-novembre (zucche, uva, funghi)",
+    "winter": "Dicembre-febbraio (agrumi, cavoli, conserve)",
+    "heritage": "Storie famiglia, 50 anni, tradizione",
+    "warm": "HORECA, consulenza, relazione",
+    "minimal": "Guide tecniche, dati, infografica",
+    "cool": "Sostenibilità, innovazione, analisi"
+  },
+  "upcomingIdeas": [
+    { "title": "Cosa c'è di buono ad aprile in Trentino: guida alla frutta e verdura di stagione", "category": "stagionalita", "keyword": "stagionalità aprile Trentino" },
+    { "title": "Asparago di Zambana DOP: storia, riconoscimento e come cucinarlo", "category": "territorio", "keyword": "asparago Zambana DOP" },
+    { "title": "Mele Melinda DOP: le 5 varietà principali e come riconoscerle", "category": "guide", "keyword": "mele Melinda varietà" },
+    { "title": "Fragole di primavera: 3 ricette veloci firmate dal banchetto", "category": "ricette", "keyword": "ricette fragole primavera" },
+    { "title": "Come costruire la carta frutta di un ristorante stagionale", "category": "horeca", "keyword": "carta frutta ristorante" },
+    { "title": "Fornitore frutta e verdura per ristoranti in Trentino: 7 criteri di scelta", "category": "horeca", "keyword": "fornitore frutta ristoranti Trentino" },
+    { "title": "Ciliegie di primavera: dalla Val di Non al banchetto in 12 ore", "category": "territorio", "keyword": "ciliegie Val di Non" },
+    { "title": "Zero spreco al banchetto: come riduciamo l'invenduto", "category": "sostenibilita", "keyword": "zero spreco frutta verdura" },
+    { "title": "Guida alla conservazione: 12 frutti e verdure da NON mettere in frigo", "category": "guide", "keyword": "conservazione frutta verdura frigo" },
+    { "title": "50 anni di Bottamedi: la storia raccontata da Lorenzo a Pierluigi", "category": "storie", "keyword": "Bottamedi storia famiglia" }
+  ],
+  "notes": "Ogni post deve: (1) linkare internamente almeno 1 altra sezione del sito (/#wholesale o /#products), (2) avere cover image esistente in /public/images o altrimenti usare /images/banchetto.webp come fallback, (3) rispettare il tone-of-voice (vedi CLAUDE.md)."
+}

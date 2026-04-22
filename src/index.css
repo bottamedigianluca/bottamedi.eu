@@ -1,9 +1,9 @@
+/* Google Fonts (imported via <link> preload in index.html — this is a fallback) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 
 /* Base Styles */
 @layer base {
@@ -636,3 +636,91 @@ a, button, input, textarea, select {
 .contact-card-btn:hover {
   will-change: transform, box-shadow;
 }
+
+/* ============================================================
+   Blog — editorial prose styling
+   ============================================================ */
+.prose-custom {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #1f2937;
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+.prose-custom > :first-child {
+  margin-top: 0;
+}
+.prose-custom h1,
+.prose-custom h2,
+.prose-custom h3,
+.prose-custom h4 {
+  font-family: 'Playfair Display', Georgia, serif;
+  letter-spacing: -0.015em;
+}
+.prose-custom h2 {
+  position: relative;
+}
+.prose-custom h2::before {
+  content: '';
+  position: absolute;
+  left: -1rem;
+  top: 0.85em;
+  width: 4px;
+  height: 1.2em;
+  background: linear-gradient(180deg, #22c55e, #16a34a);
+  border-radius: 2px;
+  transform: translateY(-50%);
+}
+@media (max-width: 768px) {
+  .prose-custom h2::before {
+    display: none;
+  }
+}
+.prose-custom p {
+  margin-bottom: 1.25em;
+}
+.prose-custom p:first-of-type::first-letter {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 3.5em;
+  font-weight: 700;
+  float: left;
+  line-height: 0.85;
+  margin: 0.1em 0.1em 0 0;
+  color: #16a34a;
+}
+.prose-custom a {
+  color: #15803d;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+.prose-custom a:hover {
+  color: #14532d;
+  background-color: #f0fdf4;
+}
+.prose-custom strong {
+  color: #111827;
+  font-weight: 700;
+}
+.prose-custom ul li::marker,
+.prose-custom ol li::marker {
+  color: #16a34a;
+}
+.prose-custom hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #d1fae5, transparent);
+  margin: 2.5rem 0;
+}
+.prose-custom table {
+  font-size: 0.95rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  .prose-custom p:first-of-type::first-letter {
+    float: none;
+    font-size: 1em;
+    line-height: inherit;
+    margin: 0;
+  }
+}
+

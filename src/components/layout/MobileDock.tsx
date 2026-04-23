@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { trackContact, trackBlogClick } from '@/lib/analytics'
 
 interface MobileDockProps {
   language: 'it' | 'de'
@@ -256,24 +257,26 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
     }
   }, [])
 
-  const handleCall = useCallback((phone: string) => {
+  const handleCall = useCallback((phone: string, site: 'banchetto' | 'ingrosso' = 'banchetto') => {
+    trackContact('phone', site, 'mobile_dock')
     window.open(`tel:${phone.replace(/\s/g, '')}`, '_self')
     setActiveMenu('none')
-    
+
     if ('vibrate' in navigator) {
       navigator.vibrate(50)
     }
   }, [])
 
-  const handleWhatsApp = useCallback((phone: string) => {
+  const handleWhatsApp = useCallback((phone: string, site: 'banchetto' | 'ingrosso' = 'banchetto') => {
     const message = encodeURIComponent(
-      language === 'it' 
-        ? 'Ciao! Sono interessato ai vostri prodotti.' 
+      language === 'it'
+        ? 'Ciao! Sono interessato ai vostri prodotti.'
         : 'Hallo! Ich interessiere mich für Ihre Produkte.'
     )
+    trackContact('whatsapp', site, 'mobile_dock')
     window.open(`https://wa.me/39${phone.replace(/\s/g, '')}?text=${message}`, '_blank')
     setActiveMenu('none')
-    
+
     if ('vibrate' in navigator) {
       navigator.vibrate(25)
     }
@@ -284,9 +287,10 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
       banchetto: 'https://www.google.com/maps/search/?api=1&query=Banchetto+Frutta+e+Verdura+Bottamedi+Via+Cavalleggeri+Udine+Mezzolombardo+TN',
       ingrosso: 'https://maps.app.goo.gl/TFV4cgnEvcFjBHfD6'
     }
+    trackContact('maps', type, 'mobile_dock')
     window.open(urls[type], '_blank')
     setActiveMenu('none')
-    
+
     if ('vibrate' in navigator) {
       navigator.vibrate(30)
     }
@@ -392,6 +396,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                       whileTap={{ scale: 0.98 }}
                       onClick={() => {
                         if (item.href) {
+                          if (item.id === 'blog') trackBlogClick('mobile_dock', language)
                           window.location.href = item.href
                           return
                         }
@@ -529,7 +534,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => handleCall(t.contacts.banchettoPhone)}
+                      onClick={() => handleCall(t.contacts.banchettoPhone, 'banchetto')}
                       className="flex items-center justify-center p-3 rounded-xl bg-green-500 text-white font-semibold shadow-md hover:shadow-lg transition-all"
                     >
                       <PhoneIcon />
@@ -568,7 +573,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => handleCall(t.contacts.ingrossoPhone)}
+                      onClick={() => handleCall(t.contacts.ingrossoPhone, 'ingrosso')}
                       className="flex items-center justify-center p-3 rounded-xl bg-blue-500 text-white font-semibold shadow-md hover:shadow-lg transition-all"
                     >
                       <PhoneIcon />

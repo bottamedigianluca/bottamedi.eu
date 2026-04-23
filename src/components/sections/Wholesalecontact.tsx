@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { trackFormStart, trackFormSubmit, trackFormError } from '@/lib/analytics'
 
 interface WholesaleContactProps {
   language: 'it' | 'de'
@@ -169,9 +170,16 @@ ${formData.contactPerson}`)
 
       const mailtoLink = `mailto:bottamedipierluigi@virgilio.it?subject=${emailSubject}&body=${emailBody}`
       window.open(mailtoLink, '_blank')
-      
+
+      // GA4: form_submit + generate_lead (conversion)
+      trackFormSubmit('horeca', {
+        businessType: formData.businessType,
+        location: formData.location,
+        hasMessage: Boolean(formData.message),
+      })
+
       setStatus('success')
-      
+
       setTimeout(() => {
         setStatus('idle')
         setFormData({
@@ -187,12 +195,18 @@ ${formData.contactPerson}`)
       }, 2000)
 
     } catch (error) {
+      trackFormError('horeca', error instanceof Error ? error.message : 'unknown')
       setStatus('error')
       setTimeout(() => setStatus('idle'), 2000)
     }
   }, [formData])
 
+  const hasStartedRef = React.useRef(false)
   const handleInputChange = useCallback((field: string, value: string) => {
+    if (!hasStartedRef.current && value.length > 0) {
+      hasStartedRef.current = true
+      trackFormStart('horeca')
+    }
     setFormData(prev => ({ ...prev, [field]: value }))
   }, [])
 

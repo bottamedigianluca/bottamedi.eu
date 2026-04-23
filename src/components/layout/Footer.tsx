@@ -2,6 +2,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import OptimizedImage from '../ui/OptimizedImage'
+import { trackBlogClick } from '@/lib/analytics'
 
 interface FooterProps {
   language: 'it' | 'de'
@@ -399,6 +400,9 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
                     {link.href ? (
                       <motion.a
                         href={link.href}
+                        onClick={() => {
+                          if (link.label === t.links.blog) trackBlogClick('footer', language)
+                        }}
                         className={sharedClasses}
                         whileHover={{ x: 4 }}
                         whileTap={{ scale: 0.98 }}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
+import { trackBlogClick } from '@/lib/analytics'
 
 interface HeaderProps {
   language: 'it' | 'de'
@@ -75,6 +76,7 @@ const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center space-x-3">
             <motion.a
               href={language === 'de' ? '/de/blog' : '/blog'}
+              onClick={() => trackBlogClick('header', language)}
               className={`px-4 py-2 rounded-xl transition-all duration-300 font-semibold text-sm ${
                 isScrolled
                   ? 'bg-green-100 hover:bg-green-200 text-green-700'

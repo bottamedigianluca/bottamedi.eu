@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback, Suspense, lazy } from
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 
 import { useLocalStorage } from '@/hooks/useLocalStorage'
-import { useScrollInfo, useScrollDirection } from '@/hooks/useScrollDirection'
+import { useScrollInfo } from '@/hooks/useScrollDirection'
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver'
 
 import Header from '@/components/layout/Header'
@@ -45,7 +45,6 @@ const SECTIONS = [
   { id: 'contact', Component: ContactSection },
 ] as const
 
-const MOBILE_DOCK_IDLE_TIME = 500
 const SCROLL_DETECTION_DELAY = 16
 const HEADER_FADE_SPEED = 150
 
@@ -88,48 +87,6 @@ const OptimizedSectionLoader: React.FC<{ name: string }> = React.memo(({ name })
   </div>
 ))
 OptimizedSectionLoader.displayName = 'OptimizedSectionLoader'
-
-const useMobileDockVisibility = (sectionsInView: Record<string, boolean>) => {
-  const [isVisible, setIsVisible] = useState(false)
-  const [isIdle, setIsIdle] = useState(false)
-  const [lastScrollTime, setLastScrollTime] = useState(Date.now())
-
-  const scrollDirection = useScrollDirection({ threshold: 3, throttleDelay: SCROLL_DETECTION_DELAY })
-  const { scrollY, isScrolling } = useScrollInfo({ throttleDelay: SCROLL_DETECTION_DELAY })
-
-  useEffect(() => {
-    if (isScrolling) {
-      setLastScrollTime(Date.now())
-      setIsIdle(false)
-    }
-    const idleTimer = setTimeout(() => {
-      const now = Date.now()
-      if (now - lastScrollTime > MOBILE_DOCK_IDLE_TIME && !isScrolling) setIsIdle(true)
-    }, MOBILE_DOCK_IDLE_TIME)
-    return () => clearTimeout(idleTimer)
-  }, [isScrolling, lastScrollTime])
-
-  useEffect(() => {
-    const isInHero = scrollY < 150
-    const isInContact = Boolean(sectionsInView.contact)
-    const isInFooter = (() => {
-      if (typeof document === 'undefined') return false
-      const footer = document.querySelector('footer')
-      if (!footer) return false
-      const footerRect = footer.getBoundingClientRect()
-      const windowHeight = window.innerHeight
-      return footerRect.top < windowHeight && footerRect.bottom > 0
-    })()
-    if (isInHero || isInContact || isInFooter) {
-      setIsVisible(false)
-      return
-    }
-    const shouldShow = scrollY > 150 && (scrollDirection === 'up' || isIdle || !isScrolling)
-    setIsVisible(shouldShow)
-  }, [scrollDirection, scrollY, isIdle, isScrolling, sectionsInView])
-
-  return isVisible
-}
 
 const useMobileHeaderVisibility = (sectionsInView: Record<string, boolean>) => {
   const [isVisible, setIsVisible] = useState(true)
@@ -247,7 +204,6 @@ const HomePage: React.FC = () => {
   const [isAppReady, setIsAppReady] = useState(false)
 
   const { sectionsInView, updateSectionInView } = useSectionsInView()
-  const mobileDockVisible = useMobileDockVisibility(sectionsInView)
   const mobileHeaderVisible = useMobileHeaderVisibility(sectionsInView)
   const statusBarColor = useStatusBarColor(sectionsInView)
   const shouldReduceMotion = useReducedMotion()
@@ -446,25 +402,10 @@ const HomePage: React.FC = () => {
       <LegalDocuments language={language} />
 
       {isMobileDevice && (
-        <AnimatePresence>
-          {mobileDockVisible && (
-            <motion.div
-              initial={{ y: 100, opacity: 0, scale: 0.9 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
-              exit={{ y: 100, opacity: 0, scale: 0.9 }}
-              transition={{
-                type: 'spring',
-                damping: 30,
-                stiffness: 400,
-                duration: shouldReduceMotion ? 0.05 : 0.15,
-              }}
-              className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none"
-              style={{ willChange: 'transform, opacity', touchAction: 'none' }}
-            >
-              <MobileDock language={language} hideInFooter={false} />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <MobileDock
+          language={language}
+          hideInFooter={Boolean(sectionsInView.contact)}
+        />
       )}
 
       <CookieBanner language={language} />

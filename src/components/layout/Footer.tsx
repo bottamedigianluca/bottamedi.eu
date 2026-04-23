@@ -19,6 +19,7 @@ const translations = {
       banchetto: 'Al Banchetto',
       services: 'Servizi Ingrosso',
       contact: 'Contatti',
+      blog: 'Blog',
       privacy: 'Informativa Privacy',
       terms: 'Termini e Condizioni',
       cookies: 'Cookie Policy'
@@ -63,6 +64,7 @@ const translations = {
       banchetto: 'Marktstand',
       services: 'Großhandel Service',
       contact: 'Kontakt',
+      blog: 'Blog',
       privacy: 'Datenschutzerklärung',
       terms: 'AGB',
       cookies: 'Cookie-Richtlinie'
@@ -364,24 +366,18 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
           <motion.div variants={itemVariants}>
             <h3 className="text-lg font-semibold mb-6">{t.quickLinks}</h3>
             <ul className="space-y-3">
-              {[
+              {([
                 { label: t.links.about, id: 'about' },
                 { label: t.links.banchetto, id: 'dettaglio' },
                 { label: t.links.services, id: 'services' },
-                { label: t.links.contact, id: 'contact' }
-              ].map((link) => (
-                <li key={link.id}>
-                  <motion.button
-                    onClick={() => scrollToSection(link.id)}
-                    className="text-white/80 hover:text-white transition-colors duration-300 text-left group flex items-center"
-                    whileHover={{ x: 4 }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ 
-                      type: "spring", 
-                      stiffness: 400, 
-                      damping: 17 
-                    }}
-                  >
+                { label: t.links.contact, id: 'contact' },
+                { label: t.links.blog, href: language === 'de' ? '/de/blog' : '/blog' }
+              ] as Array<{ label: string; id?: string; href?: string }>).map((link) => {
+                const key = link.id ?? link.href ?? link.label
+                const sharedClasses =
+                  'text-white/80 hover:text-white transition-colors duration-300 text-left group flex items-center'
+                const content = (
+                  <>
                     <span className="group-hover:text-green-400 transition-colors">
                       {link.label}
                     </span>
@@ -396,9 +392,34 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </motion.svg>
-                  </motion.button>
-                </li>
-              ))}
+                  </>
+                )
+                return (
+                  <li key={key}>
+                    {link.href ? (
+                      <motion.a
+                        href={link.href}
+                        className={sharedClasses}
+                        whileHover={{ x: 4 }}
+                        whileTap={{ scale: 0.98 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                      >
+                        {content}
+                      </motion.a>
+                    ) : (
+                      <motion.button
+                        onClick={() => link.id && scrollToSection(link.id)}
+                        className={sharedClasses}
+                        whileHover={{ x: 4 }}
+                        whileTap={{ scale: 0.98 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                      >
+                        {content}
+                      </motion.button>
+                    )}
+                  </li>
+                )
+              })}
             </ul>
           </motion.div>
         </div>

@@ -71,14 +71,28 @@ const Header: React.FC<HeaderProps> = ({
             />
           </motion.div>
 
-          {/* Language Selector a Destra */}
-          <div className="flex items-center space-x-4">
+          {/* Blog + Language Selector a Destra */}
+          <div className="flex items-center space-x-3">
+            <motion.a
+              href={language === 'de' ? '/de/blog' : '/blog'}
+              className={`px-4 py-2 rounded-xl transition-all duration-300 font-semibold text-sm ${
+                isScrolled
+                  ? 'bg-green-100 hover:bg-green-200 text-green-700'
+                  : 'bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white'
+              }`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              aria-label={language === 'de' ? 'Zum Blog' : 'Vai al Blog'}
+            >
+              Blog
+            </motion.a>
+
             {/* Bandiera Italia/Germania */}
             <motion.button
               onClick={() => onLanguageChange(language === 'it' ? 'de' : 'it')}
               className={`flex items-center space-x-3 px-4 py-2 rounded-xl transition-all duration-300 ${
-                isScrolled 
-                  ? 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700' 
+                isScrolled
+                  ? 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
                   : 'bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white/90'
               }`}
               whileHover={{ scale: 1.05 }}

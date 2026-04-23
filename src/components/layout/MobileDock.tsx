@@ -19,8 +19,9 @@ const translations = {
       { id: 'services', label: 'Servizi', icon: '⚡' },
       { id: 'products', label: 'Prodotti', icon: '🍎' },
       { id: 'wholesale', label: 'Listino', icon: '📋' },
-      { id: 'contact', label: 'Contatti', icon: '📞' }
-    ],
+      { id: 'contact', label: 'Contatti', icon: '📞' },
+      { id: 'blog', label: 'Blog', icon: '📰', href: '/blog' }
+    ] as Array<{ id: string; label: string; icon: string; href?: string }>,
     contacts: {
       banchetto: 'Banchetto',
       ingrosso: 'Ingrosso HORECA',
@@ -43,8 +44,9 @@ const translations = {
       { id: 'services', label: 'Service', icon: '⚡' },
       { id: 'products', label: 'Produkte', icon: '🍎' },
       { id: 'wholesale', label: 'Preisliste', icon: '📋' },
-      { id: 'contact', label: 'Kontakt', icon: '📞' }
-    ],
+      { id: 'contact', label: 'Kontakt', icon: '📞' },
+      { id: 'blog', label: 'Blog', icon: '📰', href: '/de/blog' }
+    ] as Array<{ id: string; label: string; icon: string; href?: string }>,
     contacts: {
       banchetto: 'Marktstand',
       ingrosso: 'Großhandel HORECA',
@@ -334,13 +336,19 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.04, duration: 0.3, type: 'spring' }}
-                      whileHover={{ 
-                        scale: 1.03, 
+                      whileHover={{
+                        scale: 1.03,
                         y: -2,
                         transition: { duration: 0.2 }
                       }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => scrollToSection(item.id)}
+                      onClick={() => {
+                        if (item.href) {
+                          window.location.href = item.href
+                          return
+                        }
+                        scrollToSection(item.id)
+                      }}
                       className={`
                         relative flex items-center p-4 rounded-2xl transition-all duration-300 min-h-[70px] group
                         ${currentSection === item.id 

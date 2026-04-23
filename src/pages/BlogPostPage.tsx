@@ -14,7 +14,6 @@ import {
 import { getPostBySlug, getRelatedPosts, formatPostDate } from '@/lib/blog'
 import MDXComponents from '@/components/blog/MDXComponents'
 import ReadingProgress from '@/components/blog/ReadingProgress'
-import TableOfContents from '@/components/blog/TableOfContents'
 import ShareButtons from '@/components/blog/ShareButtons'
 import AuthorBox from '@/components/blog/AuthorBox'
 import RelatedPosts from '@/components/blog/RelatedPosts'
@@ -180,66 +179,61 @@ const BlogPostPage: React.FC<Props> = ({ locale = 'it' }) => {
             priority
           />
 
-          <div className="grid lg:grid-cols-[1fr,240px] gap-10">
-            {/* Content */}
-            <Reveal preset={animationPreset} id="post-content" as="article" className="prose-custom max-w-3xl">
-              <MDXProvider components={MDXComponents}>
-                <MDXContent />
-              </MDXProvider>
+          <Reveal preset={animationPreset} id="post-content" as="article" className="prose-custom max-w-3xl mx-auto">
+            <MDXProvider components={MDXComponents}>
+              <MDXContent />
+            </MDXProvider>
 
-              {/* Tags */}
-              {frontmatter.tags.length > 0 && (
-                <div className="mt-10 pt-6 border-t border-green-100">
-                  <p className="text-xs uppercase tracking-wider font-semibold text-gray-500 mb-3">Tag</p>
-                  <div className="flex flex-wrap gap-2">
-                    {frontmatter.tags.map(t => (
-                      <span
-                        key={t}
-                        className="bg-green-50 text-green-700 text-xs font-medium px-2.5 py-0.5 rounded"
-                      >
-                        #{t}
-                      </span>
-                    ))}
-                  </div>
+            {/* Tags */}
+            {frontmatter.tags.length > 0 && (
+              <div className="mt-10 pt-6 border-t border-green-100">
+                <p className="text-xs uppercase tracking-wider font-semibold text-gray-500 mb-3">Tag</p>
+                <div className="flex flex-wrap gap-2">
+                  {frontmatter.tags.map(t => (
+                    <span
+                      key={t}
+                      className="bg-green-50 text-green-700 text-xs font-medium px-2.5 py-0.5 rounded"
+                    >
+                      #{t}
+                    </span>
+                  ))}
                 </div>
-              )}
-
-              {/* Share */}
-              <div className="mt-8">
-                <p className="text-xs uppercase tracking-wider font-semibold text-gray-500 mb-3">Condividi</p>
-                <ShareButtons url={canonical} title={frontmatter.title} />
               </div>
+            )}
 
-              {/* Author */}
-              <div className="mt-8">
-                <AuthorBox post={post} />
-              </div>
+            {/* Share */}
+            <div className="mt-8">
+              <p className="text-xs uppercase tracking-wider font-semibold text-gray-500 mb-3">Condividi</p>
+              <ShareButtons url={canonical} title={frontmatter.title} />
+            </div>
 
-              {/* CTA HORECA */}
-              <Reveal preset="springy" className="mt-10">
-                <aside className="bg-gradient-to-br from-green-600 to-green-700 text-white rounded-2xl p-8 shadow-xl">
-                  <h2 className="text-2xl font-bold mb-2">
-                    {locale === 'de'
-                      ? 'Suchen Sie einen zuverlässigen HORECA-Lieferanten?'
-                      : 'Cerchi un fornitore HORECA affidabile?'}
-                  </h2>
-                  <p className="mb-4 opacity-95">
-                    {locale === 'de'
-                      ? 'Seit 1974 beliefern wir Restaurants und Hotels im Trentino-Südtirol mit frischem Obst und Gemüse.'
-                      : 'Dal 1974 forniamo ristoranti e hotel del Trentino Alto Adige con frutta e verdura selezionata ogni giorno.'}
-                  </p>
-                  <Link
-                    to={locale === 'de' ? '/de#wholesale' : '/#wholesale'}
-                    className="inline-block bg-white text-green-700 hover:bg-green-50 font-semibold px-5 py-2.5 rounded-xl transition"
-                  >
-                    {locale === 'de' ? 'Zum HORECA-Service' : 'Scopri il servizio HORECA'}
-                  </Link>
-                </aside>
-              </Reveal>
+            {/* Author */}
+            <div className="mt-8">
+              <AuthorBox post={post} />
+            </div>
+
+            {/* CTA HORECA */}
+            <Reveal preset="springy" className="mt-10">
+              <aside className="bg-gradient-to-br from-green-600 to-green-700 text-white rounded-2xl p-8 shadow-xl">
+                <h2 className="text-2xl font-bold mb-2">
+                  {locale === 'de'
+                    ? 'Suchen Sie einen zuverlässigen HORECA-Lieferanten?'
+                    : 'Cerchi un fornitore HORECA affidabile?'}
+                </h2>
+                <p className="mb-4 opacity-95">
+                  {locale === 'de'
+                    ? 'Seit 1974 beliefern wir Restaurants und Hotels im Trentino-Südtirol mit frischem Obst und Gemüse.'
+                    : 'Dal 1974 forniamo ristoranti e hotel del Trentino Alto Adige con frutta e verdura selezionata ogni giorno.'}
+                </p>
+                <Link
+                  to={locale === 'de' ? '/de#wholesale' : '/#wholesale'}
+                  className="inline-block bg-white text-green-700 hover:bg-green-50 font-semibold px-5 py-2.5 rounded-xl transition"
+                >
+                  {locale === 'de' ? 'Zum HORECA-Service' : 'Scopri il servizio HORECA'}
+                </Link>
+              </aside>
             </Reveal>
-
-            <TableOfContents />
-          </div>
+          </Reveal>
 
           <RelatedPosts posts={related} locale={locale} />
         </article>

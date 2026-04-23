@@ -401,12 +401,7 @@ const HomePage: React.FC = () => {
       <Footer language={language} />
       <LegalDocuments language={language} />
 
-      {isMobileDevice && (
-        <MobileDock
-          language={language}
-          hideInFooter={Boolean(sectionsInView.contact)}
-        />
-      )}
+      {isMobileDevice && <MobileDock language={language} />}
 
       <CookieBanner language={language} />
     </motion.div>

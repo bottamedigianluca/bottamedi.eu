@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface MobileDockProps {
@@ -98,75 +98,123 @@ const ClockIcon = () => (
   </svg>
 )
 
+/**
+ * Dock visibility logic (iOS-like):
+ *   - Hidden while in hero (niente distrazione in apertura)
+ *   - Hidden mentre l'utente scrolla giù velocemente
+ *   - Mostrato quando l'utente scrolla su (inversione direzione)
+ *   - Mostrato dopo ~350 ms di idle (utente fermo = vuole navigare)
+ *   - Sempre nascosto se hideInFooter (passato dal parent)
+ *   - Ignora micro-scroll sotto DELTA_PX per evitare flicker
+ */
+/**
+ * Dock visibility logic (iOS-like):
+ *   - Hidden while in hero (niente distrazione in apertura)
+ *   - Hidden mentre l'utente scrolla giù velocemente
+ *   - Mostrato quando l'utente scrolla su (inversione direzione)
+ *   - Mostrato dopo ~350 ms di idle (utente fermo = vuole navigare)
+ *   - Sempre nascosto se hideInFooter (passato dal parent)
+ *   - Ignora micro-scroll sotto DELTA_PX per evitare flicker
+ */
 const useScrollDetection = (hideInFooter: boolean) => {
   const [isVisible, setIsVisible] = useState(false)
   const [currentSection, setCurrentSection] = useState('hero')
-  const [isScrolling, setIsScrolling] = useState(false)
+
+  // ref per leggere sempre l'ultimo valore dentro la closure del listener
+  const hideInFooterRef = useRef(hideInFooter)
+  const currentSectionRef = useRef<string>('hero')
+  useEffect(() => { hideInFooterRef.current = hideInFooter }, [hideInFooter])
 
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout
-    let scrollTimeoutId: NodeJS.Timeout
-    
-    const detectSection = () => {
-      // Indica che stiamo scrollando
-      setIsScrolling(true)
-      
-      // Cancella il timeout precedente
-      clearTimeout(scrollTimeoutId)
-      
-      // Imposta un nuovo timeout per indicare che lo scroll è finito
-      scrollTimeoutId = setTimeout(() => {
-        setIsScrolling(false)
-      }, 800) // Aumentato a 800ms per evitare apparizioni durante la navigazione
+    const DELTA_PX = 8
+    const IDLE_MS = 350
+    const SECTION_IDS = ['hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact']
 
-      const sections = ['hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact']
-      const scrollPosition = window.scrollY + window.innerHeight / 2
+    let lastY = window.scrollY
+    let lastDirection: 'up' | 'down' | null = null
+    let idleTimeoutId: ReturnType<typeof setTimeout> | undefined
+    let rafId: number | null = null
 
-      for (const sectionId of sections) {
-        const element = document.getElementById(sectionId)
-        if (element) {
-          const { offsetTop, offsetHeight } = element
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setCurrentSection(sectionId)
-            break
-          }
-        }
+    const computeSection = (y: number) => {
+      const mid = y + window.innerHeight / 2
+      for (const id of SECTION_IDS) {
+        const el = document.getElementById(id)
+        if (!el) continue
+        const top = el.offsetTop
+        const bottom = top + el.offsetHeight
+        if (mid >= top && mid < bottom) return id
       }
+      return currentSectionRef.current
     }
 
-    // Funzione separata per controllare la visibilità
-    const updateVisibility = () => {
-      const isInHero = currentSection === 'hero'
-      
-      // Nascondi il dock se:
-      // - Siamo nella hero section
-      // - Siamo nel footer (hideInFooter è true)
-      // - Stiamo attualmente scrollando
-      const shouldHide = isInHero || hideInFooter || isScrolling
-      setIsVisible(!shouldHide)
+    const applyVisibility = (visible: boolean) => {
+      if (currentSectionRef.current === 'hero' || hideInFooterRef.current) {
+        setIsVisible(false)
+        return
+      }
+      setIsVisible(visible)
+    }
+
+    const onFrame = () => {
+      rafId = null
+      const y = window.scrollY
+      const delta = y - lastY
+
+      const nextSection = computeSection(y)
+      if (nextSection !== currentSectionRef.current) {
+        currentSectionRef.current = nextSection
+        setCurrentSection(nextSection)
+      }
+
+      // ignora micro-scroll ma pianifica comunque il "ritorno da idle"
+      if (Math.abs(delta) < DELTA_PX) {
+        if (idleTimeoutId) clearTimeout(idleTimeoutId)
+        idleTimeoutId = setTimeout(() => applyVisibility(true), IDLE_MS)
+        return
+      }
+
+      const direction: 'up' | 'down' = delta > 0 ? 'down' : 'up'
+
+      if (direction === 'up') {
+        // scroll verso l'alto → mostra subito (inversione o salita)
+        applyVisibility(true)
+      } else if (lastDirection !== 'down') {
+        // transizione a scroll-down → nascondi
+        applyVisibility(false)
+      }
+      // se continua a scrollare giù, non tocco lo stato (già nascosto)
+
+      lastDirection = direction
+      lastY = y
+
+      if (idleTimeoutId) clearTimeout(idleTimeoutId)
+      idleTimeoutId = setTimeout(() => applyVisibility(true), IDLE_MS)
     }
 
     const handleScroll = () => {
-      clearTimeout(timeoutId)
-      timeoutId = setTimeout(detectSection, 10)
+      if (rafId != null) return
+      rafId = requestAnimationFrame(onFrame)
     }
 
-    detectSection()
+    // stato iniziale
+    currentSectionRef.current = computeSection(window.scrollY)
+    setCurrentSection(currentSectionRef.current)
+    applyVisibility(currentSectionRef.current !== 'hero')
+
     window.addEventListener('scroll', handleScroll, { passive: true })
-    
     return () => {
       window.removeEventListener('scroll', handleScroll)
-      clearTimeout(timeoutId)
-      clearTimeout(scrollTimeoutId)
+      if (rafId != null) cancelAnimationFrame(rafId)
+      if (idleTimeoutId) clearTimeout(idleTimeoutId)
     }
-  }, [hideInFooter])
+  }, [])
 
-  // Aggiorna la visibilità quando cambiano le condizioni
+  // reagisce a cambi di hideInFooter / section (hide-only)
   useEffect(() => {
-    const isInHero = currentSection === 'hero'
-    const shouldHide = isInHero || hideInFooter || isScrolling
-    setIsVisible(!shouldHide)
-  }, [currentSection, hideInFooter, isScrolling])
+    if (currentSection === 'hero' || hideInFooter) {
+      setIsVisible(false)
+    }
+  }, [currentSection, hideInFooter])
 
   return { isVisible, currentSection }
 }

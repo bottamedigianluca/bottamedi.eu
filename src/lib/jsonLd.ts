@@ -237,6 +237,147 @@ export function articleSchema(post: BlogPost) {
   }
 }
 
+/**
+ * Schema.org per una ricetta completa. Usare per articoli con ricetta
+ * strutturata (ingredienti + istruzioni). Rich result "Recipe" su Google.
+ */
+export interface RecipeSchemaInput {
+  name: string
+  description: string
+  image: string
+  author?: string
+  datePublished?: string
+  prepTimeMin?: number
+  cookTimeMin?: number
+  servings?: number
+  cuisine?: string
+  category?: string
+  ingredients: string[]
+  instructions: Array<{ name?: string; text: string }>
+  nutrition?: {
+    calories?: string
+    protein?: string
+    carbs?: string
+    fat?: string
+  }
+  keywords?: string[]
+}
+
+export function recipeSchema(r: RecipeSchemaInput) {
+  const minutes = (n?: number) => (n ? `PT${n}M` : undefined)
+  return {
+    '@type': 'Recipe',
+    name: r.name,
+    description: r.description,
+    image: r.image.startsWith('http') ? r.image : absoluteUrl(r.image),
+    author: { '@type': 'Person', name: r.author || 'Famiglia Bottamedi' },
+    datePublished: r.datePublished,
+    prepTime: minutes(r.prepTimeMin),
+    cookTime: minutes(r.cookTimeMin),
+    totalTime: minutes((r.prepTimeMin || 0) + (r.cookTimeMin || 0)) || undefined,
+    recipeYield: r.servings ? `${r.servings} porzioni` : undefined,
+    recipeCuisine: r.cuisine || 'Italiana',
+    recipeCategory: r.category,
+    recipeIngredient: r.ingredients,
+    recipeInstructions: r.instructions.map((s, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: s.name || `Passo ${i + 1}`,
+      text: s.text,
+    })),
+    nutrition: r.nutrition
+      ? {
+          '@type': 'NutritionInformation',
+          calories: r.nutrition.calories,
+          proteinContent: r.nutrition.protein,
+          carbohydrateContent: r.nutrition.carbs,
+          fatContent: r.nutrition.fat,
+        }
+      : undefined,
+    keywords: r.keywords?.join(', '),
+  }
+}
+
+/**
+ * Schema per singolo prodotto ortofrutticolo ("What is X" queries).
+ * Google lo usa per pannelli informativi e rich snippet tipo "Food".
+ */
+export interface ProduceItemInput {
+  name: string
+  alternateName?: string[]
+  description: string
+  image: string
+  category?: 'Verdura' | 'Frutta' | 'Erba aromatica' | 'Fungo' | 'Tubero' | 'Legume'
+  origin?: string
+  seasonMonths?: number[]
+  scientificName?: string
+}
+
+export function produceItemSchema(p: ProduceItemInput, pageUrl: string) {
+  return {
+    '@type': ['Product', 'Thing'],
+    '@id': `${pageUrl}#produce`,
+    name: p.name,
+    alternateName: p.alternateName,
+    description: p.description,
+    image: p.image.startsWith('http') ? p.image : absoluteUrl(p.image),
+    category: p.category || 'Verdura',
+    additionalProperty: [
+      p.scientificName && {
+        '@type': 'PropertyValue',
+        name: 'Nome scientifico',
+        value: p.scientificName,
+      },
+      p.origin && {
+        '@type': 'PropertyValue',
+        name: 'Origine',
+        value: p.origin,
+      },
+      p.seasonMonths && p.seasonMonths.length > 0 && {
+        '@type': 'PropertyValue',
+        name: 'Mesi di stagione',
+        value: p.seasonMonths
+          .map((m) => ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'][m - 1])
+          .join(', '),
+      },
+    ].filter(Boolean),
+    brand: { '@id': ORG_ID },
+    offers: {
+      '@type': 'Offer',
+      availability: 'https://schema.org/InStock',
+      priceCurrency: 'EUR',
+      seller: { '@id': BANCHETTO_ID },
+      areaServed: 'IT-TN',
+    },
+  }
+}
+
+/**
+ * HowTo schema: per guide step-by-step non ricette (es. "come conservare X").
+ */
+export function howToSchema(input: {
+  name: string
+  description: string
+  image?: string
+  totalTimeMin?: number
+  steps: Array<{ name: string; text: string; image?: string }>
+}) {
+  return {
+    '@type': 'HowTo',
+    name: input.name,
+    description: input.description,
+    image: input.image ? (input.image.startsWith('http') ? input.image : absoluteUrl(input.image)) : undefined,
+    totalTime: input.totalTimeMin ? `PT${input.totalTimeMin}M` : undefined,
+    step: input.steps.map((s, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: s.name,
+      text: s.text,
+      image: s.image ? (s.image.startsWith('http') ? s.image : absoluteUrl(s.image)) : undefined,
+    })),
+  }
+}
+
 export function graph(...nodes: unknown[]) {
   return {
     '@context': 'https://schema.org',

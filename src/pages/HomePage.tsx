@@ -220,6 +220,28 @@ const HomePage: React.FC = () => {
     initializeApp()
   }, [setLanguage])
 
+  // Apre il documento legale se il link arriva dal footer di una sotto-pagina
+  // (es. /blog → click Privacy → redirect a /?legal=privacy#legal-documents).
+  useEffect(() => {
+    if (!isAppReady || typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    const legal = params.get('legal')
+    if (legal !== 'privacy' && legal !== 'terms' && legal !== 'cookies') return
+
+    const open = () => {
+      const event = new CustomEvent('openLegalDocument', {
+        detail: { docType: legal, language },
+        bubbles: true,
+        cancelable: true,
+      })
+      window.dispatchEvent(event)
+      document.dispatchEvent(event)
+    }
+    // Lascia tempo a LegalDocuments di montarsi
+    const t = setTimeout(open, 200)
+    return () => clearTimeout(t)
+  }, [isAppReady, language])
+
   const handleLanguageChange = useCallback(
     (newLanguage: 'it' | 'de') => {
       setLanguage(newLanguage)

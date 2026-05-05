@@ -75,6 +75,139 @@ function breadcrumbSchema(items) {
   }
 }
 
+function isoDuration(min) {
+  if (!min || min <= 0) return undefined
+  return `PT${Math.round(min)}M`
+}
+
+function recipeSchema(r, fm, canonical) {
+  const image = r.image
+    ? r.image.startsWith('http')
+      ? r.image
+      : `${SITE_URL}${r.image}`
+    : fm.cover?.src?.startsWith('http')
+    ? fm.cover.src
+    : `${SITE_URL}${fm.cover?.src || ''}`
+  const node = {
+    '@type': 'Recipe',
+    '@id': `${canonical}#recipe-${(r.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+    name: r.name,
+    description: r.description,
+    image: [image],
+    author: { '@type': 'Person', name: fm.author?.name || 'Famiglia Bottamedi' },
+    datePublished: fm.publishedAt,
+    inLanguage: fm.locale === 'de' ? 'de-IT' : 'it-IT',
+    isPartOf: { '@id': `${canonical}#article` },
+    mainEntityOfPage: canonical,
+  }
+  const prep = isoDuration(r.prepTimeMin)
+  const cook = isoDuration(r.cookTimeMin)
+  if (prep) node.prepTime = prep
+  if (cook) node.cookTime = cook
+  if (prep && cook) {
+    node.totalTime = `PT${Math.round((r.prepTimeMin || 0) + (r.cookTimeMin || 0))}M`
+  }
+  if (r.servings) {
+    node.recipeYield = String(r.servings)
+  }
+  if (r.cuisine) node.recipeCuisine = r.cuisine
+  if (r.category) node.recipeCategory = r.category
+  if (Array.isArray(r.ingredients) && r.ingredients.length > 0) {
+    node.recipeIngredient = r.ingredients
+  }
+  if (Array.isArray(r.instructions) && r.instructions.length > 0) {
+    node.recipeInstructions = r.instructions.map((step, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      ...(step.name ? { name: step.name } : {}),
+      text: step.text,
+    }))
+  }
+  if (r.nutrition) {
+    const n = { '@type': 'NutritionInformation' }
+    if (r.nutrition.calories) n.calories = r.nutrition.calories
+    if (r.nutrition.protein) n.proteinContent = r.nutrition.protein
+    if (r.nutrition.carbs) n.carbohydrateContent = r.nutrition.carbs
+    if (r.nutrition.fat) n.fatContent = r.nutrition.fat
+    node.nutrition = n
+  }
+  if (Array.isArray(r.keywords) && r.keywords.length > 0) {
+    node.keywords = r.keywords.join(', ')
+  }
+  return node
+}
+
+function faqSchema(qas) {
+  return {
+    '@type': 'FAQPage',
+    mainEntity: qas.map((qa) => ({
+      '@type': 'Question',
+      name: qa.q,
+      acceptedAnswer: { '@type': 'Answer', text: qa.a },
+    })),
+  }
+}
+
+const MONTH_NAMES_IT = [
+  'gennaio',
+  'febbraio',
+  'marzo',
+  'aprile',
+  'maggio',
+  'giugno',
+  'luglio',
+  'agosto',
+  'settembre',
+  'ottobre',
+  'novembre',
+  'dicembre',
+]
+
+function produceItemSchema(p, fm, pageUrl) {
+  const image = fm.cover?.src?.startsWith('http')
+    ? fm.cover.src
+    : `${SITE_URL}${fm.cover?.src || ''}`
+  const node = {
+    '@type': 'Product',
+    '@id': `${pageUrl}#produce`,
+    name: p.name,
+    description: fm.excerpt,
+    image: [image],
+    category: p.category || 'Verdura',
+    additionalType: 'https://schema.org/Product',
+    mainEntityOfPage: pageUrl,
+  }
+  if (Array.isArray(p.alternateName) && p.alternateName.length > 0) {
+    node.alternateName = p.alternateName
+  }
+  const additionalProps = []
+  if (p.scientificName) {
+    additionalProps.push({
+      '@type': 'PropertyValue',
+      name: 'Nome scientifico',
+      value: p.scientificName,
+    })
+  }
+  if (p.origin) {
+    additionalProps.push({ '@type': 'PropertyValue', name: 'Origine', value: p.origin })
+  }
+  if (Array.isArray(p.seasonMonths) && p.seasonMonths.length > 0) {
+    const months = p.seasonMonths
+      .filter((m) => m >= 1 && m <= 12)
+      .map((m) => MONTH_NAMES_IT[m - 1])
+      .join(', ')
+    additionalProps.push({
+      '@type': 'PropertyValue',
+      name: 'Stagione',
+      value: months,
+    })
+  }
+  if (additionalProps.length > 0) {
+    node.additionalProperty = additionalProps
+  }
+  return node
+}
+
 function escHtml(s) {
   return String(s || '')
     .replace(/&/g, '&amp;')
@@ -181,27 +314,41 @@ function processPost({ fm, readingTimeMin, wordCount }) {
     return false
   }
   const catLabel = CATEGORIES[fm.category]?.[locale] || fm.category
-  const title = `${fm.title} | Bottamedi Frutta e Verdura`
-  const description = fm.excerpt
+  const title = fm.seo?.metaTitle
+    ? `${fm.seo.metaTitle} | Bottamedi`
+    : `${fm.title} | Bottamedi Frutta e Verdura`
+  const description = fm.seo?.metaDescription || fm.excerpt
   const ogImage = fm.cover?.src?.startsWith('http') ? fm.cover.src : `${SITE_URL}${fm.cover?.src || '/images/banchetto.webp'}`
   const alternates = {}
   if (fm.translations?.it) alternates.it = `${SITE_URL}/blog/${fm.translations.it}`
   if (fm.translations?.de) alternates.de = `${SITE_URL}/de/blog/${fm.translations.de}`
   alternates[locale] = alternates[locale] || canonical
 
+  const graphNodes = [
+    organizationSchema(),
+    breadcrumbSchema([
+      { name: 'Home', url: locale === 'de' ? '/de' : '/' },
+      { name: 'Blog', url: basePath },
+      { name: catLabel, url: `${basePath}?categoria=${fm.category}` },
+      { name: fm.title, url: `${basePath}/${fm.slug}` },
+    ]),
+    articleSchema(fm, readingTimeMin, wordCount, canonical),
+  ]
+  if (fm.produce && fm.produce.name) {
+    graphNodes.push(produceItemSchema(fm.produce, fm, canonical))
+  }
+  if (Array.isArray(fm.recipes) && fm.recipes.length > 0) {
+    for (const r of fm.recipes) {
+      if (r && r.name) graphNodes.push(recipeSchema(r, fm, canonical))
+    }
+  }
+  if (Array.isArray(fm.faq) && fm.faq.length > 0) {
+    graphNodes.push(faqSchema(fm.faq))
+  }
   const jsonLdNodes = [
     {
       '@context': 'https://schema.org',
-      '@graph': [
-        organizationSchema(),
-        breadcrumbSchema([
-          { name: 'Home', url: locale === 'de' ? '/de' : '/' },
-          { name: 'Blog', url: basePath },
-          { name: catLabel, url: `${basePath}?categoria=${fm.category}` },
-          { name: fm.title, url: `${basePath}/${fm.slug}` },
-        ]),
-        articleSchema(fm, readingTimeMin, wordCount, canonical),
-      ],
+      '@graph': graphNodes,
     },
   ]
 

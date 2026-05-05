@@ -34,6 +34,7 @@ function main() {
       const raw = fs.readFileSync(file, 'utf8')
       const { data, content } = matter(raw)
       if (!data.slug || !data.title) continue
+      if (data.draft === true) continue
       const rt = readingTime(content)
       entries.push({
         frontmatter: data,

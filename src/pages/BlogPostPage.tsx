@@ -10,6 +10,9 @@ import {
   organizationSchema,
   breadcrumbSchema,
   articleSchema,
+  recipeSchema,
+  produceItemSchema,
+  faqSchema,
 } from '@/lib/jsonLd'
 import { getPostBySlug, getRelatedPosts, formatPostDate } from '@/lib/blog'
 import MDXComponents from '@/components/blog/MDXComponents'
@@ -85,6 +88,45 @@ const BlogPostPage: React.FC<Props> = ({ locale = 'it' }) => {
 
   const related = getRelatedPosts(post, 3)
 
+  const produceNode = frontmatter.produce
+    ? produceItemSchema(
+        {
+          name: frontmatter.produce.name,
+          alternateName: frontmatter.produce.alternateName,
+          description: frontmatter.excerpt,
+          image: frontmatter.cover.src,
+          category: frontmatter.produce.category,
+          origin: frontmatter.produce.origin,
+          seasonMonths: frontmatter.produce.seasonMonths,
+          scientificName: frontmatter.produce.scientificName,
+        },
+        canonical
+      )
+    : null
+
+  const recipeNodes =
+    frontmatter.recipes?.map((r) =>
+      recipeSchema({
+        name: r.name,
+        description: r.description,
+        image: r.image || frontmatter.cover.src,
+        author: frontmatter.author.name,
+        datePublished: frontmatter.publishedAt,
+        prepTimeMin: r.prepTimeMin,
+        cookTimeMin: r.cookTimeMin,
+        servings: r.servings,
+        cuisine: r.cuisine,
+        category: r.category,
+        ingredients: r.ingredients,
+        instructions: r.instructions,
+        nutrition: r.nutrition,
+        keywords: r.keywords,
+      })
+    ) ?? []
+
+  const faqNode =
+    frontmatter.faq && frontmatter.faq.length > 0 ? faqSchema(frontmatter.faq) : null
+
   const jsonLd = graph(
     organizationSchema(),
     breadcrumbSchema([
@@ -93,7 +135,10 @@ const BlogPostPage: React.FC<Props> = ({ locale = 'it' }) => {
       { name: category[locale], url: `${basePath}?categoria=${frontmatter.category}` },
       { name: frontmatter.title, url: canonicalPath },
     ]),
-    articleSchema(post)
+    articleSchema(post),
+    produceNode,
+    ...recipeNodes,
+    faqNode
   )
 
   const seoTitle = frontmatter.seo?.metaTitle ?? buildPageTitle([frontmatter.title], locale)
@@ -211,6 +256,59 @@ const BlogPostPage: React.FC<Props> = ({ locale = 'it' }) => {
             <div className="mt-8">
               <AuthorBox post={post} />
             </div>
+
+            {/* Chi siamo (home hub) — sempre presente, link multipli */}
+            <Reveal preset="editorial" className="mt-12">
+              <aside className="not-prose bg-white border border-green-100 rounded-2xl p-8 shadow-sm">
+                <div className="flex items-start gap-4 mb-6">
+                  <img
+                    src="/logo-bottamedi.webp"
+                    alt="Logo Bottamedi Frutta e Verdura"
+                    className="w-14 h-14 rounded-xl shrink-0"
+                    loading="lazy"
+                    width={56}
+                    height={56}
+                  />
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900 mb-1">
+                      {locale === 'de' ? 'Wer ist Bottamedi?' : 'Chi è Bottamedi?'}
+                    </h2>
+                    <p className="text-gray-600 leading-relaxed">
+                      {locale === 'de'
+                        ? 'Familienunternehmen aus Mezzolombardo (Trentino), seit 1974 im Obst- und Gemüsehandel: Marktstand für Privatkunden und HORECA-Großhandel für Restaurants und Hotels in Südtirol.'
+                        : 'Azienda familiare di Mezzolombardo, in Trentino, dal 1974 nel settore ortofrutta: banchetto al dettaglio per le famiglie e ingrosso HORECA per ristoranti, hotel e mense di tutto il Trentino Alto Adige.'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <Link
+                    to={locale === 'de' ? '/de#about' : '/#about'}
+                    className="flex items-center justify-between rounded-xl border border-gray-200 hover:border-green-500 px-4 py-3 text-sm font-semibold text-gray-800 hover:text-green-700 transition"
+                  >
+                    <span>{locale === 'de' ? 'Unsere Geschichte →' : 'La nostra storia →'}</span>
+                  </Link>
+                  <Link
+                    to={locale === 'de' ? '/de#dettaglio' : '/#dettaglio'}
+                    className="flex items-center justify-between rounded-xl border border-gray-200 hover:border-green-500 px-4 py-3 text-sm font-semibold text-gray-800 hover:text-green-700 transition"
+                  >
+                    <span>{locale === 'de' ? 'Marktstand in Mezzolombardo →' : 'Il banchetto a Mezzolombardo →'}</span>
+                  </Link>
+                  <Link
+                    to={locale === 'de' ? '/de#wholesale' : '/#wholesale'}
+                    className="flex items-center justify-between rounded-xl border border-gray-200 hover:border-green-500 px-4 py-3 text-sm font-semibold text-gray-800 hover:text-green-700 transition"
+                  >
+                    <span>{locale === 'de' ? 'HORECA-Großhandel →' : 'Ingrosso HORECA →'}</span>
+                  </Link>
+                  <Link
+                    to={locale === 'de' ? '/de#contact' : '/#contact'}
+                    className="flex items-center justify-between rounded-xl border border-gray-200 hover:border-green-500 px-4 py-3 text-sm font-semibold text-gray-800 hover:text-green-700 transition"
+                  >
+                    <span>{locale === 'de' ? 'Kontakt →' : 'Contatti →'}</span>
+                  </Link>
+                </div>
+              </aside>
+            </Reveal>
 
             {/* CTA HORECA */}
             <Reveal preset="springy" className="mt-10">

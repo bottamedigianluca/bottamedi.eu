@@ -143,29 +143,34 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
     if (element) {
-      element.scrollIntoView({ 
+      element.scrollIntoView({
         behavior: 'smooth',
         block: 'start'
       })
+      return
     }
+    // Non siamo in homepage: naviga alla home con ancora
+    const home = language === 'de' ? '/de' : '/'
+    window.location.href = `${home}#${sectionId}`
   }
 
-  // 🎯 FUNZIONE MIGLIORATA PER DOCUMENTI LEGALI
   const handleLegalDocumentClick = (docType: 'privacy' | 'terms' | 'cookies') => {
-    console.log('🔓 Apertura documento:', docType, 'lingua:', language)
-    
-    // Previeni il flash dell'animazione
-    const event = new CustomEvent('openLegalDocument', { 
+    // LegalDocuments è montato solo su HomePage: se non c'è, naviga alla home
+    // passando il docType come query così l'handler su HomePage lo apre al mount.
+    if (!document.getElementById('legal-documents')) {
+      const home = language === 'de' ? '/de' : '/'
+      window.location.href = `${home}?legal=${docType}#legal-documents`
+      return
+    }
+
+    const event = new CustomEvent('openLegalDocument', {
       detail: { docType, language },
       bubbles: true,
       cancelable: true
     })
-    
-    // Dispatch sui due target
+
     window.dispatchEvent(event)
     document.dispatchEvent(event)
-    
-    console.log('📤 Evento inviato:', event.detail)
     
     // 🎯 SCROLL MIGLIORATO - Attendi che il componente si apra
     setTimeout(() => {

@@ -77,7 +77,7 @@ const Header: React.FC<HeaderProps> = ({
             <motion.a
               href={language === 'de' ? '/de/blog' : '/blog'}
               onClick={() => trackBlogClick('header', language)}
-              className={`px-4 py-2 rounded-xl transition-all duration-300 font-semibold text-sm ${
+              className={`flex items-center space-x-3 px-4 py-2 rounded-xl transition-all duration-300 ${
                 isScrolled
                   ? 'bg-green-100 hover:bg-green-200 text-green-700'
                   : 'bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white'
@@ -86,7 +86,8 @@ const Header: React.FC<HeaderProps> = ({
               whileTap={{ scale: 0.95 }}
               aria-label={language === 'de' ? 'Zum Blog' : 'Vai al Blog'}
             >
-              Blog
+              <span className="text-2xl" aria-hidden="true">📰</span>
+              <span className="font-medium text-sm">Blog</span>
             </motion.a>
 
             {/* Bandiera Italia/Germania */}

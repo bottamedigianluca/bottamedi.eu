@@ -52,6 +52,57 @@ export const PostFrontmatterSchema = z.object({
   featured: z.boolean().default(false),
   targetKeyword: z.string().optional(),
   relatedSlugs: z.array(z.string()).optional(),
+
+  // Schema.org aggiuntivi per articoli monografici prodotto.
+  // Se presente, viene iniettato nel JSON-LD page-level oltre ad Article.
+  produce: z
+    .object({
+      name: z.string(),
+      alternateName: z.array(z.string()).optional(),
+      scientificName: z.string().optional(),
+      category: z.enum(['Verdura', 'Frutta', 'Erba aromatica', 'Fungo', 'Tubero', 'Legume']).optional(),
+      origin: z.string().optional(),
+      seasonMonths: z.array(z.number().min(1).max(12)).optional(),
+    })
+    .optional(),
+  recipes: z
+    .array(
+      z.object({
+        name: z.string(),
+        description: z.string(),
+        image: z.string().optional(),
+        prepTimeMin: z.number().optional(),
+        cookTimeMin: z.number().optional(),
+        servings: z.number().optional(),
+        cuisine: z.string().optional(),
+        category: z.string().optional(),
+        ingredients: z.array(z.string()),
+        instructions: z.array(
+          z.object({
+            name: z.string().optional(),
+            text: z.string(),
+          })
+        ),
+        nutrition: z
+          .object({
+            calories: z.string().optional(),
+            protein: z.string().optional(),
+            carbs: z.string().optional(),
+            fat: z.string().optional(),
+          })
+          .optional(),
+        keywords: z.array(z.string()).optional(),
+      })
+    )
+    .optional(),
+  faq: z
+    .array(
+      z.object({
+        q: z.string(),
+        a: z.string(),
+      })
+    )
+    .optional(),
 })
 
 export type PostFrontmatter = z.infer<typeof PostFrontmatterSchema>

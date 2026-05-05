@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Reveal, Parallax, Stat, StatGrid, PullQuote, Gallery, Timeline, TimelineItem, Compare } from './MotionPrimitives'
+import { RecipeTabs, Recipe } from './RecipeTabs'
 
 const heading = (Tag: 'h2' | 'h3' | 'h4') =>
   function H({ id, children }: { id?: string; children?: React.ReactNode }) {
@@ -115,6 +116,8 @@ export const MDXComponents = {
   Timeline,
   TimelineItem,
   Compare,
+  RecipeTabs,
+  Recipe,
 } as const
 
 export default MDXComponents

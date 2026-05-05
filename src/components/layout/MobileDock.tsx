@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { trackContact, trackBlogClick } from '@/lib/analytics'
 
 interface MobileDockProps {
   language: 'it' | 'de'
@@ -19,8 +20,9 @@ const translations = {
       { id: 'services', label: 'Servizi', icon: '⚡' },
       { id: 'products', label: 'Prodotti', icon: '🍎' },
       { id: 'wholesale', label: 'Listino', icon: '📋' },
-      { id: 'contact', label: 'Contatti', icon: '📞' }
-    ],
+      { id: 'contact', label: 'Contatti', icon: '📞' },
+      { id: 'blog', label: 'Blog', icon: '📰', href: '/blog' }
+    ] as Array<{ id: string; label: string; icon: string; href?: string }>,
     contacts: {
       banchetto: 'Banchetto',
       ingrosso: 'Ingrosso HORECA',
@@ -43,8 +45,9 @@ const translations = {
       { id: 'services', label: 'Service', icon: '⚡' },
       { id: 'products', label: 'Produkte', icon: '🍎' },
       { id: 'wholesale', label: 'Preisliste', icon: '📋' },
-      { id: 'contact', label: 'Kontakt', icon: '📞' }
-    ],
+      { id: 'contact', label: 'Kontakt', icon: '📞' },
+      { id: 'blog', label: 'Blog', icon: '📰', href: '/de/blog' }
+    ] as Array<{ id: string; label: string; icon: string; href?: string }>,
     contacts: {
       banchetto: 'Marktstand',
       ingrosso: 'Großhandel HORECA',
@@ -96,75 +99,112 @@ const ClockIcon = () => (
   </svg>
 )
 
+/**
+ * Dock visibility (semplice e robusta):
+ *   - Hidden quando scrollY < HERO_THRESHOLD (siamo in hero)
+ *   - Hidden quando siamo vicini al footer (entro FOOTER_PROXIMITY px)
+ *   - Hidden mentre l'utente scrolla giù di ≥ DELTA_PX (iOS-like)
+ *   - Mostrato su scroll-up o dopo IDLE_MS di inattività
+ *   - Sezione corrente calcolata solo per evidenziare l'item attivo
+ */
 const useScrollDetection = (hideInFooter: boolean) => {
   const [isVisible, setIsVisible] = useState(false)
   const [currentSection, setCurrentSection] = useState('hero')
-  const [isScrolling, setIsScrolling] = useState(false)
+
+  const hideInFooterRef = useRef(hideInFooter)
+  useEffect(() => { hideInFooterRef.current = hideInFooter }, [hideInFooter])
 
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout
-    let scrollTimeoutId: NodeJS.Timeout
-    
-    const detectSection = () => {
-      // Indica che stiamo scrollando
-      setIsScrolling(true)
-      
-      // Cancella il timeout precedente
-      clearTimeout(scrollTimeoutId)
-      
-      // Imposta un nuovo timeout per indicare che lo scroll è finito
-      scrollTimeoutId = setTimeout(() => {
-        setIsScrolling(false)
-      }, 800) // Aumentato a 800ms per evitare apparizioni durante la navigazione
+    const HERO_THRESHOLD = 120
+    const FOOTER_PROXIMITY = 200
+    const DELTA_PX = 6
+    const IDLE_MS = 300
+    const SECTION_IDS = ['hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact']
 
-      const sections = ['hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact']
-      const scrollPosition = window.scrollY + window.innerHeight / 2
+    let lastY = window.scrollY
+    let idleTimeoutId: ReturnType<typeof setTimeout> | undefined
+    let rafId: number | null = null
 
-      for (const sectionId of sections) {
-        const element = document.getElementById(sectionId)
-        if (element) {
-          const { offsetTop, offsetHeight } = element
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setCurrentSection(sectionId)
-            break
-          }
-        }
+    const computeSection = (y: number): string => {
+      const mid = y + window.innerHeight / 2
+      for (const id of SECTION_IDS) {
+        const el = document.getElementById(id)
+        if (!el) continue
+        const top = el.offsetTop
+        const bottom = top + el.offsetHeight
+        if (mid >= top && mid < bottom) return id
       }
+      return 'hero'
     }
 
-    // Funzione separata per controllare la visibilità
-    const updateVisibility = () => {
-      const isInHero = currentSection === 'hero'
-      
-      // Nascondi il dock se:
-      // - Siamo nella hero section
-      // - Siamo nel footer (hideInFooter è true)
-      // - Stiamo attualmente scrollando
-      const shouldHide = isInHero || hideInFooter || isScrolling
-      setIsVisible(!shouldHide)
+    const isNearFooter = () => {
+      const y = window.scrollY
+      const docHeight = document.documentElement.scrollHeight
+      const viewport = window.innerHeight
+      return y + viewport >= docHeight - FOOTER_PROXIMITY
     }
 
-    const handleScroll = () => {
-      clearTimeout(timeoutId)
-      timeoutId = setTimeout(detectSection, 10)
+    const shouldStayHidden = () => {
+      if (window.scrollY < HERO_THRESHOLD) return true
+      if (hideInFooterRef.current) return true
+      if (isNearFooter()) return true
+      return false
     }
 
-    detectSection()
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    
+    const show = () => {
+      if (shouldStayHidden()) { setIsVisible(false); return }
+      setIsVisible(true)
+    }
+
+    const hide = () => setIsVisible(false)
+
+    const onFrame = () => {
+      rafId = null
+      const y = window.scrollY
+      const delta = y - lastY
+      setCurrentSection(computeSection(y))
+
+      if (shouldStayHidden()) {
+        hide()
+        if (idleTimeoutId) clearTimeout(idleTimeoutId)
+        lastY = y
+        return
+      }
+
+      if (Math.abs(delta) >= DELTA_PX) {
+        if (delta > 0) hide()    // scroll down → nascondi
+        else show()              // scroll up → mostra
+      }
+
+      lastY = y
+
+      if (idleTimeoutId) clearTimeout(idleTimeoutId)
+      idleTimeoutId = setTimeout(show, IDLE_MS)
+    }
+
+    const onScroll = () => {
+      if (rafId != null) return
+      rafId = requestAnimationFrame(onFrame)
+    }
+
+    // stato iniziale subito dopo mount — mostra se già fuori hero e lontano dal footer
+    setCurrentSection(computeSection(window.scrollY))
+    show()
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
     return () => {
-      window.removeEventListener('scroll', handleScroll)
-      clearTimeout(timeoutId)
-      clearTimeout(scrollTimeoutId)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      if (rafId != null) cancelAnimationFrame(rafId)
+      if (idleTimeoutId) clearTimeout(idleTimeoutId)
     }
-  }, [hideInFooter])
+  }, [])
 
-  // Aggiorna la visibilità quando cambiano le condizioni
+  // se hideInFooter diventa true mentre la dock è visibile → nasconde subito
   useEffect(() => {
-    const isInHero = currentSection === 'hero'
-    const shouldHide = isInHero || hideInFooter || isScrolling
-    setIsVisible(!shouldHide)
-  }, [currentSection, hideInFooter, isScrolling])
+    if (hideInFooter) setIsVisible(false)
+  }, [hideInFooter])
 
   return { isVisible, currentSection }
 }
@@ -206,24 +246,26 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
     }
   }, [])
 
-  const handleCall = useCallback((phone: string) => {
+  const handleCall = useCallback((phone: string, site: 'banchetto' | 'ingrosso' = 'banchetto') => {
+    trackContact('phone', site, 'mobile_dock')
     window.open(`tel:${phone.replace(/\s/g, '')}`, '_self')
     setActiveMenu('none')
-    
+
     if ('vibrate' in navigator) {
       navigator.vibrate(50)
     }
   }, [])
 
-  const handleWhatsApp = useCallback((phone: string) => {
+  const handleWhatsApp = useCallback((phone: string, site: 'banchetto' | 'ingrosso' = 'banchetto') => {
     const message = encodeURIComponent(
-      language === 'it' 
-        ? 'Ciao! Sono interessato ai vostri prodotti.' 
+      language === 'it'
+        ? 'Ciao! Sono interessato ai vostri prodotti.'
         : 'Hallo! Ich interessiere mich für Ihre Produkte.'
     )
+    trackContact('whatsapp', site, 'mobile_dock')
     window.open(`https://wa.me/39${phone.replace(/\s/g, '')}?text=${message}`, '_blank')
     setActiveMenu('none')
-    
+
     if ('vibrate' in navigator) {
       navigator.vibrate(25)
     }
@@ -234,9 +276,10 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
       banchetto: 'https://www.google.com/maps/search/?api=1&query=Banchetto+Frutta+e+Verdura+Bottamedi+Via+Cavalleggeri+Udine+Mezzolombardo+TN',
       ingrosso: 'https://maps.app.goo.gl/TFV4cgnEvcFjBHfD6'
     }
+    trackContact('maps', type, 'mobile_dock')
     window.open(urls[type], '_blank')
     setActiveMenu('none')
-    
+
     if ('vibrate' in navigator) {
       navigator.vibrate(30)
     }
@@ -334,13 +377,20 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.04, duration: 0.3, type: 'spring' }}
-                      whileHover={{ 
-                        scale: 1.03, 
+                      whileHover={{
+                        scale: 1.03,
                         y: -2,
                         transition: { duration: 0.2 }
                       }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => scrollToSection(item.id)}
+                      onClick={() => {
+                        if (item.href) {
+                          if (item.id === 'blog') trackBlogClick('mobile_dock', language)
+                          window.location.href = item.href
+                          return
+                        }
+                        scrollToSection(item.id)
+                      }}
                       className={`
                         relative flex items-center p-4 rounded-2xl transition-all duration-300 min-h-[70px] group
                         ${currentSection === item.id 
@@ -473,7 +523,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => handleCall(t.contacts.banchettoPhone)}
+                      onClick={() => handleCall(t.contacts.banchettoPhone, 'banchetto')}
                       className="flex items-center justify-center p-3 rounded-xl bg-green-500 text-white font-semibold shadow-md hover:shadow-lg transition-all"
                     >
                       <PhoneIcon />
@@ -512,7 +562,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => handleCall(t.contacts.ingrossoPhone)}
+                      onClick={() => handleCall(t.contacts.ingrossoPhone, 'ingrosso')}
                       className="flex items-center justify-center p-3 rounded-xl bg-blue-500 text-white font-semibold shadow-md hover:shadow-lg transition-all"
                     >
                       <PhoneIcon />

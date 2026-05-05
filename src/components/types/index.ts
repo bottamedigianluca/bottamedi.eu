@@ -22,7 +22,8 @@ export interface UseIntersectionObserverOptions {
 }
 
 export interface UseIntersectionObserverReturn {
-  ref: (node?: Element | null) => void
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ref: any
   inView: boolean
   entry?: IntersectionObserverEntry
 }

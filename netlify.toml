@@ -1,25 +1,120 @@
 [build]
-  command = "npm install && npm run build"
+  command = "npm ci && npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20"
   NPM_VERSION = "10"
 
-# Cache per assets statici
+# Headers globali — security + performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(self), microphone=(), camera=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+# Asset hashed — immutable 1 anno
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# Cache per immagini
+# Immagini con revalidation
 [[headers]]
   for = "/images/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000"
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
 
-# Redirect per SPA
+# Font self-hosted (se aggiunti)
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Access-Control-Allow-Origin = "*"
+
+# HTML (fresco ma rivalidabile)
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Sitemap e RSS — cache corta
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Content-Type = "application/xml; charset=utf-8"
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/rss.xml"
+  [headers.values]
+    Content-Type = "application/rss+xml; charset=utf-8"
+    Cache-Control = "public, max-age=3600"
+
+# Service Worker — mai cache
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/registerSW.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Manifest
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+    Cache-Control = "public, max-age=3600"
+
+# Redirect legacy: hash anchors della vecchia SPA → ancore dell'home multipagina
+[[redirects]]
+  from = "/#/*"
+  to = "/"
+  status = 301
+  force = false
+
+# Lingue: /de → /de/ (trailing slash consistente)
+[[redirects]]
+  from = "/de"
+  to = "/de/"
+  status = 301
+  force = false
+
+# Shorthand URL per alcune pagine SEO-critiche (opzionale)
+[[redirects]]
+  from = "/ingrosso"
+  to = "/#wholesale"
+  status = 301
+
+[[redirects]]
+  from = "/horeca"
+  to = "/#wholesale"
+  status = 301
+
+[[redirects]]
+  from = "/banchetto"
+  to = "/#dettaglio"
+  status = 301
+
+[[redirects]]
+  from = "/dettaglio"
+  to = "/#dettaglio"
+  status = 301
+
+[[redirects]]
+  from = "/contatti"
+  to = "/#contact"
+  status = 301
+
+# 404 esplicito (la pagina /404 è generata dal SSG)
 [[redirects]]
   from = "/*"
-  to = "/index.html"
-  status = 200
+  to = "/404"
+  status = 404

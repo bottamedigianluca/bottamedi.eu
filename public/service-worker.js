@@ -1,18 +1,18 @@
 // public/service-worker.js
 // Smart Service Worker con strategia di cache intelligente
 
-const CACHE_NAME = 'bottamedi-cache-v2';
-const CACHE_VERSION = '2.0.0';
+const CACHE_NAME = 'bottamedi-cache-v3';
+const CACHE_VERSION = '3.0.0';
 
 // Asset statici che cambiano raramente (Cache-First)
 const STATIC_ASSETS = [
   '/manifest.json',
   '/logo-bottamedi.webp',
-  '/favicon.webp',
-  '/apple-touch-icon.webp',
-  '/images/poster.webp',
-  '/images/banchetto.webp'
+  '/apple-touch-icon.webp'
 ];
+// poster.webp, banchetto.webp e favicon.webp erano nel precache a piena
+// risoluzione: venivano scaricati all'install anche quando la pagina usa
+// varianti piu' piccole.
 
 // File critici che devono essere sempre aggiornati (Network-First)
 const DYNAMIC_ASSETS = [
@@ -109,6 +109,13 @@ self.addEventListener('fetch', event => {
     return;
   }
   
+  // I video restano al browser: le richieste Range (206 Partial Content) non
+  // sono memorizzabili nella Cache API, e intercettarle causava un secondo
+  // download completo del file.
+  if (/\.(mp4|webm|mov)$/i.test(url.pathname) || event.request.headers.has('range')) {
+    return;
+  }
+
   // STRATEGIA 4: Cache-First per tutto il resto (font, manifest, ecc.)
   event.respondWith(cacheFirstStrategy(event.request));
 });

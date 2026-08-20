@@ -349,7 +349,7 @@ const App: React.FC = () => {
           <meta name="apple-mobile-web-app-status-bar-style" content="default" />
           
           <link rel="preload" href="/logo-bottamedi.webp" as="image" />
-          <link rel="preload" href="/images/banchetto.webp" as="image" />
+          <link rel="preload" href="/images/banchetto-1024w.webp" as="image" imageSrcSet="/images/banchetto-640w.webp 640w, /images/banchetto-1024w.webp 1024w, /images/banchetto-1600w.webp 1600w" imageSizes="100vw" />
           
           <link rel="dns-prefetch" href="//fonts.googleapis.com" />
           <link rel="dns-prefetch" href="//www.google-analytics.com" />

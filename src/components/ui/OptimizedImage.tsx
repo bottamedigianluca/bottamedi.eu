@@ -200,8 +200,18 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
       const link = document.createElement('link')
       link.rel = 'preload'
       link.as = 'image'
-      link.href = src
-      
+      // Il preload deve rispecchiare srcSet e sizes dell'immagine, altrimenti
+      // scarica l'originale a piena risoluzione in aggiunta alla variante che
+      // il browser sceglie davvero.
+      const preloadSrcSet = buildSrcSet(src)
+      if (preloadSrcSet) {
+        link.setAttribute('imagesrcset', preloadSrcSet)
+        link.setAttribute('imagesizes', sizes)
+        link.href = src
+      } else {
+        link.href = src
+      }
+
       // Aggiungi attributi per mobile
       if (supportsWebP()) {
         link.setAttribute('type', 'image/webp')
@@ -215,7 +225,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
         }
       }
     }
-  }, [priority, src])
+  }, [priority, src, sizes])
 
   const handleImageLoad = useCallback(() => {
     setImageState('loaded')

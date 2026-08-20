@@ -183,9 +183,7 @@ const OptimizedVideoBackground: React.FC<{ inView: boolean }> = React.memo(({ in
         loop
         playsInline
         preload="metadata"
-        poster={typeof window !== 'undefined' && window.innerWidth <= 828
-          ? "/images/poster-828w.webp"
-          : "/images/poster-1440w.webp"}
+        poster={HERO_POSTER}
         onLoadedData={handleLoadedData}
         onError={handleError}
         style={{ willChange: 'opacity' }}
@@ -197,6 +195,13 @@ const OptimizedVideoBackground: React.FC<{ inView: boolean }> = React.memo(({ in
 })
 
 OptimizedVideoBackground.displayName = 'OptimizedVideoBackground'
+
+// Calcolato una volta al caricamento del modulo: leggere innerWidth durante
+// il render forza un reflow sincrono a ogni aggiornamento del componente.
+const HERO_POSTER =
+  typeof window !== 'undefined' && window.innerWidth <= 828
+    ? '/images/poster-828w.webp'
+    : '/images/poster-1440w.webp'
 
 const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
   const ref = useRef<HTMLDivElement>(null)

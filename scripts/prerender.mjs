@@ -27,7 +27,8 @@ import puppeteer from 'puppeteer-core'
 let bundledChromium = null
 try {
   const mod = await import('puppeteer')
-  bundledChromium = mod.default.executablePath()
+  const ep = mod.default.executablePath()
+  bundledChromium = typeof ep?.then === 'function' ? await ep : ep
 } catch {
   // in locale puo' bastare il Chrome installato
 }

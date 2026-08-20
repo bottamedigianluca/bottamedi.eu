@@ -310,6 +310,7 @@ const TimelineItem: React.FC<{
         <div className="relative overflow-hidden rounded-2xl shadow-xl">
           <OptimizedImage
             src={item.image}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             alt={`${item.title} - Bottamedi Frutta e Verdura, Mezzolombardo Trentino`}
             className="w-full h-64 lg:h-72 transition-transform duration-500 group-hover:scale-105"
             priority={false}

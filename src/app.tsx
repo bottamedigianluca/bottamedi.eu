@@ -39,7 +39,7 @@ const SECTIONS = [
   { id: 'contact', Component: ContactSection }
 ] as const
 
-const MOBILE_DOCK_IDLE_TIME = 500
+const MOBILE_DOCK_IDLE_TIME = 200
 const SCROLL_DETECTION_DELAY = 16
 const HEADER_FADE_SPEED = 150
 
@@ -85,71 +85,51 @@ const OptimizedSectionLoader: React.FC<{ name: string }> = React.memo(({ name })
 ))
 OptimizedSectionLoader.displayName = 'OptimizedSectionLoader'
 
-// Hook per mobile dock - VERSIONE FINALE CON FOOTER DETECTION
-const useMobileDockVisibility = (sectionsInView: Record<string, boolean>) => {
+// Hook per mobile dock - visibilita' con singola fonte di verita'
+// Regole:
+//  1. Nascosta nella hero (primi 150px) - li' i CTA sono gia' a schermo
+//  2. Nascosta sul footer (rilevato via IntersectionObserver, sempre aggiornato)
+//  3. Si nasconde mentre si scorre verso il basso, per non coprire la lettura
+//  4. Riappare scorrendo verso l'alto o quando l'utente si ferma, in ogni sezione
+const useMobileDockVisibility = (_sectionsInView: Record<string, boolean>) => {
   const [isVisible, setIsVisible] = useState(false)
-  const [isIdle, setIsIdle] = useState(false)
-  const [lastScrollTime, setLastScrollTime] = useState(Date.now())
-  
-  const scrollDirection = useScrollDirection({ threshold: 3, throttleDelay: SCROLL_DETECTION_DELAY })
-  const { scrollY, isScrolling } = useScrollInfo({ throttleDelay: SCROLL_DETECTION_DELAY })
-  
-  // Gestione idle timer
+  const [isIdle, setIsIdle] = useState(true)
+  const [isFooterVisible, setIsFooterVisible] = useState(false)
+
+  const scrollDirection = useScrollDirection({ threshold: 5, throttleDelay: SCROLL_DETECTION_DELAY })
+  const { scrollY, isScrolling } = useScrollInfo({ threshold: 5, throttleDelay: SCROLL_DETECTION_DELAY })
+
+  // Footer detection: IntersectionObserver invece di getBoundingClientRect in un
+  // effect che non si rieseguiva allo scroll (leggeva valori stantii)
+  useEffect(() => {
+    const footer = document.querySelector('footer')
+    if (!footer) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsFooterVisible(entry.isIntersecting),
+      { rootMargin: '0px', threshold: 0 }
+    )
+    observer.observe(footer)
+    return () => observer.disconnect()
+  }, [])
+
+  // Rilevamento fermata (idle)
   useEffect(() => {
     if (isScrolling) {
-      setLastScrollTime(Date.now())
       setIsIdle(false)
+      return
     }
+    const timer = setTimeout(() => setIsIdle(true), MOBILE_DOCK_IDLE_TIME)
+    return () => clearTimeout(timer)
+  }, [isScrolling])
 
-    const idleTimer = setTimeout(() => {
-      const now = Date.now()
-      if (now - lastScrollTime > MOBILE_DOCK_IDLE_TIME && !isScrolling) {
-        setIsIdle(true)
-      }
-    }, MOBILE_DOCK_IDLE_TIME)
-
-    return () => clearTimeout(idleTimer)
-  }, [isScrolling, lastScrollTime])
-
-  // LOGICA FINALE: Nasconde in Hero, Contact E Footer
   useEffect(() => {
-    // Controlla se siamo in hero (primi 150px della pagina)
-    const isInHero = scrollY < 150
-    
-    // Controlla se siamo in contact (sezione contact visibile)
-    const isInContact = sectionsInView.contact
-    
-    // NUOVO: Controlla se siamo nel footer
-    const isInFooter = (() => {
-      const footer = document.querySelector('footer')
-      if (!footer) return false
-      
-      const footerRect = footer.getBoundingClientRect()
-      const windowHeight = window.innerHeight
-      
-      // Se il footer è visibile nella viewport
-      return footerRect.top < windowHeight && footerRect.bottom > 0
-    })()
-    
-    // NASCONDE in hero, contact E footer
-    if (isInHero || isInContact || isInFooter) {
+    if (scrollY < 150 || isFooterVisible) {
       setIsVisible(false)
       return
     }
-
-    // MOSTRA in TUTTE le altre sezioni quando:
-    // - Scroll verso l'alto
-    // - Utente è idle
-    // - Non sta scrollando e siamo oltre hero
-    const shouldShow = 
-      scrollY > 150 && ( // Fuori da hero
-        scrollDirection === 'up' || // Scroll inverso
-        isIdle || // Idle
-        !isScrolling // Fermo
-      )
-
-    setIsVisible(shouldShow)
-  }, [scrollDirection, scrollY, isIdle, isScrolling, sectionsInView])
+    setIsVisible(scrollDirection === 'up' || isIdle || !isScrolling)
+  }, [scrollY, scrollDirection, isIdle, isScrolling, isFooterVisible])
 
   return isVisible
 }
@@ -364,7 +344,6 @@ const App: React.FC = () => {
           
           <link rel="preload" href="/logo-bottamedi.webp" as="image" />
           <link rel="preload" href="/images/banchetto.webp" as="image" />
-          <link rel="preload" href="/videos/hero-video-verdure-rotanti.mp4" as="video" type="video/mp4" />
           
           <link rel="dns-prefetch" href="//fonts.googleapis.com" />
           <link rel="dns-prefetch" href="//www.google-analytics.com" />

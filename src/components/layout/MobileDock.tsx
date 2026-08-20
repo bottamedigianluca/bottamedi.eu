@@ -96,83 +96,54 @@ const ClockIcon = () => (
   </svg>
 )
 
-const useScrollDetection = (hideInFooter: boolean) => {
-  const [isVisible, setIsVisible] = useState(false)
+// Rileva solo la sezione corrente per evidenziare la voce attiva.
+// La visibilita' del dock e' decisa esclusivamente da useMobileDockVisibility
+// in app.tsx: un secondo gate qui creava un veto che teneva il dock nascosto
+// nella maggior parte delle sezioni.
+const useCurrentSection = () => {
   const [currentSection, setCurrentSection] = useState('hero')
-  const [isScrolling, setIsScrolling] = useState(false)
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout
-    let scrollTimeoutId: NodeJS.Timeout
-    
-    const detectSection = () => {
-      // Indica che stiamo scrollando
-      setIsScrolling(true)
-      
-      // Cancella il timeout precedente
-      clearTimeout(scrollTimeoutId)
-      
-      // Imposta un nuovo timeout per indicare che lo scroll è finito
-      scrollTimeoutId = setTimeout(() => {
-        setIsScrolling(false)
-      }, 800) // Aumentato a 800ms per evitare apparizioni durante la navigazione
 
+    const detectSection = () => {
       const sections = ['hero', 'about', 'dettaglio', 'services', 'products', 'wholesale', 'contact']
-      const scrollPosition = window.scrollY + window.innerHeight / 2
+      const viewportMiddle = window.innerHeight / 2
 
       for (const sectionId of sections) {
         const element = document.getElementById(sectionId)
-        if (element) {
-          const { offsetTop, offsetHeight } = element
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setCurrentSection(sectionId)
-            break
-          }
+        if (!element) continue
+        // getBoundingClientRect invece di offsetTop: corretto anche con
+        // layout dinamici e antenati posizionati
+        const rect = element.getBoundingClientRect()
+        if (rect.top <= viewportMiddle && rect.bottom >= viewportMiddle) {
+          setCurrentSection(sectionId)
+          break
         }
       }
     }
 
-    // Funzione separata per controllare la visibilità
-    const updateVisibility = () => {
-      const isInHero = currentSection === 'hero'
-      
-      // Nascondi il dock se:
-      // - Siamo nella hero section
-      // - Siamo nel footer (hideInFooter è true)
-      // - Stiamo attualmente scrollando
-      const shouldHide = isInHero || hideInFooter || isScrolling
-      setIsVisible(!shouldHide)
-    }
-
     const handleScroll = () => {
       clearTimeout(timeoutId)
-      timeoutId = setTimeout(detectSection, 10)
+      timeoutId = setTimeout(detectSection, 40)
     }
 
     detectSection()
     window.addEventListener('scroll', handleScroll, { passive: true })
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll)
       clearTimeout(timeoutId)
-      clearTimeout(scrollTimeoutId)
     }
-  }, [hideInFooter])
+  }, [])
 
-  // Aggiorna la visibilità quando cambiano le condizioni
-  useEffect(() => {
-    const isInHero = currentSection === 'hero'
-    const shouldHide = isInHero || hideInFooter || isScrolling
-    setIsVisible(!shouldHide)
-  }, [currentSection, hideInFooter, isScrolling])
-
-  return { isVisible, currentSection }
+  return currentSection
 }
 
 const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter = false }) => {
   const [activeMenu, setActiveMenu] = useState<'none' | 'menu' | 'call' | 'directions'>('none')
   const [isMobile, setIsMobile] = useState(false)
-  const { isVisible, currentSection } = useScrollDetection(hideInFooter)
+  const currentSection = useCurrentSection()
   const t = translations[language]
 
   useEffect(() => {
@@ -274,7 +245,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
 
       {/* Menu Popup */}
       <AnimatePresence>
-        {activeMenu === 'menu' && isVisible && (
+        {activeMenu === 'menu' && (
           <motion.div
             initial={{ y: 100, opacity: 0, scale: 0.9 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
@@ -386,7 +357,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
 
       {/* Call Popup */}
       <AnimatePresence>
-        {activeMenu === 'call' && isVisible && (
+        {activeMenu === 'call' && (
           <motion.div
             initial={{ y: 100, opacity: 0, scale: 0.9 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
@@ -528,7 +499,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
 
       {/* Directions Popup */}
       <AnimatePresence>
-        {activeMenu === 'directions' && isVisible && (
+        {activeMenu === 'directions' && (
           <motion.div
             initial={{ y: 100, opacity: 0, scale: 0.9 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
@@ -652,10 +623,8 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
         )}
       </AnimatePresence>
 
-      {/* DOCK PRINCIPALE */}
-      <AnimatePresence>
-        {isVisible && (
-          <motion.div
+      {/* DOCK PRINCIPALE - montaggio/smontaggio gestito da app.tsx */}
+      <motion.div
             initial={{ y: 100, opacity: 0, scale: 0.8 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 100, opacity: 0, scale: 0.8 }}
@@ -864,9 +833,7 @@ const PremiumMobileDock: React.FC<MobileDockProps> = ({ language, hideInFooter =
                 </div>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </motion.div>
     </div>
   )
 }

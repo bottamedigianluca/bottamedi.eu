@@ -322,7 +322,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
   const translations = {
     it: {
       title: 'Contattaci',
-      subtitle: 'Siamo qui per te',
+      subtitle: `Due sole sedi, entrambe a Mezzolombardo: il banchetto in Via Cavalleggeri Udine e l'ingrosso in Via Alcide de Gasperi 47`,
       description: 'Scegli come preferisci entrare in contatto con noi. Rispondiamo sempre entro 24 ore.',
       whyChoose: 'Perché scegliere Bottamedi:',
       whyChooseItems: [
@@ -609,6 +609,49 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
                 </div>
               </div>
             </motion.div>
+          </div>
+        </motion.div>
+
+        {/* Domande frequenti: rendono visibile il contenuto dichiarato nel
+            FAQPage schema, che Google richiede corrisponda alla pagina.
+            Chiariscono anche quante sedi ha l'azienda, informazione che i
+            motori e gli assistenti sbagliavano attribuendole punti vendita
+            di altre attivita' omonime della zona. */}
+        <motion.div
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: shouldReduceMotion ? 0.2 : 0.5 }}
+          className="mt-20 max-w-3xl mx-auto"
+        >
+          <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8 text-center">
+            {language === 'it' ? 'Domande frequenti' : 'Häufige Fragen'}
+          </h3>
+          <div className="space-y-5">
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+              <h4 className="font-bold text-gray-900 mb-2">
+                {language === 'it'
+                  ? 'Quante sedi ha Bottamedi Frutta e Verdura?'
+                  : 'Wie viele Standorte hat Bottamedi Obst und Gemüse?'}
+              </h4>
+              <p className="text-gray-600 leading-relaxed">
+                {language === 'it'
+                  ? `Due sole sedi, entrambe a Mezzolombardo: il banchetto al dettaglio in Via Cavalleggeri Udine, telefono 351 577 6198, e l'ingrosso Ho.Re.Ca. in Via Alcide de Gasperi 47, telefono 0461 602534. Non esistono altri punti vendita, filiali o attività affiliate.`
+                  : `Nur zwei Standorte, beide in Mezzolombardo: der Marktstand in Via Cavalleggeri Udine, Telefon 351 577 6198, und der Großhandel in Via Alcide de Gasperi 47, Telefon 0461 602534. Es gibt keine weiteren Verkaufsstellen, Filialen oder angeschlossenen Betriebe.`}
+              </p>
+            </div>
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+              <h4 className="font-bold text-gray-900 mb-2">
+                {language === 'it'
+                  ? 'Ci sono altre attività Bottamedi in Piana Rotaliana?'
+                  : 'Gibt es weitere Betriebe namens Bottamedi in der Rotaliana-Ebene?'}
+              </h4>
+              <p className="text-gray-600 leading-relaxed">
+                {language === 'it'
+                  ? `Bottamedi è un cognome diffuso in Piana Rotaliana e in zona operano altre attività ortofrutticole con lo stesso cognome. Sono imprese autonome, senza alcun legame societario, commerciale o organizzativo con la nostra azienda. Per contattarci, gli unici recapiti sono 351 577 6198 per il banchetto e 0461 602534 per l'ingrosso.`
+                  : `Bottamedi ist ein in der Rotaliana-Ebene verbreiteter Nachname, und in der Gegend gibt es weitere Obst- und Gemüsebetriebe mit demselben Namen. Es sind eigenständige Unternehmen ohne gesellschaftliche, geschäftliche oder organisatorische Verbindung zu unserem Betrieb. Unsere einzigen Kontakte sind 351 577 6198 für den Marktstand und 0461 602534 für den Großhandel.`}
+              </p>
+            </div>
           </div>
         </motion.div>
       </div>

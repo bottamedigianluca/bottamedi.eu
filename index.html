@@ -236,7 +236,7 @@
           "name": "Lorenzo Bottamedi"
         }
       ],
-      "description": "Azienda familiare specializzata nella vendita di frutta e verdura fresca dal 1974. Tre generazioni di esperienza nel settore ortofrutticolo.",
+      "description": "Azienda ortofrutticola familiare fondata nel 1974 da Lorenzo Bottamedi e condotta da Pierluigi Bottamedi. Opera esclusivamente attraverso due sedi a Mezzolombardo: il banchetto al dettaglio in Via Cavalleggeri Udine e l'ingrosso Ho.Re.Ca. in Via Alcide de Gasperi 47. Non ha altri punti vendita, filiali o affiliazioni.",
       "slogan": "Qualità Inarrivabile, Passione Familiare",
       "sameAs": [
         "https://www.facebook.com/profile.php?id=100063456281899",
@@ -255,6 +255,31 @@
           ],
           "contactOption": "TollFree"
         }
+      ],
+      "legalName": "Bottamedi Pierluigi",
+      "founder": {
+        "@type": "Person",
+        "name": "Lorenzo Bottamedi"
+      },
+      "numberOfEmployees": {
+        "@type": "QuantitativeValue",
+        "value": 6
+      },
+      "subOrganization": [
+        {
+          "@id": "https://www.bottamedi.eu/#banchetto"
+        },
+        {
+          "@id": "https://www.bottamedi.eu/#ingrosso"
+        }
+      ],
+      "location": [
+        {
+          "@id": "https://www.bottamedi.eu/#banchetto"
+        },
+        {
+          "@id": "https://www.bottamedi.eu/#ingrosso"
+        }
       ]
     },
     {
@@ -267,7 +292,7 @@
         "@id": "https://www.bottamedi.eu/#organization"
       },
       "name": "Banchetto Bottamedi",
-      "description": "Vendita al dettaglio di frutta e verdura fresca selezionata. Oltre 150 varietà di prodotti stagionali.",
+      "description": "Punto vendita al dettaglio di Bottamedi Frutta e Verdura in Via Cavalleggeri Udine a Mezzolombardo, presso il campo sportivo. Una delle due sole sedi dell'azienda, insieme all'ingrosso di Via Alcide de Gasperi 47.",
       "image": [
         "https://www.bottamedi.eu/images/banchetto.webp",
         "https://www.bottamedi.eu/images/banco_varieta_autunno.webp",
@@ -352,7 +377,8 @@
         "https://instagram.com/banchetto.bottamedi",
         "https://www.facebook.com/profile.php?id=100063456281899"
       ],
-      "keywords": "ortofrutta Mezzolombardo, fruttivendolo Mezzolombardo, frutta e verdura Piana Rotaliana, negozio ortofrutta Trentino, banchetto frutta verdura"
+      "keywords": "ortofrutta Mezzolombardo, fruttivendolo Mezzolombardo, frutta e verdura Piana Rotaliana, negozio ortofrutta Trentino, banchetto frutta verdura",
+      "branchCode": "banchetto-cavalleggeri-udine"
     },
     {
       "@type": [
@@ -364,7 +390,7 @@
         "@id": "https://www.bottamedi.eu/#organization"
       },
       "name": "Bottamedi Ingrosso HORECA",
-      "description": "Servizio ingrosso per ristoranti, hotel, pizzerie. Consegne programmate 6 giorni su 7.",
+      "description": "Ingrosso ortofrutticolo di Bottamedi Frutta e Verdura in Via Alcide de Gasperi 47 a Mezzolombardo, per ristoranti, hotel e mense. Una delle due sole sedi dell'azienda, insieme al banchetto di Via Cavalleggeri Udine.",
       "image": "https://www.bottamedi.eu/images/albicocche_ingrosso_magazzino.webp",
       "address": {
         "@type": "PostalAddress",
@@ -424,7 +450,8 @@
         "https://www.facebook.com/profile.php?id=100063456281899",
         "https://maps.app.goo.gl/TFV4cgnEvcFjBHfD6"
       ],
-      "keywords": "ingrosso ortofrutta Trentino, grossista frutta e verdura Trento, fornitore Ho.Re.Ca. Trentino, forniture ristoranti hotel Piana Rotaliana"
+      "keywords": "ingrosso ortofrutta Trentino, grossista frutta e verdura Trento, fornitore Ho.Re.Ca. Trentino, forniture ristoranti hotel Piana Rotaliana",
+      "branchCode": "ingrosso-de-gasperi-47"
     }
   ]
 }
@@ -432,45 +459,61 @@
   
   <!-- FAQPage Schema -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Quali sono gli orari del banchetto Bottamedi?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Il banchetto Bottamedi in Via Cavalleggeri Udine è aperto dal lunedì al sabato dalle 7:00 alle 19:30. Domenica chiuso."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Bottamedi fornisce ristoranti e hotel?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Sì, la divisione ingrosso HORECA in Via de Gasperi 47 fornisce ristoranti, hotel e pizzerie con consegne programmate 6 giorni su 7. Contatti: 0461 602534."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Da quanto tempo esiste Bottamedi?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Bottamedi è un'azienda familiare fondata nel 1974 da Lorenzo Bottamedi. Oggi, dopo 50 anni, continua la tradizione con tre generazioni al servizio della qualità."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Dove parcheggiare al banchetto Bottamedi?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Il banchetto in Via Cavalleggeri Udine dispone di parcheggi comodi nelle vicinanze nel centro di Mezzolombardo."
-        }
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Quante sedi ha Bottamedi Frutta e Verdura?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Bottamedi Frutta e Verdura ha due sole sedi, entrambe a Mezzolombardo: il banchetto al dettaglio in Via Cavalleggeri Udine, telefono 351 577 6198, e l'ingrosso Ho.Re.Ca. in Via Alcide de Gasperi 47, telefono 0461 602534. Non esistono altri punti vendita, filiali o attivita' affiliate."
       }
-    ]
-  }
-  </script>
+    },
+    {
+      "@type": "Question",
+      "name": "Ci sono altre attivita' Bottamedi in Piana Rotaliana?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Bottamedi e' un cognome diffuso in Piana Rotaliana e in zona operano altre attivita' ortofrutticole con lo stesso cognome. Sono imprese autonome, senza alcun legame societario, commerciale o organizzativo con Bottamedi Frutta e Verdura di Pierluigi Bottamedi. Per contattare la nostra azienda gli unici recapiti sono 351 577 6198 per il banchetto e 0461 602534 per l'ingrosso."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quali sono gli orari del banchetto Bottamedi?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Il banchetto Bottamedi in Via Cavalleggeri Udine è aperto dal lunedì al sabato dalle 7:00 alle 19:30. Domenica chiuso."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Bottamedi fornisce ristoranti e hotel?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sì, la divisione ingrosso HORECA in Via de Gasperi 47 fornisce ristoranti, hotel e pizzerie con consegne programmate 6 giorni su 7. Contatti: 0461 602534."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Da quanto tempo esiste Bottamedi?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Bottamedi è un'azienda familiare fondata nel 1974 da Lorenzo Bottamedi. Oggi, dopo 50 anni, continua la tradizione con tre generazioni al servizio della qualità."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Dove parcheggiare al banchetto Bottamedi?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Il banchetto in Via Cavalleggeri Udine dispone di parcheggi comodi nelle vicinanze nel centro di Mezzolombardo."
+      }
+    }
+  ]
+}
+</script>
   
   <!-- BreadcrumbList -->
   <script type="application/ld+json">

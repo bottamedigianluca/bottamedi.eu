@@ -10,7 +10,7 @@ interface ProductsSectionProps {
 const translations = {
   it: {
     title: 'I Nostri Prodotti',
-    subtitle: 'Oltre 150 varietà di frutta e verdura fresca selezionata ogni giorno',
+    subtitle: 'Il tuo fruttivendolo a Mezzolombardo: oltre 150 varietà di frutta e verdura fresca, ortofrutta selezionata ogni giorno al mercato per il banchetto e per ristoranti e hotel della provincia di Trento',
     categories: [
       {
         id: 'fruits',
@@ -31,7 +31,14 @@ const translations = {
           { name: 'Pere Williams', season: 'Lug-Ott', origin: 'Val di Non' },
           { name: 'Fragole di montagna', season: 'Mar-Giu', origin: 'Altopiani trentini' },
           { name: 'Susine Regina Claudia', season: 'Lug-Set', origin: 'Trentino' },
-          { name: 'Ciliegie Duroni', season: 'Mag-Lug', origin: 'Vignola/Trentino' }
+          { name: 'Ciliegie Duroni', season: 'Mag-Lug', origin: 'Vignola/Trentino' },
+          { name: 'Avocado', season: `Tutto l'anno`, origin: 'Spagna/Perù' },
+          { name: 'Ananas', season: `Tutto l'anno`, origin: 'Costa Rica' },
+          { name: 'Banane', season: `Tutto l'anno`, origin: 'Ecuador' },
+          { name: 'Meloni', season: 'Giu-Set', origin: 'Mantova/Sicilia' },
+          { name: 'Angurie', season: 'Giu-Ago', origin: 'Italia' },
+          { name: 'Mele Pink Lady', season: 'Nov-Giu', origin: 'Val di Non' },
+          { name: 'Limoni e Arance', season: 'Nov-Apr', origin: 'Sicilia' }
         ],
         features: [
           { icon: '🌅', title: 'Selezione Mattutina', desc: 'Controllo qualità alle prime ore' },
@@ -71,7 +78,7 @@ const translations = {
       {
         id: 'specialties',
         title: 'Specialità Locali',
-        shortDesc: 'Prodotti tipici del territorio trentino',
+        shortDesc: 'Vini, succhi, confetture e prodotti tipici trentini',
         description: 'Selezioniamo i migliori prodotti tipici del Trentino Alto Adige per portare sulla tua tavola i sapori autentici della nostra terra.',
         longDescription: 'Il Trentino Alto Adige è ricco di eccellenze enogastronomiche che rappresentiamo con orgoglio. Dalle mele Melinda DOP alle pere della Val di Non, dai piccoli frutti di montagna alle erbe aromatiche alpine, ogni prodotto racconta la storia del nostro territorio. Lavoriamo anche con piccoli produttori locali per offrirti specialità uniche che difficilmente trovi altrove, come le antiche varietà di mele recuperate o i frutti dimenticati delle nostre montagne.',
         icon: '🏔️',
@@ -87,7 +94,14 @@ const translations = {
           { name: 'Funghi Porcini', season: 'Set-Nov', origin: 'Boschi trentini' },
           { name: 'Mirtilli di montagna', season: 'Lug-Set', origin: 'Sopra i 1000m' },
           { name: 'Lamponi selvatici', season: 'Giu-Ago', origin: 'Val di Fiemme' },
-          { name: 'More di rovo', season: 'Ago-Set', origin: 'Valli alpine' }
+          { name: 'More di rovo', season: 'Ago-Set', origin: 'Valli alpine' },
+          { name: 'Vini del Trentino', season: `Tutto l'anno`, origin: 'Cantine locali' },
+          { name: 'Succhi di mela', season: `Tutto l'anno`, origin: 'Val di Non' },
+          { name: 'Confetture artigianali', season: `Tutto l'anno`, origin: 'Produttori trentini' },
+          { name: 'Frutta disidratata', season: `Tutto l'anno`, origin: 'Selezione propria' },
+          { name: 'Frutta secca e semi', season: `Tutto l'anno`, origin: 'Selezione propria' },
+          { name: 'Sottoli e conserve', season: `Tutto l'anno`, origin: 'Produttori locali' },
+          { name: 'Aceto e olio', season: `Tutto l'anno`, origin: 'Trentino e Italia' }
         ],
         features: [
           { icon: '🏅', title: 'Certificazioni DOP', desc: 'Prodotti a denominazione protetta' },
@@ -161,7 +175,7 @@ const translations = {
       {
         id: 'specialties',
         title: 'Lokale Spezialitäten',
-        shortDesc: 'Typische Produkte des Südtiroler Gebiets',
+        shortDesc: 'Weine, Säfte, Konfitüren und typische Südtiroler Produkte',
         description: 'Wir wählen die besten typischen Produkte Südtirols aus, um die authentischen Aromen unseres Landes auf Ihren Tisch zu bringen.',
         longDescription: 'Südtirol ist reich an gastronomischen Exzellenzen, die wir mit Stolz vertreten. Von Melinda DOP-Äpfeln bis zu Birnen aus dem Nonstal, von kleinen Bergfrüchten bis zu alpinen Kräutern erzählt jedes Produkt die Geschichte unseres Gebiets.',
         icon: '🏔️',
@@ -177,7 +191,14 @@ const translations = {
           { name: 'Steinpilze', season: 'Sep-Nov', origin: 'Südtiroler Wälder' },
           { name: 'Bergblaubeeren', season: 'Jul-Sep', origin: 'Über 1000m' },
           { name: 'Wilde Himbeeren', season: 'Jun-Aug', origin: 'Fleimstal' },
-          { name: 'Brombeeren', season: 'Aug-Sep', origin: 'Alpentäler' }
+          { name: 'Brombeeren', season: 'Aug-Sep', origin: 'Alpentäler' },
+          { name: 'Südtiroler Weine', season: 'Ganzjährig', origin: 'Lokale Kellereien' },
+          { name: 'Apfelsäfte', season: 'Ganzjährig', origin: 'Nonstal' },
+          { name: 'Hausgemachte Konfitüren', season: 'Ganzjährig', origin: 'Lokale Erzeuger' },
+          { name: 'Trockenobst', season: 'Ganzjährig', origin: 'Eigene Auswahl' },
+          { name: 'Nüsse und Samen', season: 'Ganzjährig', origin: 'Eigene Auswahl' },
+          { name: 'Eingelegtes und Konserven', season: 'Ganzjährig', origin: 'Lokale Erzeuger' },
+          { name: 'Essig und Öl', season: 'Ganzjährig', origin: 'Südtirol und Italien' }
         ],
         features: [
           { icon: '🏅', title: 'DOP-Zertifizierungen', desc: 'Produkte mit geschützter Herkunftsbezeichnung' },
@@ -243,18 +264,15 @@ const MobileProductCard: React.FC<{
 
         {/* Quick Products Preview */}
         <div className="mb-5">
-          <h4 className="font-semibold text-gray-900 mb-3 text-sm">Alcuni esempi:</h4>
+          <h4 className="font-semibold text-gray-900 mb-3 text-sm">Cosa trovi:</h4>
           <div className="flex flex-wrap gap-2">
-            {category.products.slice(0, 3).map((product: any, i: number) => (
+            {/* Tutti i nomi visibili: nasconderne sette dietro un click li
+                rendeva invisibili anche a chi cerca quel prodotto */}
+            {category.products.map((product: any, i: number) => (
               <span key={i} className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
                 {product.name}
               </span>
             ))}
-            {category.products.length > 3 && (
-              <span className="bg-gray-200 text-gray-600 px-2 py-1 rounded-full text-xs">
-                +{category.products.length - 3} altri...
-              </span>
-            )}
           </div>
         </div>
 

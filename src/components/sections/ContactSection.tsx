@@ -633,6 +633,18 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
                 : `Weil wir direkt einkaufen, ohne Zwischenhändler: am Großmarkt Verona, wo wir die Ware persönlich Kiste für Kiste auswählen, und bei den Bauern der Umgebung für die saisonalen Produkte des Gebiets. Zwischen Erzeuger und Marktstand steht kein dritter Großhändler, und das wirkt sich bei gleicher Qualität auf den Endpreis aus.`}
             </p>
           </div>
+          <div className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm border border-gray-100 mt-5">
+            <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-3">
+              {language === 'it'
+                ? 'Vendete prodotti a km 0 del Trentino?'
+                : 'Verkaufen Sie Produkte aus der Region?'}
+            </h3>
+            <p className="text-gray-600 leading-relaxed">
+              {language === 'it'
+                ? `Sì. Una parte dell'assortimento viene dai contadini e dai produttori della Piana Rotaliana, della Val di Non e delle valli vicine, in filiera corta e senza passaggi intermedi: mele Melinda e Pink Lady, asparagi di Zambana, piccoli frutti di montagna, castagne e noci in autunno, ortaggi delle valli. Gli altri prodotti, quelli che in Trentino non crescono, li scegliamo di persona al mercato ortofrutticolo di Verona.`
+                : `Ja. Ein Teil des Sortiments stammt von Bauern und Erzeugern der Rotaliana-Ebene, des Nonstals und der umliegenden Täler, in kurzer Lieferkette und ohne Zwischenstufen: Melinda- und Pink-Lady-Äpfel, Spargel aus Zambana, Bergbeeren, Kastanien und Nüsse im Herbst, Gemüse aus den Tälern. Die übrigen Produkte, die im Trentino nicht wachsen, wählen wir persönlich am Großmarkt Verona aus.`}
+            </p>
+          </div>
         </motion.div>
 
       </div>

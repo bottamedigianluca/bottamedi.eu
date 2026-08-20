@@ -21,6 +21,17 @@ import { extname, join, resolve } from 'node:path'
 import { readFile } from 'node:fs/promises'
 import puppeteer from 'puppeteer-core'
 
+// puppeteer completo porta con se' un Chromium: su Netlify non esiste un
+// browser di sistema, e senza questo il prerendering veniva saltato in
+// silenzio lasciando in produzione la pagina vuota.
+let bundledChromium = null
+try {
+  const mod = await import('puppeteer')
+  bundledChromium = mod.default.executablePath()
+} catch {
+  // in locale puo' bastare il Chrome installato
+}
+
 const DIST = resolve('dist')
 const PORT = 4183
 
@@ -61,6 +72,7 @@ function findChrome() {
   for (const p of CHROME_CANDIDATES) {
     if (p && existsSync(p)) return p
   }
+  if (bundledChromium && existsSync(bundledChromium)) return bundledChromium
   return null
 }
 
@@ -88,9 +100,11 @@ async function main() {
   if (!chrome) {
     // Il build non deve fallire per questo: meglio un deploy senza prerender
     // che nessun deploy. Il messaggio resta visibile nel log.
-    console.warn('[prerender] Chrome non trovato: salto il prerendering.')
-    console.warn('[prerender] Percorsi provati:', CHROME_CANDIDATES.join(', '))
-    process.exit(0)
+    console.error('[prerender] ERRORE: nessun browser disponibile.')
+    console.error('[prerender] Percorsi provati:', CHROME_CANDIDATES.join(', '))
+    console.error('[prerender] Senza prerendering i crawler vedono una pagina vuota:')
+    console.error('[prerender] il build fallisce di proposito invece di pubblicarla.')
+    process.exit(1)
   }
 
   const indexPath = join(DIST, 'index.html')
@@ -132,8 +146,8 @@ async function main() {
     // originale che pubblicare una pagina rotta.
     const textLen = await page.evaluate(() => (document.body.innerText || '').trim().length)
     if (textLen < 500) {
-      console.warn(`[prerender] contenuto troppo breve (${textLen} caratteri): mantengo l'index originale.`)
-      process.exit(0)
+      console.error(`[prerender] ERRORE: contenuto troppo breve (${textLen} caratteri).`)
+      process.exit(1)
     }
 
     writeFileSync(indexPath, html, 'utf8')
@@ -147,6 +161,5 @@ async function main() {
 
 main().catch((e) => {
   console.error('[prerender] errore:', e.message)
-  // non blocca il deploy
-  process.exit(0)
+  process.exit(1)
 })

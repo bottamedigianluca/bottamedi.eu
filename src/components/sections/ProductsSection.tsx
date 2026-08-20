@@ -301,12 +301,18 @@ const MobileProductCard: React.FC<{
         <AnimatePresence>
           {isExpanded && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
+              // grid-template-rows invece di height:auto: quest'ultima
+              // costringe framer-motion a misurare l'elemento a ogni frame,
+              // forzando un reflow sincrono. Con la griglia l'animazione
+              // resta sul compositor.
+              initial={{ opacity: 0, gridTemplateRows: '0fr' }}
+              animate={{ opacity: 1, gridTemplateRows: '1fr' }}
+              exit={{ opacity: 0, gridTemplateRows: '0fr' }}
               transition={{ duration: 0.25 }}
+              style={{ display: 'grid' }}
               className="mt-5 pt-5 border-t border-gray-100"
             >
+              <div className="overflow-hidden min-h-0">
               <p className="text-gray-600 leading-relaxed mb-5 text-sm">
                 {category.longDescription}
               </p>
@@ -343,6 +349,7 @@ const MobileProductCard: React.FC<{
                     </div>
                   ))}
                 </div>
+              </div>
               </div>
             </motion.div>
           )}

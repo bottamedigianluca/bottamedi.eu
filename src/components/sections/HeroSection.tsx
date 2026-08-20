@@ -158,7 +158,7 @@ const OptimizedVideoBackground: React.FC<{ inView: boolean }> = React.memo(({ in
       <div 
         className="w-full h-full bg-gradient-to-br from-green-600 via-green-500 to-green-700"
         style={{
-          backgroundImage: 'url(/images/poster.webp)',
+          backgroundImage: `url(${HERO_POSTER})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}

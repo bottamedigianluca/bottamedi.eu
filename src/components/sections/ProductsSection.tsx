@@ -241,6 +241,8 @@ const MobileProductCard: React.FC<{
         
         <img
           src={category.image}
+          srcSet={buildSrcSet(category.image)}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           alt={`${category.title} freschi di stagione al banchetto Bottamedi di Mezzolombardo`}
           className="w-full h-full object-cover"
           loading="lazy"
@@ -392,6 +394,8 @@ const DesktopProductCard: React.FC<{
           
           <img
             src={category.image}
+            srcSet={buildSrcSet(category.image)}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             alt={`${category.title} freschi di stagione al banchetto Bottamedi di Mezzolombardo`}
             className="w-full h-full object-cover"
             loading="lazy"
@@ -434,6 +438,17 @@ const DesktopProductCard: React.FC<{
 })
 
 DesktopProductCard.displayName = 'DesktopProductCard'
+
+
+// Le card prodotto usano <img> semplici invece di OptimizedImage: senza
+// srcSet scaricavano l'originale a piena risoluzione (fino a 4032px) per
+// una card di poche centinaia di pixel.
+const VARIANT_WIDTHS = [640, 1024, 1600]
+const buildSrcSet = (src: string): string | undefined => {
+  const m = src.match(/^\/images\/(.+)\.webp$/)
+  if (!m) return undefined
+  return VARIANT_WIDTHS.map(w => `/images/${m[1]}-${w}w.webp ${w}w`).join(', ')
+}
 
 const ProductsSection: React.FC<ProductsSectionProps> = ({ language, inView }) => {
   const [activeCategory, setActiveCategory] = useState(0)

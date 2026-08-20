@@ -126,9 +126,9 @@ const buildSrcSet = (src: string, intrinsicWidth?: number): string | undefined =
   const widths = RESPONSIVE_VARIANTS[match[1]]
   if (!widths || widths.length === 0) return undefined
 
-  const entries = widths.map(w => `/images/${match[1]}-${w}w.webp ${w}w`)
-  if (intrinsicWidth) entries.push(`${src} ${intrinsicWidth}w`)
-  return entries.join(', ')
+  // Solo le varianti: l'originale (fino a 4032px) non e' mai la scelta giusta
+  // per come queste immagini sono rese, e restava un candidato del srcSet.
+  return widths.map(w => `/images/${match[1]}-${w}w.webp ${w}w`).join(', ')
 }
 
 const OptimizedImage: React.FC<OptimizedImageProps> = ({

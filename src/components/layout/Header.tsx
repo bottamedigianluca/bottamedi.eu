@@ -62,6 +62,8 @@ const Header: React.FC<HeaderProps> = ({
             <img
               src="/logo-bottamedi.webp"
               alt="Bottamedi Logo"
+              width={144}
+              height={96}
               className="h-24 w-auto object-contain"
               style={{
                 filter: isScrolled 

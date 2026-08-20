@@ -343,13 +343,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
   const titleVariants = useMemo(() => ({
     initial: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
     animate: { opacity: 1, y: 0 },
-    transition: { delay: shouldReduceMotion ? 0 : 0.4, duration: shouldReduceMotion ? 0.1 : 0.6 }
+    transition: { delay: shouldReduceMotion ? 0 : 0.15, duration: shouldReduceMotion ? 0.1 : 0.6 }
   }), [shouldReduceMotion])
 
   const subtitleVariants = useMemo(() => ({
     initial: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
     animate: { opacity: 1, y: 0 },
-    transition: { delay: shouldReduceMotion ? 0 : 0.6, duration: shouldReduceMotion ? 0.1 : 0.5 }
+    transition: { delay: shouldReduceMotion ? 0 : 0.25, duration: shouldReduceMotion ? 0.1 : 0.5 }
   }), [shouldReduceMotion])
 
   // 🎨 CTAs memoizzati per performance con tracking migliorato
@@ -445,7 +445,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
         <motion.div
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: shouldReduceMotion ? 0 : 0.8, duration: shouldReduceMotion ? 0.1 : 0.5 }}
+          transition={{ delay: shouldReduceMotion ? 0 : 0.3, duration: shouldReduceMotion ? 0.1 : 0.5 }}
           className="mb-8 text-center"
         >
           <motion.p 
@@ -465,7 +465,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
           <motion.div
             initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: shouldReduceMotion ? 0 : 1, duration: shouldReduceMotion ? 0.1 : 0.4 }}
+            transition={{ delay: shouldReduceMotion ? 0 : 0.4, duration: shouldReduceMotion ? 0.1 : 0.4 }}
             className="flex justify-center mt-4"
           >
             <motion.div 
@@ -507,7 +507,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
         <motion.div
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: shouldReduceMotion ? 0 : 1.2, duration: shouldReduceMotion ? 0.1 : 0.6 }}
+          transition={{ delay: shouldReduceMotion ? 0 : 0.5, duration: shouldReduceMotion ? 0.1 : 0.6 }}
           className="flex flex-col items-center space-y-6"
         >
           {/* 📱 Mobile Layout ottimizzato */}
@@ -520,7 +520,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: shouldReduceMotion ? 0 : 1.4 + index * 0.1, duration: shouldReduceMotion ? 0.1 : 0.5 }}
+                transition={{ delay: shouldReduceMotion ? 0 : 0.55 + index * 0.06, duration: shouldReduceMotion ? 0.1 : 0.5 }}
                 className={`group relative bg-gradient-to-r ${
                   button.type === 'about' 
                     ? 'border-2 border-white/50 text-white backdrop-blur-md hover:bg-white/10 hover:border-white/70' 
@@ -542,7 +542,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
                 onClick={() => handleCTAClick(button.type)}
                 initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: shouldReduceMotion ? 0 : 1.3 + index * 0.1, duration: shouldReduceMotion ? 0.1 : 0.5 }}
+                transition={{ delay: shouldReduceMotion ? 0 : 0.5 + index * 0.06, duration: shouldReduceMotion ? 0.1 : 0.5 }}
                 whileHover={shouldReduceMotion ? {} : { scale: 1.05, y: -4 }}
                 whileTap={{ scale: 0.95 }}
                 className={`group relative ${
@@ -562,7 +562,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: shouldReduceMotion ? 0 : 2, duration: shouldReduceMotion ? 0.1 : 0.6 }}
+            transition={{ delay: shouldReduceMotion ? 0 : 0.7, duration: shouldReduceMotion ? 0.1 : 0.6 }}
             className="text-center mt-6 md:mt-8"
           >
             <motion.div

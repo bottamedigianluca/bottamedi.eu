@@ -183,7 +183,9 @@ const OptimizedVideoBackground: React.FC<{ inView: boolean }> = React.memo(({ in
         loop
         playsInline
         preload="metadata"
-        poster="/images/poster.webp"
+        poster={typeof window !== 'undefined' && window.innerWidth <= 828
+          ? "/images/poster-828w.webp"
+          : "/images/poster-1440w.webp"}
         onLoadedData={handleLoadedData}
         onError={handleError}
         style={{ willChange: 'opacity' }}

@@ -298,10 +298,10 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
                   }}
                 >
                   <OptimizedImage
-                    src="/favicon.webp"
+                    src="/favicon-96.webp"
                     alt="Bottamedi Favicon"
                     className="w-12 h-12 object-contain"
-                    priority={true}
+                    priority={false}
                     placeholder="empty"
                     onError={() => {
                       console.warn('Favicon failed to load, using fallback')

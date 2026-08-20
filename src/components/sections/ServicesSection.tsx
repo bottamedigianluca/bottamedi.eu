@@ -236,7 +236,7 @@ const ServiceCard: React.FC<{
             src={service.image}
             alt={`${service.title} - servizio Bottamedi per ristoranti e hotel in Trentino`}
             className="w-full h-full"
-            priority={index === 0}
+            priority={false}
             placeholder="blur"
             aspectRatio="16/9"
             objectFit="cover"
@@ -323,7 +323,7 @@ const MobileServiceCard: React.FC<{
           src={service.image}
           alt={`${service.title} - servizio Bottamedi per ristoranti e hotel in Trentino`}
           className="w-full h-full"
-          priority={index === 0}
+          priority={false}
           placeholder="blur"
           aspectRatio="16/9"
           objectFit="cover"

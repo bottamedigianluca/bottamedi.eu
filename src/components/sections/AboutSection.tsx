@@ -312,7 +312,7 @@ const TimelineItem: React.FC<{
             src={item.image}
             alt={`${item.title} - Bottamedi Frutta e Verdura, Mezzolombardo Trentino`}
             className="w-full h-64 lg:h-72 transition-transform duration-500 group-hover:scale-105"
-            priority={index === 0}
+            priority={false}
             placeholder="blur"
             aspectRatio="4/3"
             objectFit="cover"

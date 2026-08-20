@@ -526,7 +526,8 @@ const BanchettoSection: React.FC<BanchettoSectionProps> = ({ language, inView })
     }
   }), [shouldReduceMotion])
 
-  const priorityImages = useMemo(() => new Set([0, 1, 2, 3]), [])
+  // solo la prima: quattro immagini in alta priorita' competono con la LCP
+  const priorityImages = useMemo(() => new Set([0]), [])
 
   return (
     <section 

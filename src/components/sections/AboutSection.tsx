@@ -62,9 +62,9 @@ const translations = {
           label: 'Varietà selezionate'
         },
         {
-          icon: '❤️',
-          title: 'Passione',
-          description: 'L\'amore per il nostro lavoro si riflette nella cura di ogni singolo prodotto',
+          icon: '🤝',
+          title: 'Filiera diretta',
+          description: `Compriamo al mercato di Verona e dai contadini della zona, senza grossisti in mezzo: a parità di qualità il prezzo è più basso`,
           number: '50+',
           label: 'Partner commerciali'
         },
@@ -119,9 +119,9 @@ const translations = {
           label: 'Ausgewählte Sorten'
         },
         {
-          icon: '❤️',
-          title: 'Leidenschaft',
-          description: 'Die Liebe zu unserer Arbeit spiegelt sich in der Pflege jedes einzelnen Produkts wider',
+          icon: '🤝',
+          title: 'Direkte Lieferkette',
+          description: `Wir kaufen direkt am Großmarkt Verona und bei den Bauern der Umgebung, ohne Zwischenhändler: bei gleicher Qualität ein niedrigerer Preis`,
           number: '50+',
           label: 'Geschäftspartner'
         },

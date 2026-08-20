@@ -612,6 +612,29 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
           </div>
         </motion.div>
 
+        {/* Rende visibile la domanda dichiarata nel FAQPage schema: Google
+            richiede che il markup corrisponda a contenuto in pagina. */}
+        <motion.div
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: shouldReduceMotion ? 0.2 : 0.5 }}
+          className="mt-16 max-w-3xl mx-auto"
+        >
+          <div className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm border border-gray-100">
+            <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-3">
+              {language === 'it'
+                ? 'Come mai i prezzi sono convenienti?'
+                : 'Warum sind die Preise günstig?'}
+            </h3>
+            <p className="text-gray-600 leading-relaxed">
+              {language === 'it'
+                ? `Perché compriamo direttamente, senza intermediari: al mercato ortofrutticolo di Verona, scegliendo la merce di persona cassetta per cassetta, e dai contadini della zona per i prodotti di stagione del territorio. Non c'è un grossista terzo fra il produttore e il banco, e questo si riflette sul prezzo finale a parità di qualità.`
+                : `Weil wir direkt einkaufen, ohne Zwischenhändler: am Großmarkt Verona, wo wir die Ware persönlich Kiste für Kiste auswählen, und bei den Bauern der Umgebung für die saisonalen Produkte des Gebiets. Zwischen Erzeuger und Marktstand steht kein dritter Großhändler, und das wirkt sich bei gleicher Qualität auf den Endpreis aus.`}
+            </p>
+          </div>
+        </motion.div>
+
       </div>
     </section>
   )

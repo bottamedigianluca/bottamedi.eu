@@ -231,7 +231,7 @@ const HeroImage: React.FC<{ inView: boolean; language: string }> = React.memo(({
         <OptimizedImage
           src="/images/banchetto.webp"
           alt="Il Banchetto Bottamedi a Mezzolombardo ricco di frutta e verdura fresca"
-          sizes="100vw"
+          sizes="(max-width: 1024px) 100vw, 720px"
           className={`w-full h-full transition-all duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
           priority={true}
           placeholder="empty"

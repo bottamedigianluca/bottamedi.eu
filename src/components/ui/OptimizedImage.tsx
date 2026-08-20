@@ -318,25 +318,8 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
 
   return (
     <>
-      {/* CSS ottimizzato per mobile */}
-      <style>{`
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-        .animate-shimmer {
-          animation: shimmer 1.2s infinite;
-        }
-        
-        /* Ottimizzazioni performance mobile */
-        .mobile-optimized-image {
-          -webkit-transform: translateZ(0);
-          transform: translateZ(0);
-          -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
-        }
-      `}</style>
-      
+      {/* Le regole shimmer e mobile-optimized-image stanno in index.css:
+          qui venivano iniettate una volta per ogni immagine. */}
       <div 
         ref={containerRef}
         className={`relative mobile-optimized-image ${className}`}

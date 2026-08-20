@@ -636,3 +636,19 @@ a, button, input, textarea, select {
 .contact-card-btn:hover {
   will-change: transform, box-shadow;
 }
+
+/* Immagini ottimizzate: regole prima duplicate in ogni istanza di
+   OptimizedImage come blocco <style> inline. */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.animate-shimmer {
+  animation: shimmer 1.2s infinite;
+}
+.mobile-optimized-image {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}

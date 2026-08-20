@@ -420,10 +420,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
             }}
           >
             {t.title}
+            <span className="sr-only"> - {t.subtitle} a Mezzolombardo, Trentino</span>
           </motion.h1>
           
           {/* Sottotitolo ottimizzato */}
-          <motion.h2
+          <motion.p
             initial={subtitleVariants.initial}
             animate={subtitleVariants.animate}
             transition={subtitleVariants.transition}
@@ -435,7 +436,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ language, inView }) => {
             }}
           >
             {t.subtitle}
-          </motion.h2>
+          </motion.p>
         </motion.div>
 
         {/* 🏷️ Slogan ottimizzato */}

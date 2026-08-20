@@ -234,7 +234,7 @@ const ServiceCard: React.FC<{
         <div className="relative h-64 overflow-hidden">
           <OptimizedImage
             src={service.image}
-            alt={service.title}
+            alt={`${service.title} - servizio Bottamedi per ristoranti e hotel in Trentino`}
             className="w-full h-full"
             priority={index === 0}
             placeholder="blur"
@@ -321,7 +321,7 @@ const MobileServiceCard: React.FC<{
       <div className="relative h-56 overflow-hidden">
         <OptimizedImage
           src={service.image}
-          alt={service.title}
+          alt={`${service.title} - servizio Bottamedi per ristoranti e hotel in Trentino`}
           className="w-full h-full"
           priority={index === 0}
           placeholder="blur"

@@ -339,6 +339,8 @@ ${formData.contactPerson}`)
                     initial={{ opacity: 1 }}
                     onSubmit={handleSubmit}
                     className="space-y-4"
+                    name="richiesta-fornitura-horeca"
+                    aria-label="Richiesta di fornitura per attivita' Ho.Re.Ca."
                   >
                     {/* Form Header */}
                     <div className="text-center mb-6">
@@ -353,10 +355,11 @@ ${formData.contactPerson}`)
                     {/* Business Name & Contact Person */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                        <label htmlFor="wholesale-businessName" className="block text-xs font-medium text-gray-700 mb-1">
                           {t.form.businessName}
                         </label>
-                        <input
+                        <input id="wholesale-businessName"
+                          autoComplete="organization"
                           type="text"
                           required
                           value={formData.businessName}
@@ -367,10 +370,11 @@ ${formData.contactPerson}`)
                       </div>
                       
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                        <label htmlFor="wholesale-contactPerson" className="block text-xs font-medium text-gray-700 mb-1">
                           {t.form.contactPerson}
                         </label>
-                        <input
+                        <input id="wholesale-contactPerson"
+                          autoComplete="name"
                           type="text"
                           required
                           value={formData.contactPerson}
@@ -384,10 +388,11 @@ ${formData.contactPerson}`)
                     {/* Phone & Email */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                        <label htmlFor="wholesale-phone" className="block text-xs font-medium text-gray-700 mb-1">
                           {t.form.phone}
                         </label>
-                        <input
+                        <input id="wholesale-phone"
+                          autoComplete="tel"
                           type="tel"
                           required
                           value={formData.phone}
@@ -398,10 +403,11 @@ ${formData.contactPerson}`)
                       </div>
                       
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                        <label htmlFor="wholesale-email" className="block text-xs font-medium text-gray-700 mb-1">
                           {t.form.email}
                         </label>
-                        <input
+                        <input id="wholesale-email"
+                          autoComplete="email"
                           type="email"
                           required
                           value={formData.email}
@@ -415,10 +421,11 @@ ${formData.contactPerson}`)
                     {/* Business Type & Location */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                        <label htmlFor="wholesale-businessType" className="block text-xs font-medium text-gray-700 mb-1">
                           {t.form.businessType}
                         </label>
                         <select
+                          id="wholesale-businessType"
                           required
                           value={formData.businessType}
                           onChange={(e) => handleInputChange('businessType', e.target.value)}
@@ -433,10 +440,11 @@ ${formData.contactPerson}`)
                       </div>
 
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                        <label htmlFor="wholesale-location" className="block text-xs font-medium text-gray-700 mb-1">
                           {t.form.location}
                         </label>
-                        <input
+                        <input id="wholesale-location"
+                          autoComplete="address-level2"
                           type="text"
                           value={formData.location}
                           onChange={(e) => handleInputChange('location', e.target.value)}
@@ -448,10 +456,10 @@ ${formData.contactPerson}`)
 
                     {/* Message */}
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                      <label htmlFor="wholesale-message" className="block text-xs font-medium text-gray-700 mb-1">
                         {t.form.message}
                       </label>
-                      <textarea
+                      <textarea id="wholesale-message"
                         rows={3}
                         value={formData.message}
                         onChange={(e) => handleInputChange('message', e.target.value)}

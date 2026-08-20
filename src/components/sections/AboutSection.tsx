@@ -34,13 +34,13 @@ const translations = {
       {
         year: '2013',
         title: 'L\'Evoluzione',
-        description: `Con Pierluigi arriva l'ingrosso. Ai clienti del banchetto si affiancano ristoranti, hotel e mense della zona, che hanno bisogno di consegne puntuali e di qualità costante tutto l'anno`,
+        description: `È Pierluigi a costruire l'ingrosso. Quello che con Lorenzo erano poche forniture ai ristoranti del paese diventa un lavoro strutturato: rapporti diretti con i produttori, consegne che non saltano un giorno, e la fiducia di cucine che ordinano ogni settimana da vent'anni. La parte più grande dell'azienda oggi porta la sua firma.`,
         image: '/images/pomodori_cuore_bue.webp'
       },
       {
         year: 'OGGI',
         title: 'Il Futuro',
-        description: 'Si parte per il mercato di Verona alle due di notte. Il mercato apre più tardi, ma chi arriva prima sceglie per primo. La merce torna in Trentino la mattina stessa: al banchetto e nei ristoranti che serviamo',
+        description: 'Si parte per il mercato di Verona alle due di notte. Il mercato apre più tardi, ma chi arriva prima sceglie per primo. La merce arriva in Trentino la mattina stessa: al banchetto e nei ristoranti che serviamo',
         image: '/images/kiwi-cuore.webp'
       }
     ],
@@ -90,14 +90,14 @@ const translations = {
       },
       {
         year: '2013',
-        title: 'Die Entwicklung',
-        description: `Mit Pierluigi kommt der Großhandel dazu. Neben den Kunden am Stand beliefern wir Restaurants, Hotels und Kantinen der Umgebung, die pünktliche Lieferungen und ganzjährig gleichbleibende Qualität brauchen.`,
+        title: 'Der Wendepunkt',
+        description: `Es ist Pierluigi, der den Großhandel aufbaut. Was unter Lorenzo einige Lieferungen an Gasthäuser im Ort waren, wird zu einer strukturierten Arbeit: direkte Beziehungen zu den Erzeugern, Lieferungen, die keinen Tag ausfallen, und das Vertrauen von Küchen, die seit zwanzig Jahren jede Woche bestellen. Der größte Teil des heutigen Betriebs trägt seine Handschrift.`,
         image: '/images/pomodori_cuore_bue.webp'
       },
       {
         year: 'HEUTE',
         title: 'Die Zukunft',
-        description: `Um zwei Uhr nachts geht es zum Großmarkt nach Verona. Der Markt öffnet später, aber wer früher da ist, wählt zuerst. Die Ware ist noch am selben Morgen zurück im Trentino.`,
+        description: `Um zwei Uhr nachts geht es zum Großmarkt nach Verona. Der Markt öffnet später, aber wer früher da ist, wählt zuerst. Die Ware kommt noch am selben Morgen im Trentino an.`,
         image: '/images/kiwi-cuore.webp'
       }
     ],
@@ -310,7 +310,7 @@ const TimelineItem: React.FC<{
         <div className="relative overflow-hidden rounded-2xl shadow-xl">
           <OptimizedImage
             src={item.image}
-            alt={item.title}
+            alt={`${item.title} - Bottamedi Frutta e Verdura, Mezzolombardo Trentino`}
             className="w-full h-64 lg:h-72 transition-transform duration-500 group-hover:scale-105"
             priority={index === 0}
             placeholder="blur"

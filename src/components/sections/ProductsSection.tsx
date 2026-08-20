@@ -220,7 +220,7 @@ const MobileProductCard: React.FC<{
         
         <img
           src={category.image}
-          alt={category.title}
+          alt={`${category.title} freschi di stagione al banchetto Bottamedi di Mezzolombardo`}
           className="w-full h-full object-cover"
           loading="lazy"
           onLoad={() => setImageLoaded(true)}
@@ -374,7 +374,7 @@ const DesktopProductCard: React.FC<{
           
           <img
             src={category.image}
-            alt={category.title}
+            alt={`${category.title} freschi di stagione al banchetto Bottamedi di Mezzolombardo`}
             className="w-full h-full object-cover"
             loading="lazy"
             onLoad={() => setImageLoaded(true)}

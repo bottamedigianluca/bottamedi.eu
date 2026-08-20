@@ -25,6 +25,7 @@ const AboutSection = lazy(() => import('./components/sections/AboutSection'))
 const BanchettoSection = lazy(() => import('./components/sections/Banchettosection'))
 const ServicesSection = lazy(() => import('./components/sections/ServicesSection'))
 const ProductsSection = lazy(() => import('./components/sections/ProductsSection'))
+const SeasonsSection = lazy(() => import('./components/sections/SeasonsSection'))
 const WholesaleContact = lazy(() => import('./components/sections/Wholesalecontact'))
 const ContactSection = lazy(() => import('./components/sections/ContactSection'))
 
@@ -34,6 +35,7 @@ const SECTIONS = [
   { id: 'about', Component: AboutSection },
   { id: 'dettaglio', Component: BanchettoSection },
   { id: 'services', Component: ServicesSection },
+  { id: 'seasons', Component: SeasonsSection },
   { id: 'products', Component: ProductsSection },
   { id: 'wholesale', Component: WholesaleContact },
   { id: 'contact', Component: ContactSection }
@@ -231,6 +233,12 @@ OptimizedSection.displayName = 'OptimizedSection'
 const App: React.FC = () => {
   // States principali
   const [language, setLanguage] = useLocalStorage<'it' | 'de'>('bottamedi-language', 'it')
+
+  // l'attributo lang deve seguire la lingua scelta: dichiarare testo tedesco
+  // come italiano confonde crawler e screen reader
+  useEffect(() => {
+    document.documentElement.lang = language
+  }, [language])
   const [isMobileDevice, setIsMobileDevice] = useState(false)
   const [isAppReady, setIsAppReady] = useState(false)
   

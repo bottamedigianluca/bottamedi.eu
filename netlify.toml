@@ -1,5 +1,5 @@
 [build]
-  command = "npm install && npm run build"
+  command = "npm install && npm run build && npm run prerender"
   publish = "dist"
 
 [build.environment]
@@ -23,3 +23,19 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Header di sicurezza: erano presenti solo HSTS.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=()"
+
+# llms.txt e robots.txt devono restare leggibili e non cacheati a lungo
+[[headers]]
+  for = "/llms.txt"
+  [headers.values]
+    Content-Type = "text/markdown; charset=utf-8"
+    Cache-Control = "public, max-age=3600"

@@ -362,7 +362,7 @@ const GalleryImage: React.FC<{
         {/* Main image */}
         <OptimizedImage
           src={item.src}
-          alt={item.description}
+          alt={`${item.description} - banchetto Bottamedi in Via Cavalleggeri Udine, Mezzolombardo`}
           className={`w-full h-full transition-all duration-500 ${
             imageLoaded ? 'opacity-100' : 'opacity-0'
           }`}

@@ -23,24 +23,24 @@ interface AboutSectionProps {
 const translations = {
   it: {
     title: 'La Nostra Storia',
-    subtitle: 'Tre Generazioni di Eccellenza nel Settore Ortofrutticolo',
+    subtitle: 'Dal 1974 a Mezzolombardo, tre generazioni dietro allo stesso banchetto',
     timeline: [
       {
         year: '1974',
         title: 'Le Fondamenta',
-        description: 'Nonno Lorenzo pose le prime pietre di quello che sarebbe diventato un punto di riferimento nel settore ortofrutticolo trentino. Con dedizione assoluta e visione imprenditoriale, fondò un\'attività basata su principi saldi: qualità inarrivabile, fiducia reciproca e servizio autentico.',
+        description: 'Lorenzo apre il banchetto a Mezzolombardo. Frutta e verdura scelta a mano, cassetta per cassetta, e clienti che tornano perché sanno cosa trovano. È così che nasce il modo di lavorare che portiamo avanti ancora oggi',
         image: '/images/melinda_golden.webp'
       },
       {
         year: '2013',
         title: 'L\'Evoluzione',
-        description: 'Pierluigi trasformò la passione familiare in una realtà strutturata e moderna. Consolidando rapporti esclusivi con i migliori produttori locali e ampliando la rete di fornitura, elevò gli standard qualitativi e pose le basi per servire anche il settore professionale.',
+        description: `Con Pierluigi arriva l'ingrosso. Ai clienti del banchetto si affiancano ristoranti, hotel e mense della zona, che hanno bisogno di consegne puntuali e di qualità costante tutto l'anno`,
         image: '/images/pomodori_cuore_bue.webp'
       },
       {
         year: 'OGGI',
         title: 'Il Futuro',
-        description: 'Lorenzo, Pierluigi con i figli e l\'intera famiglia Bottamedi continuano la tradizione con rinnovato slancio. Unendo l\'esperienza di tre generazioni all\'innovazione moderna, serviamo ogni giorno famiglie, ristoranti d\'eccellenza e istituti del territorio, sempre fedeli ai nostri valori fondanti.',
+        description: 'Si parte per il mercato di Verona alle due di notte. Il mercato apre più tardi, ma chi arriva prima sceglie per primo. La merce torna in Trentino la mattina stessa: al banchetto e nei ristoranti che serviamo',
         image: '/images/kiwi-cuore.webp'
       }
     ],
@@ -50,14 +50,14 @@ const translations = {
         {
           icon: '🌱',
           title: 'Freschezza',
-          description: 'Selezione quotidiana alle prime ore per garantire prodotti al massimo della qualità',
+          description: 'Partenza per Verona alle due di notte: la merce arriva in giornata, non il giorno dopo',
           number: '50',
           label: 'Anni di esperienza'
         },
         {
           icon: '⭐',
           title: 'Eccellenza',
-          description: 'Standard elevati certificati da tre generazioni di competenza nel settore',
+          description: 'Scegliamo di persona, cassetta per cassetta. Nessun ordine fatto solo al telefono',
           number: '150+',
           label: 'Varietà selezionate'
         },
@@ -71,7 +71,7 @@ const translations = {
         {
           icon: '🏔️',
           title: 'Territorio',
-          description: 'Valorizzazione dei sapori autentici del Trentino Alto Adige e delle sue tradizioni',
+          description: 'Mele Melinda, asparagi di Zambana, piccoli frutti: il Trentino quando è di stagione',
           number: '6',
           label: 'Giorni di servizio'
         }
@@ -80,24 +80,24 @@ const translations = {
   },
   de: {
     title: 'Unsere Geschichte',
-    subtitle: 'Drei Generationen Exzellenz im Obst- und Gemüsesektor',
+    subtitle: 'Seit 1974 in Mezzolombardo, drei Generationen hinter demselben Marktstand',
     timeline: [
       {
         year: '1974',
         title: 'Die Grundlagen',
-        description: 'Großvater Lorenzo legte die ersten Steine dessen, was zu einem Bezugspunkt im Südtiroler Obst- und Gemüsesektor werden sollte. Mit absoluter Hingabe und unternehmerischer Weitsicht gründete er ein Unternehmen basierend auf soliden Prinzipien: unerreichbare Qualität, gegenseitiges Vertrauen und authentischen Service.',
+        description: `Lorenzo eröffnet den Marktstand in Mezzolombardo. Obst und Gemüse von Hand ausgewählt, Kiste für Kiste, und Kunden, die wiederkommen, weil sie wissen, was sie bekommen.`,
         image: '/images/melinda_golden.webp'
       },
       {
         year: '2013',
         title: 'Die Entwicklung',
-        description: 'Pierluigi verwandelte die Familienleidenschaft in eine strukturierte und moderne Realität. Durch die Festigung exklusiver Beziehungen zu den besten lokalen Produzenten und die Erweiterung des Liefernetzwerks hob er die Qualitätsstandards an und schuf die Grundlagen für die Belieferung auch des professionellen Sektors.',
+        description: `Mit Pierluigi kommt der Großhandel dazu. Neben den Kunden am Stand beliefern wir Restaurants, Hotels und Kantinen der Umgebung, die pünktliche Lieferungen und ganzjährig gleichbleibende Qualität brauchen.`,
         image: '/images/pomodori_cuore_bue.webp'
       },
       {
         year: 'HEUTE',
         title: 'Die Zukunft',
-        description: 'Lorenzo, Pierluigi mit den Söhnen und die gesamte Familie Bottamedi setzen die Tradition mit erneuertem Schwung fort. Durch die Verbindung der Erfahrung von drei Generationen mit moderner Innovation bedienen wir täglich Familien, Exzellenz-Restaurants und Institutionen des Gebiets, immer treu unseren Grundwerten.',
+        description: `Um zwei Uhr nachts geht es zum Großmarkt nach Verona. Der Markt öffnet später, aber wer früher da ist, wählt zuerst. Die Ware ist noch am selben Morgen zurück im Trentino.`,
         image: '/images/kiwi-cuore.webp'
       }
     ],
@@ -107,14 +107,14 @@ const translations = {
         {
           icon: '🌱',
           title: 'Frische',
-          description: 'Tägliche Auswahl in den frühen Morgenstunden für Produkte höchster Qualität',
+          description: `Abfahrt nach Verona um zwei Uhr nachts: die Ware kommt am selben Tag an, nicht am nächsten.`,
           number: '50',
           label: 'Jahre Erfahrung'
         },
         {
           icon: '⭐',
           title: 'Exzellenz',
-          description: 'Hohe Standards zertifiziert durch drei Generationen Kompetenz im Sektor',
+          description: `Wir wählen persönlich aus, Kiste für Kiste. Keine Bestellung nur per Telefon.`,
           number: '150+',
           label: 'Ausgewählte Sorten'
         },
@@ -128,7 +128,7 @@ const translations = {
         {
           icon: '🏔️',
           title: 'Territorium',
-          description: 'Förderung der authentischen Aromen Südtirols und seiner Traditionen',
+          description: `Melinda-Äpfel, Spargel aus Zambana, Beerenobst: das Trentino, wenn es Saison hat.`,
           number: '6',
           label: 'Servicetage'
         }
@@ -455,6 +455,31 @@ const ValueCard: React.FC<{
 
 ValueCard.displayName = 'ValueCard'
 
+
+// Titolo rivelato parola per parola: il movimento accompagna la lettura
+// invece di far comparire tutto insieme.
+const WordReveal: React.FC<{ text: string; className?: string; style?: React.CSSProperties }> = ({ text, className, style }) => {
+  const shouldReduceMotion = useReducedMotion()
+  const words = text.split(' ')
+  if (shouldReduceMotion) return <h2 className={className} style={style}>{text}</h2>
+  return (
+    <h2 className={className} style={style}>
+      {words.map((w, i) => (
+        <motion.span
+          key={i}
+          className="inline-block"
+          initial={{ opacity: 0, y: '0.4em' }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.5, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {w}{i < words.length - 1 ? ' ' : ''}
+        </motion.span>
+      ))}
+    </h2>
+  )
+}
+
 const AboutSection: React.FC<AboutSectionProps> = ({ language, inView }) => {
   const { scrollYProgress } = useScroll()
   const y = useTransform(scrollYProgress, [0, 1], [0, -30])
@@ -564,7 +589,8 @@ const AboutSection: React.FC<AboutSectionProps> = ({ language, inView }) => {
           variants={headerVariants}
           className="text-center mb-16"
         >
-          <motion.h2
+          <WordReveal
+            text={t.title}
             className="text-3xl lg:text-5xl font-bold text-neutral-900 mb-4"
             style={{
               background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #f59e0b 100%)',
@@ -572,9 +598,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ language, inView }) => {
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text'
             }}
-          >
-            {t.title}
-          </motion.h2>
+          />
           <motion.p
             initial="hidden"
             animate={inView ? "visible" : "hidden"}

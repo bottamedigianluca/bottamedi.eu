@@ -304,7 +304,7 @@ const App: React.FC = () => {
       <div className="fixed inset-0 bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center z-50">
         <div className="text-center">
           <motion.img
-            src="/logo-bottamedi.webp"
+            src="/logo-bottamedi-240w.webp"
             alt="Bottamedi Loading"
             className="w-20 h-20 mx-auto mb-4"
             initial={{ opacity: 0, scale: 0.9 }}
@@ -342,7 +342,7 @@ const App: React.FC = () => {
           <meta name="theme-color" content={statusBarColor} />
           <meta name="apple-mobile-web-app-status-bar-style" content="default" />
           
-          <link rel="preload" href="/logo-bottamedi.webp" as="image" />
+          <link rel="preload" href="/logo-bottamedi-240w.webp" as="image" />
           <link rel="preload" href="/images/banchetto.webp" as="image" />
           
           <link rel="dns-prefetch" href="//fonts.googleapis.com" />

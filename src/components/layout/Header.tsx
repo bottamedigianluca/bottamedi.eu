@@ -60,8 +60,12 @@ const Header: React.FC<HeaderProps> = ({
             className="flex items-center cursor-pointer"
           >
             <img
-              src="/logo-bottamedi.webp"
+              src="/logo-bottamedi-240w.webp"
+              srcSet="/logo-bottamedi-240w.webp 240w, /logo-bottamedi-480w.webp 480w"
+              sizes="144px"
               alt="Bottamedi Logo"
+              width={144}
+              height={96}
               className="h-24 w-auto object-contain"
               style={{
                 filter: isScrolled 

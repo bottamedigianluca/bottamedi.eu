@@ -13,7 +13,7 @@
   <!-- Homepage Principale (URL Canonico) -->
   <url>
     <loc>https://www.bottamedi.eu/</loc>
-    <lastmod>2024-05-21</lastmod> <!-- Modifica questa data ogni volta che fai un aggiornamento importante -->
+    <lastmod>2026-08-20</lastmod> <!-- Modifica questa data ogni volta che fai un aggiornamento importante -->
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
 
@@ -52,41 +52,5 @@
     anche se non vengono indicizzati come pagine separate.
     Hanno una priorità leggermente inferiore rispetto alla homepage.
   -->
-  <url>
-    <loc>https://www.bottamedi.eu/#about</loc>
-    <lastmod>2024-05-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.bottamedi.eu/#dettaglio</loc>
-    <lastmod>2024-05-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://www.bottamedi.eu/#services</loc>
-    <lastmod>2024-05-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://www.bottamedi.eu/#products</loc>
-    <lastmod>2024-05-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.bottamedi.eu/#wholesale</loc>
-    <lastmod>2024-05-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.bottamedi.eu/#contact</loc>
-    <lastmod>2024-05-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
 
 </urlset>

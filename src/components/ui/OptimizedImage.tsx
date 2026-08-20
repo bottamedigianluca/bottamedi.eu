@@ -17,6 +17,120 @@ interface OptimizedImageProps {
   objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'
 }
 
+
+// Varianti responsive generate in fase di ottimizzazione immagini.
+// Elencate esplicitamente: un srcSet che punta a file inesistenti fa fallire
+// il caricamento su alcuni browser.
+const RESPONSIVE_VARIANTS: Record<string, number[]> = {
+  "albicocche_ingrosso_magazzino": [
+    640,
+    1024,
+    1600
+  ],
+  "angurie": [
+    640,
+    1024,
+    1600
+  ],
+  "arance_felici": [
+    640,
+    1024,
+    1600
+  ],
+  "banchetto": [
+    640,
+    1024,
+    1600
+  ],
+  "banco_frigo_disidratata_specialita": [
+    640,
+    1024,
+    1600
+  ],
+  "banco_varieta_autunno": [
+    640,
+    1024,
+    1600
+  ],
+  "bottamedi_ananas_fruitpoint_freschi": [
+    640,
+    1024,
+    1600
+  ],
+  "bottamedi_dettaglio_frutta_disidratata_vaschette": [
+    640,
+    1024,
+    1600
+  ],
+  "bottamedi_mele_melinda_montagna_cassetta": [
+    640,
+    1024,
+    1600
+  ],
+  "bottamedi_mele_pink_lady_confezione": [
+    640,
+    1024,
+    1600
+  ],
+  "bottamedi_sacchetti_frutta_disidratata_mista": [
+    640,
+    1024,
+    1600
+  ],
+  "kiwi-cuore": [
+    640
+  ],
+  "kiwi-gialli-bg": [
+    640
+  ],
+  "mappa-banchetto-bottamedi": [
+    640,
+    1024
+  ],
+  "mappa-ingrosso-bottamedi": [
+    640,
+    1024
+  ],
+  "melinda_golden": [
+    640,
+    1024,
+    1600
+  ],
+  "meloni_sattin_dettaglio": [
+    640,
+    1024,
+    1600
+  ],
+  "pomodori_cuore_bue": [
+    640,
+    1024,
+    1600
+  ],
+  "poster": [
+    640,
+    1024,
+    1600
+  ],
+  "zucche_decorate_banco": [
+    640,
+    1024,
+    1600
+  ]
+}
+
+// Costruisce il srcSet solo per le immagini che hanno varianti su disco.
+// L'originale resta nel srcSet come opzione a risoluzione piena.
+const buildSrcSet = (src: string, intrinsicWidth?: number): string | undefined => {
+  const match = src.match(/^\/images\/(.+)\.webp$/)
+  if (!match) return undefined
+  const widths = RESPONSIVE_VARIANTS[match[1]]
+  if (!widths || widths.length === 0) return undefined
+
+  const entries = widths.map(w => `/images/${match[1]}-${w}w.webp ${w}w`)
+  if (intrinsicWidth) entries.push(`${src} ${intrinsicWidth}w`)
+  return entries.join(', ')
+}
+
 const OptimizedImage: React.FC<OptimizedImageProps> = ({
   src,
   alt,
@@ -239,6 +353,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
           <motion.img
             ref={imgRef}
             src={src}
+            srcSet={buildSrcSet(src)}
             alt={alt}
             className="absolute inset-0 w-full h-full mobile-optimized-image"
             style={imageStyles}

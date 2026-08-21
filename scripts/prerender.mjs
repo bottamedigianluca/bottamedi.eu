@@ -143,6 +143,17 @@ async function main() {
 
     let html = await page.content()
 
+    // Durante il prerender Vite inietta un <link rel="modulepreload"> per ogni
+    // chunk caricato, incluse le sezioni lazy montate dallo scorrimento.
+    // Conservarli annulla il code splitting: il browser scarica ed esegue
+    // tutte le sezioni prima del primo rendering, ritardando LCP. Tengo solo
+    // i chunk che servono davvero all'avvio.
+    const KEEP = ['vendor-', 'animations-', 'app-', 'utils-', 'HeroSection-', 'index-']
+    html = html.replace(/<link[^>]*rel="modulepreload"[^>]*>\s*/g, (tag) => {
+      const href = (tag.match(/href="([^"]+)"/) || [])[1] || ''
+      return KEEP.some((k) => href.includes(k)) ? tag : ''
+    })
+
     // will-change promuove l'elemento a livello GPU e va rimosso quando
     // l'animazione e' finita. Nel DOM catturato ne restano decine, congelati
     // dallo stato in cui si trovavano al momento della cattura: il browser

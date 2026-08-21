@@ -143,6 +143,22 @@ async function main() {
 
     let html = await page.content()
 
+    // will-change promuove l'elemento a livello GPU e va rimosso quando
+    // l'animazione e' finita. Nel DOM catturato ne restano decine, congelati
+    // dallo stato in cui si trovavano al momento della cattura: il browser
+    // deve mantenere altrettanti livelli di composizione fin dal primo
+    // rendering. React li reimposta comunque durante l'hydration.
+    html = html.replace(/will-change:\s*[^;"]+;?\s*/g, '')
+
+    // Il video nel DOM catturato ha gia' autoplay attivo e classe opacity-100:
+    // al caricamento della pagina il browser inizia a scaricarlo, poi React
+    // rimonta l'elemento in hydration e la richiesta riparte da capo. Riporto
+    // il video allo stato iniziale, quello che React si aspetta di trovare.
+    html = html.replace(
+      /(<video[^>]*class=")([^"]*)(opacity-100)([^"]*")/g,
+      (_m, a, b, _c, d) => `${a}${b}opacity-0${d}`
+    )
+
     // Il pattern preload+onload dei font viene eseguito dal browser headless,
     // che lascia nel DOM un <link rel="stylesheet"> verso Google Fonts.
     // Salvandolo cosi', il foglio diventa bloccante per tutti i visitatori e

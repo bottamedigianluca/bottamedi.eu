@@ -184,7 +184,7 @@ const OptimizedVideoBackground: React.FC<{ inView: boolean }> = React.memo(({ in
         muted
         loop
         playsInline
-        preload="none"
+        preload="metadata"
         poster={HERO_POSTER}
         onLoadedData={handleLoadedData}
         onError={handleError}

@@ -238,7 +238,9 @@ const App: React.FC = () => {
     document.documentElement.lang = language
   }, [language])
   const [isMobileDevice, setIsMobileDevice] = useState(false)
-  const [isAppReady, setIsAppReady] = useState(false)
+  // Il markup e' gia' presente grazie al prerendering: partire da false
+  // sostituirebbe il contenuto con lo spinner, azzerando il vantaggio.
+  const [isAppReady, setIsAppReady] = useState(true)
   
   // Hooks personalizzati
   const { sectionsInView, updateSectionInView } = useSectionsInView()
@@ -257,9 +259,7 @@ const App: React.FC = () => {
         setLanguage(browserLang)
       }
 
-      setTimeout(() => {
-        setIsAppReady(true)
-      }, 50)
+      setIsAppReady(true)
     }
 
     initializeApp()

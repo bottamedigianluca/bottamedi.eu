@@ -141,7 +141,28 @@ async function main() {
 
     await new Promise((r) => setTimeout(r, 1200))
 
-    const html = await page.content()
+    let html = await page.content()
+
+    // Il pattern preload+onload dei font viene eseguito dal browser headless,
+    // che lascia nel DOM un <link rel="stylesheet"> verso Google Fonts.
+    // Salvandolo cosi', il foglio diventa bloccante per tutti i visitatori e
+    // il font entra nel percorso critico. Ripristino il preload non bloccante.
+    html = html.replace(
+      /<link rel="stylesheet" href="(https:\/\/fonts\.googleapis\.com\/[^"]*)"([^>]*?)as="style"([^>]*?)>/g,
+      (_m, href) =>
+        `<link rel="preload" href="${href}" as="style" onload="this.onload=null;this.rel='stylesheet'">`
+    )
+
+    // Stesso motivo: il prerender materializza il contenuto di <noscript>,
+    // duplicando la richiesta del foglio di stile.
+    const noscriptFonts = html.match(/<link rel="stylesheet" href="https:\/\/fonts\.googleapis\.com\/[^"]*">/g) || []
+    if (noscriptFonts.length > 1) {
+      let seen = 0
+      html = html.replace(/<link rel="stylesheet" href="https:\/\/fonts\.googleapis\.com\/[^"]*">/g, (m) => {
+        seen += 1
+        return seen === 1 ? m : ''
+      })
+    }
 
     // Sanity check: se il DOM catturato e' vuoto, meglio lasciare il file
     // originale che pubblicare una pagina rotta.

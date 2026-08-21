@@ -207,7 +207,11 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
       if (preloadSrcSet) {
         link.setAttribute('imagesrcset', preloadSrcSet)
         link.setAttribute('imagesizes', sizes)
-        link.href = src
+        // href deve essere una delle varianti del srcset, non l'originale:
+        // altrimenti resta un candidato a piena risoluzione e il browser puo'
+        // scaricarlo in aggiunta alla variante scelta.
+        const first = preloadSrcSet.split(',')[0].trim().split(' ')[0]
+        link.href = first
       } else {
         link.href = src
       }

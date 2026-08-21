@@ -115,8 +115,10 @@ const OptimizedVideoBackground: React.FC<{ inView: boolean }> = React.memo(({ in
           }
         }
       } catch (error) {
+        // L'autoplay bloccato dal browser non e' un errore di caricamento:
+        // il video resta al suo posto e mostra il poster. Attivare il
+        // fallback qui significava scaricare 6MB e poi scartarli.
         console.warn('📹 Video autoplay failed:', error)
-        setVideoError(true)
         
         // 🎯 TRACKING VIDEO ERROR
         if (typeof window !== 'undefined' && window.gtag) {
@@ -182,7 +184,7 @@ const OptimizedVideoBackground: React.FC<{ inView: boolean }> = React.memo(({ in
         muted
         loop
         playsInline
-        preload="metadata"
+        preload="none"
         poster={HERO_POSTER}
         onLoadedData={handleLoadedData}
         onError={handleError}

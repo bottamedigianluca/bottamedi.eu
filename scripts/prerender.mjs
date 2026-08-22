@@ -15,7 +15,7 @@
  * Usa puppeteer-core con il Chrome gia' installato: nessun download di
  * Chromium in fase di build.
  */
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readdirSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { extname, join, resolve } from 'node:path'
 import { readFile } from 'node:fs/promises'
@@ -69,12 +69,36 @@ const MIME = {
   '.ico': 'image/x-icon',
 }
 
+/** Cerca il Chromium scaricato da puppeteer, anche fuori dai percorsi noti. */
+function findInCacheDir() {
+  const roots = [
+    process.env.PUPPETEER_CACHE_DIR,
+    join(process.env.HOME || '', '.cache', 'puppeteer'),
+    resolve('node_modules', '.cache', 'puppeteer'),
+  ].filter(Boolean)
+  for (const root of roots) {
+    if (!existsSync(root)) continue
+    const stack = [root]
+    while (stack.length) {
+      const dir = stack.pop()
+      let entries = []
+      try { entries = readdirSync(dir, { withFileTypes: true }) } catch { continue }
+      for (const e of entries) {
+        const full = join(dir, e.name)
+        if (e.isDirectory()) stack.push(full)
+        else if (e.name === 'chrome' || e.name === 'chrome.exe' || e.name === 'headless_shell') return full
+      }
+    }
+  }
+  return null
+}
+
 function findChrome() {
   for (const p of CHROME_CANDIDATES) {
     if (p && existsSync(p)) return p
   }
   if (bundledChromium && existsSync(bundledChromium)) return bundledChromium
-  return null
+  return findInCacheDir()
 }
 
 /** Server statico minimale sul build: il prerender deve vedere il sito come in produzione. */

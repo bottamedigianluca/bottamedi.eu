@@ -1,9 +1,12 @@
 [build]
-  command = "npm install && npm run build && npm run prerender"
+  # npx puppeteer browsers install: su Netlify il postinstall di puppeteer non
+  # gira (i pacchetti arrivano dalla cache) e il Chromium non viene scaricato,
+  # quindi il prerendering fallisce e ferma il deploy.
+  command = "npm install && npx puppeteer browsers install chrome && npm run build && npm run prerender"
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "22"
   NPM_VERSION = "10"
 
 # Cache per assets statici

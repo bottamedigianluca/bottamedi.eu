@@ -18,11 +18,15 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000"
 
-# Redirect per SPA
+# Il sito e' una pagina sola: le uniche rotte valide sono / e i file statici.
+# Il catch-all su index.html con status 200 faceva restituire 200 a qualsiasi
+# URL inventata, quindi Google poteva indicizzare pagine inesistenti (soft 404).
+# Netlify serve automaticamente public/404.html con status 404 per il resto.
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+  from = "/index.html"
+  to = "/"
+  status = 301
+  force = true
 
 # Header di sicurezza: erano presenti solo HSTS.
 [[headers]]

@@ -15,7 +15,7 @@
   <meta name="keywords" content="Bottamedi frutta verdura, Mezzolombardo fruttivendolo, ingrosso ortofrutta Trentino, HORECA ristoranti, Via Cavalleggeri Udine, Via de Gasperi 47, mele Melinda DOP, prodotti km zero, tradizione familiare dal 1974" />
   
   <!-- Canonical e alternate -->
-  <link rel="canonical" href="https://www.bottamedi.eu" />
+  <link rel="canonical" href="https://bottamedi.eu" />
   
   <!-- Geo Meta Tags -->
   <meta name="geo.region" content="IT-TN" />
@@ -28,12 +28,12 @@
   <meta property="og:site_name" content="Bottamedi Frutta e Verdura" />
   <meta property="og:title" content="Bottamedi | Ortofrutta a Mezzolombardo dal 1974" />
   <meta property="og:description" content="Ortofrutta a Mezzolombardo dal 1974: banchetto al dettaglio in Via Cavalleggeri Udine e ingrosso Ho.Re.Ca. per ristoranti e hotel della Piana Rotaliana." />
-  <meta property="og:image" content="https://www.bottamedi.eu/og-bottamedi.jpg" />
+  <meta property="og:image" content="https://bottamedi.eu/og-bottamedi.jpg" />
   <meta property="og:image:type" content="image/jpeg" />
   <meta property="og:image:alt" content="Il banchetto Bottamedi a Mezzolombardo con frutta e verdura fresca di stagione" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:url" content="https://www.bottamedi.eu" />
+  <meta property="og:url" content="https://bottamedi.eu" />
   <meta property="og:locale" content="it_IT" />
   <meta property="og:locale:alternate" content="de_DE" />
   
@@ -41,7 +41,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Bottamedi Frutta e Verdura Mezzolombardo | Dal 1974" />
   <meta name="twitter:description" content="Qualità e tradizione familiare. Banchetto dettaglio e ingrosso HORECA nel cuore del Trentino." />
-  <meta name="twitter:image" content="https://www.bottamedi.eu/images/banchetto.webp" />
+  <meta name="twitter:image" content="https://bottamedi.eu/images/banchetto.webp" />
   
   <!-- Favicon e icons -->
   <link rel="icon" type="image/webp" href="/favicon-96.webp" />
@@ -196,6 +196,20 @@
     <div class="loading-subtext">Frutta e Verdura dal 1974</div>
   </div>
   
+  <!-- Navigazione statica: il sito naviga via JavaScript, quindi per i
+       crawler che non lo eseguono la struttura risultava invisibile (un solo
+       link interno rilevato). Questi <a href> restano nel DOM e puntano alle
+       ancore reali delle sezioni. -->
+  <nav aria-label="Sezioni del sito" class="sr-only">
+    <a href="/#dettaglio">Banchetto: vendita al dettaglio a Mezzolombardo</a>
+    <a href="/#wholesale">Ingrosso Ho.Re.Ca. per ristoranti e hotel</a>
+    <a href="/#products">Frutta e verdura di stagione</a>
+    <a href="/#services">Servizi</a>
+    <a href="/#about">La nostra storia dal 1974</a>
+    <a href="/#contact">Contatti e sedi</a>
+    <a href="/llms.txt">Informazioni sull'attività</a>
+  </nav>
+
   <!-- Skip to content per accessibilità -->
   <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-white px-4 py-2 rounded-lg shadow-lg z-50">
     Vai al contenuto principale
@@ -213,8 +227,22 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "WebSite",
+      "@id": "https://bottamedi.eu/#website",
+      "url": "https://bottamedi.eu/",
+      "name": "Bottamedi Frutta e Verdura",
+      "description": "Ortofrutta a Mezzolombardo dal 1974: banchetto al dettaglio e ingrosso Ho.Re.Ca. per ristoranti e hotel della Piana Rotaliana.",
+      "inLanguage": [
+        "it-IT",
+        "de-DE"
+      ],
+      "publisher": {
+        "@id": "https://bottamedi.eu/#organization"
+      }
+    },
+    {
       "@type": "Organization",
-      "@id": "https://www.bottamedi.eu/#organization",
+      "@id": "https://bottamedi.eu/#organization",
       "name": "Bottamedi Frutta e Verdura",
       "alternateName": [
         "Bottamedi Pierluigi",
@@ -222,10 +250,10 @@
         "Bottamedi Frutta e Verdura Mezzolombardo",
         "Banchetto Bottamedi Frutta e Verdura"
       ],
-      "url": "https://www.bottamedi.eu",
+      "url": "https://bottamedi.eu",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://www.bottamedi.eu/logo-bottamedi.webp",
+        "url": "https://bottamedi.eu/logo-bottamedi.webp",
         "width": 512,
         "height": 512
       },
@@ -267,18 +295,18 @@
       },
       "subOrganization": [
         {
-          "@id": "https://www.bottamedi.eu/#banchetto"
+          "@id": "https://bottamedi.eu/#banchetto"
         },
         {
-          "@id": "https://www.bottamedi.eu/#ingrosso"
+          "@id": "https://bottamedi.eu/#ingrosso"
         }
       ],
       "location": [
         {
-          "@id": "https://www.bottamedi.eu/#banchetto"
+          "@id": "https://bottamedi.eu/#banchetto"
         },
         {
-          "@id": "https://www.bottamedi.eu/#ingrosso"
+          "@id": "https://bottamedi.eu/#ingrosso"
         }
       ]
     },
@@ -287,16 +315,16 @@
         "FruitAndVegetableStore",
         "LocalBusiness"
       ],
-      "@id": "https://www.bottamedi.eu/#banchetto",
+      "@id": "https://bottamedi.eu/#banchetto",
       "parentOrganization": {
-        "@id": "https://www.bottamedi.eu/#organization"
+        "@id": "https://bottamedi.eu/#organization"
       },
       "name": "Banchetto Bottamedi",
       "description": "Punto vendita al dettaglio di Bottamedi Frutta e Verdura in Via Cavalleggeri Udine a Mezzolombardo, presso il campo sportivo. Una delle due sedi dell'azienda, insieme all'ingrosso di Via Alcide de Gasperi 47.",
       "image": [
-        "https://www.bottamedi.eu/images/banchetto.webp",
-        "https://www.bottamedi.eu/images/banco_varieta_autunno.webp",
-        "https://www.bottamedi.eu/images/melinda_golden.webp"
+        "https://bottamedi.eu/images/banchetto.webp",
+        "https://bottamedi.eu/images/banco_varieta_autunno.webp",
+        "https://bottamedi.eu/images/melinda_golden.webp"
       ],
       "address": {
         "@type": "PostalAddress",
@@ -393,13 +421,13 @@
         "Wholesaler",
         "LocalBusiness"
       ],
-      "@id": "https://www.bottamedi.eu/#ingrosso",
+      "@id": "https://bottamedi.eu/#ingrosso",
       "parentOrganization": {
-        "@id": "https://www.bottamedi.eu/#organization"
+        "@id": "https://bottamedi.eu/#organization"
       },
       "name": "Bottamedi Ingrosso HORECA",
       "description": "Ingrosso ortofrutticolo di Bottamedi Frutta e Verdura in Via Alcide de Gasperi 47 a Mezzolombardo, per ristoranti, hotel e mense. Una delle due sedi dell'azienda, insieme al banchetto di Via Cavalleggeri Udine.",
-      "image": "https://www.bottamedi.eu/images/albicocche_ingrosso_magazzino.webp",
+      "image": "https://bottamedi.eu/images/albicocche_ingrosso_magazzino.webp",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "Via Alcide de Gasperi, 47",
@@ -533,31 +561,31 @@
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://www.bottamedi.eu"
+        "item": "https://bottamedi.eu"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Chi Siamo",
-        "item": "https://www.bottamedi.eu#about"
+        "item": "https://bottamedi.eu#about"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": "Prodotti",
-        "item": "https://www.bottamedi.eu#products"
+        "item": "https://bottamedi.eu#products"
       },
       {
         "@type": "ListItem",
         "position": 4,
         "name": "Servizi",
-        "item": "https://www.bottamedi.eu#services"
+        "item": "https://bottamedi.eu#services"
       },
       {
         "@type": "ListItem",
         "position": 5,
         "name": "Contatti",
-        "item": "https://www.bottamedi.eu#contact"
+        "item": "https://bottamedi.eu#contact"
       }
     ]
   }
@@ -582,7 +610,7 @@
         "@type": "Offer",
         "availability": "https://schema.org/InStock",
         "seller": {
-          "@id": "https://www.bottamedi.eu/#banchetto"
+          "@id": "https://bottamedi.eu/#banchetto"
         }
       }
     },
@@ -595,7 +623,7 @@
         "@type": "Offer",
         "availability": "https://schema.org/SeasonallyAvailable",
         "seller": {
-          "@id": "https://www.bottamedi.eu/#banchetto"
+          "@id": "https://bottamedi.eu/#banchetto"
         }
       }
     }

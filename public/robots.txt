@@ -33,11 +33,47 @@ Disallow: /tsconfig.json
 Allow: /manifest.json
 Allow: /service-worker.js
 
+# Crawler AI: consenso esplicito. Senza una regola dedicata molti crawler
+# procedono comunque, ma l'allow esplicito e' il segnale che questi sistemi
+# cercano, e permette di distinguerli dalle regole generiche.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
 # Riferimenti alle sitemap
-Sitemap: https://www.bottamedi.eu/sitemap.xml
-Sitemap: https://www.bottamedi.eu/sitemap-images.xml
+Sitemap: https://bottamedi.eu/sitemap.xml
+Sitemap: https://bottamedi.eu/sitemap-images.xml
 # Aggiunta sitemap video (se ne crei una)
-# Sitemap: https://www.bottamedi.eu/sitemap-videos.xml
+# Sitemap: https://bottamedi.eu/sitemap-videos.xml
 
 # Crawl-delay
 Crawl-delay: 1

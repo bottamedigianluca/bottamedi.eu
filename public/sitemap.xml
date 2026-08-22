@@ -12,35 +12,35 @@
 
   <!-- Homepage Principale (URL Canonico) -->
   <url>
-    <loc>https://www.bottamedi.eu/</loc>
+    <loc>https://bottamedi.eu/</loc>
     <lastmod>2026-08-20</lastmod> <!-- Modifica questa data ogni volta che fai un aggiornamento importante -->
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
 
     <!-- Indicazioni per versioni in altre lingue -->
-    <xhtml:link rel="alternate" hreflang="it" href="https://www.bottamedi.eu/" />
-    <xhtml:link rel="alternate" hreflang="de" href="https://www.bottamedi.eu/" /> <!-- Lascia questo anche se /de non esiste, indica che la lingua è gestita dinamicamente -->
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.bottamedi.eu/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://bottamedi.eu/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://bottamedi.eu/" /> <!-- Lascia questo anche se /de non esiste, indica che la lingua è gestita dinamicamente -->
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://bottamedi.eu/" />
 
     <!-- Immagini rappresentative della pagina principale -->
     <image:image>
-      <image:loc>https://www.bottamedi.eu/images/banchetto.webp</image:loc>
+      <image:loc>https://bottamedi.eu/images/banchetto.webp</image:loc>
       <image:title>Banchetto di Frutta e Verdura Bottamedi a Mezzolombardo</image:title>
       <image:caption>Il colorato banchetto Bottamedi, con una vasta selezione di frutta e verdura fresca di stagione, nel centro di Mezzolombardo (Trentino).</image:caption>
       <image:geo_location>Mezzolombardo, Italia</image:geo_location>
     </image:image>
     <image:image>
-      <image:loc>https://www.bottamedi.eu/images/albicocche_ingrosso_magazzino.webp</image:loc>
+      <image:loc>https://bottamedi.eu/images/albicocche_ingrosso_magazzino.webp</image:loc>
       <image:title>Servizio Ingrosso HORECA Bottamedi</image:title>
       <image:caption>Magazzino di frutta fresca per il servizio di fornitura all'ingrosso per ristoranti e hotel (HORECA) in Trentino Alto Adige.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://www.bottamedi.eu/images/melinda_golden.webp</image:loc>
+      <image:loc>https://bottamedi.eu/images/melinda_golden.webp</image:loc>
       <image:title>Mele Melinda Golden DOP del Trentino</image:title>
       <image:caption>Mele Golden Melinda DOP fresche, simbolo della qualità e dei prodotti tipici del Trentino selezionati da Bottamedi.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://www.bottamedi.eu/logo-bottamedi.webp</image:loc>
+      <image:loc>https://bottamedi.eu/logo-bottamedi.webp</image:loc>
       <image:title>Logo Bottamedi Frutta e Verdura</image:title>
       <image:caption>Il logo ufficiale di Bottamedi, azienda familiare attiva nel settore ortofrutticolo dal 1974.</image:caption>
     </image:image>

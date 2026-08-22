@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react'
+import React, { useMemo, useState, useCallback, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
 interface OptimizedImageProps {
@@ -296,6 +296,16 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
     </div>
   )
 
+  // Dimensioni intrinseche ricavate dall'aspect-ratio dichiarato: servono al
+  // browser per riservare lo spazio prima che l'immagine arrivi.
+  const intrinsicSize = useMemo(() => {
+    const ar = aspectRatio || '4/3'
+    const m = ar.match(/^\s*(\d+(?:\.\d+)?)\s*[/:]\s*(\d+(?:\.\d+)?)\s*$/)
+    if (!m) return {}
+    const w = 1200
+    return { width: w, height: Math.round((w * Number(m[2])) / Number(m[1])) }
+  }, [aspectRatio])
+
   const containerStyles: React.CSSProperties = {
     ...style,
     position: 'relative',
@@ -351,6 +361,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
             ref={imgRef}
             src={src}
             srcSet={buildSrcSet(src)}
+            {...intrinsicSize}
             alt={alt}
             className="absolute inset-0 w-full h-full mobile-optimized-image"
             style={imageStyles}

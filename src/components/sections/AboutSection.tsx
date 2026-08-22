@@ -34,7 +34,7 @@ const translations = {
       {
         year: '2013',
         title: 'L\'Evoluzione',
-        description: `Pierluigi sviluppa l'ingrosso. Alle poche forniture ai ristoranti del paese si sostituisce un lavoro continuo: rapporti diretti con i produttori, consegne fisse, cucine che ordinano ogni settimana.`,
+        description: `Con Pierluigi l'ingrosso smette di essere occasionale. La rete si estende a ristoranti, hotel e mense di tutta la zona, con consegne fisse tutto l'anno: chi ordina sa che la merce arriva.`,
         image: '/images/pomodori_cuore_bue.webp'
       },
       {
@@ -91,7 +91,7 @@ const translations = {
       {
         year: '2013',
         title: 'Die Entwicklung',
-        description: `Pierluigi baut den Großhandel aus. Aus einigen Lieferungen an Gasthäuser im Ort wird eine kontinuierliche Arbeit: direkte Beziehungen zu den Erzeugern, feste Liefertage, Küchen, die jede Woche bestellen.`,
+        description: `Mit Pierluigi wird der Großhandel zur festen Größe. Das Liefernetz erstreckt sich auf Restaurants, Hotels und Kantinen der ganzen Umgebung, mit festen Lieferungen das ganze Jahr über: wer bestellt, weiß, dass die Ware kommt.`,
         image: '/images/pomodori_cuore_bue.webp'
       },
       {

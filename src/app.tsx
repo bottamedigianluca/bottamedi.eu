@@ -281,14 +281,14 @@ const App: React.FC = () => {
   // SEO Meta tags dinamici
   const seoTitle = useMemo(() => 
     language === 'it' 
-      ? '🍎 Bottamedi Frutta e Verdura Mezzolombardo | Ingrosso HORECA e Dettaglio | 50 anni di Qualità Trentino Alto Adige'
-      : '🍎 Bottamedi Obst und Gemüse Mezzolombardo | HORECA Großhandel und Einzelhandel | 50 Jahre Qualität Südtirol'
+      ? 'Bottamedi | Ortofrutta a Mezzolombardo dal 1974'
+      : 'Bottamedi | Obst und Gemüse in Mezzolombardo seit 1974'
   , [language])
 
   const seoDescription = useMemo(() => 
     language === 'it'
-      ? '🍎 Bottamedi: 50 anni di tradizione familiare nella vendita di frutta e verdura fresca a Mezzolombardo. Banchetto dettaglio e servizio ingrosso HORECA per ristoranti nel Trentino Alto Adige. Qualità garantita dal 1974.'
-      : '🍎 Bottamedi: 50 Jahre Familientradition im Verkauf von frischem Obst und Gemüse in Mezzolombardo. Einzelhandel Marktstand und HORECA Großhandelsservice für Restaurants in Südtirol. Qualität garantiert seit 1974.'
+      ? 'Frutta e verdura fresca a Mezzolombardo dal 1974. Banchetto al dettaglio e ingrosso Ho.Re.Ca. per ristoranti della Piana Rotaliana.'
+      : 'Frisches Obst und Gemüse in Mezzolombardo seit 1974. Marktstand und Ho.Re.Ca.-Großhandel für Restaurants der Rotaliana-Ebene.'
   , [language])
 
   // Animation variants per l'app

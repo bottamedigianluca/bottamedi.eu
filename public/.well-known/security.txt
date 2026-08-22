@@ -1,0 +1,4 @@
+Contact: mailto:bottamedipierluigi@virgilio.it
+Expires: 2027-12-31T23:59:59.000Z
+Preferred-Languages: it, de, en
+Canonical: https://bottamedi.eu/.well-known/security.txt

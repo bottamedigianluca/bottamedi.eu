@@ -326,7 +326,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
       description: 'Scegli come preferisci entrare in contatto con noi. Rispondiamo sempre entro 24 ore.',
       whyChoose: 'Perché scegliere Bottamedi:',
       whyChooseItems: [
-        '🏆 50 anni di esperienza e tradizione familiare',
+        '🏆 Dal 1974, tre generazioni dietro allo stesso banchetto',
         '🌱 Selezione quotidiana alle prime ore del mattino',
         '🚚 Servizio affidabile 6 giorni su 7',
         '❤️ Rapporto di fiducia con ogni cliente',

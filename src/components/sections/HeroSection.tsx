@@ -22,8 +22,8 @@ const translations = {
   it: {
     title: 'BOTTAMEDI',
     subtitle: 'Frutta e Verdura',
-    tagline: 'Qualità Inarrivabile',
-    tagline2: 'Passione Familiare',
+    tagline: 'Scelta ogni mattina al mercato',
+    tagline2: 'A Mezzolombardo dal 1974',
     since: 'Da oltre',
     yearsCount: 50,
     yearsLabel: 'anni',
@@ -34,8 +34,8 @@ const translations = {
   de: {
     title: 'BOTTAMEDI',
     subtitle: 'Obst und Gemüse',
-    tagline: 'Unübertreffliche Qualität',
-    tagline2: 'Familiäre Leidenschaft',
+    tagline: 'Jeden Morgen am Markt ausgewählt',
+    tagline2: 'In Mezzolombardo seit 1974',
     since: 'Seit über',
     yearsCount: 50,
     yearsLabel: 'Jahren',

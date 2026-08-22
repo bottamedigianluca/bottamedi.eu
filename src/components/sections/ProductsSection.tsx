@@ -51,7 +51,7 @@ const translations = {
         id: 'vegetables',
         title: 'Verdure Fresche',
         shortDesc: 'Dal campo alla tavola in 24 ore',
-        description: 'Le nostre verdure arrivano direttamente dai campi del Trentino Alto Adige e del Veneto, garantendo freschezza e sapore autentici.',
+        description: `Le verdure arrivano dai campi del Trentino e del Veneto. Quando un ortaggio è di stagione qui, è quello che trovi sul banco.`,
         longDescription: 'Collaboriamo direttamente con i migliori agricoltori del territorio per offrire verdure di stagione sempre fresche e saporite. I nostri famosi pomodori cuore di bue, le zucche di Mantova, i cavoli verza del Trentino e tutte le verdure a foglia verde vengono selezionate una per una. Privilegiamo sempre i prodotti a chilometro zero quando possibile, per ridurre l\'impatto ambientale e garantire la massima freschezza.',
         icon: '🥬',
         color: 'from-green-500 to-emerald-500',
@@ -79,8 +79,8 @@ const translations = {
         id: 'specialties',
         title: 'Specialità Locali',
         shortDesc: 'Vini, succhi, confetture e prodotti tipici trentini',
-        description: 'Selezioniamo i migliori prodotti tipici del Trentino Alto Adige per portare sulla tua tavola i sapori autentici della nostra terra.',
-        longDescription: 'Il Trentino Alto Adige è ricco di eccellenze enogastronomiche che rappresentiamo con orgoglio. Dalle mele Melinda DOP alle pere della Val di Non, dai piccoli frutti di montagna alle erbe aromatiche alpine, ogni prodotto racconta la storia del nostro territorio. Lavoriamo anche con piccoli produttori locali per offrirti specialità uniche che difficilmente trovi altrove, come le antiche varietà di mele recuperate o i frutti dimenticati delle nostre montagne.',
+        description: `Prodotti che vengono dalle valli qui intorno: mele della Val di Non, asparagi di Zambana, piccoli frutti di montagna, castagne e noci in autunno.`,
+        longDescription: `Dalle valli qui intorno arrivano mele Melinda e Pink Lady dalla Val di Non, asparagi di Zambana in primavera, piccoli frutti di montagna d'estate, castagne e noci in autunno. Lavoriamo con produttori che conosciamo di persona.`,
         icon: '🏔️',
         color: 'from-blue-500 to-indigo-500',
         image: '/images/kiwi-cuore.webp',
@@ -640,11 +640,11 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ language, inView }) =
               {
                 icon: '🏔️',
                 title: language === 'it' ? 'Territorio Trentino' : 'Südtiroler Gebiet',
-                desc: language === 'it' ? 'Eccellenze locali' : 'Lokale Exzellenz'
+                desc: language === 'it' ? 'Prodotti delle valli vicine' : 'Produkte aus den Tälern'
               },
               {
                 icon: '👨‍👩‍👧‍👦',
-                title: language === 'it' ? 'Tradizione Familiare' : 'Familientradition',
+                title: language === 'it' ? 'Dal 1974' : 'Seit 1974',
                 desc: language === 'it' ? '3 generazioni di esperienza' : '3 Generationen Erfahrung'
               },
               {

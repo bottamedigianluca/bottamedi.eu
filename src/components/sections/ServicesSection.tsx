@@ -11,7 +11,7 @@ interface ServicesSectionProps {
 const translations = {
   it: {
     title: 'I Nostri Servizi',
-    subtitle: 'Due modalità per portare l\'eccellenza Bottamedi sulla tua tavola',
+    subtitle: `Due modi per comprare da noi: al banchetto in Via Cavalleggeri Udine, o con consegna al tuo locale`,
     whatWeOffer: 'I nostri punti di forza:',
     services: [
       {
@@ -19,12 +19,12 @@ const translations = {
         title: 'Il Nostro Banchetto',
         shortDesc: 'Esperienza diretta con prodotti di qualità superiore',
         description: `Il banchetto è in Via Cavalleggeri Udine, vicino al campo sportivo. Aperto dal lunedì al sabato dalle sette del mattino, con la merce scelta poche ore prima al mercato.`,
-        longDescription: 'Ogni alba segna l\'inizio di una nuova giornata di selezione meticolosa. Il nostro team, forte di tre generazioni di esperienza, sceglie personalmente frutta e verdura freschissima, creando un caleidoscopio di sapori che rappresenta il meglio del territorio trentino e delle migliori produzioni italiane. Qui non trovi solo prodotti freschi, ma anche la competenza e i consigli di chi conosce ogni sfumatura del settore ortofrutticolo.',
+        longDescription: `Si parte per il mercato di Verona alle due di notte e si torna in giornata. Quello che trovi sul banco alle sette è stato scelto poche ore prima, cassetta per cassetta.`,
         features: [
           { icon: '🌅', title: 'Selezione Alba', desc: 'Controllo qualità e scelta prodotti alle prime ore del mattino' },
           { icon: '🎨', title: 'Varietà Premium', desc: 'Oltre 150 tipologie di frutta e verdura sempre disponibili' },
           { icon: '👨‍👩‍👧‍👦', title: 'Esperienza Generazionale', desc: 'Consigli e saperi tramandati da tre generazioni di specialisti' },
-          { icon: '🏔️', title: 'Prodotti del Territorio', desc: 'Eccellenze locali del Trentino Alto Adige accuratamente selezionate' },
+          { icon: '🏔️', title: 'Prodotti del Territorio', desc: 'Melinda dalla Val di Non, asparagi di Zambana, piccoli frutti di montagna' },
           { icon: '💝', title: 'Attenzione Personalizzata', desc: 'Servizio dedicato e consulenza individuale per ogni cliente' },
           { icon: '🕰️', title: 'Disponibilità Estesa', desc: 'Aperti 6 giorni su 7 con orari pensati per la tua comodità' }
         ],
@@ -43,8 +43,8 @@ const translations = {
         id: 'services',
         title: 'Divisione Ingrosso HORECA',
         shortDesc: 'Partner strategico per la ristorazione di qualità',
-        description: 'La nostra divisione ingrosso rappresenta l\'anima pulsante dell\'attività Bottamedi: forniamo quotidianamente ristoranti d\'eccellenza, hotel di prestigio, pizzerie gourmet e attività commerciali con la medesima passione e rigore qualitativo che contraddistingue il nostro banchetto.',
-        longDescription: 'Non siamo semplici fornitori, ma veri partner strategici che comprendono e anticipano le esigenze del settore professionale. La nostra consolidata esperienza ci permette di servire con successo anche realtà istituzionali del territorio, garantendo sempre standard qualitativi superiori. Ogni alba il nostro team specializzato seleziona i prodotti migliori, applicando protocolli di qualità sviluppati in decenni di esperienza nel settore HORECA.',
+        description: `L'ingrosso rifornisce ristoranti, hotel, mense e pizzerie della zona con consegne fisse tutto l'anno.`,
+        longDescription: `Chi cucina ha bisogno di sapere che la merce arriva. Consegniamo a ristoranti, hotel, mense e pizzerie della Piana Rotaliana con giorni fissi, tutto l'anno. Chi ordina il giovedì sa cosa trova il venerdì, e se serve qualcosa fuori lista si chiama e si trova il modo.`,
         features: [
           { icon: '🚚', title: 'Logistica Affidabile', desc: 'Consegne puntuali 6 giorni su 7 con orari concordati e rispettati' },
           { icon: '🔍', title: 'Controllo Qualità Totale', desc: 'Selezione rigorosa e verifica su ogni singolo prodotto fornito' },

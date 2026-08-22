@@ -11,8 +11,8 @@ const translations = {
   it: {
     company: {
       name: 'BOTTAMEDI',
-      description: 'Tre generazioni di eccellenza nell\'ortofrutta. Qualità inarrivabile e passione familiare dal 1974.',
-      tagline: 'Da oltre 50 anni, la passione per la qualità'
+      description: `Ortofrutta a Mezzolombardo dal 1974. Banchetto al dettaglio in Via Cavalleggeri Udine e ingrosso per ristoranti e hotel della zona.`,
+      tagline: `Dal 1974 a Mezzolombardo, tre generazioni`
     },
     links: {
       about: 'La Nostra Storia',
@@ -55,7 +55,7 @@ const translations = {
   de: {
     company: {
       name: 'BOTTAMEDI',
-      description: 'Drei Generationen Exzellenz in Obst und Gemüse. Unübertreffliche Qualität und familiäre Leidenschaft seit 1974.',
+      description: `Obst und Gemüse in Mezzolombardo seit 1974. Marktstand in Via Cavalleggeri Udine und Großhandel für Restaurants und Hotels der Umgebung.`,
       tagline: 'Seit über 50 Jahren, Leidenschaft für Qualität'
     },
     links: {

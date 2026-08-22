@@ -56,7 +56,7 @@ const translations = {
         },
         {
           icon: '⭐',
-          title: 'Eccellenza',
+          title: 'Selezione',
           description: 'Scegliamo di persona, cassetta per cassetta. Nessun ordine fatto solo al telefono',
           number: '150+',
           label: 'Varietà selezionate'
@@ -351,7 +351,7 @@ const ValueCard: React.FC<{
       const valoriMap: Record<string, string> = {
         'Freschezza': 'freschezza_quotidiana',
         'Frische': 'freschezza_quotidiana',
-        'Eccellenza': 'standard_elevati',
+        'Selezione': 'standard_elevati',
         'Exzellenz': 'standard_elevati',
         'Passione': 'passione_familiare',
         'Leidenschaft': 'passione_familiare',

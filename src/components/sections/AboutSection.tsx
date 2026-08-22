@@ -27,19 +27,19 @@ const translations = {
     timeline: [
       {
         year: '1974',
-        title: 'Le Fondamenta',
+        title: `L'inizio`,
         description: 'Lorenzo apre il banchetto a Mezzolombardo. Frutta e verdura scelta a mano, cassetta per cassetta, e clienti che tornano perché sanno cosa trovano. È così che nasce il modo di lavorare che portiamo avanti ancora oggi',
         image: '/images/melinda_golden.webp'
       },
       {
         year: '2013',
-        title: 'L\'Evoluzione',
+        title: 'La crescita',
         description: `Con Pierluigi l'ingrosso smette di essere occasionale. La rete si estende a ristoranti, hotel e mense di tutta la zona, con consegne fisse tutto l'anno: chi ordina sa che la merce arriva.`,
         image: '/images/pomodori_cuore_bue.webp'
       },
       {
         year: 'OGGI',
-        title: 'Il Futuro',
+        title: 'Ogni mattina',
         description: 'Si parte per il mercato di Verona alle due di notte. Il mercato apre più tardi, ma chi arriva prima sceglie per primo. La merce arriva in Trentino la mattina stessa: al banchetto e nei ristoranti che serviamo',
         image: '/images/kiwi-cuore.webp'
       }
@@ -84,19 +84,19 @@ const translations = {
     timeline: [
       {
         year: '1974',
-        title: 'Die Grundlagen',
+        title: 'Der Anfang',
         description: `Lorenzo eröffnet den Marktstand in Mezzolombardo. Obst und Gemüse von Hand ausgewählt, Kiste für Kiste, und Kunden, die wiederkommen, weil sie wissen, was sie bekommen.`,
         image: '/images/melinda_golden.webp'
       },
       {
         year: '2013',
-        title: 'Die Entwicklung',
+        title: 'Das Wachstum',
         description: `Mit Pierluigi wird der Großhandel zur festen Größe. Das Liefernetz erstreckt sich auf Restaurants, Hotels und Kantinen der ganzen Umgebung, mit festen Lieferungen das ganze Jahr über: wer bestellt, weiß, dass die Ware kommt.`,
         image: '/images/pomodori_cuore_bue.webp'
       },
       {
         year: 'HEUTE',
-        title: 'Die Zukunft',
+        title: 'Jeden Morgen',
         description: `Um zwei Uhr nachts geht es zum Großmarkt nach Verona. Der Markt öffnet später, aber wer früher da ist, wählt zuerst. Die Ware kommt noch am selben Morgen im Trentino an.`,
         image: '/images/kiwi-cuore.webp'
       }

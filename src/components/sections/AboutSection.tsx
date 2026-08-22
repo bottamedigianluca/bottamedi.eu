@@ -34,7 +34,7 @@ const translations = {
       {
         year: '2013',
         title: 'L\'Evoluzione',
-        description: `È Pierluigi a costruire l'ingrosso. Quello che con Lorenzo erano poche forniture ai ristoranti del paese diventa un lavoro strutturato: rapporti diretti con i produttori, consegne che non saltano un giorno, e la fiducia di cucine che ordinano ogni settimana da vent'anni. La parte più grande dell'azienda oggi porta la sua firma.`,
+        description: `Pierluigi sviluppa l'ingrosso. Alle poche forniture ai ristoranti del paese si sostituisce un lavoro continuo: rapporti diretti con i produttori, consegne fisse, cucine che ordinano ogni settimana.`,
         image: '/images/pomodori_cuore_bue.webp'
       },
       {
@@ -90,8 +90,8 @@ const translations = {
       },
       {
         year: '2013',
-        title: 'Der Wendepunkt',
-        description: `Es ist Pierluigi, der den Großhandel aufbaut. Was unter Lorenzo einige Lieferungen an Gasthäuser im Ort waren, wird zu einer strukturierten Arbeit: direkte Beziehungen zu den Erzeugern, Lieferungen, die keinen Tag ausfallen, und das Vertrauen von Küchen, die seit zwanzig Jahren jede Woche bestellen. Der größte Teil des heutigen Betriebs trägt seine Handschrift.`,
+        title: 'Die Entwicklung',
+        description: `Pierluigi baut den Großhandel aus. Aus einigen Lieferungen an Gasthäuser im Ort wird eine kontinuierliche Arbeit: direkte Beziehungen zu den Erzeugern, feste Liefertage, Küchen, die jede Woche bestellen.`,
         image: '/images/pomodori_cuore_bue.webp'
       },
       {

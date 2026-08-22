@@ -645,6 +645,16 @@ const ContactSection: React.FC<ContactSectionProps> = ({ language, inView }) => 
                 : `Ja. Ein Teil des Sortiments stammt von Bauern und Erzeugern der Rotaliana-Ebene, des Nonstals und der umliegenden Täler, in kurzer Lieferkette und ohne Zwischenstufen: Melinda- und Pink-Lady-Äpfel, Spargel aus Zambana, Bergbeeren, Kastanien und Nüsse im Herbst, Gemüse aus den Tälern. Die übrigen Produkte, die im Trentino nicht wachsen, wählen wir persönlich am Großmarkt Verona aus.`}
             </p>
           </div>
+          <div className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm border border-gray-100 mt-5">
+            <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-3">
+              {language === 'it' ? 'Quali sono gli orari del banchetto?' : 'Wie sind die Öffnungszeiten?'}
+            </h3>
+            <p className="text-gray-600 leading-relaxed">
+              {language === 'it'
+                ? `Il banchetto in Via Cavalleggeri Udine è aperto dal lunedì al sabato, dalle 7:00 alle 19:30. Chiuso la domenica. Per l'ingrosso Ho.Re.Ca. in Via Alcide de Gasperi 47 il numero è 0461 602534.`
+                : `Der Marktstand in Via Cavalleggeri Udine ist von Montag bis Samstag von 7:00 bis 19:30 Uhr geöffnet, sonntags geschlossen. Für den Ho.Re.Ca.-Großhandel in Via Alcide de Gasperi 47 lautet die Nummer 0461 602534.`}
+            </p>
+          </div>
         </motion.div>
 
       </div>

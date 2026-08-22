@@ -18,7 +18,7 @@ const translations = {
         id: 'dettaglio',
         title: 'Il Nostro Banchetto',
         shortDesc: 'Esperienza diretta con prodotti di qualità superiore',
-        description: 'Nel cuore di Mezzolombardo, il nostro colorato banchetto rappresenta molto più di un semplice punto vendita. È il luogo dove la tradizione familiare incontra l\'eccellenza quotidiana, dove ogni prodotto racconta una storia di qualità.',
+        description: `Il banchetto è in Via Cavalleggeri Udine, vicino al campo sportivo. Aperto dal lunedì al sabato dalle sette del mattino, con la merce scelta poche ore prima al mercato.`,
         longDescription: 'Ogni alba segna l\'inizio di una nuova giornata di selezione meticolosa. Il nostro team, forte di tre generazioni di esperienza, sceglie personalmente frutta e verdura freschissima, creando un caleidoscopio di sapori che rappresenta il meglio del territorio trentino e delle migliori produzioni italiane. Qui non trovi solo prodotti freschi, ma anche la competenza e i consigli di chi conosce ogni sfumatura del settore ortofrutticolo.',
         features: [
           { icon: '🌅', title: 'Selezione Alba', desc: 'Controllo qualità e scelta prodotti alle prime ore del mattino' },

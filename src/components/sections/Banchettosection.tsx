@@ -22,7 +22,7 @@ const translations = {
   it: {
     title: 'Al Banchetto: Colori, Sapori e Freschezza Quotidiana',
     subtitle: 'Vieni a trovarci in Via Cavalleggeri Udine a Mezzolombardo!',
-    description: 'Lasciati tentare da un\'esplosione di colori, profumi e dalla migliore frutta e verdura freschissima, selezionata per te ogni giorno con la cura e la passione di famiglia che ci contraddistingue da generazioni.',
+    description: `Il banco cambia con le stagioni: quello che trovi oggi è stato scelto stanotte al mercato o arriva dai contadini della valle. Frutta, verdura, e i prodotti tipici del Trentino.`,
     cta: 'Orari e Contatti del Banchetto',
     gallery: [
       {

@@ -10,7 +10,7 @@ interface ServicesSectionProps {
 
 const translations = {
   it: {
-    title: 'I Nostri Servizi',
+    title: 'Come si compra da noi?',
     subtitle: `Due modi per comprare da noi: al banchetto in Via Cavalleggeri Udine, o con consegna al tuo locale`,
     whatWeOffer: 'I nostri punti di forza:',
     services: [
@@ -67,7 +67,7 @@ const translations = {
     ]
   },
   de: {
-    title: 'Unsere Dienstleistungen',
+    title: 'Wie kauft man bei uns?',
     subtitle: 'Zwei Modalitäten, um Bottamedi-Exzellenz auf Ihren Tisch zu bringen',
     whatWeOffer: 'Unsere Stärken:',
     services: [

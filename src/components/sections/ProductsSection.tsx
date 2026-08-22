@@ -9,7 +9,7 @@ interface ProductsSectionProps {
 
 const translations = {
   it: {
-    title: 'I Nostri Prodotti',
+    title: 'Cosa trovi sul banco?',
     subtitle: 'Il tuo fruttivendolo a Mezzolombardo: oltre 150 varietà di frutta e verdura fresca, ortofrutta selezionata ogni giorno al mercato per il banchetto e per ristoranti e hotel della provincia di Trento',
     categories: [
       {
@@ -113,7 +113,7 @@ const translations = {
     ]
   },
   de: {
-    title: 'Unsere Produkte',
+    title: 'Was gibt es am Stand?',
     subtitle: 'Über 150 Sorten frisches Obst und Gemüse täglich ausgewählt',
     categories: [
       {
@@ -242,6 +242,8 @@ const MobileProductCard: React.FC<{
         <img
           src={category.image}
           srcSet={buildSrcSet(category.image)}
+          width={1200}
+          height={900}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           alt={`${category.title} freschi di stagione al banchetto Bottamedi di Mezzolombardo`}
           className="w-full h-full object-cover"
@@ -402,6 +404,8 @@ const DesktopProductCard: React.FC<{
           <img
             src={category.image}
             srcSet={buildSrcSet(category.image)}
+            width={1200}
+            height={900}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             alt={`${category.title} freschi di stagione al banchetto Bottamedi di Mezzolombardo`}
             className="w-full h-full object-cover"

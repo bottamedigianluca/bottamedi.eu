@@ -17,6 +17,7 @@
   <!-- Canonical e alternate -->
   <link rel="canonical" href="https://bottamedi.eu" />
   <link rel="manifest" href="/manifest.json" />
+  <link rel="alternate" hreflang="x-default" href="https://bottamedi.eu/" />
   <link rel="alternate" type="text/plain" href="/llms.txt" title="Informazioni sull'attività in testo semplice" />
   
   <!-- Geo Meta Tags -->
@@ -324,7 +325,29 @@
         "Prodotti a chilometro zero",
         "Mercato ortofrutticolo di Verona",
         "Piana Rotaliana"
-      ]
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Cosa offriamo",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Vendita al dettaglio al banchetto",
+              "description": "Frutta e verdura fresca di stagione, oltre 150 varieta' nel corso dell'anno, al banchetto di Via Cavalleggeri Udine a Mezzolombardo."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Fornitura ortofrutticola Ho.Re.Ca.",
+              "description": "Consegne fisse tutto l'anno a ristoranti, hotel, mense e pizzerie della Piana Rotaliana."
+            }
+          }
+        ]
+      }
     },
     {
       "@type": [
